@@ -24,6 +24,7 @@ All notable changes to EasyProject are documented here.
 - Online calendar synchronization rejects local/private targets and unsafe redirects.
 - Desktop security now uses an explicit CSP, scoped file-reveal permission, reduced production logging, and a managed backup-directory boundary.
 - Gantt image capture is loaded only when requested, reducing startup work.
+- Release artifact validation now confirms that macOS app bundles contain non-empty files instead of accepting an empty `.app` directory.
 
 ### Known limitations
 

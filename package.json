@@ -1,0 +1,49 @@
+{
+    "name": "easy-project",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "lint": "eslint src e2e scripts *.config.js --max-warnings=0",
+        "preview": "vite preview",
+        "tauri": "tauri",
+        "tauri:dev": "tauri dev",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:performance": "vitest run src/__tests__/gantt/criticalPath.test.js",
+        "test:e2e": "node scripts/run-e2e.js",
+        "release:check": "node scripts/check-release.js"
+    },
+    "dependencies": {
+        "@primeuix/themes": "^1.2.5",
+        "@tauri-apps/api": "^2.8.0",
+        "@tauri-apps/plugin-opener": "^2",
+        "date-holidays": "^3.26.3",
+        "exceljs": "^4.4.0",
+        "html2canvas": "^1.4.1",
+        "primeicons": "^7.0.0",
+        "primevue": "^4.3.9",
+        "vue": "^3.5.13",
+        "vue-i18n": "^10.0.8",
+        "vue-router": "^4.5.1"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.61.1",
+        "@tauri-apps/cli": "^2",
+        "@vitejs/plugin-vue": "^5.2.1",
+        "@vue/test-utils": "^2.4.11",
+        "eslint": "^9.37.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.4",
+        "eslint-plugin-vue": "^10.5.0",
+        "jsdom": "^29.1.1",
+        "prettier": "^3.6.2",
+        "vite": "^6.0.3",
+        "vitest": "^3.1.0"
+    },
+    "overrides": {
+        "uuid": "^11.1.1"
+    }
+}

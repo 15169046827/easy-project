@@ -1,0 +1,63 @@
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    verify:
+        runs-on: windows-latest
+        timeout-minutes: 30
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+
+            - name: Set up Rust
+              uses: dtolnay/rust-toolchain@stable
+
+            - name: Cache Rust build
+              uses: Swatinem/rust-cache@v2
+              with:
+                  workspaces: src-tauri
+
+            - name: Install frontend dependencies
+              run: npm ci
+
+            - name: Run frontend quality gate
+              run: npm run lint
+
+            - name: Run frontend tests
+              run: npm test
+
+            - name: Run 1000-task performance baseline
+              run: npm run test:performance
+
+            - name: Build frontend
+              run: npm run build
+
+            - name: Run browser smoke tests
+              run: npm run test:e2e
+
+            - name: Check Rust formatting
+              working-directory: src-tauri
+              run: cargo fmt --check
+
+            - name: Check Rust
+              working-directory: src-tauri
+              run: cargo check --locked
+
+            - name: Test Rust
+              working-directory: src-tauri
+              run: cargo test --locked

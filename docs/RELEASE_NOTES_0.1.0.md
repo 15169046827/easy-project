@@ -23,7 +23,8 @@ EasyProject v0.1.0 is the first public candidate of the open-source, local-first
 - Rust/SQLite: 18/18 passed; Rust formatting passed.
 - Production frontend build and v0.1.0 metadata validation: passed.
 - Windows x64 NSIS: built locally; prior repair install, launch, uninstall, and row-for-row schema-v5 data preservation passed.
-- Windows x64 MSI and macOS Apple Silicon/Intel artifacts: pending GitHub runner generation and manual smoke testing.
+- GitHub Actions: validation and Windows x64 MSI/NSIS plus macOS Apple Silicon/Intel APP/DMG build jobs passed; all six unsigned draft assets were downloaded and structurally validated.
+- Manual clean-machine Windows MSI and macOS installation smoke testing remains pending.
 
 ## Data compatibility
 

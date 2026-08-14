@@ -22,7 +22,7 @@ The 2026-08-10 local v0.1.0 candidate passed lint, 67 frontend tests, 18 Rust te
 
 ## Candidate verification record — 2026-08-14
 
-The `main` candidate at merge commit `f64aa4f` was rechecked locally:
+The candidate was rechecked locally and then merged to `main` as `9ff0937`:
 
 - ESLint passed with zero warnings.
 - Vitest passed 71/71 tests, including four release-artifact validation tests.
@@ -32,7 +32,20 @@ The `main` candidate at merge commit `f64aa4f` was rechecked locally:
 - `EasyProject_0.1.0_x64-setup.exe` rebuilt successfully as an unsigned 5,092,787-byte NSIS installer with SHA-256 `A1C8AA40AD307DCA05D4612AEAF346EAFB2455F177F25B71D4DCBCE6E8BB0BF9`.
 - Artifact validation was strengthened so a macOS `.app` directory must contain at least one non-empty file.
 
-The local MSI attempt reached WiX after compiling the application but could not run ICE validation because the host Windows Installer service was unavailable. No MSI was accepted from that attempt and validation must be completed on the GitHub Windows runner. The release workflow remains unexecuted until GitHub Actions access is reauthenticated; this does not change the automated or manual acceptance criteria below.
+The local MSI attempt reached WiX after compiling the application but could not run ICE validation because the host Windows Installer service was unavailable. GitHub Actions run [`31777572933`](https://github.com/15169046827/easy-project/actions/runs/31777572933) subsequently passed validation and all three build jobs on `windows-2022`, `macos-26`, and `macos-26-intel`. Each job also passed the strengthened generated-bundle check and uploaded both workflow artifacts and draft Release assets.
+
+### Unsigned GitHub draft artifacts
+
+| Asset | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `EasyProject_0.1.0_windows_x64-setup.exe` | 5,037,832 | `C3FFBD703FC21B6BBCF3219E78B81E47D60C5F23FE933B166918ABEF333EF133` |
+| `EasyProject_0.1.0_windows_x64.msi` | 6,770,688 | `582443C75E2E184E961FBFFA8F77A45ABD8DE2986E08D112FEF3FFF4785A1236` |
+| `EasyProject_0.1.0_darwin_aarch64.app.tar.gz` | 6,733,237 | `4A90D967056A0EB1DEA51DABB22ED9F23CED02568651C2875663CBBBBA7BD098` |
+| `EasyProject_0.1.0_darwin_aarch64.dmg` | 6,833,279 | `41FF7DFAE18BA2B5B84893629E11960E22BBFCB2C82D8E3954AA7A9BD85B6DC2` |
+| `EasyProject_0.1.0_darwin_x64.app.tar.gz` | 6,959,739 | `7C3994A652E8F2B8FCDC9DC9AF8F238ADDEBE64F4DE280E26474BB1EFCA9187E` |
+| `EasyProject_0.1.0_darwin_x64.dmg` | 7,052,619 | `DE270A3E184432C208EAA840442629629B79B71E36186368C5FF2432C08B63F1` |
+
+All six assets were downloaded independently after the run. The Windows files have valid PE/MSI container headers, product version `0.1.0`, and the expected unsigned status. Both app archives contain a non-empty executable (`17,969,120` bytes for Apple Silicon and `18,532,924` bytes for Intel), and both DMGs contain the expected UDIF `koly` trailer. These checks prove build and container integrity only; they do not replace signing or the manual installation matrix.
 
 ## Required smoke-test matrix
 

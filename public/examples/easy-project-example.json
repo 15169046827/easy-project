@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 5,
+  "exportedAt": "2026-07-21T00:00:00+08:00",
+  "projects": [
+    ["example-project", "产品发布示例", "v1.0", "private", "InProgress", "example-alice", "CN", "", "[0,6]", "[]", "EasyProject", "2026-07-01 09:00:00", "2026-07-21 09:00:00", "0"]
+  ],
+  "tasks": [
+    ["example-task-1", "example-project", 1, "需求确认", "", "", "2026-07-01 00:00:00", "2026-07-03 00:00:00", "Task", "2", "Done", 100, 3, "fixed_effort", "确认发布范围和验收口径", "example-alice", "EasyProject", "2026-07-01 09:00:00", "2026-07-03 18:00:00", "0"],
+    ["example-task-2", "example-project", 2, "开发与联调", "", "", "2026-07-06 00:00:00", "2026-07-14 00:00:00", "Task", "1", "InProgress", 65, 7, "fixed_effort", "完成核心功能和联调", "example-bob", "EasyProject", "2026-07-01 09:00:00", "2026-07-14 18:00:00", "0"],
+    ["example-task-3", "example-project", 3, "正式发布", "", "", "2026-07-17 00:00:00", "2026-07-17 00:00:00", "Milestone", "1", "Pending", 0, 1, "fixed_dates", "发布里程碑", "example-alice", "EasyProject", "2026-07-01 09:00:00", "2026-07-01 09:00:00", "0"]
+  ],
+  "dependencies": [
+    ["example-dependency-1", "example-task-1", "example-task-2", "FS", 0, "2026-07-01 09:00:00"],
+    ["example-dependency-2", "example-task-2", "example-task-3", "FS", 0, "2026-07-01 09:00:00"]
+  ],
+  "members": [
+    ["example-alice", "Alice", "alice@example.local", "", "Project Manager", "", "[]", "2026-07-01 09:00:00", "2026-07-01 09:00:00", "0"],
+    ["example-bob", "Bob", "bob@example.local", "", "Developer", "", "[]", "2026-07-01 09:00:00", "2026-07-01 09:00:00", "0"]
+  ],
+  "project_members": [
+    ["example-pm-1", "example-project", "example-alice", "Owner", "2026-07-01 09:00:00", "0"],
+    ["example-pm-2", "example-project", "example-bob", "Developer", "2026-07-01 09:00:00", "0"]
+  ],
+  "plan_baselines": [
+    ["example-baseline-1", "example-project", "example-task-1", "需求确认", "2026-07-01 00:00:00", "2026-07-03 00:00:00", "2026-07-01 09:00:00"],
+    ["example-baseline-2", "example-project", "example-task-2", "开发与联调", "2026-07-06 00:00:00", "2026-07-14 00:00:00", "2026-07-01 09:00:00"]
+  ]
+}

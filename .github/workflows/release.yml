@@ -1,0 +1,106 @@
+name: Release desktop
+
+on:
+    push:
+        tags: ['v*']
+    workflow_dispatch:
+
+permissions:
+    contents: write
+
+concurrency:
+    group: release-${{ github.ref }}
+    cancel-in-progress: false
+
+jobs:
+    validate:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+
+            - name: Install frontend dependencies
+              run: npm ci
+
+            - name: Validate release metadata
+              run: npm run release:check
+
+            - name: Run frontend quality gate
+              run: npm run lint
+
+            - name: Run frontend tests
+              run: npm test
+
+    build:
+        needs: validate
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - platform: windows-2022
+                      target: x86_64-pc-windows-msvc
+                      bundles: msi,nsis
+                      expected: msi,exe
+                    - platform: macos-26
+                      target: aarch64-apple-darwin
+                      bundles: app,dmg
+                      expected: app,dmg
+                    - platform: macos-26-intel
+                      target: x86_64-apple-darwin
+                      bundles: app,dmg
+                      expected: app,dmg
+
+        runs-on: ${{ matrix.platform }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+
+            - name: Set up Rust
+              uses: dtolnay/rust-toolchain@stable
+              with:
+                  targets: ${{ matrix.target }}
+
+            - name: Cache Rust build
+              uses: Swatinem/rust-cache@v2
+              with:
+                  workspaces: src-tauri
+                  key: release-${{ matrix.target }}
+
+            - name: Install frontend dependencies
+              run: npm ci
+
+            - name: Build and upload desktop bundles
+              id: tauri
+              uses: tauri-apps/tauri-action@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tagName: v__VERSION__
+                  releaseName: EasyProject v__VERSION__
+                  releaseBody: Download the installer for your operating system from the assets below.
+                  releaseDraft: true
+                  prerelease: false
+                  generateReleaseNotes: true
+                  uploadUpdaterJson: false
+                  uploadWorkflowArtifacts: true
+                  workflowArtifactNamePattern: easyproject-[version]-[platform]-[arch]-[bundle]
+                  releaseAssetNamePattern: EasyProject_[version]_[platform]_[arch][setup][ext]
+                  retryAttempts: 1
+                  args: --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} --ci
+
+            - name: Validate generated bundles
+              env:
+                  EXPECTED_BUNDLES: ${{ matrix.expected }}
+              run: node scripts/check-release-artifacts.js

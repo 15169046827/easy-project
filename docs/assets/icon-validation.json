@@ -1,0 +1,54 @@
+{
+  "canvas": {
+    "width": 512,
+    "height": 512,
+    "mode": "RGBA"
+  },
+  "tile": {
+    "bounds": [
+      44,
+      44,
+      468,
+      468
+    ],
+    "size_px": 424,
+    "canvas_coverage_percent": 82.8125,
+    "transparent_margin_px": 44,
+    "transparent_margin_percent": 8.59375,
+    "corner_radius_px": 89,
+    "corner_radius_of_tile_percent": 20.9906
+  },
+  "alpha": {
+    "corners": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "center": 255
+  },
+  "subject": {
+    "bounds": [
+      108,
+      114,
+      408,
+      398
+    ],
+    "width_percent": 58.5938,
+    "height_percent": 55.4688
+  },
+  "ico_sizes": [
+    16,
+    24,
+    32,
+    48,
+    64,
+    128,
+    256
+  ],
+  "previews": {
+    "desktop": "48 px",
+    "start_menu": "40 px",
+    "taskbar": "24 px"
+  }
+}

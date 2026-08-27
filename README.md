@@ -65,6 +65,7 @@ cargo test
 - Product and implementation plan: [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md)
 - v0.1 release audit and remaining risks: [`docs/AUDIT_2026-08-08.md`](docs/AUDIT_2026-08-08.md)
 - Release and platform smoke tests: [`docs/RELEASING.md`](docs/RELEASING.md)
+- Application icon source, generation, and Windows validation: [`docs/ICON_DESIGN.md`](docs/ICON_DESIGN.md)
 - Draft v0.1.0 release notes: [`docs/RELEASE_NOTES_0.1.0.md`](docs/RELEASE_NOTES_0.1.0.md)
 - Example import snapshot: [`public/examples/easy-project-example.json`](public/examples/easy-project-example.json)
 - The Wolai Project page remains the collaborative source for product scope, linked feature databases, models, and milestones.

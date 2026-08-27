@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">EasyProject application icon</title>
+  <desc id="desc">A rounded blue tile containing a clean three-step project timeline with colorful status nodes.</desc>
+  <defs>
+    <linearGradient id="tile" x1="72" y1="60" x2="452" y2="468" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1E3A8A"/>
+      <stop offset="0.52" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#4F46E5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 424 px tile: 82.8125% of the canvas, with 44 px (8.59375%) margins. -->
+  <rect x="44" y="44" width="424" height="424" rx="89" fill="url(#tile)"/>
+
+  <!-- A project timeline: spacious task bars and status nodes, with no shadow or glow. -->
+  <rect x="132" y="144" width="12" height="224" rx="6" fill="#FFFFFF" fill-opacity="0.72"/>
+
+  <rect x="176" y="120" width="232" height="48" rx="24" fill="#FFFFFF"/>
+  <rect x="176" y="232" width="176" height="48" rx="24" fill="#FFFFFF"/>
+  <rect x="176" y="344" width="208" height="48" rx="24" fill="#FFFFFF"/>
+
+  <circle cx="138" cy="144" r="30" fill="#FBBF24"/>
+  <circle cx="138" cy="256" r="30" fill="#67E8F9"/>
+  <circle cx="138" cy="368" r="30" fill="#22C55E"/>
+  <path d="M126 368L135 377L152 358" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

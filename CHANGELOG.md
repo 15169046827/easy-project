@@ -17,6 +17,8 @@ All notable changes to EasyProject are documented here.
 
 ### Improved
 
+- Redesigned the cross-platform application icon around a compact task timeline, with validated Windows transparency, small-size previews, and a seven-size ICO package.
+- Windows release builds now use the GUI subsystem, so launching EasyProject no longer opens an extra command-line window.
 - Unified dashboard metric typography, table pagination width, card heading scale, member role wrapping, localized empty states/onboarding, and readable task dates across desktop window sizes.
 - Data recovery verifies backup integrity and creates a rollback point before restore.
 - Release documentation now includes a platform installation and data-safety smoke-test matrix.

@@ -125,6 +125,20 @@ test('renders the custom Windows title bar preview without covering navigation',
     expect(titlebarBox).not.toBeNull()
     expect(navigationBox).not.toBeNull()
     expect(navigationBox.y).toBeGreaterThanOrEqual(titlebarBox.y + titlebarBox.height)
+
+    const viewportHeight = page.viewportSize().height
+    const documentMetrics = await page.evaluate(() => ({
+        clientHeight: document.documentElement.clientHeight,
+        scrollHeight: document.documentElement.scrollHeight,
+        bodyScrollHeight: document.body.scrollHeight
+    }))
+    expect(documentMetrics.clientHeight).toBe(viewportHeight)
+    expect(documentMetrics.scrollHeight).toBe(viewportHeight)
+    expect(documentMetrics.bodyScrollHeight).toBe(viewportHeight)
+
+    await page.mouse.wheel(0, 500)
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+    await expect(page.getByTestId('window-titlebar')).toBeInViewport()
 })
 
 test('creates a scheduled project from a built-in template', async ({ page }) => {

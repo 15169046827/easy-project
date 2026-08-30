@@ -468,6 +468,14 @@ textarea {
 
 .app-shell {
     min-height: 100vh;
+    --window-titlebar-height: 0px;
+}
+
+.app-shell--window-chrome {
+    height: 100vh;
+    min-height: 0;
+    overflow: hidden;
+    --window-titlebar-height: 36px;
 }
 
 .app-header {

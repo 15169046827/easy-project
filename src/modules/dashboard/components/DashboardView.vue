@@ -242,7 +242,7 @@ onMounted(loadDashboard)
 .dashboard {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 88px);
+    height: calc(100vh - 88px - var(--window-titlebar-height, 0px));
     padding: 1.5rem;
     overflow: hidden;
 }

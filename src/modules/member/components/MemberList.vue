@@ -617,7 +617,7 @@ onMounted(load)
     flex-direction: column;
     padding: 1.5rem;
     gap: 1rem;
-    height: calc(100vh - 88px);
+    height: calc(100vh - 88px - var(--window-titlebar-height, 0px));
     overflow: hidden;
 }
 

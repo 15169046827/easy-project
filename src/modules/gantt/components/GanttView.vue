@@ -1415,7 +1415,7 @@ onMounted(async () => {
 .gantt-page {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 88px);
+    height: calc(100vh - 88px - var(--window-titlebar-height, 0px));
     padding: 1.5rem;
     overflow: hidden;
 }
@@ -2189,7 +2189,7 @@ onMounted(async () => {
 /* ---------- 响应式 ---------- */
 @media (max-width: 820px) {
     .gantt-page {
-        height: calc(100vh - 132px);
+        height: calc(100vh - 132px - var(--window-titlebar-height, 0px));
         padding: 1rem;
     }
     .gantt-toolbar {

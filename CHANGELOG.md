@@ -17,6 +17,7 @@ All notable changes to EasyProject are documented here.
 
 ### Improved
 
+- Windows now uses an EasyProject-styled title bar with native dragging and minimize, maximize/restore, and close controls while other desktop platforms retain their native window chrome.
 - Redesigned the cross-platform application icon around a compact task timeline, with validated Windows transparency, small-size previews, and a seven-size ICO package.
 - Windows release builds now use the GUI subsystem, so launching EasyProject no longer opens an extra command-line window.
 - Unified dashboard metric typography, table pagination width, card heading scale, member role wrapping, localized empty states/onboarding, and readable task dates across desktop window sizes.

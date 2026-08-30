@@ -79,7 +79,12 @@ export default {
         themeToDark: 'Switch to dark mode',
         helpTitle: 'Keyboard shortcuts',
         closeHelp: 'Close help',
-        shortcutsTitle: 'Keyboard shortcuts'
+        shortcutsTitle: 'Keyboard shortcuts',
+        windowControls: 'Window controls',
+        windowMinimize: 'Minimize',
+        windowMaximize: 'Maximize',
+        windowRestore: 'Restore',
+        windowClose: 'Close window'
     },
     shortcut: {
         command: 'Command palette / Search',

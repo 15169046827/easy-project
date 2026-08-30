@@ -109,6 +109,24 @@ test('loads the dashboard shell with mocked Tauri data', async ({ page }) => {
     await expect(page.getByText('Alpha Project').first()).toBeVisible()
 })
 
+test('renders the custom Windows title bar preview without covering navigation', async ({
+    page
+}) => {
+    await page.goto('/?demo=1&windowChrome=1#/dashboard')
+
+    await expect(page.getByTestId('window-titlebar')).toBeVisible()
+    await expect(page.getByTestId('window-minimize')).toHaveAttribute('aria-label', '最小化')
+    await expect(page.getByTestId('window-maximize')).toHaveAttribute('aria-label', '最大化')
+    await expect(page.getByTestId('window-close')).toHaveAttribute('aria-label', '关闭窗口')
+    await expect(page.getByRole('navigation')).toBeVisible()
+
+    const titlebarBox = await page.getByTestId('window-titlebar').boundingBox()
+    const navigationBox = await page.getByRole('navigation').boundingBox()
+    expect(titlebarBox).not.toBeNull()
+    expect(navigationBox).not.toBeNull()
+    expect(navigationBox.y).toBeGreaterThanOrEqual(titlebarBox.y + titlebarBox.height)
+})
+
 test('creates a scheduled project from a built-in template', async ({ page }) => {
     await page.addInitScript(() => localStorage.setItem('easyproject-lang', 'en-US'))
     await page.goto('/#/projects')

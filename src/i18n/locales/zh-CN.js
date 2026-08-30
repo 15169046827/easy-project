@@ -79,7 +79,12 @@ export default {
         themeToDark: '切换到暗色模式',
         helpTitle: '键盘快捷键',
         closeHelp: '关闭帮助',
-        shortcutsTitle: '快捷键帮助'
+        shortcutsTitle: '快捷键帮助',
+        windowControls: '窗口控制',
+        windowMinimize: '最小化',
+        windowMaximize: '最大化',
+        windowRestore: '还原',
+        windowClose: '关闭窗口'
     },
     shortcut: {
         command: '命令面板 / 搜索',

@@ -1,7 +1,8 @@
 <template>
-    <main class="app-shell">
-        <header class="app-header">
-            <div class="header-left">
+    <main class="app-shell" :class="{ 'app-shell--window-chrome': windowChrome.visible }">
+        <WindowTitleBar v-if="windowChrome.visible" :native="windowChrome.native" />
+        <header class="app-header" :class="{ 'app-header--window-chrome': windowChrome.visible }">
+            <div v-if="!windowChrome.visible" class="header-left">
                 <span class="eyebrow">{{ $t('app.subtitle') }}</span>
                 <h1>EasyProject</h1>
             </div>
@@ -112,15 +113,18 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import Select from 'primevue/select'
 import OnboardingGuide from './components/OnboardingGuide.vue'
+import WindowTitleBar from './components/WindowTitleBar.vue'
 import { useTheme } from './composables/useTheme'
 import { useKeyboard, SHORTCUTS_HELP } from './composables/useKeyboard'
 import { setLocale } from './i18n'
 import { canRedo, canUndo, crudAction, enableHistory, redoLastAction, undoLastAction } from './api'
+import { getWindowChromeMode } from './utils/windowChrome'
 
 const route = useRoute()
 const router = useRouter()
 const { t, locale } = useI18n()
 const { isDark, toggle: toggleTheme } = useTheme()
+const windowChrome = getWindowChromeMode()
 
 const langOptions = [
     { label: '中文', value: 'zh-CN' },
@@ -475,6 +479,19 @@ textarea {
     background: linear-gradient(135deg, var(--color-header-bg-start), var(--color-header-bg-end));
     transition: background 0.3s ease;
     position: relative;
+}
+.app-header--window-chrome {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0.75rem 1.5rem 0.85rem;
+}
+.app-header--window-chrome nav {
+    grid-column: 2;
+}
+.app-header--window-chrome .header-actions {
+    grid-column: 3;
+    justify-self: end;
 }
 .app-header::after {
     content: '';

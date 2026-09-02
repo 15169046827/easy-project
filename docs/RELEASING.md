@@ -47,6 +47,21 @@ The local MSI attempt reached WiX after compiling the application but could not 
 
 All six assets were downloaded independently after the run. The Windows files have valid PE/MSI container headers, product version `0.1.0`, and the expected unsigned status. Both app archives contain a non-empty executable (`17,969,120` bytes for Apple Silicon and `18,532,924` bytes for Intel), and both DMGs contain the expected UDIF `koly` trailer. These checks prove build and container integrity only; they do not replace signing or the manual installation matrix.
 
+## Refreshed v0.1.0 draft — 2026-09-02
+
+GitHub Actions run [`33578595689`](https://github.com/15169046827/easy-project/actions/runs/33578595689) rebuilt the draft from commit `4f00719` after the Windows icon, GUI-subsystem launch, custom title bar, and outer-scroll fixes. The validation job and all three platform build jobs passed. The six Release assets were replaced, downloaded independently, and hashed:
+
+| Asset | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `EasyProject_0.1.0_windows_x64-setup.exe` | 5,060,442 | `78013A7871B7920213A3F3D634FC7AD94DAEC71AC7300FDDCFFA4E8B07D2C86F` |
+| `EasyProject_0.1.0_windows_x64.msi` | 6,758,400 | `01E6D2F6DF9C6794BF853171A400E70A173D325990865001F28DEACAF72E0656` |
+| `EasyProject_0.1.0_darwin_aarch64.app.tar.gz` | 6,749,599 | `4041BA096F6E787BC1BBB40BE3B79102646024AED5BCBF607D28C8F63EC6AE04` |
+| `EasyProject_0.1.0_darwin_aarch64.dmg` | 6,849,507 | `39468E980D81B66AF16C71CE26032D939B7DC3BE1BD142ACDD7C860D2AC63227` |
+| `EasyProject_0.1.0_darwin_x64.app.tar.gz` | 6,962,618 | `D73A0384200FB2FB13FA22325D6F058C4B331CF8F9CCFFB41A0D98AFF1EA89CF` |
+| `EasyProject_0.1.0_darwin_x64.dmg` | 7,060,183 | `20FF9FAB994A24B07840C5FD37F35C02CF8D52AC21643071D64CB9D70F1CCEC5` |
+
+The refreshed candidate passed ESLint, 77 Vitest tests, 15 Playwright tests, 18 Rust tests, Rust formatting, the production build, and release metadata validation. It remains an unsigned draft because signing and the outstanding manual smoke-test matrix are unchanged.
+
 ## Required smoke-test matrix
 
 Record the result for every release candidate before publishing:

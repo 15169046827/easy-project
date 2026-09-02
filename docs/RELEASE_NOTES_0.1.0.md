@@ -13,17 +13,18 @@ EasyProject v0.1.0 is the first public candidate of the open-source, local-first
 - Export and import schema-v5 JSON, CSV, and XLSX data, including relationships and plan baselines.
 - Export ICS schedules and import or synchronize member busy-time calendars with private-network target protection.
 - Use undo/redo, automatic backups, recovery previews, safety snapshots, and transactional restore/import protections.
+- Use the EasyProject-styled Windows title bar and refreshed application icon without an extra command-line window at startup.
 - Keep all project data in the local operating-system application-data directory.
 
 ## Verification status
 
 - ESLint: passed with zero warnings.
-- Vitest: 71/71 passed.
-- Playwright: 14/14 passed on Windows WebView mocks.
+- Vitest: 77/77 passed.
+- Playwright: 15/15 passed on Windows WebView mocks, including the custom title bar and outer-scroll regression.
 - Rust/SQLite: 18/18 passed; Rust formatting passed.
 - Production frontend build and v0.1.0 metadata validation: passed.
 - Windows x64 NSIS: built locally; prior repair install, launch, uninstall, and row-for-row schema-v5 data preservation passed.
-- GitHub Actions: validation and Windows x64 MSI/NSIS plus macOS Apple Silicon/Intel APP/DMG build jobs passed; all six unsigned draft assets were downloaded and structurally validated.
+- GitHub Actions run `33578595689` built commit `4f00719`; validation and Windows x64 MSI/NSIS plus macOS Apple Silicon/Intel APP/DMG jobs passed. All six unsigned draft assets were downloaded and verified with SHA-256.
 - Manual clean-machine Windows MSI and macOS installation smoke testing remains pending.
 
 ## Data compatibility

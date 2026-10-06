@@ -99,6 +99,8 @@ Before publishing, also verify that a schema-v5 export retains plan baselines, a
 
 ## Signing status
 
+The active unsigned draft is now `404435429` (`v0.1.0`), bound to commit `5998a87db32b760da0002fed32b43556c65fe4d4` on `codex/audit-release-20261006-api`. Its source tree `22cbe4038ed40c4318153c668c62dd503cde88fa` exactly matches locally tested `f987a0c` (only the commit-message trailing newline differs). Run `37430197698` has passed validation/security; its three bundle jobs and six-asset verification are pending. Draft `404242113` is retained as historical candidate `25426627`, now tagged `v0.1.0-audit-25426627`, with all six previous assets preserved. Do not treat the older asset table as evidence for the new Tauri stack.
+
 The current workflow intentionally produces unsigned artifacts. Before public distribution, configure Windows and Apple signing credentials according to the official Tauri signing guides, then expose only the required secrets to the release environment. Do not place certificates, private keys, passwords, or notarization credentials in the repository.
 
 After signing is enabled, validate the Windows Authenticode signature and macOS code signature/notarization result before publishing the draft release.

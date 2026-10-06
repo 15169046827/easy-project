@@ -548,6 +548,7 @@
 
 ## 2026-10-06 配套前端升级与打包前检查点
 
+
 后续完成：新NSIS5193100字节/A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F，NotSigned/0.1.0，产物检查通过；NSIS3.11与插件官方哈希校验通过，缓存E盘target/.tauri。重复allowScripts键已修复，前端重建仅原两体积告警；npm全量/生产正式复扫退出0、所有等级0。EP-SEC-009关闭，累计28/24fixed/4P3open；剩proc-macro-error与glib仅Linux GTK树。最新五小时49%、周54%、重置0。全部未提交12文件：上述8文件加docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、docs/RELEASE_NOTES_0.1.0.md。下一步保存新候选并触发远程五job；签名、设备、Wolai待本轮里程碑同步，无新增设备或系统修改。
 
 - 目标仍为全项目UPARS整改与发布验收；UPARS1.1.0，WACAS未定义/待确认。原基线main/c0bb322，当前分支codex/audit-release-20261006，HEAD7447d5d；旧候选25426627六资产证据有效，但不覆盖当前升级。
@@ -556,3 +557,15 @@
 - 官方Tauri支持bundle.useLocalToolsDir=true，将NSIS/Wix缓存固定项目target/.tauri（E盘）；不使用未证实环境变量。npm全量/生产安全复扫因官方域名DNS返回不可连地址191.101.132.214而失败，不记作通过；此前安装审计0漏洞仍有证据，最终需再次复扫。
 - 当前全部未提交8文件：CONTRIBUTING.md、README.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、package.json、package-lock.json、src-tauri/Cargo.toml、src-tauri/Cargo.lock、src-tauri/tauri.conf.json。最新额度五小时54%、周55%、重置0；满足长任务门禁。
 - 未解决5P3暂不提前关闭；签名证书0、无独立Windows/Mac设备确认，未安装或启动应用、未触碰用户数据。Wolai停留前一里程碑，下一次完整打包后同步。准确下一步：构建新NSIS并核验哈希/签名；恢复严格TLS npm安全扫描；根据真实结果更新报告、提交新候选并复验远程平台，保持Draft。
+
+## 2026-10-06 新候选远程验证启动
+
+- 目标/范围不变，UPARS1.1.0、WACAS未定义。源基线main/c0bb322；原候选分支codex/audit-release-20261006保留f987a0c47af43b31b69344a611674f0bbe58719e。Git HTTPS连续三次连接重置/超时，未修改系统设置；通过官方Git数据API上传12文件，源码树22cbe4038ed40c4318153c668c62dd503cde88fa与本地完全相等。API去掉提交消息末尾换行（作者/时间/父提交不变），提交SHA5998a87db32b760da0002fed32b43556c65fe4d4；原分支未强推覆盖。已校验原提交仅移除消息末尾换行后的Git对象SHA完全一致并导入，当前本地/远程独立分支codex/audit-release-20261006-api均为5998a87。
+- 新Draft404435429/tag v0.1.0明确target5998a87；旧Draft404242113改名historical candidate25426627、tag v0.1.0-audit-25426627，6资产全部保留；370399919历史草稿亦未删除。未公开发布。新Actions37430197698已启动，等待五job和六新资产；不重复发起。
+- 本地完成28问题/24fixed/4P3open，82/9/16/25测试、类型/格式/Clippy、npm所有等级0、RustSec漏洞/撤包0与2 Linux信息性、NSIS5193100字节已复验；原两块体积告警保留。quota五小时33%、周52%、重置0，满足远程长任务启动门禁。
+- 当前新候选全部源码/文档已提交；仅此检查点后续写入未提交。Wolai已记录f987a0c本地闭环并读回，远程5998/run/Draft映射待下一里程碑同步。设备仍仅开发主机，签名证书0，无独立Windows/Mac连接，不触碰数据、不在C盘安装、无系统网络修改。
+- 准确下一步：只读取run37430197698进展；如失败按日志整改，否则六资产下载到E盘新run目录并验证官方digest/容器/版本/架构/签名。更新报告、发布验收与Wolai映射，然后保存文档提交。剩大组件/体积/GTK风险及正式签名、真实设备仍需独立闭环，不宣称正式验收完成。
+
+- 后续状态：远程validate/rust-security均success，三平台build进行中；当前全部未提交5文档：docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。Wolai新SHA/树/Draft/run映射已同步并读回一致；最新五小时28%、周51%、重置0。当前本地/远程分支5998a87已确认，仅消息末尾换行变化，作者/时间/父提交不变。
+
+- 新阶段门禁五小时25%、周50%，允许最小发布配置整改。run37430197698发现EP-BUILD-003/P3：checkout@v4/setup-node@v4使用已废弃Node20，runner强制Node24。官方v6运行Node24、最低runner2.327.1，已升级CI/release共8引用，应用Node22不变；未跳过检查。累计29问题/24fixed/5P3open，待新远程复验才关闭。当前全部未提交7文件：上面5文档加.github/workflows/ci.yml、.github/workflows/release.yml；设备/签名无变化，Wolai此新增项待同步。下一步：YAML/格式验证；等当前三平台结束后保存其历史草稿，提交新workflow候选再跑完整门禁，避免新旧资产混用。

@@ -1,5 +1,7 @@
 # EasyProject 审计与整改报告
 
+> 当前新候选：codex/audit-release-20261006-api / 5998a87db32b760da0002fed32b43556c65fe4d4，源码树22cbe4038ed40c4318153c668c62dd503cde88fa与本地f987a0c完全一致（仅提交消息末尾换行不同，原分支保留）。Actions37430197698质量/安全两job通过，三平台打包进行中；Draft404435429明确绑定此SHA，未公开。以下25426627均为历史候选证据，不覆盖新构建。
+
 > 2026-10-06 最新 npm 闭环：扫描恢复后发现的三个根因现已按 EP-SEC-013/014/015 登记并修复。严格 TLS 的官方 npm 全量/生产复扫均为 0，退出码 0；Vue 3.5.43、source-map-js 1.2.2、eslint-plugin-vue 10.11.1 / postcss-selector-parser 7.1.6，全部前端回归通过。系统 DNS/代理/证书库未改，默认解析异常仍未永久修复；仅扫描进程使用实时 DNS。
 
 - 审计标准：仓库 UPARS 1.1.0（较已安装的全局 UPARS 1.0.0 增加外部地址校验—使用绑定检查）
@@ -11,6 +13,8 @@
 - 审计任务：EasyProject 全源集 UPARS 审计与整改
 
 ## 1. 结论
+
+新增发布流程问题EP-BUILD-003（P3/open）：run37430197698明确提示checkout@v4/setup-node@v4声明Node20已废弃并被runner强制Node24。影响CI及三个release job入口，当前可成功但有未来兼容风险。已依据官方v6 action.yml/README最小升级8处为Node24（托管runner最低2.327.1；容器内认证Git2.329.0，当前无该用法），不修改应用Node22目标。负责人CI维护者；本地YAML/格式待验，新远程运行未通过前不关闭。累计29项/P0=0/P1=2/P2=17/P3=10，24fixed/5P3open；以下28项统计是此前Tauri闭环快照。
 
 Tauri配套升级闭环：官方Rust/JS API/CLI2.12.1、build2.7.1、opener2.7.0，Rust最低1.90；完整本地门禁通过。最新NSIS5193100字节，SHA256 A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F，0.1.0/NotSigned。官方NSIS3.11及插件下载并验证哈希，缓存E盘target/.tauri。中途JS/Rust版本门禁失败已协调升级解决；重复allowScripts键已移除并重建前端，除原两体积告警外无新警告。新锁仍须另行远程五job及六资产复验，旧25426627证据不可混用。
 
@@ -79,6 +83,7 @@ Tauri配套升级闭环：官方Rust/JS API/CLI2.12.1、build2.7.1、opener2.7.0
 | EP-SEC-014   | fixed | P2     | 高     | source-map-js            | GHSA-68fv-2mgg-jv7q；1.2.1，特制 indexed source-map 偏移可耗尽事件循环                                                                                             | Vue 编译器、Vite/PostCSS、intlify 编译链可达，未证实运行时不可信源映射入口；构建/发布安全门禁受影响                                                             | 定向更新同系列 1.2.2，无全局 override 或忽略                                                                            | 安装/锁文件修复版；官方全量/生产 0，前端全部门禁通过                                                                    |
 | EP-SEC-015   | fixed | P3     | 高     | 开发期 CSS 解析          | GHSA-rj75-hqrm-r3gf；eslint-plugin-vue 10.5.0 引入 parser 6.1.4，长 flat selector 可耗尽 CPU                                                                       | ESLint 开发/CI 路径可达，不属于生产包漏洞条目；源码输入受仓库权限控制                                                                                           | 兼容更新插件至 10.11.1，parser 7.1.6；不强制替换旧插件传递主版本                                                        | 全量 audit 0；lint、类型、82 单测/9 专项/16 E2E、构建通过                                                               |
 | EP-SEC-016   | fixed | P2     | 高     | ICS TLS 客户端           | RUSTSEC-2026-0285 / GHSA-2mjx-qc3c-rqvc；rustls 0.23.32 接受跨加密层 TLS 1.3 握手消息                                                                              | 公共 ICS HTTPS/reqwest 链可达；握手 transcript 仍认证，不等同于能伪造握手，但违反消息加密边界并阻断安全门禁                                                     | 同兼容线定向 rustls 0.23.45、rustls-webpki 0.103.15                                                                     | 当前 1290 公告快照复扫该公告消失，漏洞/撤包 0；更新锁文件后 Rust 25/25、fmt/严格 Clippy 通过；最终NSIS构建/产物校验通过 |
+| EP-BUILD-003 | open | P3 | 高 | CI/release动作运行环境 | run37430197698提示actions/checkout@v4、setup-node@v4声明Node20废弃，runner强制Node24 | CI及三个发布job每次入口可达；当前兼容但未来可能失败，托管runner不等于本机Node版本 | 官方受支持v6/Node24，保持应用Node22与全部质量检查；CI维护者复验新候选 | 8处最小升级、Prettier和js-yaml结构/引用检查通过；新远程复验待执行，暂不关闭 |
 
 ## 6. 分域结论
 

@@ -189,7 +189,7 @@ pub fn handle_action(
                 tasks.push(task);
             }
 
-            let mut connection = db.0.lock().unwrap();
+            let mut connection = db.lock_connection().map_err(|error| error.to_string())?;
             let transaction = match connection.transaction() {
                 Ok(value) => value,
                 Err(e) => return ApiResponse::err(&format!("DB error: {e}")),
@@ -228,15 +228,23 @@ pub fn handle_action(
 
         "get_all" => {
             info!("Listing projects");
-            let page_index = data.get("pageIndex").and_then(|v| v.as_u64()).unwrap_or(1);
-            let page_size = data.get("pageSize").and_then(|v| v.as_u64()).unwrap_or(20);
+            let page_index = data
+                .get("pageIndex")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(1)
+                .max(1);
+            let page_size = data
+                .get("pageSize")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(20)
+                .clamp(1, 1000);
 
             match project_db::get_all_project(db, page_index, page_size) {
                 Ok((list, total)) => {
                     let total_page = if total == 0 {
                         0
                     } else {
-                        (total + page_size - 1) / page_size
+                        total.div_ceil(page_size)
                     };
 
                     ApiResponse::ok(Some(serde_json::json!({

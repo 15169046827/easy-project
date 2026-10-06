@@ -8,12 +8,13 @@ The `Release desktop` GitHub Actions workflow builds three native variants:
 - macOS Apple Silicon: app bundle and DMG.
 - macOS Intel: app bundle and DMG.
 
-Every build is uploaded both to a draft GitHub Release and as an independent workflow artifact. The workflow validates that `package.json`, `src-tauri/tauri.conf.json`, and `src-tauri/Cargo.toml` contain the same version before building.
+Every build is uploaded both to a draft GitHub Release and as an independent workflow artifact. The workflow validates that `package.json`, `src-tauri/tauri.conf.json`, and `src-tauri/Cargo.toml` contain the same version, then runs the frontend, Rust, browser, npm/RustSec dependency, and UPARS quality gates before building. The RustSec job fetches the complete locked dependency set before scanning for known vulnerabilities and uses `--deny yanked` to fail on withdrawn versions; review documented informational advisories in the current UPARS report before publication.
 
 ## Publishing a version
 
 1. Update the same semantic version in the three version files.
 2. Run `npm run release:check` and the normal quality gates.
+   SQLite backup restore is supported for schema-v5 backups only; test rejection of older or incomplete `.db` files without changing the current workspace.
 3. Push a tag named `v<version>`, for example `v0.1.0`, or manually run the workflow.
 4. Download and smoke-test each workflow artifact.
 5. Edit and publish the draft GitHub Release.
@@ -36,14 +37,14 @@ The local MSI attempt reached WiX after compiling the application but could not 
 
 ### Unsigned GitHub draft artifacts
 
-| Asset | Bytes | SHA-256 |
-| --- | ---: | --- |
-| `EasyProject_0.1.0_windows_x64-setup.exe` | 5,037,832 | `C3FFBD703FC21B6BBCF3219E78B81E47D60C5F23FE933B166918ABEF333EF133` |
-| `EasyProject_0.1.0_windows_x64.msi` | 6,770,688 | `582443C75E2E184E961FBFFA8F77A45ABD8DE2986E08D112FEF3FFF4785A1236` |
+| Asset                                         |     Bytes | SHA-256                                                            |
+| --------------------------------------------- | --------: | ------------------------------------------------------------------ |
+| `EasyProject_0.1.0_windows_x64-setup.exe`     | 5,037,832 | `C3FFBD703FC21B6BBCF3219E78B81E47D60C5F23FE933B166918ABEF333EF133` |
+| `EasyProject_0.1.0_windows_x64.msi`           | 6,770,688 | `582443C75E2E184E961FBFFA8F77A45ABD8DE2986E08D112FEF3FFF4785A1236` |
 | `EasyProject_0.1.0_darwin_aarch64.app.tar.gz` | 6,733,237 | `4A90D967056A0EB1DEA51DABB22ED9F23CED02568651C2875663CBBBBA7BD098` |
-| `EasyProject_0.1.0_darwin_aarch64.dmg` | 6,833,279 | `41FF7DFAE18BA2B5B84893629E11960E22BBFCB2C82D8E3954AA7A9BD85B6DC2` |
-| `EasyProject_0.1.0_darwin_x64.app.tar.gz` | 6,959,739 | `7C3994A652E8F2B8FCDC9DC9AF8F238ADDEBE64F4DE280E26474BB1EFCA9187E` |
-| `EasyProject_0.1.0_darwin_x64.dmg` | 7,052,619 | `DE270A3E184432C208EAA840442629629B79B71E36186368C5FF2432C08B63F1` |
+| `EasyProject_0.1.0_darwin_aarch64.dmg`        | 6,833,279 | `41FF7DFAE18BA2B5B84893629E11960E22BBFCB2C82D8E3954AA7A9BD85B6DC2` |
+| `EasyProject_0.1.0_darwin_x64.app.tar.gz`     | 6,959,739 | `7C3994A652E8F2B8FCDC9DC9AF8F238ADDEBE64F4DE280E26474BB1EFCA9187E` |
+| `EasyProject_0.1.0_darwin_x64.dmg`            | 7,052,619 | `DE270A3E184432C208EAA840442629629B79B71E36186368C5FF2432C08B63F1` |
 
 All six assets were downloaded independently after the run. The Windows files have valid PE/MSI container headers, product version `0.1.0`, and the expected unsigned status. Both app archives contain a non-empty executable (`17,969,120` bytes for Apple Silicon and `18,532,924` bytes for Intel), and both DMGs contain the expected UDIF `koly` trailer. These checks prove build and container integrity only; they do not replace signing or the manual installation matrix.
 
@@ -51,14 +52,14 @@ All six assets were downloaded independently after the run. The Windows files ha
 
 GitHub Actions run [`33578595689`](https://github.com/15169046827/easy-project/actions/runs/33578595689) rebuilt the draft from commit `4f00719` after the Windows icon, GUI-subsystem launch, custom title bar, and outer-scroll fixes. The validation job and all three platform build jobs passed. The six Release assets were replaced, downloaded independently, and hashed:
 
-| Asset | Bytes | SHA-256 |
-| --- | ---: | --- |
-| `EasyProject_0.1.0_windows_x64-setup.exe` | 5,060,442 | `78013A7871B7920213A3F3D634FC7AD94DAEC71AC7300FDDCFFA4E8B07D2C86F` |
-| `EasyProject_0.1.0_windows_x64.msi` | 6,758,400 | `01E6D2F6DF9C6794BF853171A400E70A173D325990865001F28DEACAF72E0656` |
+| Asset                                         |     Bytes | SHA-256                                                            |
+| --------------------------------------------- | --------: | ------------------------------------------------------------------ |
+| `EasyProject_0.1.0_windows_x64-setup.exe`     | 5,060,442 | `78013A7871B7920213A3F3D634FC7AD94DAEC71AC7300FDDCFFA4E8B07D2C86F` |
+| `EasyProject_0.1.0_windows_x64.msi`           | 6,758,400 | `01E6D2F6DF9C6794BF853171A400E70A173D325990865001F28DEACAF72E0656` |
 | `EasyProject_0.1.0_darwin_aarch64.app.tar.gz` | 6,749,599 | `4041BA096F6E787BC1BBB40BE3B79102646024AED5BCBF607D28C8F63EC6AE04` |
-| `EasyProject_0.1.0_darwin_aarch64.dmg` | 6,849,507 | `39468E980D81B66AF16C71CE26032D939B7DC3BE1BD142ACDD7C860D2AC63227` |
-| `EasyProject_0.1.0_darwin_x64.app.tar.gz` | 6,962,618 | `D73A0384200FB2FB13FA22325D6F058C4B331CF8F9CCFFB41A0D98AFF1EA89CF` |
-| `EasyProject_0.1.0_darwin_x64.dmg` | 7,060,183 | `20FF9FAB994A24B07840C5FD37F35C02CF8D52AC21643071D64CB9D70F1CCEC5` |
+| `EasyProject_0.1.0_darwin_aarch64.dmg`        | 6,849,507 | `39468E980D81B66AF16C71CE26032D939B7DC3BE1BD142ACDD7C860D2AC63227` |
+| `EasyProject_0.1.0_darwin_x64.app.tar.gz`     | 6,962,618 | `D73A0384200FB2FB13FA22325D6F058C4B331CF8F9CCFFB41A0D98AFF1EA89CF` |
+| `EasyProject_0.1.0_darwin_x64.dmg`            | 7,060,183 | `20FF9FAB994A24B07840C5FD37F35C02CF8D52AC21643071D64CB9D70F1CCEC5` |
 
 The refreshed candidate passed ESLint, 77 Vitest tests, 15 Playwright tests, 18 Rust tests, Rust formatting, the production build, and release metadata validation. It remains an unsigned draft because signing and the outstanding manual smoke-test matrix are unchanged.
 

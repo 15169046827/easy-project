@@ -1,0 +1,79 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "standardId": "UPARS",
+    "name": "Universal Project Audit and Remediation Standard",
+    "version": "1.1.0",
+    "requiredDomains": [
+        "code_conventions",
+        "correctness_reliability",
+        "security_privacy",
+        "data_storage",
+        "ui_accessibility_i18n",
+        "build_test_release"
+    ],
+    "conditionalChecks": [
+        {
+            "id": "external_address_validation_use_binding",
+            "appliesWhen": "application_connects_to_a_validated_external_address",
+            "risk": "address_changes_between_validation_and_connection",
+            "passCondition": "each_connection_uses_a_validated_target_or_equivalent_enforced_policy",
+            "verification": "negative_case_for_changed_dns_redirect_or_proxy_target"
+        }
+    ],
+    "finding": {
+        "requiredFields": [
+            "id",
+            "status",
+            "severity",
+            "confidence",
+            "scope",
+            "evidence",
+            "trigger",
+            "impact",
+            "releaseReachability",
+            "remediation",
+            "verification"
+        ],
+        "statuses": ["open", "fixed", "accepted", "not_applicable"],
+        "severities": {
+            "P0": "Catastrophic security, privacy, data-destruction, or core-availability impact",
+            "P1": "High-impact issue reachable from a supported path",
+            "P2": "Material edge-case, reliability, accessibility, maintainability, or gate gap",
+            "P3": "Low-impact quality debt, tooling gap, consistency, or experience issue"
+        },
+        "confidenceLevels": ["high", "medium", "low"]
+    },
+    "releaseGate": {
+        "maximumOpen": {
+            "P0": 0,
+            "P1": 0
+        },
+        "p2Policy": "fixed_or_explicitly_accepted_with_owner_deadline_and_compensating_control",
+        "warningsPolicy": "zero_or_narrow_documented_exception",
+        "requiredEvidence": [
+            "baseline",
+            "scope_and_exclusions",
+            "finding_closure",
+            "mandatory_gate_results",
+            "exceptions_unknowns_gaps",
+            "release_verdict"
+        ],
+        "codeAuditPassDoesNotImplyProductionRelease": true
+    },
+    "remediationRules": {
+        "authorizationRequired": true,
+        "rootCauseRequired": true,
+        "regressionVerificationRequired": true,
+        "ciUpdateRequiredForRepeatableFindings": true,
+        "broadSuppressionForbidden": true,
+        "preserveUnrelatedUserChanges": true
+    },
+    "artifacts": [
+        "audit_report",
+        "finding_register",
+        "gate_summary",
+        "remediation_diff",
+        "exceptions_and_unknowns",
+        "release_verdict"
+    ]
+}

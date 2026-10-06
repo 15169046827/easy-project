@@ -64,8 +64,16 @@ import { useI18n } from 'vue-i18n'
 import { crudAction } from '../../../api'
 
 const props = defineProps({
-    tasks: { type: Array, default: () => [] },
-    members: { type: Array, default: () => [] }
+    tasks: {
+        type: /** @type {import('vue').PropType<Array<{id: string, name: string, priority?: number, comment?: string, assignee?: string, end_time?: string, progress?: number, status?: string}>>} */ (
+            Array
+        ),
+        default: () => []
+    },
+    members: {
+        type: /** @type {import('vue').PropType<Array<{id: string, name: string}>>} */ (Array),
+        default: () => []
+    }
 })
 const emit = defineEmits(['updated', 'open'])
 const { t } = useI18n()

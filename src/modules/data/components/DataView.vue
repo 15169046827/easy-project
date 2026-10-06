@@ -200,7 +200,9 @@ const backups = ref([]),
     fileInput = ref(null),
     selectedFileName = ref(''),
     restoreCandidate = ref(null),
-    restorePreview = ref({}),
+    restorePreview = ref(
+        /** @type {{projects?: number, tasks?: number, members?: number, dependencies?: number, baselines?: number}} */ ({})
+    ),
     restoring = ref(false),
     pendingPayload = ref(null),
     importPreview = ref(null)

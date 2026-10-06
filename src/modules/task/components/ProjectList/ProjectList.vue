@@ -276,7 +276,7 @@ function formatTime(val) {
     const d = new Date(String(val).replace(' ', 'T'))
     if (Number.isNaN(d.getTime())) return val
     const now = new Date()
-    const diffMs = now - d
+    const diffMs = now.getTime() - d.getTime()
     const diffMin = Math.floor(diffMs / 60000)
     if (diffMin < 1) return t('common.justNow')
     if (diffMin < 60) return t('common.minutesAgo', { n: diffMin })

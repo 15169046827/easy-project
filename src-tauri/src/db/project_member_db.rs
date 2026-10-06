@@ -6,7 +6,7 @@ use rusqlite::params;
 use tauri::State;
 
 pub fn insert(db: &State<DbState>, m: &NewProjectMember) -> rusqlite::Result<()> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     conn.execute(
         "INSERT INTO project_member (id, project_id, member_id, role, joined_at, stateflag)
          VALUES (?1, ?2, ?3, ?4, datetime('now', 'localtime'), '0')",
@@ -17,7 +17,7 @@ pub fn insert(db: &State<DbState>, m: &NewProjectMember) -> rusqlite::Result<()>
 
 /// 判断某成员是否已在该项目中（用于去重）
 pub fn exists(db: &State<DbState>, project_id: &str, member_id: &str) -> rusqlite::Result<bool> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let count: i64 = conn.query_row(
         "SELECT COUNT(*) FROM project_member WHERE project_id = ?1 AND member_id = ?2 AND stateflag = '0'",
         params![project_id, member_id],
@@ -31,7 +31,7 @@ pub fn get_by_member(
     db: &State<DbState>,
     member_id: &str,
 ) -> rusqlite::Result<Vec<ProjectMemberWithProject>> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let mut stmt = conn.prepare(
         "SELECT pm.id, pm.project_id, pm.member_id, pm.role, pm.joined_at,
                 p.name, p.status, p.version
@@ -64,7 +64,7 @@ pub fn get_by_project(
     db: &State<DbState>,
     project_id: &str,
 ) -> rusqlite::Result<Vec<ProjectMemberWithMember>> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let mut stmt = conn.prepare(
         "SELECT pm.id, pm.project_id, pm.member_id, pm.role, pm.joined_at,
                 m.name, m.role, m.email, m.avatar
@@ -94,8 +94,8 @@ pub fn get_by_project(
 }
 
 /// 软删除（逻辑删除）
-pub fn delete(db: &State<DbState>, ids: &Vec<String>) -> rusqlite::Result<()> {
-    let conn = db.0.lock().unwrap();
+pub fn delete(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<()> {
+    let conn = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let sql = format!(
         "UPDATE project_member SET stateflag = strftime('%s', 'now') WHERE id IN ({})",
@@ -114,7 +114,7 @@ pub fn removal_blocker(
         return Ok(None);
     }
 
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let values: Vec<&str> = ids.iter().map(String::as_str).collect();
 

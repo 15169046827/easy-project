@@ -27,7 +27,7 @@ pub fn insert_project(
     p: &NewProject,
     owner_membership_id: Option<&str>,
 ) -> rusqlite::Result<()> {
-    let mut conn = db.0.lock().unwrap();
+    let mut conn = db.lock_connection()?;
     let transaction = conn.transaction()?;
     insert_project_transaction(&transaction, p, owner_membership_id)?;
     transaction.commit()?;
@@ -69,8 +69,8 @@ pub fn get_all_project(
     page_index: u64,
     page_size: u64,
 ) -> rusqlite::Result<(Vec<Project>, u64)> {
-    let conn = db.0.lock().unwrap();
-    let offset = (page_index - 1) * page_size;
+    let conn = db.lock_connection()?;
+    let offset = super::pagination_offset(page_index, page_size);
     let mut stmt = conn.prepare(
         "SELECT id, name, version, type, status, COALESCE(owner, ''),
          COALESCE(calendar_country, 'CN'), COALESCE(calendar_region, ''),
@@ -115,11 +115,11 @@ pub fn get_all_project(
 
 pub fn update_project(
     db: &State<DbState>,
-    param_set: &Vec<String>,
-    value_set: &Vec<String>,
+    param_set: &[String],
+    value_set: &[String],
     owner_membership: Option<(&str, &str)>,
 ) -> rusqlite::Result<()> {
-    let mut conn = db.0.lock().unwrap();
+    let mut conn = db.lock_connection()?;
     let transaction = conn.transaction()?;
     update_project_transaction(&transaction, param_set, value_set, owner_membership)?;
     transaction.commit()?;
@@ -141,8 +141,8 @@ fn update_project_transaction(
     Ok(())
 }
 
-pub fn remove_project(db: &State<DbState>, ids: &Vec<String>) -> rusqlite::Result<()> {
-    let conn: std::sync::MutexGuard<'_, rusqlite::Connection> = db.0.lock().unwrap();
+pub fn remove_project(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<()> {
+    let conn: std::sync::MutexGuard<'_, rusqlite::Connection> = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let sql = format!(
         "UPDATE project SET stateflag = strftime('%s', 'now') where id in ({})",
@@ -154,7 +154,7 @@ pub fn remove_project(db: &State<DbState>, ids: &Vec<String>) -> rusqlite::Resul
 }
 
 pub fn project_exists(db: &State<DbState>, id: &str) -> rusqlite::Result<bool> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let count: u64 = conn.query_row(
         "SELECT COUNT(*) FROM project WHERE id = ?1 AND stateflag = '0'",
         [id],
@@ -164,7 +164,7 @@ pub fn project_exists(db: &State<DbState>, id: &str) -> rusqlite::Result<bool> {
 }
 
 pub fn projects_have_active_tasks(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<bool> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let sql = format!(
         "SELECT COUNT(*) FROM task WHERE stateflag = '0' AND project_id IN ({})",

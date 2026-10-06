@@ -552,7 +552,12 @@ export default {
         members: '成员',
         dependencies: '依赖'
     },
-    history: { undone: '已撤销上一步操作', redone: '已重做上一步操作' },
+    history: {
+        undone: '已撤销上一步操作',
+        redone: '已重做上一步操作',
+        failed: '操作未完成，请重试；历史记录已保留',
+        backupFailed: '自动备份失败，请在数据管理中检查备份'
+    },
     onboarding: {
         welcome: '欢迎使用 EasyProject',
         intro: '你的本地优先项目管理工具。无需注册、无云端——一切都在你的机器上。',

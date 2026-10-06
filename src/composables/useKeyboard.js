@@ -14,7 +14,8 @@ export function useKeyboard(shortcuts, enabled = true) {
             tag === 'input' ||
             tag === 'textarea' ||
             tag === 'select' ||
-            document.activeElement?.isContentEditable
+            (document.activeElement instanceof HTMLElement &&
+                document.activeElement.isContentEditable)
         ) {
             return
         }

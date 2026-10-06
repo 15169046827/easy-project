@@ -17,7 +17,7 @@ pub struct TaskQuery<'a> {
 }
 
 pub fn insert_task(db: &State<DbState>, p: &NewTask) -> rusqlite::Result<()> {
-    let mut conn = db.0.lock().unwrap();
+    let mut conn = db.lock_connection()?;
     let transaction = conn.transaction()?;
     insert_task_transaction(&transaction, p)?;
     transaction.commit()
@@ -61,9 +61,9 @@ pub fn get_all_task(
     page_size: u64,
     project_id: Option<&str>,
 ) -> rusqlite::Result<(Vec<Task>, u64)> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
 
-    let offset = page_index.saturating_sub(1) * page_size;
+    let offset = super::pagination_offset(page_index, page_size);
 
     // ---- 查询分页列表 ----
     let select_sql =
@@ -83,8 +83,7 @@ pub fn get_all_task(
         );
         let mut stmt = conn.prepare(&sql)?;
         let rows = stmt.query_map(params![project_id, page_size, offset], map_task)?;
-        let tasks = rows.collect::<rusqlite::Result<Vec<_>>>()?;
-        tasks
+        rows.collect::<rusqlite::Result<Vec<_>>>()?
     } else {
         let sql = format!(
             "{} ORDER BY project_id, sort_order ASC, create_time ASC LIMIT ? OFFSET ?",
@@ -92,8 +91,7 @@ pub fn get_all_task(
         );
         let mut stmt = conn.prepare(&sql)?;
         let rows = stmt.query_map(params![page_size, offset], map_task)?;
-        let tasks = rows.collect::<rusqlite::Result<Vec<_>>>()?;
-        tasks
+        rows.collect::<rusqlite::Result<Vec<_>>>()?
     };
 
     // ---- 查询总数 ----
@@ -118,8 +116,8 @@ pub fn query_tasks(
     db: &State<DbState>,
     query: &TaskQuery<'_>,
 ) -> rusqlite::Result<(Vec<Task>, u64)> {
-    let conn = db.0.lock().unwrap();
-    let offset = query.page_index.saturating_sub(1) * query.page_size;
+    let conn = db.lock_connection()?;
+    let offset = super::pagination_offset(query.page_index, query.page_size);
     let select_sql = "SELECT id, COALESCE(project_id, ''), COALESCE(sort_order, 0), name,
         COALESCE(parent, ''), COALESCE(dependence, ''), COALESCE(start_time, ''),
         COALESCE(end_time, ''), type, priority, status, COALESCE(progress, 0),
@@ -193,17 +191,17 @@ pub fn query_tasks(
 
 pub fn update_task(
     db: &State<DbState>,
-    param_set: &Vec<String>,
-    value_set: &Vec<String>,
+    param_set: &[String],
+    value_set: &[String],
 ) -> rusqlite::Result<()> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let sql = format!("UPDATE task SET {} WHERE id = ?", param_set.join(", "));
     conn.execute(&sql, params_from_iter(value_set))?;
     Ok(())
 }
 
-pub fn remove_task(db: &State<DbState>, ids: &Vec<String>) -> rusqlite::Result<()> {
-    let conn: std::sync::MutexGuard<'_, rusqlite::Connection> = db.0.lock().unwrap();
+pub fn remove_task(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<()> {
+    let conn: std::sync::MutexGuard<'_, rusqlite::Connection> = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let sql = format!(
         "UPDATE task SET stateflag = strftime('%s', 'now') where id in ({})",
@@ -244,7 +242,7 @@ pub fn next_sort_order(
     project_id: &str,
     parent: &str,
 ) -> rusqlite::Result<i64> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     conn.query_row(
         "SELECT COALESCE(MAX(sort_order), 0) + 1 FROM task
          WHERE project_id = ?1 AND COALESCE(parent, '') = ?2 AND stateflag = '0'",
@@ -254,7 +252,7 @@ pub fn next_sort_order(
 }
 
 pub fn get_task_relation(db: &State<DbState>, task_id: &str) -> rusqlite::Result<(String, String)> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     conn.query_row(
         "SELECT COALESCE(project_id, ''), COALESCE(parent, '') FROM task
          WHERE id = ?1 AND stateflag = '0'",
@@ -264,7 +262,7 @@ pub fn get_task_relation(db: &State<DbState>, task_id: &str) -> rusqlite::Result
 }
 
 pub fn get_task_schedule(db: &State<DbState>, task_id: &str) -> rusqlite::Result<(String, String)> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     conn.query_row(
         "SELECT COALESCE(start_time, ''), COALESCE(end_time, '') FROM task WHERE id = ?1 AND stateflag = '0'",
         [task_id],
@@ -273,7 +271,7 @@ pub fn get_task_schedule(db: &State<DbState>, task_id: &str) -> rusqlite::Result
 }
 
 pub fn get_task_assignee(db: &State<DbState>, task_id: &str) -> rusqlite::Result<String> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     conn.query_row(
         "SELECT COALESCE(assignee, '') FROM task WHERE id = ?1 AND stateflag = '0'",
         [task_id],
@@ -294,7 +292,7 @@ pub fn validate_parent(
         return Err("A task cannot be its own parent".to_string());
     }
 
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection().map_err(|error| error.to_string())?;
     let mut current = parent_id.to_string();
     for _ in 0..1000 {
         if task_id == Some(current.as_str()) {
@@ -320,7 +318,7 @@ pub fn validate_parent(
 }
 
 pub fn tasks_have_active_children(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<bool> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let sql = format!(
         "SELECT COUNT(*) FROM task WHERE stateflag = '0' AND parent IN ({})",

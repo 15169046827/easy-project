@@ -630,8 +630,9 @@ const viewRange = ref({ start: new Date(), end: new Date() })
 
 function initViewRange() {
     const dates = tasks.value.flatMap(t => [parse(t.start_time), parse(t.end_time)]).filter(Boolean)
-    const start = dates.length ? new Date(Math.min(...dates)) : new Date()
-    const end = dates.length ? new Date(Math.max(...dates)) : new Date()
+    const timestamps = dates.map(date => date.getTime())
+    const start = timestamps.length ? new Date(Math.min(...timestamps)) : new Date()
+    const end = timestamps.length ? new Date(Math.max(...timestamps)) : new Date()
     start.setDate(start.getDate() - 3)
     end.setDate(end.getDate() + 7)
     const minimumEnd = new Date(start)
@@ -701,7 +702,8 @@ const datedTasks = computed(() => {
     return source.map(t => ({ ...t, level: level(t) }))
 })
 
-const offset = date => Math.round((dayStart(date) - viewRange.value.start) / 86400000)
+const offset = date =>
+    Math.round((dayStart(date).getTime() - viewRange.value.start.getTime()) / 86400000)
 
 function barStyle(task) {
     const ds = dragState.value
@@ -1253,7 +1255,7 @@ function onLinkUp(e) {
     // 找到鼠标释放位置下的 task bar
     const target = document.elementFromPoint(link.cursorX, link.cursorY)
     const barEl = target?.closest?.('.task-bar')
-    if (!barEl) return
+    if (!(barEl instanceof HTMLElement)) return
     // 通过 datedTasks 中找到对应的 task
     const barLeft = parseFloat(barEl.style.left || '0')
     const barTop = parseFloat(barEl.parentElement?.style?.top || '0')

@@ -127,7 +127,11 @@ pub fn handle_action(
 
         "get_all" => {
             info!("Listing tasks");
-            let page_index = data.get("pageIndex").and_then(|v| v.as_u64()).unwrap_or(1);
+            let page_index = data
+                .get("pageIndex")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(1)
+                .max(1);
             let page_size = data.get("pageSize").and_then(|v| v.as_u64()).unwrap_or(20);
             let project_id = data
                 .get("projectId")
@@ -157,12 +161,12 @@ pub fn handle_action(
                 sort_direction,
             };
 
-            return match task_db::query_tasks(db, &query) {
+            match task_db::query_tasks(db, &query) {
                 Ok((list, total)) => {
                     let total_page = if total == 0 {
                         0
                     } else {
-                        (total + query.page_size - 1) / query.page_size
+                        total.div_ceil(query.page_size)
                     };
 
                     ApiResponse::ok(Some(serde_json::json!({
@@ -174,7 +178,7 @@ pub fn handle_action(
                     })))
                 }
                 Err(e) => Err(format!("DB error: {}", e)),
-            };
+            }
         }
 
         "update" => {

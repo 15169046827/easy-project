@@ -24,5 +24,19 @@ export default [
             'vue/no-reserved-component-names': 'off'
         }
     },
-    eslintPluginPrettierRecommended
+    eslintPluginPrettierRecommended,
+    {
+        files: [
+            'src/modules/calendar/utils/ics.js',
+            'src/modules/gantt/utils/criticalPath.js',
+            'src/components/ResourceLoadPanel.vue'
+        ],
+        rules: {
+            complexity: ['error', 20],
+            'max-lines-per-function': [
+                'error',
+                { max: 100, skipBlankLines: true, skipComments: true }
+            ]
+        }
+    }
 ]

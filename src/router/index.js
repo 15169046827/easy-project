@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
+/** @type {import('vue-router').RouteRecordRaw[]} */
 export const routes = [
     { path: '/', redirect: '/dashboard' },
     {

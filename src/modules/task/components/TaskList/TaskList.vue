@@ -375,9 +375,9 @@
                             fluid
                         />
                     </template>
-                    <template #body="{ data, field }">
-                        <span :class="['priority-badge', priorityClass(data[field])]">
-                            {{ getPriorityLabel(data[field]) || '-' }}
+                    <template #body="{ data }">
+                        <span :class="['priority-badge', priorityClass(data.priority)]">
+                            {{ getPriorityLabel(data.priority) || '-' }}
                         </span>
                     </template>
                 </Column>

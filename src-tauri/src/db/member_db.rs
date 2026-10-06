@@ -5,7 +5,7 @@ use rusqlite::params_from_iter;
 use tauri::State;
 
 pub fn insert_member(db: &State<DbState>, m: &NewMember) -> rusqlite::Result<()> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     conn.execute(
         "INSERT INTO member (id, name, email, phone, role, avatar, availability_exceptions, create_time, update_time, stateflag)
          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, datetime('now', 'localtime'), datetime('now', 'localtime'), '0')",
@@ -19,8 +19,8 @@ pub fn get_all_member(
     page_index: u64,
     page_size: u64,
 ) -> rusqlite::Result<(Vec<Member>, u64)> {
-    let conn = db.0.lock().unwrap();
-    let offset = (page_index - 1) * page_size;
+    let conn = db.lock_connection()?;
+    let offset = super::pagination_offset(page_index, page_size);
     let mut stmt = conn.prepare(
         "SELECT id, name, email, phone, role, avatar, COALESCE(availability_exceptions, '[]'), create_time, update_time, stateflag FROM member
          WHERE stateflag = '0'
@@ -58,17 +58,17 @@ pub fn get_all_member(
 
 pub fn update_member(
     db: &State<DbState>,
-    param_set: &Vec<String>,
-    value_set: &Vec<String>,
+    param_set: &[String],
+    value_set: &[String],
 ) -> rusqlite::Result<()> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let sql = format!("UPDATE member SET {} WHERE id = ?", param_set.join(", "));
     conn.execute(&sql, params_from_iter(value_set))?;
     Ok(())
 }
 
-pub fn remove_member(db: &State<DbState>, ids: &Vec<String>) -> rusqlite::Result<()> {
-    let conn = db.0.lock().unwrap();
+pub fn remove_member(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<()> {
+    let conn = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let sql = format!(
         "UPDATE member SET stateflag = strftime('%s', 'now') WHERE id IN ({})",
@@ -87,7 +87,7 @@ pub fn removal_blocker(
         return Ok(None);
     }
 
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let values: Vec<&str> = ids.iter().map(String::as_str).collect();
 
@@ -137,7 +137,7 @@ pub fn removal_blocker(
 }
 
 pub fn member_exists(db: &State<DbState>, id: &str) -> rusqlite::Result<bool> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let count: i64 = conn.query_row(
         "SELECT COUNT(*) FROM member WHERE id = ?1 AND stateflag = '0'",
         [id],
@@ -147,7 +147,7 @@ pub fn member_exists(db: &State<DbState>, id: &str) -> rusqlite::Result<bool> {
 }
 
 pub fn search_members(db: &State<DbState>, query: &str) -> rusqlite::Result<Vec<Member>> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let pattern = format!("%{}%", query);
     let mut stmt = conn.prepare(
         "SELECT id, name, email, phone, role, avatar, COALESCE(availability_exceptions, '[]'), create_time, update_time, stateflag FROM member

@@ -8,7 +8,7 @@ pub fn replace_for_project(
     project_id: &str,
     baselines: &[NewPlanBaseline],
 ) -> rusqlite::Result<()> {
-    let mut conn = db.0.lock().unwrap();
+    let mut conn = db.lock_connection()?;
     let tx = conn.transaction()?;
     tx.execute(
         "DELETE FROM plan_baseline WHERE project_id = ?1",
@@ -36,7 +36,7 @@ pub fn get_by_project(
     db: &State<DbState>,
     project_id: &str,
 ) -> rusqlite::Result<Vec<PlanBaseline>> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     let mut stmt = conn.prepare(
         "SELECT id, project_id, task_id, task_name, start_time, end_time, created_at
          FROM plan_baseline WHERE project_id = ?1 ORDER BY task_id",
@@ -60,7 +60,7 @@ pub fn get_by_project(
 }
 
 pub fn delete_by_project(db: &State<DbState>, project_id: &str) -> rusqlite::Result<()> {
-    let conn = db.0.lock().unwrap();
+    let conn = db.lock_connection()?;
     conn.execute(
         "DELETE FROM plan_baseline WHERE project_id = ?1",
         params![project_id],

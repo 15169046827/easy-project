@@ -175,8 +175,18 @@ import { generateProjectIcs, mergeIcsAvailability, parseIcsEvents } from '../uti
 
 const props = defineProps({
     project: { type: Object, required: true },
-    tasks: { type: Array, default: () => [] },
-    members: { type: Array, default: () => [] }
+    tasks: {
+        type: /** @type {import('vue').PropType<Array<{start_time?: string, end_time?: string}>>} */ (
+            Array
+        ),
+        default: () => []
+    },
+    members: {
+        type: /** @type {import('vue').PropType<Array<{id: string, name: string, availability_exceptions?: string}>>} */ (
+            Array
+        ),
+        default: () => []
+    }
 })
 const emit = defineEmits(['imported'])
 const { t } = useI18n()

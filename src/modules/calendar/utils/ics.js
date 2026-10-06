@@ -47,6 +47,17 @@ function foldLine(line) {
     return chunks.join('\r\n ')
 }
 
+function taskDetails(project, task) {
+    return [
+        project.name ? `Project: ${project.name}` : '',
+        task.status ? `Status: ${task.status}` : '',
+        task.progress !== undefined && task.progress !== null ? `Progress: ${task.progress}%` : '',
+        task.assignee_name || task.assignee
+            ? `Assignee: ${task.assignee_name || task.assignee}`
+            : ''
+    ].filter(Boolean)
+}
+
 export function generateProjectIcs(project = {}, tasks = [], options = {}) {
     const now = options.now || new Date()
     const projectName = project.name || 'EasyProject'
@@ -63,16 +74,7 @@ export function generateProjectIcs(project = {}, tasks = [], options = {}) {
         const start = dateKey(task.start_time)
         const end = dateKey(task.end_time)
         if (!start || !end || start > end) continue
-        const details = [
-            project.name ? `Project: ${project.name}` : '',
-            task.status ? `Status: ${task.status}` : '',
-            task.progress !== undefined && task.progress !== null
-                ? `Progress: ${task.progress}%`
-                : '',
-            task.assignee_name || task.assignee
-                ? `Assignee: ${task.assignee_name || task.assignee}`
-                : ''
-        ].filter(Boolean)
+        const details = taskDetails(project, task)
 
         lines.push(
             'BEGIN:VEVENT',
@@ -123,8 +125,41 @@ function parseCalendarDate(value) {
     }
 }
 
+/** @typedef {{start?: {value: string, parameters: Record<string, string>}, end?: {value: string, parameters: Record<string, string>}, uid?: string, summary?: string, status?: string, transp?: string}} CalendarEvent */
+
+/** @param {CalendarEvent} current */
+function normalizeEvent(current) {
+    if (current.status === 'CANCELLED' || current.transp === 'TRANSPARENT') return null
+    const start = parseCalendarDate(current.start?.value)
+    if (!start) return null
+    const end = parseCalendarDate(current.end?.value)
+    let endDate = end?.date || start.date
+    const allDayEnd = current.end?.parameters?.VALUE === 'DATE' || !end?.dateTime
+    if (end && endDate > start.date && (allDayEnd || end.midnight)) {
+        endDate = shiftDate(endDate, -1)
+    }
+    if (endDate < start.date) endDate = start.date
+    return {
+        uid: unescapeText(current.uid || ''),
+        summary: unescapeText(current.summary || ''),
+        startDate: start.date,
+        endDate
+    }
+}
+
+/** @param {CalendarEvent} current */
+function setEventProperty(current, item) {
+    if (item.name === 'DTSTART') current.start = item
+    if (item.name === 'DTEND') current.end = item
+    if (item.name === 'UID') current.uid = item.value
+    if (item.name === 'SUMMARY') current.summary = item.value
+    if (item.name === 'STATUS') current.status = item.value.toUpperCase()
+    if (item.name === 'TRANSP') current.transp = item.value.toUpperCase()
+}
+
 export function parseIcsEvents(text) {
     const events = []
+    /** @type {CalendarEvent | null} */
     let current = null
     for (const line of unfoldLines(text)) {
         if (line.toUpperCase() === 'BEGIN:VEVENT') {
@@ -132,36 +167,15 @@ export function parseIcsEvents(text) {
             continue
         }
         if (line.toUpperCase() === 'END:VEVENT') {
-            if (current && current.status !== 'CANCELLED' && current.transp !== 'TRANSPARENT') {
-                const start = parseCalendarDate(current.start?.value)
-                const end = parseCalendarDate(current.end?.value)
-                if (start) {
-                    let endDate = end?.date || start.date
-                    const allDayEnd = current.end?.parameters?.VALUE === 'DATE' || !end?.dateTime
-                    if (end && endDate > start.date && (allDayEnd || end.midnight)) {
-                        endDate = shiftDate(endDate, -1)
-                    }
-                    if (endDate < start.date) endDate = start.date
-                    events.push({
-                        uid: unescapeText(current.uid || ''),
-                        summary: unescapeText(current.summary || ''),
-                        startDate: start.date,
-                        endDate
-                    })
-                }
-            }
+            const event = current && normalizeEvent(current)
+            if (event) events.push(event)
             current = null
             continue
         }
         if (!current) continue
         const item = property(line)
         if (!item) continue
-        if (item.name === 'DTSTART') current.start = item
-        if (item.name === 'DTEND') current.end = item
-        if (item.name === 'UID') current.uid = item.value
-        if (item.name === 'SUMMARY') current.summary = item.value
-        if (item.name === 'STATUS') current.status = item.value.toUpperCase()
-        if (item.name === 'TRANSP') current.transp = item.value.toUpperCase()
+        setEventProperty(current, item)
     }
     return events
 }

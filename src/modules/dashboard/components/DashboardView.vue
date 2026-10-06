@@ -183,13 +183,21 @@ const attentionTasks = computed(() => {
             const end = parseDate(task.end_time)
             return end && task.status !== 'Done' && end <= horizon
         })
-        .sort((left, right) => parseDate(left.end_time) - parseDate(right.end_time))
+        .sort(
+            (left, right) =>
+                (parseDate(left.end_time)?.getTime() ?? 0) -
+                (parseDate(right.end_time)?.getTime() ?? 0)
+        )
         .slice(0, 6)
 })
 
 const recentProjects = computed(() =>
     [...projects.value]
-        .sort((left, right) => parseDate(right.update_time) - parseDate(left.update_time))
+        .sort(
+            (left, right) =>
+                (parseDate(right.update_time)?.getTime() ?? 0) -
+                (parseDate(left.update_time)?.getTime() ?? 0)
+        )
         .slice(0, 5)
 )
 

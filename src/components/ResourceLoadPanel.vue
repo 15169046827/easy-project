@@ -68,8 +68,18 @@ import { avatarBg, avatarInitial } from '../composables/useAvatar'
 import { availabilityConflictDates } from '../modules/calendar/utils/memberAvailability.js'
 
 const props = defineProps({
-    tasks: { type: Array, default: () => [] },
-    members: { type: Array, default: () => [] },
+    tasks: {
+        type: /** @type {import('vue').PropType<Array<{assignee?: string, start_time?: string, end_time?: string}>>} */ (
+            Array
+        ),
+        default: () => []
+    },
+    members: {
+        type: /** @type {import('vue').PropType<Array<{id: string, name: string, availability_exceptions?: string}>>} */ (
+            Array
+        ),
+        default: () => []
+    },
     threshold: { type: Number, default: 3 },
     title: { type: String, default: '' },
     project: { type: Object, default: () => ({}) }
@@ -136,13 +146,7 @@ const analysis = computed(() => {
         const name = m?.name || id || t('resourceLoad.unassigned')
         const peak = peakOf(en.dayCount)
         const overlapDays = [...en.dayCount.values()].filter(c => c >= 2).length
-        const weekly = new Array(weeks).fill(0)
-        if (weeks > 0) {
-            for (const [d, c] of en.dayCount) {
-                const wi = Math.floor((d - globalMin) / 7)
-                if (wi >= 0 && wi < weeks) weekly[wi] = Math.max(weekly[wi], c)
-            }
-        }
+        const weekly = weeklyPeak(en.dayCount, weeks, globalMin)
         list.push({
             id,
             name,
@@ -158,6 +162,17 @@ const analysis = computed(() => {
     list.sort((a, b) => b.peak - a.peak || b.taskCount - a.taskCount)
     return { list, weeks, maxPeak }
 })
+
+function weeklyPeak(dayCount, weeks, globalMin) {
+    const weekly = new Array(weeks).fill(0)
+    if (weeks > 0) {
+        for (const [day, count] of dayCount) {
+            const index = Math.floor((day - globalMin) / 7)
+            if (index >= 0 && index < weeks) weekly[index] = Math.max(weekly[index], count)
+        }
+    }
+    return weekly
+}
 
 function peakOf(dayCount) {
     let p = 0

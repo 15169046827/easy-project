@@ -23,12 +23,7 @@ function formatDay(index) {
     return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`
 }
 
-/**
- * Calculate CPM timing for dated tasks connected by finish-to-start dependencies.
- * Invalid tasks and dangling dependencies are ignored. Cycles produce an empty
- * critical result so callers never render misleading path information.
- */
-export function calculateCriticalPath(tasks = [], dependencies = [], project = null) {
+function createTimeAxis(tasks, project) {
     const useWorkCalendar = Boolean(project)
     const parsedStarts = tasks.map(task => parseDate(task.start_time)).filter(Boolean)
     const origin = parsedStarts.length
@@ -49,26 +44,21 @@ export function calculateCriticalPath(tasks = [], dependencies = [], project = n
         }
         return dateKey(cursor)
     }
-    const datedTasks = tasks.filter(
-        task => timeIndex(task.start_time) !== null && timeIndex(task.end_time) !== null
-    )
-    const byId = new Map(datedTasks.map(task => [task.id, task]))
-    const ids = datedTasks.map(task => task.id)
-    const emptyResult = {
-        critical: new Set(),
-        edges: new Set(),
-        info: new Map(),
-        projectFinish: null
-    }
-
-    if (ids.length === 0) return { ...emptyResult, hasCycle: false }
-
     const durationOf = task => {
         if (task.type === 'Milestone') return 0
         return useWorkCalendar
             ? Math.max(1, countWorkingDays(task.start_time, task.end_time, project))
             : Math.max(1, dayIndex(task.end_time) - dayIndex(task.start_time) + 1)
     }
+    return { timeIndex, formatTime, durationOf }
+}
+
+function createDependencyGraph(tasks, dependencies, timeIndex) {
+    const datedTasks = tasks.filter(
+        task => timeIndex(task.start_time) !== null && timeIndex(task.end_time) !== null
+    )
+    const byId = new Map(datedTasks.map(task => [task.id, task]))
+    const ids = datedTasks.map(task => task.id)
     const edges = dependencies.filter(
         edge => byId.has(edge.predecessor_task_id) && byId.has(edge.successor_task_id)
     )
@@ -80,7 +70,10 @@ export function calculateCriticalPath(tasks = [], dependencies = [], project = n
         predecessors.get(edge.successor_task_id).push({ id: edge.predecessor_task_id, lag })
         successors.get(edge.predecessor_task_id).push({ id: edge.successor_task_id, lag })
     }
+    return { byId, ids, edges, predecessors, successors }
+}
 
+function topologicalOrder(ids, predecessors, successors) {
     const indegree = new Map(ids.map(id => [id, predecessors.get(id).length]))
     const queue = ids.filter(id => indegree.get(id) === 0)
     const order = []
@@ -94,6 +87,29 @@ export function calculateCriticalPath(tasks = [], dependencies = [], project = n
             if (indegree.get(successorId) === 0) queue.push(successorId)
         }
     }
+    return order
+}
+
+/**
+ * Calculate CPM timing for dated tasks connected by finish-to-start dependencies.
+ * Invalid tasks and dangling dependencies are ignored. Cycles produce an empty
+ * critical result so callers never render misleading path information.
+ */
+export function calculateCriticalPath(tasks = [], dependencies = [], project = null) {
+    const { timeIndex, formatTime, durationOf } = createTimeAxis(tasks, project)
+    const { byId, ids, edges, predecessors, successors } = createDependencyGraph(
+        tasks,
+        dependencies,
+        timeIndex
+    )
+    const emptyResult = {
+        critical: new Set(),
+        edges: new Set(),
+        info: new Map(),
+        projectFinish: null
+    }
+    if (ids.length === 0) return { ...emptyResult, hasCycle: false }
+    const order = topologicalOrder(ids, predecessors, successors)
 
     if (order.length !== ids.length) return { ...emptyResult, hasCycle: true }
 

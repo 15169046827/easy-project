@@ -77,6 +77,13 @@ test.beforeEach(async ({ page }) => {
                         }
                     }
                 }
+                if (
+                    args.model === 'data' &&
+                    args.action === 'backup' &&
+                    window.__EASY_PROJECT_FAIL_BACKUP__
+                ) {
+                    return { success: false, message: 'Simulated backup failure' }
+                }
                 if (args.model === 'data' && args.action === 'list_backups') {
                     return { success: true, data: { list: [], directory: 'C:\\Backups' } }
                 }
@@ -107,6 +114,16 @@ test('loads the dashboard shell with mocked Tauri data', async ({ page }) => {
     await expect(page.locator('.app-header h1')).toHaveText('EasyProject')
     await expect(page.getByRole('navigation')).toBeVisible()
     await expect(page.getByText('Alpha Project').first()).toBeVisible()
+})
+
+test('shows an accessible warning when automatic backup fails', async ({ page }) => {
+    await page.clock.install()
+    await page.goto('/#/dashboard')
+    await page.evaluate(() => {
+        window.__EASY_PROJECT_FAIL_BACKUP__ = true
+    })
+    await page.clock.fastForward(30 * 60 * 1000)
+    await expect(page.getByRole('alert')).toContainText(/自动备份失败|Automatic backup failed/)
 })
 
 test('renders the custom Windows title bar preview without covering navigation', async ({

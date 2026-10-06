@@ -51,19 +51,22 @@ Useful checks:
 
 ```bash
 npm run lint
+npm run typecheck
 npm test
 npm run test:e2e
 npm run build
 npm run release:check
 cd src-tauri
 cargo check
-cargo test
+cargo clippy --all-targets --locked -- -D warnings
+cargo test --locked
 ```
 
 ## Project documentation
 
 - Product and implementation plan: [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md)
 - v0.1 release audit and remaining risks: [`docs/AUDIT_2026-08-08.md`](docs/AUDIT_2026-08-08.md)
+- Current code audit and remediation standard: [`docs/audit/UNIVERSAL_PROJECT_AUDIT_STANDARD.md`](docs/audit/UNIVERSAL_PROJECT_AUDIT_STANDARD.md) (UPARS 1.1.0)
 - Release and platform smoke tests: [`docs/RELEASING.md`](docs/RELEASING.md)
 - Application icon source, generation, and Windows validation: [`docs/ICON_DESIGN.md`](docs/ICON_DESIGN.md)
 - Draft v0.1.0 release notes: [`docs/RELEASE_NOTES_0.1.0.md`](docs/RELEASE_NOTES_0.1.0.md)
@@ -83,6 +86,8 @@ The release workflow creates unsigned Windows x64 MSI/NSIS installers and macOS 
 ## Data safety
 
 Project data is stored locally in the operating system application-data directory. Use the Data view to inspect recovery-point contents, create manual backups, open the backup directory, exchange complete snapshots, or restore an earlier SQLite backup. Restore validates the source first and creates a rollback point before replacing current data.
+
+SQLite backup restore requires the current schema-v5 format and all required tables. Older exchange snapshots can still be imported through the versioned JSON importer after validation.
 
 The native exchange format is currently schema v5. Imports from v1 through v5 are accepted; invalid relationships or failed replacements roll back without changing the current workspace.
 

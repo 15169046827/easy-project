@@ -18,6 +18,9 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
+            - name: Verify audit standard
+              run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-audit-standard.ps1
+
             - name: Set up Node.js
               uses: actions/setup-node@v4
               with:
@@ -37,6 +40,12 @@ jobs:
 
             - name: Run frontend quality gate
               run: npm run lint
+
+            - name: Check frontend types
+              run: npm run typecheck
+
+            - name: Audit production dependencies
+              run: npm audit --omit=dev --audit-level=high
 
             - name: Run frontend tests
               run: npm test
@@ -58,6 +67,31 @@ jobs:
               working-directory: src-tauri
               run: cargo check --locked
 
+            - name: Check Rust coding conventions
+              working-directory: src-tauri
+              run: cargo clippy --all-targets --locked -- -D warnings
+
             - name: Test Rust
               working-directory: src-tauri
               run: cargo test --locked
+
+    rust-security:
+        runs-on: ubuntu-latest
+        timeout-minutes: 60
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up Rust
+              uses: dtolnay/rust-toolchain@stable
+
+            - name: Install RustSec scanner
+              run: cargo install cargo-audit --version 0.22.2 --locked
+
+            - name: Populate complete crates.io index
+              run: cargo fetch --locked
+              working-directory: src-tauri
+
+            - name: Audit Rust dependencies
+              run: cargo audit --file src-tauri/Cargo.lock --deny yanked

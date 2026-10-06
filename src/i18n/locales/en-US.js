@@ -567,7 +567,12 @@ export default {
         members: 'Members',
         dependencies: 'Dependencies'
     },
-    history: { undone: 'Last action undone', redone: 'Last action redone' },
+    history: {
+        undone: 'Last action undone',
+        redone: 'Last action redone',
+        failed: 'Action failed; history is preserved. Please retry.',
+        backupFailed: 'Automatic backup failed. Check backups in Data Management.'
+    },
     onboarding: {
         welcome: 'Welcome to EasyProject',
         intro: 'Your local-first project planning tool. No sign-up, no cloud — everything stays on your machine.',

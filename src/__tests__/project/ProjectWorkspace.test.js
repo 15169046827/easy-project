@@ -31,6 +31,8 @@ vi.mock('../../composables/useStatusLabels', () => ({
     useStatusLabels: () => ({ projectStatusLabel: status => status })
 }))
 
+const mockedCrudAction = vi.mocked(crudAction)
+
 function mountWorkspace(projectId = 'project-1') {
     return shallowMount(ProjectWorkspace, {
         props: { projectId },
@@ -43,7 +45,7 @@ function mountWorkspace(projectId = 'project-1') {
 describe('ProjectWorkspace', () => {
     beforeEach(() => {
         vi.clearAllMocks()
-        crudAction.mockImplementation(model => {
+        mockedCrudAction.mockImplementation(model => {
             if (model === 'project') {
                 return Promise.resolve({
                     list: [
@@ -89,7 +91,7 @@ describe('ProjectWorkspace', () => {
     it('reloads project tasks when opening the board so recent task changes are visible', async () => {
         const wrapper = mountWorkspace()
         await flushPromises()
-        crudAction.mockClear()
+        mockedCrudAction.mockClear()
 
         await wrapper.findAll('.view-switch button')[2].trigger('click')
         await flushPromises()
@@ -104,7 +106,7 @@ describe('ProjectWorkspace', () => {
     it('reloads project-scoped data when the route project changes', async () => {
         const wrapper = mountWorkspace()
         await flushPromises()
-        crudAction.mockClear()
+        mockedCrudAction.mockClear()
 
         await wrapper.setProps({ projectId: 'project-2' })
         await flushPromises()

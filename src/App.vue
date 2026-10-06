@@ -73,7 +73,14 @@
         <router-view :key="viewRevision" />
 
         <Transition name="history-fade">
-            <div v-if="historyMessage" class="history-toast">{{ historyMessage }}</div>
+            <div
+                v-if="historyMessage"
+                class="history-toast"
+                :class="{ 'history-toast--error': historyMessageIsError }"
+                :role="historyMessageIsError ? 'alert' : 'status'"
+            >
+                {{ historyMessage }}
+            </div>
         </Transition>
 
         <!-- 快捷键帮助面板 -->
@@ -134,6 +141,7 @@ const langOptions = [
 const showHelp = ref(false)
 const viewRevision = ref(0)
 const historyMessage = ref('')
+const historyMessageIsError = ref(false)
 let historyTimer
 let backupTimer
 const shortcutsHelp = SHORTCUTS_HELP
@@ -142,22 +150,31 @@ function go(path) {
     router.push(path)
 }
 
-function showHistoryMessage(value) {
+function showHistoryMessage(value, isError = false) {
     historyMessage.value = value
+    historyMessageIsError.value = isError
     clearTimeout(historyTimer)
-    historyTimer = setTimeout(() => (historyMessage.value = ''), 2400)
+    historyTimer = setTimeout(() => (historyMessage.value = ''), isError ? 5000 : 2400)
 }
 
 async function undo() {
     if (!canUndo.value) return
-    const label = await undoLastAction()
-    if (label) showHistoryMessage(t('history.undone'))
+    try {
+        const label = await undoLastAction()
+        if (label) showHistoryMessage(t('history.undone'))
+    } catch {
+        showHistoryMessage(t('history.failed'), true)
+    }
 }
 
 async function redo() {
     if (!canRedo.value) return
-    const label = await redoLastAction()
-    if (label) showHistoryMessage(t('history.redone'))
+    try {
+        const label = await redoLastAction()
+        if (label) showHistoryMessage(t('history.redone'))
+    } catch {
+        showHistoryMessage(t('history.failed'), true)
+    }
 }
 
 function refreshAfterHistory() {
@@ -168,7 +185,10 @@ onMounted(() => {
     enableHistory()
     window.addEventListener('easyproject:data-changed', refreshAfterHistory)
     backupTimer = setInterval(
-        () => crudAction('data', 'backup', { reason: 'auto' }).catch(() => {}),
+        () =>
+            crudAction('data', 'backup', { reason: 'auto' }).catch(() =>
+                showHistoryMessage(t('history.backupFailed'), true)
+            ),
         30 * 60 * 1000
     )
 })
@@ -704,6 +724,11 @@ nav button.active {
     background: #172033;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     font-size: 0.84rem;
+}
+.history-toast--error {
+    background: var(--color-error-bg);
+    color: var(--color-error-text);
+    border: 1px solid var(--color-error-text);
 }
 .history-fade-enter-active,
 .history-fade-leave-active {

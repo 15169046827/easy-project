@@ -94,6 +94,37 @@ describe('calculateCriticalPath', () => {
         expect(result.info.size).toBe(0)
     })
 
+    it('returns fresh empty results for empty and fully invalid inputs', () => {
+        const first = calculateCriticalPath()
+        first.critical.add('mutated')
+        const second = calculateCriticalPath([task('invalid', '', '')])
+        expect(second).toEqual({
+            critical: new Set(),
+            edges: new Set(),
+            info: new Map(),
+            projectFinish: null,
+            hasCycle: false
+        })
+    })
+
+    it('preserves negative fractional lag and disconnected branch timing', () => {
+        const result = calculateCriticalPath(
+            [
+                task('A', '2026-01-01', '2026-01-03'),
+                task('B', '2026-01-01', '2026-01-02'),
+                task('C', '2026-01-01', '2026-01-01')
+            ],
+            [edge('A-B', 'A', 'B', -1500)]
+        )
+        expect(result.info.get('B')).toMatchObject({
+            esText: '2026-01-03',
+            efText: '2026-01-04',
+            slack: 0
+        })
+        expect(result.info.get('C').slack).toBe(3)
+        expect(result.edges).toEqual(new Set(['A-B']))
+    })
+
     it('processes a 1000-task chain within the performance budget', () => {
         const tasks = []
         const dependencies = []

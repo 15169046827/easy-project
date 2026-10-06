@@ -1,10 +1,20 @@
 use rusqlite::Connection;
 use std::path::{Path, PathBuf};
-use std::sync::Mutex;
+use std::sync::{Mutex, MutexGuard};
 
 pub struct DbState(pub Mutex<Connection>, pub PathBuf);
 
-const CURRENT_SCHEMA_VERSION: i64 = 5;
+impl DbState {
+    pub fn lock_connection(&self) -> rusqlite::Result<MutexGuard<'_, Connection>> {
+        self.0.lock().map_err(|_| {
+            rusqlite::Error::ToSqlConversionFailure(Box::new(std::io::Error::other(
+                "Database connection lock is poisoned",
+            )))
+        })
+    }
+}
+
+pub(crate) const CURRENT_SCHEMA_VERSION: i64 = 5;
 
 pub fn init_db(database_path: &Path) -> Result<DbState, String> {
     let conn = Connection::open(database_path)
@@ -272,6 +282,19 @@ pub fn init_db(database_path: &Path) -> Result<DbState, String> {
 mod tests {
     use super::*;
     use uuid::Uuid;
+
+    #[test]
+    fn poisoned_database_lock_returns_an_error() {
+        let state = DbState(
+            Mutex::new(Connection::open_in_memory().unwrap()),
+            PathBuf::new(),
+        );
+        let _ = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            let _guard = state.0.lock().unwrap();
+            panic!("simulate a failure while holding the database lock");
+        }));
+        assert!(state.lock_connection().is_err());
+    }
 
     #[test]
     fn initializes_mvp_schema_and_constraints() {

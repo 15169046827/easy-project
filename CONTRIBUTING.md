@@ -5,9 +5,11 @@ Thank you for improving EasyProject. Keep changes local-first, reversible, and c
 ## Before opening a pull request
 
 1. Install dependencies with `npm install` and the Tauri platform prerequisites.
-2. Run `npm run lint`, `npm test`, `npm run test:e2e`, and `npm run build`.
-3. Run `cargo fmt --check`, `cargo check`, and `cargo test` from `src-tauri`.
+2. Run `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:e2e`, and `npm run build`.
+3. Run `cargo fmt --check`, `cargo clippy --all-targets --locked -- -D warnings`, and `cargo test --locked` from `src-tauri`.
 4. Run `npm run release:check` when changing dependencies, packaging, version metadata, examples, or release documentation.
+
+Audit and remediation work follows [UPARS 1.1.0](docs/audit/UNIVERSAL_PROJECT_AUDIT_STANDARD.md) and its report template. Production dependency advisories are checked in CI and release validation.
 
 Database changes must be additive or include an explicit migration. Data-exchange changes must retain backward compatibility or document the migration path. Do not commit API tokens, published private calendar URLs, certificates, signing keys, real project databases, or personal backups.
 

@@ -84,20 +84,22 @@ async function restoreHistorySnapshot(snapshot) {
 }
 
 export async function undoLastAction() {
-    const entry = undoStack.pop()
+    const entry = undoStack.at(-1)
     if (!entry) return null
     const current = await invokeAction('data', 'export_json')
     await restoreHistorySnapshot(entry.snapshot)
+    undoStack.pop()
     redoStack.push({ snapshot: current, label: entry.label })
     syncHistoryState()
     return entry.label
 }
 
 export async function redoLastAction() {
-    const entry = redoStack.pop()
+    const entry = redoStack.at(-1)
     if (!entry) return null
     const current = await invokeAction('data', 'export_json')
     await restoreHistorySnapshot(entry.snapshot)
+    redoStack.pop()
     undoStack.push({ snapshot: current, label: entry.label })
     syncHistoryState()
     return entry.label

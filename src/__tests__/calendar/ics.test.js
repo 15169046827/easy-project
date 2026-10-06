@@ -48,6 +48,35 @@ describe('ICS calendar exchange', () => {
         ).toEqual([{ uid: '', summary: 'Leave', startDate: '2026-07-12', endDate: '2026-07-12' }])
     })
 
+    it('ignores cancelled, incomplete and malformed events without leaking their properties', () => {
+        const event = lines => ['BEGIN:VEVENT', ...lines, 'END:VEVENT'].join('\n')
+        const input = [
+            'END:VEVENT',
+            'SUMMARY:Outside event',
+            event(['DTSTART:20260712', 'STATUS:cancelled', 'UID:cancelled']),
+            event(['SUMMARY:Missing start']),
+            event(['DTSTART:invalid', 'UID:invalid']),
+            event(['DTSTART:20260713', 'BROKEN', 'UNKNOWN:value', 'SUMMARY:Valid']),
+            'BEGIN:VEVENT\nDTSTART:20260714\nSUMMARY:Incomplete'
+        ].join('\n')
+        expect(parseIcsEvents(input)).toEqual([
+            { uid: '', summary: 'Valid', startDate: '2026-07-13', endDate: '2026-07-13' }
+        ])
+    })
+
+    it('preserves end-date boundaries for same-day, reversed and non-midnight events', () => {
+        const events = [
+            ['20260712', '20260712'],
+            ['20260712', '20260711'],
+            ['20260712T090000Z', '20260713T120000Z']
+        ].map(([start, end]) => `BEGIN:VEVENT\nDTSTART:${start}\nDTEND:${end}\nEND:VEVENT`)
+        expect(parseIcsEvents(events.join('\n')).map(item => item.endDate)).toEqual([
+            '2026-07-12',
+            '2026-07-12',
+            '2026-07-13'
+        ])
+    })
+
     it('merges events into member availability and skips repeated UIDs', () => {
         const existing = [
             {

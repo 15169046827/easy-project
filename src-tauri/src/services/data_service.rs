@@ -1,4 +1,4 @@
-use crate::common::db_state::DbState;
+use crate::common::db_state::{DbState, CURRENT_SCHEMA_VERSION};
 use crate::models::common::ApiResponse;
 use chrono::Local;
 use rusqlite::{params_from_iter, DatabaseName};
@@ -62,7 +62,7 @@ fn export_json(db: &DbState) -> Result<Value, String> {
 
 fn import_json(db: &DbState, payload: &Value) -> Result<(), String> {
     let schema_version = payload.get("schemaVersion").and_then(Value::as_i64);
-    if !matches!(schema_version, Some(1 | 2 | 3 | 4 | 5)) {
+    if !matches!(schema_version, Some(1..=5)) {
         return Err("Unsupported or missing schemaVersion".to_string());
     }
     let projects = payload
@@ -257,18 +257,26 @@ fn database_counts(path: &Path) -> Result<Value, String> {
     if integrity != "ok" {
         return Err(format!("Backup integrity check failed: {integrity}"));
     }
-    let count = |table: &str| -> i64 {
+    let version: i64 = conn
+        .query_row("PRAGMA user_version", [], |row| row.get(0))
+        .map_err(|error| format!("Cannot read backup schema version: {error}"))?;
+    if version != CURRENT_SCHEMA_VERSION {
+        return Err(format!(
+            "Backup schema version {version} is incompatible with this application ({CURRENT_SCHEMA_VERSION})"
+        ));
+    }
+    let count = |table: &str| -> Result<i64, String> {
         conn.query_row(&format!("SELECT COUNT(*) FROM {table}"), [], |row| {
             row.get(0)
         })
-        .unwrap_or(0)
+        .map_err(|error| format!("Backup is missing or cannot read {table}: {error}"))
     };
     Ok(json!({
-        "projects": count("project"),
-        "tasks": count("task"),
-        "members": count("member"),
-        "dependencies": count("task_dependency")
-        ,"baselines": count("plan_baseline")
+        "projects": count("project")?,
+        "tasks": count("task")?,
+        "members": count("member")?,
+        "dependencies": count("task_dependency")?,
+        "baselines": count("plan_baseline")?
     }))
 }
 
@@ -465,6 +473,28 @@ pub fn handle_action(
 mod tests {
     use super::*;
     use crate::common::db_state::init_db;
+
+    #[test]
+    fn backup_preview_rejects_missing_tables_and_schema_mismatch() {
+        let root = std::env::temp_dir().join(format!(
+            "easyproject-invalid-backup-{}",
+            uuid::Uuid::new_v4()
+        ));
+        fs::create_dir_all(&root).expect("temporary backup root");
+        let source = root.join("invalid.db");
+        let conn = rusqlite::Connection::open(&source).expect("invalid backup should open");
+        conn.execute_batch("PRAGMA user_version = 5;")
+            .expect("schema version should set");
+        assert!(
+            database_counts(&source).is_err(),
+            "missing tables must fail"
+        );
+        conn.execute_batch("PRAGMA user_version = 4;")
+            .expect("schema version should change");
+        assert!(database_counts(&source).is_err(), "old schema must fail");
+        drop(conn);
+        let _ = fs::remove_dir_all(root);
+    }
 
     #[test]
     fn creates_an_inspectable_backup_with_model_counts() {

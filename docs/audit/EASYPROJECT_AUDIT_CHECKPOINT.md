@@ -569,3 +569,26 @@
 - 后续状态：远程validate/rust-security均success，三平台build进行中；当前全部未提交5文档：docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。Wolai新SHA/树/Draft/run映射已同步并读回一致；最新五小时28%、周51%、重置0。当前本地/远程分支5998a87已确认，仅消息末尾换行变化，作者/时间/父提交不变。
 
 - 新阶段门禁五小时25%、周50%，允许最小发布配置整改。run37430197698发现EP-BUILD-003/P3：checkout@v4/setup-node@v4使用已废弃Node20，runner强制Node24。官方v6运行Node24、最低runner2.327.1，已升级CI/release共8引用，应用Node22不变；未跳过检查。累计29问题/24fixed/5P3open，待新远程复验才关闭。当前全部未提交7文件：上面5文档加.github/workflows/ci.yml、.github/workflows/release.yml；设备/签名无变化，Wolai此新增项待同步。下一步：YAML/格式验证；等当前三平台结束后保存其历史草稿，提交新workflow候选再跑完整门禁，避免新旧资产混用。
+
+## 2026-10-06 工作流整改复验启动前
+
+- 目标仍全项目UPARS整改与发布验收，UPARS1.1.0/WACAS未定义，main/c0bb322源基线；当前codex/audit-release-20261006-api/5e7aced868c0e95c9644a68ce88ac1acc7767171，本地与远程同SHA、源码树4dd58911b1cb667a67a7d6c08606a3bc162bb07b。官方API精确保留完整提交消息后同树/同SHA非强制上传成功，原f987分支保留。
+- 5e7aced含8处v6/Node24动作升级及5文档追溯，无应用源码变化。Prettier、js-yaml结构/版本引用、diff检查、UPARS校验通过；未安装yaml包，初次yaml模块不可用后使用已安装js-yaml验证通过。EP-BUILD-003待远程复验，累计29/24fixed/5open。
+- run37430197698质量/安全/Windows/ARM通过，Intel打包和产物校验步骤已通过、仅post-cache收尾；Draft404435429已有6资产但未独立下载，不提前报完整六资产验收。将保存此草稿历史归档并创建target5e7aced的新Draft；新现有workflow复验队列不删除或取消上一run。
+- 额度五小时19%，高于长期10%门禁，无重置或定时唤醒。当前全部未提交仅此检查点；Wolai上一5998状态已读回，新v6与5e状态待同步；无新增设备、签名身份或用户数据操作。准确下一步：启动5e7aced远程门禁，完成后核验其六资产；如额度低于10%，保存当前run/Draft/资产状态并暂停，不发起新的长任务。
+
+- 已启动Actions37432253128/head5e7aced，新Draft404450655/v0.1.0明确target5e7aced，资产初始0；上一Draft404435429已tag v0.1.0-audit-5998a87/history，6资产保留。准确下一步改为仅观察此现有run并完成六新资产核验，禁止再次发起同一构建。
+
+- 最新里程碑：Actions37432253128五job全部success，Draft404450655已有6资产；v6动作实际远程复验通过，EP-BUILD-003可关闭，累计29/25fixed/4P3open。新长阶段前五小时11%，允许独立下载六资产到E盘src-tauri/target/audit-tools/release-37432253128；哈希/结构/版本/架构与签名仍待验证，不把生成当验收。当前仅本检查点未提交，其他报告/Wolai最新状态待此里程碑同步；设备及正式签名仍未确认，无系统或用户数据修改。
+
+## 2026-10-06 五小时9%门禁暂停——最新续接检查点
+
+- 目标/范围：继续全项目UPARS代码整改、复验与正式发布验收，不公开未验收草稿。UPARS1.1.0，WACAS未定义/待确认；原源基线main/c0bb3220347f3978f547d0c4841156c648f2711a，当前源码/流程候选codex/audit-release-20261006-api/5e7aced868c0e95c9644a68ce88ac1acc7767171，树4dd58911b1cb667a67a7d6c08606a3bc162bb07b。本地和远程同SHA；原f987分支与全部历史草稿保留。
+- 额度：五小时9%、周48%、重置0。按永久10%长任务门禁保存后暂停，等待用户恢复提醒；不重置、不定时唤醒。新长阶段不再开始；已启动下载不取消或重发，恢复后先核对其完成状态。
+- 已完成修改/复验：Tauri Rust/JS API/CLI2.12.1、build2.7.1、opener2.7.0协调升级；Rust最低1.90；工具缓存E盘target/.tauri，精确esbuild脚本批准；checkout/setup-node共8引用升级官方v6/Node24。82单测/9专项/16浏览器E2E/25 Rust、lint/类型/fmt/严格Clippy、生产构建/版本、UPARS/工作流Prettier与js-yaml通过；官方npm全量/生产0，RustSec1290公告/525依赖漏洞0、撤包0、ignore=[]，仅proc-macro-error/glib两Linux GTK公告（Windows/Mac六目标树无路径）。本地NSIS5193100字节/A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F，0.1.0/NotSigned。
+- 远程：Actions37432253128/head5e7aced全部五job success，废弃Node20动作警告已消失；平台容量/Ubuntu未来迁移通知不是该弃用问题。新Draft404450655/tag v0.1.0/target5e7aced有6资产，未公开。上一5998候选run37430197698亦五job通过，其Draft404435429/tag v0.1.0-audit-5998a87保留6资产；更早404242113/370399919亦未删除。
+- 资产下载仍运行session43082：gh release download v0.1.0到E:/Project/Project/easy-project/src-tauri/target/audit-tools/release-37432253128；最后5文件约0.9–1.0MB/各仍增长，MSI尚未开始。不能把这些部分文件当有效安装包，六新资产的独立哈希/结构/版本/架构/签名未验证。只读核验脚本E:/Project/Project/easy-project/src-tauri/target/audit-tools/verify-draft-assets.cjs已准备，校验固定Draft/source/6资产/digest与安全tar、Mach-O、PE/MSI、UDIF；不得对未完成下载直接判通过。
+- 问题：EP-SEC-009已关闭，EP-SEC-006由7未维护缩至1；新EP-BUILD-003实际远程复验通过，应关闭。最新累计29项/P0=0/P1=2/P2=17/P3=10，25已整改、4P3剩余（CODE003、BUILD002、SEC006、SEC008），P0/P1/P2未关闭0。报告当前BUILD003仍open、旧快照28/24/4与新增29/24/5并存；额度恢复后需先按实际结果统一为29/25/4，不把检查点当最终报告。
+- 未提交/保存：暂停前全部未提交仅docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md；准备将本检查点单独提交并通过同树/同SHA校验API非强制保存，源码候选仍固定5e7aced，不因文档提交改Draft target。ignored的下载目录与两个验证/上传脚本留在E盘，不进入Git。Wolai已读回上一5e启动状态，本次暂停检查点将同步该项目状态块并读回；报告/验收/RELEASING最终候选资产表待恢复后更新。
+- 已确认设备状态：仅本机开发Windows；无独立干净Windows/Mac ARM/Intel连接确认，当前用户代码签名证书0。未安装/启动候选程序、不触碰数据库、不改系统DNS/代理/CA、不在C盘安装工具；真实安装升级回滚、签名公证仍未验，不具备正式发布条件。
+- 准确下一步：恢复后先读本节、核对Git分支/HEAD/全部状态；查询额度≥10%再开始长期阶段。先查看session43082/六文件是否完整（若会话消失，以官方大小/digest核对），不重复构建或盲目重下；完成后运行固定脚本verify-draft-assets.cjs、Windows两包Authenticode/版本检查；失败仅重取明确损坏/缺失资产。记录六资产证据，统一报告29/25/4和BUILD003关闭，更新验收/RELEASING/Wolai并保存文档。最后仍须处理4P3及有效签名和真实设备矩阵，不宣称正式验收已完成。

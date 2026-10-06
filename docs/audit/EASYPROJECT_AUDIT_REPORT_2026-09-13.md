@@ -6,7 +6,7 @@
 - 审计日期：2026-09-13—14；前端依赖整改复验：2026-10-06
 - 审计模式：审计并整改
 - 项目版本：0.1.0；数据库及 JSON 交换 schema v5
-- 提交基线：`main` / `c0bb3220347f3978f547d0c4841156c648f2711a`；基线工作区干净，本轮改动均未提交
+- 提交基线：`main` / `c0bb3220347f3978f547d0c4841156c648f2711a`；已验证候选为`codex/audit-release-20261006` / `25426627f79988efd069fc2ff3c49ee1f9642a37`。后续Tauri2稳定版整改仍在工作树验证中，本文已通过证据不得冒充该新锁文件的最终结果。
 - 发布目标：Windows x64 NSIS/MSI、macOS Apple Silicon/Intel APP/DMG；目前为未签名草稿
 - 审计任务：EasyProject 全源集 UPARS 审计与整改
 
@@ -98,7 +98,7 @@
 
 ### 构建、测试与发布
 
-CI 和 release tag 均已接入前端、Rust、npm 与 RustSec 漏洞/撤包门禁；后者作为独立 Ubuntu job，先获取完整锁定依赖并以 `--deny yanked` 审计，release 构建依赖其通过。Windows x64 NSIS 新构建、产物非空与 SHA-256 已验证。远程新增 RustSec job 未运行，不能推断其实际结果。正式发布仍受未签名、MSI/macOS 本轮产物及干净机器矩阵未验收约束。构建大块警告仍开。
+CI 和 release tag 均已接入前端、Rust、npm 与 RustSec 漏洞/撤包门禁；后者作为独立 Ubuntu job，先获取完整锁定依赖并以 `--deny yanked` 审计，release 构建依赖其通过。Windows x64 NSIS 新构建、产物非空与 SHA-256 已验证。候选25426627远程五job均success，六资产哈希/版本/容器与Mac架构核验通过；新Tauri工作树尚未复验。正式发布仍受未签名、MSI/macOS 本轮产物及干净机器矩阵未验收约束。构建大块警告仍开。
 
 ## 7. 最终验证
 
@@ -122,24 +122,24 @@ CI 和 release tag 均已接入前端、Rust、npm 与 RustSec 漏洞/撤包门�
 
 | 类型            | 内容                                                                                                       | 风险                                                | 责任/复查条件                                                                                          |
 | --------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| 供应链远程验证  | 本地 E 盘完整索引 RustSec 复扫已确认漏洞与撤包均为 0；新增 CI/release 门禁未在 GitHub Actions 上运行       | 远程环境的索引、网络与门禁结果尚无证据              | 提交后由发布负责人核对首次远程运行结果，失败则继续整改，不跳过安全 job                                 |
+| 供应链远程验证  | 当前候选25426627与Actions37402521676：质量、安全及三平台五job全部success，六资产独立下载核对通过           | 不覆盖后续本地Tauri升级工作树                       | 新锁文件必须完成同等门禁和新候选构建                                                                   |
 | Rust 信息性警告 | EP-SEC-006、EP-SEC-008、EP-SEC-009 共 9 条：7 未维护、2 潜在不安全；均保留在扫描结果中，未通过忽略 ID 消除 | 上游维护与特定 GTK/日志条件风险，当前目标可达性不同 | 项目维护者在正式发布前逐条复审、在下一次 Tauri/GTK/PHF 上游升级时迁移；新增 Linux 目标前先关闭对应告警 |
 | npm 解析环境    | 默认 Windows 缓存仍指向异常 IP；单进程实时 DNS、官方域名/SNI/TLS 验证均保留，已成功完成两次官方扫描        | 系统异常未永久修复，普通命令可能仍失败              | 发布前用正常网络或同样严格验证路径重扫；不改系统代理/CA、不关闭 strict-ssl                             |
 | 质量债          | EP-CODE-003 和 EP-BUILD-002；无阈值抑制或未经批准的 P2 例外                                                | 维护和加载性能                                      | 建议项目维护者在下一性能迭代量化并拆分；正式发布时间前复审体积                                         |
 | 发布设备        | 仅构建本地 Windows NSIS；未实际安装/升级，MSI/macOS 和签名/公证未验证                                      | 不能证明用户机器可安全安装、迁移或回滚              | 发布负责人完成 `docs/RELEASING.md` 矩阵及签名后再发布                                                  |
 | 标准同步        | 仓库 UPARS 1.1.0 已补充“建议补充通用标准”，已安装全局技能仍是 1.0.0，未在本任务写入全局目录                | 其他项目暂未自动继承新规则                          | 通用标准维护者获写入权限后将最小条款同步至全局版本，并运行其 `verify-standard.ps1`                     |
-| 环境/文档       | Python Ruff不可用；WACAS无定义；Wolai已同步并读回；候选提交待保存                                          | 非核心代码门禁/源码追溯状态待完成                   | 提供WACAS定义；保存Git候选并核验远程，不把旧资产当本轮结果                                             |
+| 环境/文档       | Python Ruff不可用；WACAS无定义；Wolai已同步读回；候选25426627已推送                                        | 最终文档状态和完整远程结果待保存                    | 核对当前run，不能把历史资产当本轮结果                                                                  |
 
 ## 9. 发布判定
 
 - P0 未关闭：0；P1 未关闭：0；P2 未关闭或已接受：0。P3 未关闭：5（EP-CODE-003、EP-BUILD-002、EP-SEC-006、EP-SEC-008、EP-SEC-009）。
-- 前端规范/类型、82单测/9专项/16 E2E、npm全量/生产0；Rustfmt/严格Clippy/25测试、当前RustSec漏洞/撤包0均通过。9条信息性与2项体积警告、远程CI仍待闭环。
-- **代码层判定：暂不通过**。23项整改有复验证据；5项P3及相关信息性/体积警告未关闭或批准最窄例外，当前候选远程门禁待核验。
+- 前端规范/类型、82单测/9专项/16 E2E、npm全量/生产0；Rustfmt/严格Clippy/25测试、当前RustSec漏洞/撤包0均通过。9条信息性与2项体积警告、完整多平台资产验收仍待闭环。
+- **代码层判定：暂不通过**。23项整改有复验证据；5项P3及相关信息性/体积警告未关闭或批准最窄例外，当前候选远程质量/安全已通过，多平台资产待完整核验。
 - **正式发布判定：不可发布**。签名/公证、各平台新产物、真实安装/升级/数据保留和回滚演练均尚未满足 `docs/RELEASING.md`。
 
 ## 10. 变更与证据索引
 
 - 代码与门禁：`src-tauri/src/services/calendar_service.rs`、`src-tauri/src/services/data_service.rs`、`src-tauri/src/common/db_state.rs`、`src-tauri/src/db/`、`src/api/index.js`、`src/App.vue`、`tsconfig.json`、`e2e/smoke.spec.js`、`.github/workflows/ci.yml`、`.github/workflows/release.yml`、`package-lock.json`、`src-tauri/Cargo.lock`。RustSec 公告库与工具位于 E 盘被 Git 忽略的 `src-tauri/target/audit-tools`，未进入交付文件。
 - 标准补充：`docs/audit/UNIVERSAL_PROJECT_AUDIT_STANDARD.md` 1.1.0、`docs/audit/AUDIT_REPORT_TEMPLATE.md`、`config/audit/audit-standard.json`、`scripts/verify-audit-standard.ps1`。适用场景为校验外部地址后再连接；风险为 DNS/跳转/代理使检查对象与连接目标分离；检查方法为沿每次连接追踪解析结果；通过条件为连接使用已校验目标或等价策略；验证方式为目标变化负例。已在本项目完成检查、整改和测试，标记为“建议补充通用标准”。
-- 文档与续接：README、CONTRIBUTING、RELEASING、检查点与发布验收记录已更新；Wolai相关首发状态已同步并读回，Git候选待提交；用户数据未改。
+- 文档与续接：README、CONTRIBUTING、RELEASING、检查点与发布验收记录已更新；Wolai相关首发状态已同步并读回，Git候选25426627已提交并推送；用户数据未改。
 - 余项安排：`docs/audit/EASYPROJECT_REMEDIATION_PLAN.md` 列明 5 项开放 P3、当前信息性警告与远程门禁及独立发布验收；不构成例外批准或远程验证结果。10-06 使用兼容 npm 11.21.0，Vitest 4.1.11、@types/node 22.20.5 和定向传递依赖补丁均通过前端回归；Vue/source-map-js/CSS解析依赖/rustls新告警亦已修复；本次没有新增通用标准条款。

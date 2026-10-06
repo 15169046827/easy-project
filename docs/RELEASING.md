@@ -63,9 +63,28 @@ GitHub Actions run [`33578595689`](https://github.com/15169046827/easy-project/a
 
 The refreshed candidate passed ESLint, 77 Vitest tests, 15 Playwright tests, 18 Rust tests, Rust formatting, the production build, and release metadata validation. It remains an unsigned draft because signing and the outstanding manual smoke-test matrix are unchanged.
 
+## Audited candidate — 2026-10-06
+
+Candidate source: `codex/audit-release-20261006` / `25426627f79988efd069fc2ff3c49ee1f9642a37`. [Actions run 37402521676](https://github.com/15169046827/easy-project/actions/runs/37402521676) completed successfully: the validation and RustSec jobs and all three native build jobs passed. Draft Release ID `404242113` targets that exact source; it remains unpublished. The prior September draft and its assets are retained separately as a clearly named historical draft, not mixed with this candidate.
+
+All six assets were independently downloaded to the E-drive audit workspace. Their bytes and SHA-256 values match GitHub's asset metadata:
+
+| Asset                                         |     Bytes | SHA-256                                                            |
+| --------------------------------------------- | --------: | ------------------------------------------------------------------ |
+| `EasyProject_0.1.0_windows_x64-setup.exe`     | 5,068,068 | `04A0CD6C790F86D342F917B168F8D2FEC2C2EFF3E6087A2AA6275A834B4B8883` |
+| `EasyProject_0.1.0_windows_x64.msi`           | 6,750,208 | `CA6A2282C43A6463595BCEFCFAC626943D58634131EDE433193F46BD2E0C39F0` |
+| `EasyProject_0.1.0_darwin_aarch64.app.tar.gz` | 6,775,663 | `9CD3835443DA763A4B67B9B50138D61FEA93D1BD54F6F2CF804089CBAAD2ACEE` |
+| `EasyProject_0.1.0_darwin_aarch64.dmg`        | 6,876,035 | `68A70D221BBC2C26EE43635029F2A00ECABA1C8F02CFC794BCE852CB10C90158` |
+| `EasyProject_0.1.0_darwin_x64.app.tar.gz`     | 6,994,825 | `F170FB4C6FAB77EB4A08B9FE1924B615A1738E06B266A848DE1447B47BF78109` |
+| `EasyProject_0.1.0_darwin_x64.dmg`            | 7,092,386 | `C8071C81BE7B2A9B24CBE8DA9722E65DB0ED268BA9C95AB37A4E09C9B11A8191` |
+
+PE/MSI headers and both Windows product versions (`0.1.0`) passed; both Windows packages are `NotSigned`. Both app archives have safe relative paths, version `0.1.0`, and non-empty Mach-O executables with the correct CPU types: ARM64 `0x0100000c` (18,102,768 bytes), Intel x64 `0x01000007` (18,577,456 bytes). Both DMGs have the UDIF `koly` trailer. No package was installed or executed, and no signing/notarization or real-device acceptance is implied.
+
+These results apply only to the stated source SHA. A newer local Tauri 2 compatibility remediation is in progress and requires its own full gates and rebuilt candidate before use; this table must not be relabeled as evidence for unverified code.
+
 ## Required smoke-test matrix
 
-Record the result for every release candidate before publishing:
+Record the result for every release candidate before publishing. Historical NSIS install/launch/uninstall results below do not validate the changed 2026-10-06 audit candidate; all actual-device acceptance items for that candidate are pending in `audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md`.
 
 | Platform                | Install | Launch  | Create/edit task | Gantt/board drag | Backup/restore | XLSX/ICS exchange | Uninstall |
 | ----------------------- | ------- | ------- | ---------------- | ---------------- | -------------- | ----------------- | --------- |

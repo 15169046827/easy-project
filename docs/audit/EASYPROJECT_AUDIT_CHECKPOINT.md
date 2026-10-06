@@ -427,6 +427,14 @@
 - 未解决：5P3、9信息性/2体积警告；当前候选远程validate/RustSec/三平台构建未运行；正式签名/公证无资源、干净Windows及Mac ARM/Intel设备未确认连接/验收。不启动安装器，不改用户数据、系统网络或C盘安装。
 - 文档：报告、整改安排、发行说明与发布验收记录已同步本地；Wolai首发状态已局部更新并get_block读回一致。Git未提交/推送。
 - 准确下一步：保存codex/audit-release-20261006候选提交，push该分支，保持现有v0.1.0 Draft并将源码目标与候选一致；触发release.yml，核对validate/RustSec/三平台结果及下载资产。网络受限先使用受控授权重试，绝不跳过TLS/安全门禁；额度低于10%时不开始新长期阶段，保存并等待用户恢复。
+
+## 2026-10-06 远程候选运行检查点
+
+- 已保存并推送候选codex/audit-release-20261006 / 25426627f79988efd069fc2ff3c49ee1f9642a37，基线仍main/c0bb3220347f3978f547d0c4841156c648f2711a。56项整改文件全部进入候选提交。UPARS1.1.0；WACAS未定义/待确认。
+- release.yml运行37402521676已启动，validate和rust-security进行中，三平台build需两个门禁通过才开始；源码SHA确认一致。v0.1.0仍Draft，target绑定候选完整SHA；第一次缩短SHA PATCH被422拒绝未生效，完整SHA更正成功。暂时仍含历史资产，不冒充新候选。
+- 本地最终82/9/16/25、npm全量/生产0、RustSec漏洞/撤包0及NSIS哈希沿用上一节，无源码变化；未解决5P3/9信息性/2体积警告、签名/公证、干净机及Mac真实矩阵。已确认设备连接仍无；不安装/操作用户数据。Wolai已同步并读回。
+- 开始远程阶段前五小时剩余25%、周65%、重置0，高于10%门禁。当前未提交文件仅docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/RELEASING.md及本检查点；余工作树干净。
+- 准确下一步：核对37402521676的validate/RustSec/三平台状态；失败读取对应日志定向整改后重跑，成功后在E盘下载六个草稿资产核对容器/版本/哈希并更新报告。远程job长等候采用短时有界等待，不创建自动唤醒；签名和设备缺口不能凭runner成功关闭。
 - 全部未提交文件（56项；本次新增发行说明修改与发布验收记录）：
 
 - `github/workflows/ci.yml`
@@ -485,3 +493,46 @@
 - `e2e/test-globals.d.ts`
 - `scripts/verify-audit-standard.ps1`
 - `tsconfig.json`
+
+## 2026-10-06 远程质量及安全门禁通过里程碑
+
+- 候选codex/audit-release-20261006/25426627f79988efd069fc2ff3c49ee1f9642a37，源基线main/c0bb322不变；UPARS1.1.0、WACAS未定义。Actions37402521676的validate与rust-security均success；三平台build正在进行，不提前报安装包成功。
+- 本地最终测试与28/23/5问题统计有效；当前未提交3文档为docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/RELEASING.md；均是追溯和状态文字，不改变构建源码。Wolai已同步上阶段并读回，远程新结果待最终同步；设备连接/签名资源仍未确认，无实际安装。
+- 未解决5P3、9Rust信息性/2体积告警、签名公证与实际设备验收。下一步等候同一run的Windows/MSI、Mac ARM/Intel构建，成功后E盘下载六资产核对哈希/结构并更新报告；失败对应日志定位整改，不跳过job。五小时最近实查剩余22%、周65%、重置0，新耗费阶段前再次检查。
+
+## 2026-10-06 候选资产核验前检查点
+
+- 五小时剩余15%、周64%、重置0，高于10%长期门禁；开始E盘下载/容器验证阶段。当前run37402521676的validate、rust-security、Windows和Mac ARM构建success，Mac Intel尚在构建。候选SHA25426627f79988efd069fc2ff3c49ee1f9642a37不变。
+- Tauri工作流创建实际当前v0.1.0 Draft id404242113（候选SHA）；旧Draft id370399919在GitHub变为untagged历史项，仍保存原6资产。已恢复旧target为4f00719并加historical名称，避免旧资产错误绑定新源码；未删除、未公开发布。
+- 当前未提交文件仍为检查点、发布验收记录、RELEASING三个文档。所有测试与UPARS1.1.0/WACAS未定义沿用前文；5P3、签名/设备门槛仍未解决，Wolai上一阶段已读回、新run结果待最终同步。
+- 准确下一步：从当前id404242113/tag v0.1.0下载资产到src-tauri/target/audit-tools/release-37402521676，逐个对比官方digest/大小/容器/版本/签名；Intel未完成不能称6资产齐备。待最终run success更新全部报告与保存文档提交，正式签名与真实设备结果不能由本步骤代替。
+
+## 2026-10-06 额度9%暂停——最新续接检查点
+
+- 目标与范围：继续审计整改、候选草稿构建和正式发布验收；本任务不得公开未验收发布。UPARS1.1.0，WACAS未定义/待确认。源基线main/c0bb3220347f3978f547d0c4841156c648f2711a；候选分支codex/audit-release-20261006，25426627f79988efd069fc2ff3c49ee1f9642a37已推送。
+- 额度：五小时剩余9%、周63%、可用重置0；按用户10%门禁停止开始新长期任务，保存后暂停，等待用户恢复提醒。无定时唤醒/重置。现有远程run不会强行取消，恢复后先读结果，不重复发起。
+- 已完成修改与验证：累计28项（P0=0/P1=2/P2=17/P3=9），23fixed、5P3open；82单测、9专项、16 E2E、25 Rust、lint/类型/fmt/严格Clippy、生产构建/版本、UPARS校验、npm全量及生产0、官方当前RustSec漏洞及撤包0。9信息性/2体积告警保留。最终本地NSIS 5115687字节，SHA256 415C3C9DDA0A59B027274357A0F167FDB26FF68BEADCCB241040FEEF8ED1D894，NotSigned。
+- 远程：Actions37402521676 head=候选完整SHA；validate、rust-security、Windows MSI/NSIS和Mac ARM app/DMG success；最近查询Intel build仍in_progress，整体无最终结论，不能报全平台通过。当前Draft id404242113/tag v0.1.0/target=候选；历史Draft370399919保留原6资产，tag变untagged，名称historical且target恢复4f00719，未删除或发布。
+- 下载已核验4资产，目录E:/Project/Project/easy-project/src-tauri/target/audit-tools/release-37402521676（ignored，未安装）：Windows setup5068068字节/04a0cd6c790f86d342f917b168f8d2fec2c2eff3e6087a2aa6275a834b4b8883；MSI6750208/ca6a2282c43a6463595bcefcfac626943d58634131ede433193f46bd2e0c39f0；Mac ARM app6775663/9cd3835443da763a4b67b9b50138d61fea93d1bd54f6f2cf804089cbaad2acee；ARM DMG6876035/68a70d221bbc2c26ee43635029f2a00ecaba1c8f02cfc794bce852cb10c90158。四哈希与GitHub digest一致；PE/MSI/gzip-tar-app/UDIF容器通过，ARM app非空可执行18102768字节；Windows两包版本0.1.0、NotSigned。NSIS引导程序PE machine14c正常，不据此断言应用架构错误。Intel两资产未下载/验证。
+- 全部未提交文件仅5文档：docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。代码无未提交变化；该5项为候选提交后的最新追溯，不改变已构建源码。
+- 未解决：EP-CODE-003、EP-BUILD-002、EP-SEC-006/008/009仍open；未批准最窄警告例外。签名身份/Apple公证及干净Windows/Mac ARM/Intel真实安装升级数据保留回滚资源缺失；已确认设备连接：未确认任何独立验收设备，当前仅开发主机，未启动安装器或更改用户数据库。不改系统DNS/代理/CA；所有新增本地工具、下载和缓存E盘。代码审计暂不通过、正式发布验收未完成。
+- 文档同步：本地报告/整改安排/验收记录已更新到部分远程成功；Wolai首发状态及本最新额度检查点已同步，get_block读回一致。Git候选已远程保存，上述5文档尚未提交。
+- 准确下一步：用户提醒额度恢复后读取本节、查额度、git status/HEAD，先查询37402521676最终结果；Intel失败则取失败日志定位整改，成功则只下载当前Draft的darwin_x64两个缺失资产（不要重复覆盖四个已有效下载），比对GitHub digest/大小/安全tar路径/Mach-O架构/DMG koly和版本。保存完整remote日志/六资产表至RELEASING及验收报告，更新Wolai并读回，然后把5文档最新状态提交推送同一候选分支；文档提交不冒充构建源码SHA。之后处理5P3与签名/设备资源门槛，不能凭无签名runner成功宣告正式发布完成。
+
+## 2026-10-06 恢复与Rust P3稳定版兼容评估检查点
+
+- 用户恢复并要求长期固化门禁；AGENTS及CONTRIBUTING将五小时<10%长期任务门禁作为所有后续本项目任务规范，5%全窗口底线不变。UPARS1.1.0；WACAS未定义/待确认。恢复额度实查五小时99%、周62%、重置0。
+- 候选基线codex/audit-release-20261006/25426627f79988efd069fc2ff3c49ee1f9642a37，原main/c0bb322；核对原5文档dirty不覆盖，新增AGENTS/CONTRIBUTING修改，共7项尚未提交。
+- Actions37402521676现已全部success，validate/RustSec/Windows/Mac ARM/Mac Intel五job均通过，实际head SHA确认一致；当前Draft404242113仍未公开。仅恢复下载缺失Intel两资产，下载仍进行中（中间大小非最终不验证）；其它四项有效哈希不重复下载。
+- P3评估：官方cargo info tauri@2取得2.12.1、tauri-utils@2取得2.10.1；本机rustc1.90满足它们最低1.90。官方manifest已引入build-2/html-manipulation-2/dom_query替代旧kuchikiki HTML链；旧链是rand0.7.3与部分未维护依赖根源。准备同主版本定向升级Tauri/build，禁止3.0 alpha或强制单独覆盖HTML传递依赖，必须扫描/测试/Clippy/本地与三平台重新构建后才可关闭问题。
+- 未解决5P3、签名/公证、真实设备矩阵；设备未确认新增连接；Wolai上次暂停已读回，本次结果待里程碑同步。准确下一步：先完成已开始Intel资产核验与当前候选记录，再按官方同主版本约束升级tauri2.12.1/tauri-build2.7.1，核对锁文件树是否移除旧HTML/PHF/UNIC链。任何新漏洞或兼容失败继续整改，不把旧候选产物冒充新锁文件验证。
+
+## 2026-10-06 六资产验收与Tauri锁文件整改里程碑
+
+- 候选25426627的Actions37402521676全部五job success；当前Draft404242113的六资产下载完成，全部大小/SHA256与官方digest匹配。Intel新增APP6994825字节/f170fb4c6fab77eb4a08b9fe1924b615a1738e06b266a848de1447b47bf78109，DMG7092386/c8071c81be7b2a9b24cbe8da9722e65db0ed268ba9c95ab37a4e09c9b11a8191；APP架构ARM100000c、Intel1000007，版本0.1.0，安全tar路径和DMG koly均通过。六资产表保存RELEASING。未安装/启动，签名公证及真实设备不推断通过。
+- 已修改Cargo.toml约束Tauri2.12.1/build2.7.1、Rust最低1.90；官方同主版本配套升级opener2.7.0等105个框架依赖，锁文件移除kuchikiki、rand0.7.3、fxhash与五UNIC。525依赖/1290公告初扫漏洞0、撤包未列出、退出码0，剩proc-macro-error1.0.4未维护与glib0.18.5 unsound；尚不关闭finding，完整复验未完。
+- cargo fetch --locked全目标缓存仍获取中（session35081），cargo test --locked --offline session65887在等待同一个Cargo包缓存锁；并发audit曾提示DB目录锁，已读官方源码证明该提示也用于Cargo包索引锁，不是旧DB损坏；两个audit随后退出0。下次避免并行执行同缓存fetch/test/scan以免无谓等待，不删除锁文件/杀未知进程。
+- 静态比对旧/新Tauri app_data_dir默认均为dirs::data_dir+identifier，com.easyproject.desktop和project_manager.db未改；这只是路径证据，不替代升级/回滚真实测试。所有缓存/下载/临时在E，未安装工具或接触用户数据；设备仍无独立连接确认。
+- UPARS1.1.0、WACAS未定义/待确认；原基线main/c0bb322，候选分支codex/audit-release-20261006/25426627。全部9未提交文件：AGENTS.md、CONTRIBUTING.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、src-tauri/Cargo.toml、src-tauri/Cargo.lock。
+- 文档：本地及Wolai恢复/六资产/长期额度门禁状态已同步get_block读回一致；准备先保存7文档提交，不把该文档SHA改成已构建源码SHA。最近额度五小时82%、周59%、重置0。未解决5P3，Tauri新锁完整测试/本地NSIS/远程多平台待验，签名公证和实际设备资源仍缺。
+- 准确下一步：完成fetch与Rust25测试，随后顺序fmt/严格Clippy/精简JSON audit（明确yanked=0并记录525依赖），验证残留两个告警在Windows/Mac树不可达；构建新本地NSIS。全部有效后只关闭rand finding、部分关闭未维护六根因并保留GTK未维护一项，再更新报告/提交新候选、远程五job及六资产复验；禁止使用3.0alpha、忽略ID或将旧候选哈希冒充新Tauri。

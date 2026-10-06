@@ -13,6 +13,8 @@ Audit and remediation work follows [UPARS 1.1.0](docs/audit/UNIVERSAL_PROJECT_AU
 
 Database changes must be additive or include an explicit migration. Data-exchange changes must retain backward compatibility or document the migration path. Do not commit API tokens, published private calendar URLs, certificates, signing keys, real project databases, or personal backups.
 
+The npm lifecycle policy approves only the reviewed `esbuild@0.25.10` setup script; do not add wildcard/all-version approvals. Its native optional packages must stay version-locked. Review a new script/version before changing `allowScripts`; older npm versions do not enforce this field, so it does not replace dependency integrity or CI review.
+
 UI changes should support both Chinese and English, light and dark themes, keyboard use, and the existing compact desktop layout.
 
 ## Long-task checkpoints and quota gate

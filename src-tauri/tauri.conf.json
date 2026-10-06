@@ -25,6 +25,7 @@
     },
     "bundle": {
         "active": true,
+        "useLocalToolsDir": true,
         "targets": "all",
         "category": "Productivity",
         "shortDescription": "Local-first project planning with tasks and Gantt charts.",

@@ -22,7 +22,7 @@ EasyProject v0.1.0 is the first public candidate of the open-source, local-first
 - Vitest: 82/82 passed; 9/9 critical-path and performance tests passed.
 - Playwright: 16/16 passed on Windows WebView mocks, including backup-failure feedback, the custom title bar, and outer-scroll regression.
 - Rust/SQLite: 25/25 passed; Rust formatting and strict Clippy passed.
-- Latest full and production npm audits: zero vulnerabilities. Current official RustSec snapshot: zero vulnerabilities and yanked crates; nine informational advisories remain explicitly recorded in the UPARS report.
+- Latest full and production npm audits: zero vulnerabilities. Current official RustSec snapshot: zero vulnerabilities and yanked crates; two Linux GTK informational advisories remain explicitly recorded in the UPARS report.
 - Production frontend build and v0.1.0 metadata validation: passed.
 - Windows x64 NSIS: built locally; prior repair install, launch, uninstall, and row-for-row schema-v5 data preservation passed.
 - Historical GitHub Actions run `33578595689` built commit `4f00719`; all six unsigned draft assets were verified. These older assets do not include the October audit fixes; a new candidate run and exact artifact checks are required.

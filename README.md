@@ -40,7 +40,7 @@ EasyProject is an open-source, local-first desktop project planning application.
 
 ## Development
 
-Requirements: Node.js, npm, Rust, and the platform prerequisites for Tauri 2.
+Requirements: Node.js, npm, Rust 1.90 or newer, and the platform prerequisites for Tauri 2.
 
 ```bash
 npm install

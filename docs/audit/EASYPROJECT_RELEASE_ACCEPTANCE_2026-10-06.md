@@ -12,12 +12,12 @@
 | 前端规范/类型                    | Pass                 | ESLint/类型检查零错误，复杂度局部门禁有超限负例                                                           |
 | 前端测试                         | Pass                 | 82 单测、9 关键路径/性能、16 浏览器 E2E                                                                   |
 | npm 安全                         | Pass                 | 官方 npm 11.21.0 全量和生产所有等级0，严格 TLS，临时进程实时DNS；系统配置未改                             |
-| Rust 规范/测试                   | Pass                 | 更新 rustls 锁文件后 fmt、25 测试、Clippy -D warnings通过                                                 |
-| RustSec 已知漏洞/撤包            | Pass                 | ef6173cbc5c50ec8166f9a5b28f07834144373ee 官方API固定提交归档；1290公告/546依赖，漏洞0、撤包0；ignore为空  |
-| RustSec 信息性警告               | Pending              | 7未维护、2unsound，不忽略；对应EP-SEC-006/008/009，未批准风险例外                                         |
-| 前端构建/版本                    | Pass with warnings   | 412模块、0.1.0一致；940.20 KB XLSX和1495.38 KB vendor大块告警仍在                                         |
-| 最终 Windows NSIS                | Pass / NotSigned     | 5,115,687字节，SHA-256 415C3C9DDA0A59B027274357A0F167FDB26FF68BEADCCB241040FEEF8ED1D894；含Vue/rustls补丁 |
-| 远程 validate/RustSec/多平台构建 | Pass for SHA25426627 | Actions37402521676全部五job success；当前Tauri升级工作树不在该构建中                                      |
+| Rust 规范/测试                   | Pass                 | 更新Tauri/rustls锁文件后 fmt、25 测试、Clippy -D warnings通过                                                 |
+| RustSec 已知漏洞/撤包            | Pass                 | ef6173cbc5c50ec8166f9a5b28f07834144373ee 官方API固定提交归档；1290公告/525依赖，漏洞0、撤包0；ignore为空  |
+| RustSec 信息性警告               | Pending              | 1未维护、1unsound，仅Linux GTK链，不忽略；对应EP-SEC-006/008，未批准风险例外                                         |
+| 前端构建/版本                    | Pass with warnings   | 412模块、0.1.0一致；940.20 KB XLSX和1495.96 KB vendor大块告警仍在                                         |
+| 最终 Windows NSIS                | Pass / NotSigned     | 5,193,100字节，SHA-256 A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F；含Tauri配套升级 |
+| 远程 validate/RustSec/多平台构建 | Pass for SHA25426627 | Actions37402521676全部五job success；新Tauri本地门禁已通过，但不在该远程构建中                                      |
 
 ## 正式发布验收门槛
 
@@ -27,7 +27,7 @@
 | Apple 签名/公证          | 未配置仓库凭据，未获取有效身份                                                               | 受控配置 Developer ID/公证资源；验证 codesign、notarization和下载后Gatekeeper    |
 | 干净 Windows 机器        | 当前为开发主机，未确认独立干净机器/虚拟机                                                    | NSIS/MSI安装、启动、编辑、拖拽、交换、恢复、升级/数据保留、卸载/回滚逐项实际通过 |
 | macOS ARM/Intel 真实验收 | 无已确认可连接设备，runner构建不能代替设备使用                                               | 两种架构的真实安装/启动/编辑/拖拽/交换/恢复/升级/卸载证据                        |
-| 质量警告                 | 5个P3仍open，9信息性与2体积告警仍在                                                          | 完成整改或由项目负责人批准最窄例外与复查节点，不能自动接受                       |
+| 质量警告                 | 4个P3仍open，2信息性与2体积告警仍在                                                          | 完成整改或由项目负责人批准最窄例外与复查节点，不能自动接受                       |
 | 草稿源码/资产一致        | 当前v0.1.0 Draft404242113目标SHA25426627，六资产独立下载且全部digest/版本/容器/两Mac架构匹配 | 已关闭当前候选追溯；本地Tauri升级必须重新构建并重新绑定，新旧证据不可混用        |
 
 ## 当前结论

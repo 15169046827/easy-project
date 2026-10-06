@@ -19,8 +19,8 @@
     },
     "dependencies": {
         "@primeuix/themes": "^1.2.5",
-        "@tauri-apps/api": "^2.8.0",
-        "@tauri-apps/plugin-opener": "^2",
+        "@tauri-apps/api": "^2.12.1",
+        "@tauri-apps/plugin-opener": "^2.7.0",
         "date-holidays": "^3.26.3",
         "exceljs": "^4.4.0",
         "html2canvas": "^1.4.1",
@@ -32,7 +32,7 @@
     },
     "devDependencies": {
         "@playwright/test": "^1.61.1",
-        "@tauri-apps/cli": "^2",
+        "@tauri-apps/cli": "^2.12.1",
         "@types/node": "22.20.5",
         "@vitejs/plugin-vue": "^5.2.1",
         "@vue/test-utils": "^2.4.11",
@@ -46,6 +46,9 @@
         "vite": "^6.0.3",
         "vitest": "4.1.11",
         "vue-tsc": "3.3.11"
+    },
+    "allowScripts": {
+        "esbuild@0.25.10": true
     },
     "overrides": {
         "uuid": "^11.1.1"

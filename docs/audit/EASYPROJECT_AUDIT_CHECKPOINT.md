@@ -536,3 +536,23 @@
 - UPARS1.1.0、WACAS未定义/待确认；原基线main/c0bb322，候选分支codex/audit-release-20261006/25426627。全部9未提交文件：AGENTS.md、CONTRIBUTING.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、src-tauri/Cargo.toml、src-tauri/Cargo.lock。
 - 文档：本地及Wolai恢复/六资产/长期额度门禁状态已同步get_block读回一致；准备先保存7文档提交，不把该文档SHA改成已构建源码SHA。最近额度五小时82%、周59%、重置0。未解决5P3，Tauri新锁完整测试/本地NSIS/远程多平台待验，签名公证和实际设备资源仍缺。
 - 准确下一步：完成fetch与Rust25测试，随后顺序fmt/严格Clippy/精简JSON audit（明确yanked=0并记录525依赖），验证残留两个告警在Windows/Mac树不可达；构建新本地NSIS。全部有效后只关闭rand finding、部分关闭未维护六根因并保留GTK未维护一项，再更新报告/提交新候选、远程五job及六资产复验；禁止使用3.0alpha、忽略ID或将旧候选哈希冒充新Tauri。
+
+## 2026-10-06 Tauri本地Rust回归通过里程碑
+
+- Git文档提交7447d5d7cca90832e02846202bb835f96677b8b7已推送codex/audit-release-20261006；只含长期门禁和已验证25426627候选六资产证据，不更改该Draft的构建源SHA。普通Git TLS/连接失败后以刚查询官方DNS20.205.243.166、仅当前进程http.curloptResolve且严格TLS推送成功；未修改系统或全局Git设置。
+- Tauri2.12.1/build2.7.1/opener2.7.0的105个配套依赖获取完成；新锁525依赖，官方1290公告快照扫描漏洞0、撤包0、ignore=[]，只剩proc-macro-error未维护和glib unsound两项。rand/fxhash/五UNIC确已移除，问题仍待构建复验后关闭。
+- 新框架Rust25/25、fmt通过；严格Clippy正在session81313执行。6次target tree证明两个残留包在Windows x64、Mac ARM与Intel均无路径，仅Linux GTK依赖链；不删依赖或忽略公告。旧新app_data_dir默认实现一致，实际数据迁移仍未验证。
+- 长期额度门禁已Git持久化且Wolai读回；源基线main/c0bb322、工作基线7447d5d，UPARS1.1.0/WACAS未定义。当前未提交4文件：src-tauri/Cargo.toml、src-tauri/Cargo.lock、README.md和本检查点。最新额度五小时68%、周57%、重置0。
+- 设备：仅开发主机；Get-Command未找到可用WindowsSandbox/VBoxManage/vmrun/Get-VM（仅PATH检查，不推断绝无安装），无独立干净机/Mac连接；CurrentUser代码签名证书0。未启动安装器、不改用户数据/网络/C盘工具。
+- 准确下一步：等严格Clippy结果，查询额度并构建新NSIS及哈希/签名，更新EP-SEC-009关闭证据与EP-SEC-006残留范围（由7条缩至1条）；累计finding28不增，只在完整验证通过后更新fixed。随后保存新Tauri候选提交并再次远程五job/六资产验证；正式签名/设备/剩余P3仍须单独闭环。
+
+## 2026-10-06 配套前端升级与打包前检查点
+
+后续完成：新NSIS5193100字节/A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F，NotSigned/0.1.0，产物检查通过；NSIS3.11与插件官方哈希校验通过，缓存E盘target/.tauri。重复allowScripts键已修复，前端重建仅原两体积告警；npm全量/生产正式复扫退出0、所有等级0。EP-SEC-009关闭，累计28/24fixed/4P3open；剩proc-macro-error与glib仅Linux GTK树。最新五小时49%、周54%、重置0。全部未提交12文件：上述8文件加docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、docs/RELEASE_NOTES_0.1.0.md。下一步保存新候选并触发远程五job；签名、设备、Wolai待本轮里程碑同步，无新增设备或系统修改。
+
+- 目标仍为全项目UPARS整改与发布验收；UPARS1.1.0，WACAS未定义/待确认。原基线main/c0bb322，当前分支codex/audit-release-20261006，HEAD7447d5d；旧候选25426627六资产证据有效，但不覆盖当前升级。
+- 新框架Rust25测试、fmt、严格Clippy全通过；前端lint、类型、82单测、9专项、生产构建、版本检查及16浏览器E2E均通过。两体积告警保留，vendor1495.96kB。首次NSIS在版本匹配门禁退出，未生成新安装包；已将官方API/CLI升级2.12.1、opener2.7.0并核对实际安装版本。
+- npm11.21默认阻止esbuild0.25.10脚本：完整审查官方安装脚本后仅批准此精确版本，allowScripts无通配、无全局放行，待处理脚本列表为空；贡献指南记录旧npm不执行此策略。E2E首次有子进程色彩环境冲突，清除该子进程NO_COLOR后16/16重验无告警，未改全局环境。
+- 官方Tauri支持bundle.useLocalToolsDir=true，将NSIS/Wix缓存固定项目target/.tauri（E盘）；不使用未证实环境变量。npm全量/生产安全复扫因官方域名DNS返回不可连地址191.101.132.214而失败，不记作通过；此前安装审计0漏洞仍有证据，最终需再次复扫。
+- 当前全部未提交8文件：CONTRIBUTING.md、README.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、package.json、package-lock.json、src-tauri/Cargo.toml、src-tauri/Cargo.lock、src-tauri/tauri.conf.json。最新额度五小时54%、周55%、重置0；满足长任务门禁。
+- 未解决5P3暂不提前关闭；签名证书0、无独立Windows/Mac设备确认，未安装或启动应用、未触碰用户数据。Wolai停留前一里程碑，下一次完整打包后同步。准确下一步：构建新NSIS并核验哈希/签名；恢复严格TLS npm安全扫描；根据真实结果更新报告、提交新候选并复验远程平台，保持Draft。

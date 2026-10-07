@@ -715,3 +715,18 @@
 - 实查五小时43%、周91%、重置0；下一步保存37项报告与Git/Wolai，再继续CODE003剩余网格/呈现职责复核，源码稳定统一打包。UPARS1.1.0/WACAS未定义、原基线与签名/真实设备缺口不变，无新标准条款。构建/类型/lint最终复验结果以下次会话输出核对，不提前宣称打包完成。
 
 - 最终会话已核对：类型/lint退出0，428模块生产构建与release:check退出0，原两体积警告未改变。全部未提交11项：上述6路径加docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md；六文档已统一37/33/4与163/9/22/28。保存提交、精确非强制同步及Wolai读回后进入下一阶段，仍不宣称当前源集安装包通过。
+
+### CODE003剩余职责复核入口
+
+- 上批11文件0b625d8c00f56471997b59411b1ea05c2b1e3989/tree4ab8b3cdb1d05e22edeac792aeb089c196ad2645精确非强制同步成功，Git干净、Wolai37/33/4及163/9/22/28已读回；原分支/基线/UPARS1.1.0/WACAS未定义、设备签名状态不变。五小时40%、周91%、重置0，允许此长阶段；当前未提交仅此检查点。
+- 目标抽离Gantt网格创建拖动（预览、日期范围、编辑器交接、DOM监听）和任务/依赖/关键路径呈现计算；不改变模板/CSS或已有算法。父组件保留视图组合、调度协调、导出和生命周期入口，呈现/持久化/交互职责有明确边界。新增模块纳入20/100门禁，补独立测试并全量前端复验，按实际职责和回归证据判定CODE003，不仅凭LOC。实体模板/样式较长会如实保留为渲染资源事实，不能隐瞒。
+- 准确下一步实现useGanttCreationDragging/useGanttPresentation，测试边界/卸载/几何/层级/依赖路径，完成后统一报告并打包当前源集；Wolai待下一里程碑。无用户数据/系统/安装操作，新源集仍无新包。
+
+### 剩余职责本地复验进度
+
+- 网格创建拖动已独立，呈现模块集中日期任务层级、任务条几何、关键路径/依赖路径和可用性提示；纯几何/层级辅助函数独立以保持100有效函数行门禁，曾143/104行被拒绝后继续拆分，未放宽。父Gantt脚本925→293行，TaskList582→327行；模板/样式仍保留原渲染布局（除上一依赖手柄修复），不是以物理行数单独认定闭环。
+- 类型/lint0诊断，170单测（34文件）/430模块生产构建/版本检查通过；7新增独立测试覆盖层级/几何/拖动预览/依赖路径/网格范围交接/非法起点/卸载。与单测和构建同时执行E2E时2个既有首屏断言5秒超时、20通过；未删测试或增大超时，当前正独立运行全量22E2E复验，不能先标为通过。
+- 当前全部未提交7路径：本检查点、eslint.config.js、src/modules/gantt/components/GanttView.vue、`src/modules/gantt/composables/useGanttPresentation.js`、`src/modules/gantt/composables/useGanttCreationDragging.js`、`src/__tests__/composables/useGanttPresentation.test.js`、`src/__tests__/composables/useGanttCreationDragging.test.js`。HEAD0b625d8、同分支；原137加34新增JS累计171文本。文档/Wolai仍37/33/4与163/22阶段，需E2E完成后同步。
+- 五小时35%、周90%、重置0；准确下一步核对独立E2E，失败则继续定位，全部门禁通过后据职责边界关闭CODE003（预计37/34fixed/3P3open），保存同步并统一新NSIS/远程源集产物。原标准/基线/设备签名缺口和用户数据未操作状态不变。
+
+- 独立完整E2E22/22退出0，类型/lint0诊断、170单测/430模块构建/版本检查已核对。CODE003按持久化/编辑/交互/纯呈现职责、23文件20/100门禁和独立/真实回归证据关闭；模板/CSS较大仍明确登记，不以LOC单独证明。最终37项/P0=0/P1=2/P2=25/P3=10，34fixed/3P3open，所有P0/P1/P2未关闭0。六文档已同步，全部未提交12路径：上述7项加docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。准确下一步保存精确同步与Wolai，再查询额度、记录候选来源，统一新NSIS与远程五job/六资产，不公开发布；正式签名/真实设备仍未验。

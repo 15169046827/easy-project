@@ -662,3 +662,19 @@
 - 最近实查额度五小时77%、周96%、重置0；准确下一步保存本批并同步Git/Wolai，再提取TaskList行编辑与请求/筛选并回归；稳定源码统一新NSIS和远程全平台产物，不复用旧包。无新增设备连接、签名资源或用户数据操作；UPARS1.1.0/WACAS未定义，无新增通用标准条款。
 
 - 保存前全部未提交16文件：docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、e2e/smoke.spec.js、eslint.config.js、src/modules/gantt/components/GanttView.vue、`src/__tests__/composables/useDocumentDragListeners.test.js`、`src/__tests__/composables/useGanttTaskEditors.test.js`、`src/__tests__/gantt/taskFormSchedule.test.js`、`src/modules/gantt/composables/useDocumentDragListeners.js`、`src/modules/gantt/composables/useGanttCreateEditor.js`、`src/modules/gantt/composables/useGanttEditEditor.js`、`src/modules/gantt/utils/taskFormSchedule.js`。6文档已同步33/29/4和124/9/19/28；格式/Git diff --check通过；阶段提交/精确非强制同步后Wolai更新并读回，保存成功状态以下一阶段Git核对为准。
+
+### TaskList查询与编辑阶段入口
+
+- 上批16文件已提交2b752960cacc7252ee801a2c7e73d1ffe7cf4253/tree46626c7e879c8052ff3325ff2f9523c49405679a并精确API非强制同步；同分支Git干净，Wolai33/29/4和124/9/19/28已读回。原基线/UPARS1.1.0/WACAS未定义/设备签名状态不变。开始前额度五小时73%、周96%、重置0，允许开始；未提交仅此检查点。
+- 范围CODE003查询/行编辑职责。新EP-REL-008/P2：TaskList.init吞掉查询失败并正常返回，排序/删除/行编辑后续仍可报成功；并发筛选请求还可旧响应覆盖新结果。方案查询集中状态与请求序号，只最新请求可提交状态，返回明确成败；变更入口使用checked reload，失败不宣布成功。
+- 新EP-REL-009/P2：临时NEWTASK行add成功后set_for_task失败，catch仍保留NEWTASK ID；再次保存可重复add。方案在add成功后立即接续后端真实ID和缓存身份，失败重试仅更新既有任务/依赖，不重复创建；测试故障注入。该修复不声称任务字段与依赖是整体原子事务，保留部分保存错误反馈并明确数据已创建事实，进一步事务组合属于单独评估项。
+- 准确下一步先实现useTaskListQuery与最新请求状态隔离，随后useTaskRowEditor与创建ID交接，全部新增模块纳入既有门禁并补负例/全量前端复验；关闭发现后统一35项统计及检查点，稳定源集再打包。新阶段Wolai待同步，无用户数据库、系统设置、安装器或设备操作。
+
+### TaskList查询与编辑复验完成
+
+- EP-REL-008/009本地关闭：查询状态集中，任务/依赖完整取回后一次提交，只最新请求及原项目一致时可更新；init返回成败，变更入口用initChecked，查询失败不宣布保存/排序/删除成功。创建后立即接续真实ID与编辑缓存，依赖失败显示已创建但后续未完成，重试只处理既有任务；不声称字段/依赖整体原子。新增14单测及2E2E（真实行编辑依赖失败重试仅一次add、排序后读取失败无success横幅）均通过。
+- 全量138单测（27文件）/21E2E、lint/类型/构建通过，422模块，原两体积警告；9专项上一批有效，Rust28/fmt/Clippy未变仍有效。新query初次106有效函数行被门禁拒绝，拆分独立快照加载职责后通过，未放宽100门槛；SFC初始化顺序类型错误已调整并复验。父Gantt/TaskList额外严格复杂度≤20/有效函数行≤100检查均0诊断。TaskList脚本582→327行；Gantt925→711行，后者交互职责继续提取，不提前关闭CODE003。
+- 当前统计35项/P0=0/P1=2/P2=23/P3=10，31fixed/4P3open；原137文本加19新增JS输入累计156。全部未提交11路径：本检查点、e2e/smoke.spec.js、eslint.config.js、src/i18n/locales/en-US.js、src/i18n/locales/zh-CN.js、src/modules/task/components/TaskList/TaskList.vue、`src/__tests__/composables/useTaskListQuery.test.js`、`src/__tests__/composables/useTaskRowEditor.test.js`、`src/modules/task/composables/useTaskListQuery.js`、`src/modules/task/composables/useTaskRowEditor.js`、`src/modules/task/utils/taskRowPersistence.js`。HEAD仍2b752960，同分支；6审计/发布文档待统一本阶段，Wolai仍前阶段33/29/4待同步。
+- 最新额度五小时67%、周95%、重置0。准确下一步保存报告/文档与本阶段提交、同步Wolai，再继续Gantt拖动与视口职责整理并全量回归。旧dee/5e产物不覆盖新前端；签名/设备缺口不变，无用户数据或系统操作。标准与原基线不变，无新增通用标准条款。
+
+- 保存前全部未提交16项：上述11项加docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。6文档已同步35/31/4与138/9/21/28，格式/Git diff --check通过；准备同分支阶段提交并精确API非强制同步，Wolai随后更新读回。下一阶段开始核对实际HEAD和干净状态，不重复已完成回归。

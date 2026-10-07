@@ -281,6 +281,76 @@ test('rejects a cross-project drop even when the template prevents dragover defa
     await transfer.dispose()
 })
 
+test('does not announce reorder success when the task refresh fails', async ({ page }) => {
+    const extra = { ...fixtures.task[0], id: 'task-2', name: 'Sibling task', sort_order: 2 }
+    await page.addInitScript(extraTask => {
+        const invoke = window.__TAURI_INTERNALS__.invoke
+        let reordered = false
+        window.__TAURI_INTERNALS__.invoke = async (command, args) => {
+            const result = await invoke(command, args)
+            if (args.model === 'task' && args.action === 'swap_order') reordered = true
+            if (args.model === 'task' && args.action === 'get_all') {
+                if (reordered) return { success: false, message: 'Simulated task refresh failure' }
+                const response =
+                    /** @type {{success: boolean, data: {list: object[], total: number}}} */ (
+                        result
+                    )
+                return { ...response, data: { list: [...response.data.list, extraTask], total: 2 } }
+            }
+            return result
+        }
+    }, extra)
+    await page.goto('/#/tasks')
+    const source = page.locator('.task-tree-name').filter({ hasText: 'Design milestone' })
+    const target = page.locator('.task-tree-name').filter({ hasText: 'Sibling task' })
+    await expect(target).toBeVisible()
+    const transfer = await page.evaluateHandle(() => new DataTransfer())
+    await source.dispatchEvent('dragstart', { dataTransfer: transfer })
+    await target.dispatchEvent('drop', { dataTransfer: transfer })
+    await expect(page.locator('.error-banner')).toHaveText('Simulated task refresh failure')
+    await expect(page.locator('.success-banner')).toHaveCount(0)
+    await transfer.dispose()
+})
+
+test('retries dependency save without creating the task twice', async ({ page }) => {
+    await page.addInitScript(() => {
+        const invoke = window.__TAURI_INTERNALS__.invoke
+        let attempts = 0
+        window.__TAURI_INTERNALS__.invoke = async (command, args) => {
+            const result = await invoke(command, args)
+            if (args.model === 'task' && args.action === 'add') {
+                return { success: true, data: { id: 'created-task' } }
+            }
+            if (
+                args.model === 'task_dependency' &&
+                args.action === 'set_for_task' &&
+                ++attempts === 1
+            ) {
+                return { success: false, message: 'Simulated dependency failure' }
+            }
+            return result
+        }
+    })
+    await page.goto('/#/project/project-1')
+    await page.getByRole('button', { name: /^(新建任务|New task)$/ }).click()
+    const row = page.locator('.workspace-table tbody tr').first()
+    await row.locator('input.p-inputtext').first().fill('Retry task')
+    await row.locator('.dependency-select').selectOption('task-1')
+    await row.locator('.p-datatable-row-editor-save').click()
+    await expect(page.locator('.error-banner')).toContainText(/任务已创建|task was created/i)
+    await page.locator('.p-datatable-row-editor-save').first().click()
+    await expect(page.locator('.success-banner')).toBeVisible()
+    const calls = await page.evaluate(() => window.__EASY_PROJECT_CALLS__)
+    expect(calls.filter(({ args }) => args.model === 'task' && args.action === 'add')).toHaveLength(
+        1
+    )
+    const dependencies = calls.filter(
+        ({ args }) => args.model === 'task_dependency' && args.action === 'set_for_task'
+    )
+    expect(dependencies).toHaveLength(2)
+    expect(dependencies.every(({ args }) => args.data.taskId === 'created-task')).toBe(true)
+})
+
 test('does not save a stale Gantt drag after leaving its route', async ({ page }) => {
     await page.goto('/#/project/project-1')
     await page.locator('.view-switch button').nth(1).click()

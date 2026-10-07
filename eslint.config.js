@@ -36,7 +36,10 @@ export default [
             'src/modules/gantt/composables/useGanttCreateEditor.js',
             'src/modules/gantt/composables/useGanttEditEditor.js',
             'src/modules/gantt/utils/taskFormSchedule.js',
-            'src/modules/gantt/composables/useDocumentDragListeners.js'
+            'src/modules/gantt/composables/useDocumentDragListeners.js',
+            'src/modules/task/composables/useTaskListQuery.js',
+            'src/modules/task/composables/useTaskRowEditor.js',
+            'src/modules/task/utils/taskRowPersistence.js'
         ],
         rules: {
             complexity: ['error', 20],

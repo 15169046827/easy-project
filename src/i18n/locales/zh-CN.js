@@ -200,6 +200,7 @@ export default {
         saved: '任务已保存。',
         mustBelong: '任务必须属于某个项目。',
         nameEmpty: '名称不能为空！',
+        createdButIncomplete: '任务已创建，后续保存未完成，可重试：{message}',
         deleteOne: '删除任务“{name}”？',
         deleteMany: '删除 {count} 个任务（含“{name}”）？',
         selectToDelete: '请选择要删除的任务。',

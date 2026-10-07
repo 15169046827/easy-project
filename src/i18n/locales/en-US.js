@@ -200,6 +200,8 @@ export default {
         saved: 'Task saved.',
         mustBelong: 'A task must belong to a project.',
         nameEmpty: 'Name cannot be empty!',
+        createdButIncomplete:
+            'The task was created, but the remaining save failed. You can retry: {message}',
         deleteOne: 'Delete task "{name}"?',
         deleteMany: 'Delete {count} tasks including "{name}"?',
         selectToDelete: 'Please select the task to delete.',

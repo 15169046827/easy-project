@@ -491,7 +491,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import Button from 'primevue/button'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
@@ -503,6 +503,8 @@ import DateTimePickerString from './components/DateTimePickerString.vue'
 import MemberSelect from '../../../member/components/MemberSelect.vue'
 import { useMembers } from '../../../../composables/useMembers'
 import { useTaskReordering } from '../../composables/useTaskReordering.js'
+import { useTaskListQuery } from '../../composables/useTaskListQuery.js'
+import { useTaskRowEditor } from '../../composables/useTaskRowEditor.js'
 import { avatarBg, avatarInitial } from '../../../../composables/useAvatar'
 import {
     calculateEndDate,
@@ -518,6 +520,27 @@ const props = defineProps({
 })
 
 const { t, locale } = useI18n()
+const {
+    tasks,
+    dependencies,
+    selectedProjectId,
+    selectedTasks,
+    loading,
+    errorMessage,
+    totalRecords,
+    keywordInput,
+    appliedKeyword,
+    statusFilter,
+    priorityFilter,
+    sortBy,
+    pageOption,
+    init,
+    initChecked,
+    resetPageAndLoad,
+    applySearch,
+    clearFilters,
+    onPage
+} = useTaskListQuery(props.initialProjectId)
 
 function formatDisplayDate(value) {
     if (!value) return '-'
@@ -530,26 +553,21 @@ function formatDisplayDate(value) {
     }).format(date)
 }
 
-const tasks = ref([])
 const expandedTaskIds = ref(new Set())
 const projects = ref([])
-const { memberMap, loadMembers } = useMembers()
-const selectedProjectId = ref(props.initialProjectId)
-const selectedTasks = ref([])
-const editingRows = ref([])
-const editingCache = ref({})
-const activeEditingId = ref('')
-const teamMemberIdsByProject = ref({})
-const loading = ref(false)
-const errorMessage = ref('')
 const successMessage = ref('')
-const totalRecords = ref(0)
-const dependencies = ref([])
-const keywordInput = ref('')
-const appliedKeyword = ref('')
-const statusFilter = ref('')
-const priorityFilter = ref('')
-const sortBy = ref('sort_order')
+const { memberMap, loadMembers } = useMembers()
+const { editingRows, activeEditingId, onRowEditInit, onRowEditCancel, onRowEditSave } =
+    useTaskRowEditor({
+        tasks,
+        errorMessage,
+        successMessage,
+        initChecked,
+        applyAutoSchedule,
+        loadTeamMemberIds,
+        t
+    })
+const teamMemberIdsByProject = ref({})
 const embedded = computed(() => props.embedded)
 const scheduleModes = computed(() => [
     { label: t('tasks.fixedEffort'), value: 'fixed_effort' },
@@ -559,36 +577,12 @@ const scheduleModes = computed(() => [
 const { dragOverId, onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd, canMove, moveTask } =
     useTaskReordering({
         tasks,
-        reload: init,
+        reload: initChecked,
         loading,
         errorMessage,
         successMessage,
         t
     })
-
-const pageOption = reactive({
-    pageIndex: 1,
-    pageSize: 20,
-    pageOptions: [20, 50, 100],
-    fetchSize: 1000
-})
-
-const newTask = ref({
-    name: '',
-    project_id: '',
-    parent: '',
-    dependence: '',
-    start_time: '',
-    end_time: '',
-    type: '',
-    priority: '',
-    status: '',
-    progress: 0,
-    effort_days: 0,
-    schedule_mode: 'fixed_effort',
-    comment: '',
-    assignee: ''
-})
 
 // 固定
 const taskTypes = computed(() => [
@@ -710,70 +704,8 @@ async function applyAutoSchedule() {
     for (const update of result.updates) {
         await crudAction('task', 'update', update)
     }
-    if (result.updates.length) await init()
+    if (result.updates.length) await initChecked()
     return result
-}
-
-async function init() {
-    loading.value = true
-    errorMessage.value = ''
-    try {
-        const result = await crudAction('task', 'get_all', {
-            pageIndex: selectedProjectId.value ? 1 : pageOption.pageIndex,
-            pageSize: selectedProjectId.value ? pageOption.fetchSize : pageOption.pageSize,
-            projectId: selectedProjectId.value,
-            keyword: appliedKeyword.value,
-            status: statusFilter.value,
-            priority: priorityFilter.value,
-            sortBy: sortBy.value,
-            sortDirection: sortBy.value === 'update_time' ? 'desc' : 'asc'
-        })
-        tasks.value = result?.list || []
-        totalRecords.value = result?.total || 0
-        if (selectedProjectId.value) {
-            const dependencyResult = await crudAction('task_dependency', 'get_all', {
-                projectId: selectedProjectId.value
-            })
-            dependencies.value = dependencyResult?.list || []
-        } else dependencies.value = []
-        tasks.value = tasks.value.map(task => ({
-            ...task,
-            _predecessorIds: dependencies.value
-                .filter(item => item.successor_task_id === task.id)
-                .map(item => item.predecessor_task_id)
-        }))
-    } catch (error) {
-        errorMessage.value = error.message
-    } finally {
-        loading.value = false
-    }
-}
-
-function resetPageAndLoad() {
-    pageOption.pageIndex = 1
-    selectedTasks.value = []
-    init()
-}
-
-function applySearch() {
-    appliedKeyword.value = keywordInput.value.trim()
-    resetPageAndLoad()
-}
-
-function clearFilters() {
-    keywordInput.value = ''
-    appliedKeyword.value = ''
-    statusFilter.value = ''
-    priorityFilter.value = ''
-    sortBy.value = 'sort_order'
-    resetPageAndLoad()
-}
-
-function onPage(event) {
-    if (selectedProjectId.value) return
-    pageOption.pageIndex = event.page + 1
-    pageOption.pageSize = event.rows
-    init()
 }
 
 async function loadProjects() {
@@ -836,117 +768,9 @@ async function addTask() {
     editingRows.value = [newRow]
     activeEditingId.value = newRow.id
     const event = {
-        type: newTask,
         data: newRow
     }
     onRowEditInit(event)
-}
-
-async function saveTask(newTask) {
-    const { id, ...payload } = newTask
-    delete payload._predecessorIds
-    return crudAction('task', 'add', payload)
-}
-
-async function onRowEditSave(event) {
-    const { newData } = event
-    const oldData = editingCache.value[newData.id] || {}
-    const changedFields = {}
-
-    if (newData.name == '') {
-        alert(t('tasks.nameEmpty'))
-        editingRows.value = [newData]
-        return
-    }
-    if (!newData.project_id) {
-        errorMessage.value = t('tasks.mustBelong')
-        editingRows.value = [newData]
-        return
-    }
-
-    errorMessage.value = ''
-    try {
-        if (newData.id.startsWith('NEWTASK:')) {
-            const result = await saveTask(newData)
-            await crudAction('task_dependency', 'set_for_task', {
-                taskId: result.id,
-                predecessorIds: newData._predecessorIds || []
-            })
-        } else {
-            const editableFields = [
-                'project_id',
-                'name',
-                'parent',
-                'dependence',
-                'start_time',
-                'end_time',
-                'type',
-                'priority',
-                'status',
-                'progress',
-                'effort_days',
-                'schedule_mode',
-                'comment',
-                'assignee',
-                'sort_order'
-            ]
-            for (const key of editableFields) {
-                if (newData[key] !== oldData[key]) {
-                    changedFields[key] = newData[key] ?? ''
-                }
-            }
-
-            const dependencyChanged =
-                JSON.stringify(newData._predecessorIds || []) !==
-                JSON.stringify(oldData._predecessorIds || [])
-            if (Object.keys(changedFields).length > 0) {
-                changedFields.id = newData.id
-                await crudAction('task', 'update', changedFields)
-            }
-            if (dependencyChanged) {
-                await crudAction('task_dependency', 'set_for_task', {
-                    taskId: newData.id,
-                    predecessorIds: newData._predecessorIds || []
-                })
-            }
-        }
-
-        await init()
-        const scheduleResult = await applyAutoSchedule()
-        successMessage.value = scheduleResult.updates.length
-            ? t('tasks.savedAndScheduled', { count: scheduleResult.updates.length })
-            : t('tasks.saved')
-        if (scheduleResult.conflicts.length) {
-            errorMessage.value = t('tasks.scheduleConflicts', {
-                count: scheduleResult.conflicts.length
-            })
-        }
-        activeEditingId.value = ''
-    } catch (error) {
-        errorMessage.value = error.message
-        editingRows.value = [newData]
-    }
-}
-
-async function onRowEditInit(event) {
-    await loadTeamMemberIds(event.data.project_id)
-    if (activeEditingId.value.startsWith('NEWTASK:') && activeEditingId.value !== event.data.id) {
-        tasks.value = tasks.value.filter(task => task.id !== activeEditingId.value)
-    }
-    editingRows.value = [event.data]
-    activeEditingId.value = event.data.id
-    editingCache.value[event.data.id] = JSON.parse(JSON.stringify(event.data))
-}
-
-const onRowEditCancel = event => {
-    const { newData } = event
-    if (newData.id.startsWith('NEWTASK:')) {
-        tasks.value = tasks.value.filter(t => t.id !== newData.id)
-        delete editingCache.value[newData.id]
-        activeEditingId.value = ''
-        return
-    }
-    activeEditingId.value = ''
 }
 
 async function deleteTask() {
@@ -965,7 +789,7 @@ async function deleteTask() {
     try {
         await crudAction('task', 'delete', { ids })
         selectedTasks.value = []
-        await init()
+        await initChecked()
         successMessage.value = t('tasks.deleted')
     } catch (error) {
         errorMessage.value = error.message

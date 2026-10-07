@@ -61,6 +61,34 @@ describe('crudAction', () => {
         await expect(crudAction('task', 'update')).rejects.toBe(transportError)
     })
 
+    it('captures one undo snapshot for an atomic task reorder', async () => {
+        enableHistory()
+        mockedInvoke
+            .mockResolvedValueOnce({ success: true, data: { state: 'before-reorder' } })
+            .mockResolvedValueOnce({ success: true, data: {} })
+        await crudAction('task', 'swap_order', { source_id: 'a', target_id: 'b' })
+        expect(mockedInvoke).toHaveBeenCalledTimes(2)
+        expect(mockedInvoke).toHaveBeenNthCalledWith(1, 'crud_action', {
+            model: 'data',
+            action: 'export_json',
+            data: {}
+        })
+        expect(mockedInvoke).toHaveBeenNthCalledWith(2, 'crud_action', {
+            model: 'task',
+            action: 'swap_order',
+            data: { source_id: 'a', target_id: 'b' }
+        })
+        mockedInvoke
+            .mockResolvedValueOnce({ success: true, data: { state: 'after-reorder' } })
+            .mockResolvedValueOnce({ success: true })
+        await expect(undoLastAction()).resolves.toBe('task.swap_order')
+        expect(mockedInvoke).toHaveBeenLastCalledWith('crud_action', {
+            model: 'data',
+            action: 'import_json',
+            data: { payload: { state: 'before-reorder' } }
+        })
+    })
+
     it('keeps undo and redo entries when snapshot export fails', async () => {
         enableHistory()
         mockedInvoke

@@ -181,6 +181,14 @@ pub fn handle_action(
             }
         }
 
+        "swap_order" => {
+            let source_id = data.get("source_id").and_then(Value::as_str).unwrap_or("");
+            let target_id = data.get("target_id").and_then(Value::as_str).unwrap_or("");
+            match task_db::swap_task_order(db, source_id, target_id) {
+                Ok(()) => ApiResponse::ok(Some(serde_json::json!({}))),
+                Err(message) => ApiResponse::err(&message),
+            }
+        }
         "update" => {
             info!("Updating task");
 

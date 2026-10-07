@@ -18,6 +18,8 @@ EasyProject v0.1.0 is the first public candidate of the open-source, local-first
 
 ## Verification status
 
+2026-10-07 source follow-up: task reordering now rejects cross-project drops and uses one validated SQLite transaction for both drag-and-drop and move buttons, with one undo snapshot. Local regression: 96 unit tests, 9 critical-path/performance tests, 17 browser tests and 28 Rust tests pass, alongside lint, type checking, strict Clippy and the production build. The existing 5e7aced draft assets do not include these changes; new-source remote validation must be completed before replacing that candidate.
+
 2026-10-07: candidate `5e7aced` passed all five jobs in Actions `37432253128`. All six assets in draft `404450655` were independently downloaded and matched GitHub sizes/digests, package structures, version0.1.0 and the expected Mac architectures. Windows NSIS/MSI are NotSigned; signing/notarization and actual installation/upgrade/rollback remain unverified. UPARS:29 findings,25 verified fixes,4 open P3. Historical installation tests do not certify this candidate.
 
 - ESLint: passed with zero warnings.

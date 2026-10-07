@@ -594,7 +594,7 @@
 - 已确认设备状态：仅本机开发Windows；无独立干净Windows/Mac ARM/Intel连接确认，当前用户代码签名证书0。未安装/启动候选程序、不触碰数据库、不改系统DNS/代理/CA、不在C盘安装工具；真实安装升级回滚、签名公证仍未验，不具备正式发布条件。
 - 准确下一步：恢复后先读本节、核对Git分支/HEAD/全部状态；查询额度≥10%再开始长期阶段。先查看session43082/六文件是否完整（若会话消失，以官方大小/digest核对），不重复构建或盲目重下；完成后运行固定脚本verify-draft-assets.cjs、Windows两包Authenticode/版本检查；失败仅重取明确损坏/缺失资产。记录六资产证据，统一报告29/25/4和BUILD003关闭，更新验收/RELEASING/Wolai并保存文档。最后仍须处理4P3及有效签名和真实设备矩阵，不宣称正式验收已完成。
 
-## 2026-10-07 六资产复验闭环——最新检查点
+## 2026-10-07 六资产复验闭环
 
 - 目标/范围：全项目UPARS整改复验和正式发布验收，UPARS1.1.0/WACAS未定义/待确认；原main/c0bb322基线，分支codex/audit-release-20261006-api，恢复HEAD a9df642746fa3c6bd982b9f691c80b45c78a20ff，产物源码固定5e7aced868c0e95c9644a68ce88ac1acc7767171。恢复时Git干净；仅文档续接，不重做有效构建。
 - 额度恢复后五小时99%、周47%；完成核验后五小时82%、周44%、重置0，未触及门禁。本项目10%长阶段与5%硬停止永久规范继续有效，无重置/自动唤醒。本阶段等待发布资源不是额度暂停。
@@ -603,3 +603,27 @@
 - 全部未提交6文档：docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。应用/配置/锁文件无新增变化；准备统一文档校验、同树/同SHA提交同步。Wolai先读outline及相关状态块，只更新阶段状态并读回，最终同步结果在Git保存后确认。
 - 未解决：CODE003大组件/BUILD002体积为P3质量债，SEC006宏包未维护/SEC008glib为Linux GTK上游链；不强制跨主版本覆盖或静默接受风险。正式Windows/Apple签名身份、公证、独立Windows与Mac ARM/Intel安装升级回滚证据缺失。10-07只读当前用户代码签名证书与仓库Secrets均0；仅本机开发Windows，无独立设备连接确认。不动用户数据库、系统DNS/代理/证书，不在C盘安装或启动候选。
 - 准确下一步：正式验收需要负责人提供受控签名/公证资源及可验收的干净Windows/Mac环境，并对4P3安排整改或批准最窄范围、带负责人和复查条件的例外；不自动购买、申请身份或公开未验收包。资源确认后先核对最新Git/检查点与额度，再按RELEASING真实设备矩阵执行。源码若有新改动，须生成新候选、门禁与资产，旧5e7aced证据不可冒充新源集；浮窗仍仅记录，未开发。
+
+## 2026-10-07 组件职责拆分与拖放边界——最新检查点
+
+- 目标与范围：继续EP-CODE-003渐进拆分，先独立TaskList拖拽排序职责并整改新增EP-REL-004/P2：onDragOver验证项目，但onDrop仅验证父级；模板.prevent使跨项目根任务仍可进入drop并交换sort_order。UPARS1.1.0；WACAS未定义/待确认。基线main/c0bb3220347f3978f547d0c4841156c648f2711a，当前分支codex/audit-release-20261006-api，HEAD beb7c7dba854d168ab9155a85560a60e334c5d30，恢复时Git干净。
+- 额度：本阶段五小时剩余72%、周43%，重置0；允许开始，永久10%/5%门禁继续生效。
+- 已完成：完整读取适用技能及UPARS正文/模板/机器规则，核对最新检查点、Git与TaskList源码；旧5e7aced候选六资产及82/9/16/25结果仍仅证明旧源集，不覆盖即将发生的修改。此时新增问题尚未整改或复验，CODE003保持open。
+- 全部未提交文件：仅docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md；下一步新增useTaskReordering及单测、集成TaskList、扩展既有局部复杂度门禁，再运行lint/类型/单测/性能/E2E/生产构建与版本检查。不得以搬移代码直接关闭大组件问题；验证失败继续定向整改。
+- 未解决：新增跨项目排序边界、4项P3、正式签名/公证和真实安装升级回滚矩阵。Wolai已同步上一六资产里程碑，本阶段待同步；无新增设备连接确认，仅开发Windows，无签名身份，未安装应用、未触碰用户数据库或系统DNS/代理/CA。所有缓存和临时产物保持E盘。浮窗仅记录。
+
+### 排序第一批复验与原子性整改入口
+
+- EP-REL-004前端修复通过：同项目/父级判断统一用于hover/drop；并发锁、空dataTransfer和失败状态补充10单测及1强制跨项目drop界面回归。全量92单测/9专项/17E2E、lint/类型/构建/版本通过，413模块、原两体积警告；初次测试钩子误返回mock导致超时已修复并全量复验，不增加超时阈值。CODE003仅部分推进，仍open。
+- 新确认EP-REL-005/P2：拖放与按钮排序均以两个独立update执行；第二写入失败时第一可能已提交，造成重复/部分顺序且撤销快照可能竞争。下一步新增后端swap_order事务：同一事务读取并校验同项目同父级、交换两行、失败全部回滚；前端两个入口共用一个调用并纳入撤销历史。用内存SQLite触发器注入第二写入失败证明回滚；不操作用户数据库，不改schema。
+- 长阶段前额度五小时64%、周42%、重置0。全部未提交6路径：docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、eslint.config.js、e2e/smoke.spec.js、src/modules/task/components/TaskList/TaskList.vue、src/modules/task/composables/useTaskReordering.js、`src/__tests__/composables/useTaskReordering.test.js`。计划新增Rust任务DB/service、API历史与demo以及测试；完成后重新全量验证并准确记录全部路径。Wolai阶段同步待完成；设备/签名状态不变，旧候选保持Draft且不覆盖本次源集。
+
+### 原子排序复验里程碑与打包入口
+
+- 两个入口已共用swap_order；后端同一事务查询当前排序并校验项目/父级/有效状态，再交换两行。内存SQLite三项新增测试证明成功交换、跨项目/父级/自身/缺失/已删除拒绝和第二写入失败全部回滚；28 Rust测试与严格Clippy通过。96单测（20文件）、9专项、17E2E、lint/类型/生产构建/版本通过；演示模式边界和一次撤销快照覆盖。新增代码曾有ApiResponse返回类型编译错误和测试InvokeArgs类型错误，均定向修复后复验通过，未关闭检查。EP-REL-004/005本地关闭；CODE003仍open，TaskList已移除约90行重复排序职责，Gantt及其他职责仍待拆分。
+- 全部未提交12路径：docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、eslint.config.js、e2e/smoke.spec.js、src-tauri/src/db/task_db.rs、src-tauri/src/services/task_service.rs、`src/__tests__/api/crudAction.test.js`、`src/__tests__/api/demoReordering.test.js`、`src/__tests__/composables/useTaskReordering.test.js`、src/api/demo.js、src/api/index.js、src/modules/task/components/TaskList/TaskList.vue、src/modules/task/composables/useTaskReordering.js。基线/HEAD仍beb7c7d；Wolai待里程碑同步。
+- 打包前额度五小时60%、周41%，重置0。准确下一步：E盘离线缓存构建NSIS并记录大小/版本/哈希/签名，统一报告31项/P0=0/P1=2/P2=19/P3=10、27fixed/4P3open；保存Git与Wolai检查点，然后继续大组件职责拆分。旧5e候选保持历史证据，当前新源集尚无远程候选/六平台资产。签名/真实设备缺口、无用户数据操作状态不变；UPARS无需新增条款（事务一致性已被现有数据域覆盖）。
+
+- 后续打包闭环：新NSIS5185831字节，SHA256 C7FF3849877D9D2D33645EE524A38418DE8788741428F0E796FD850E8B61E228，0.1.0/NotSigned；构建退出0，未安装或启动。Rustfmt、UPARS1.1.0脚本、Git diff --check通过；报告和发布/整改文档已统一31/27/4并明确新旧源集证据边界。保存前五小时58%、周41%、重置0。
+- 全部未提交17路径：上述12路径加docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md。准备保存同一分支阶段提交并精确同树/同SHA、非强制同步；Wolai已重读outline及状态块，待本里程碑替换读回。无新增设备连接/签名资源，缓存E盘。
+- 准确下一步：继续CODE003中的Gantt计划基线职责拆分；检查发现loadBaseline吞掉请求错误，saveBaseline在读回失败后仍报成功，需以独立finding登记并用失败用例整改，不直接搬移缺陷。新代码开始前再次保存范围/额度，完成后回归；新候选远程打包安排在该批源码稳定之后，避免重复构建。正式发布仍不可验收。

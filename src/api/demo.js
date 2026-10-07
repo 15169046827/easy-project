@@ -163,5 +163,22 @@ export async function demoAction(model, action, data = {}) {
         if (item) Object.assign(item, data)
         return item ? structuredClone(item) : null
     }
+    if (model === 'task' && action === 'swap_order') {
+        const source = tasks.find(task => task.id === data.source_id)
+        const target = tasks.find(task => task.id === data.target_id)
+        if (
+            !source ||
+            !target ||
+            source === target ||
+            source.project_id !== target.project_id ||
+            (source.parent || '') !== (target.parent || '')
+        ) {
+            throw new Error('Only sibling tasks in the same project can be reordered')
+        }
+        const order = source.sort_order
+        source.sort_order = target.sort_order
+        target.sort_order = order
+        return {}
+    }
     return null
 }

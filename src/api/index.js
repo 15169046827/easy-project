@@ -13,6 +13,7 @@ export const canRedo = ref(false)
 const mutationActions = new Set([
     'add',
     'update',
+    'swap_order',
     'delete',
     'save',
     'clear',

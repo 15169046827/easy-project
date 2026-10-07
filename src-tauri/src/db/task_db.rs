@@ -16,6 +16,60 @@ pub struct TaskQuery<'a> {
     pub sort_direction: &'a str,
 }
 
+pub fn swap_task_order(
+    db: &State<DbState>,
+    source_id: &str,
+    target_id: &str,
+) -> Result<(), String> {
+    let mut conn = db.lock_connection().map_err(|error| error.to_string())?;
+    swap_task_order_connection(&mut conn, source_id, target_id)
+}
+
+fn swap_task_order_connection(
+    conn: &mut rusqlite::Connection,
+    source_id: &str,
+    target_id: &str,
+) -> Result<(), String> {
+    if source_id.is_empty() || target_id.is_empty() || source_id == target_id {
+        return Err("Two different task IDs are required".to_string());
+    }
+    let transaction = conn.transaction().map_err(|error| error.to_string())?;
+    let relation = |id: &str| {
+        transaction
+            .query_row(
+                "SELECT COALESCE(project_id, ''), COALESCE(parent, ''), COALESCE(sort_order, 0)
+             FROM task WHERE id = ?1 AND stateflag = '0'",
+                [id],
+                |row| {
+                    Ok((
+                        row.get::<_, String>(0)?,
+                        row.get::<_, String>(1)?,
+                        row.get::<_, i64>(2)?,
+                    ))
+                },
+            )
+            .map_err(|error| error.to_string())
+    };
+    let source = relation(source_id)?;
+    let target = relation(target_id)?;
+    if source.0 != target.0 || source.1 != target.1 {
+        return Err("Only sibling tasks in the same project can be reordered".to_string());
+    }
+    for (id, order) in [(source_id, target.2), (target_id, source.2)] {
+        let changed = transaction
+            .execute(
+                "UPDATE task SET sort_order = ?1, update_time = datetime('now', 'localtime')
+             WHERE id = ?2 AND stateflag = '0'",
+                params![order, id],
+            )
+            .map_err(|error| error.to_string())?;
+        if changed != 1 {
+            return Err("The task is no longer available".to_string());
+        }
+    }
+    transaction.commit().map_err(|error| error.to_string())
+}
+
 pub fn insert_task(db: &State<DbState>, p: &NewTask) -> rusqlite::Result<()> {
     let mut conn = db.lock_connection()?;
     let transaction = conn.transaction()?;
@@ -326,4 +380,74 @@ pub fn tasks_have_active_children(db: &State<DbState>, ids: &[String]) -> rusqli
     );
     let count: u64 = conn.query_row(&sql, params_from_iter(ids), |row| row.get(0))?;
     Ok(count > 0)
+}
+
+#[cfg(test)]
+mod reorder_tests {
+    use super::*;
+
+    fn database() -> rusqlite::Connection {
+        let conn = rusqlite::Connection::open_in_memory().unwrap();
+        conn.execute_batch(
+            "CREATE TABLE task (id TEXT PRIMARY KEY, project_id TEXT, parent TEXT,
+             sort_order INTEGER, stateflag TEXT DEFAULT '0', update_time TEXT);
+             INSERT INTO task (id, project_id, parent, sort_order) VALUES
+             ('a', 'p1', '', 1), ('b', 'p1', '', 2),
+             ('c', 'p2', '', 3), ('d', 'p1', 'a', 4);
+             INSERT INTO task (id, project_id, parent, sort_order, stateflag)
+             VALUES ('deleted', 'p1', '', 5, '1');",
+        )
+        .unwrap();
+        conn
+    }
+
+    fn orders(conn: &rusqlite::Connection) -> Vec<i64> {
+        conn.prepare("SELECT sort_order FROM task ORDER BY id")
+            .unwrap()
+            .query_map([], |row| row.get(0))
+            .unwrap()
+            .collect::<rusqlite::Result<Vec<_>>>()
+            .unwrap()
+    }
+
+    #[test]
+    fn swaps_siblings_in_one_transaction() {
+        let mut conn = database();
+        swap_task_order_connection(&mut conn, "a", "b").unwrap();
+        assert_eq!(orders(&conn), vec![2, 1, 3, 4, 5]);
+    }
+
+    #[test]
+    fn rejects_invalid_or_unavailable_pairs_without_writes() {
+        let mut conn = database();
+        let original = orders(&conn);
+        for (source, target) in [
+            ("a", "c"),
+            ("a", "d"),
+            ("a", "a"),
+            ("", "b"),
+            ("a", "missing"),
+            ("a", "deleted"),
+        ] {
+            assert!(swap_task_order_connection(&mut conn, source, target).is_err());
+            assert_eq!(orders(&conn), original);
+        }
+    }
+
+    #[test]
+    fn rolls_back_first_write_when_second_write_fails() {
+        let mut conn = database();
+        conn.execute_batch(
+            "CREATE TRIGGER fail_second BEFORE UPDATE ON task
+            WHEN OLD.id = 'b' BEGIN SELECT RAISE(ABORT, 'injected failure'); END;",
+        )
+        .unwrap();
+        let original = orders(&conn);
+        assert!(swap_task_order_connection(&mut conn, "a", "b").is_err());
+        assert_eq!(orders(&conn), original);
+        assert!(
+            conn.is_autocommit(),
+            "failed transaction must release its resources"
+        );
+    }
 }

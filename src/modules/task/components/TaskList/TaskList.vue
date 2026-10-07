@@ -502,6 +502,7 @@ import { crudAction } from '../../../../api'
 import DateTimePickerString from './components/DateTimePickerString.vue'
 import MemberSelect from '../../../member/components/MemberSelect.vue'
 import { useMembers } from '../../../../composables/useMembers'
+import { useTaskReordering } from '../../composables/useTaskReordering.js'
 import { avatarBg, avatarInitial } from '../../../../composables/useAvatar'
 import {
     calculateEndDate,
@@ -509,12 +510,7 @@ import {
     dateKey
 } from '../../../calendar/utils/workCalendar.js'
 import { calculateDependencySchedule } from '../../../calendar/utils/scheduling.js'
-import {
-    canMoveTask,
-    flattenTaskTree,
-    getParentOptions,
-    getTaskSiblings
-} from '../../utils/taskTree.js'
+import { flattenTaskTree, getParentOptions } from '../../utils/taskTree.js'
 
 const props = defineProps({
     initialProjectId: { type: String, default: '' },
@@ -560,60 +556,15 @@ const scheduleModes = computed(() => [
     { label: t('tasks.fixedDates'), value: 'fixed_dates' }
 ])
 
-// 拖拽排序状态
-const draggingTask = ref(null)
-const dragOverId = ref(null)
-
-function getSiblings(task) {
-    const parentId = task.parent
-    return visibleTasks.value.filter(t => t.parent === parentId && t.project_id === task.project_id)
-}
-
-function onDragStart(event, task) {
-    draggingTask.value = task
-    event.dataTransfer.effectAllowed = 'move'
-    event.dataTransfer.setData('text/plain', task.id)
-}
-
-function onDragOver(event, task) {
-    if (!draggingTask.value || draggingTask.value.id === task.id) return
-    if (draggingTask.value.parent !== task.parent) return
-    if (draggingTask.value.project_id !== task.project_id) return
-    event.dataTransfer.dropEffect = 'move'
-    dragOverId.value = task.id
-}
-
-function onDragLeave(task) {
-    if (dragOverId.value === task.id) dragOverId.value = null
-}
-
-async function onDrop(targetTask) {
-    dragOverId.value = null
-    if (!draggingTask.value || draggingTask.value.id === targetTask.id) return
-    if (draggingTask.value.parent !== targetTask.parent) return
-
-    const src = draggingTask.value
-    loading.value = true
-    errorMessage.value = ''
-    try {
-        await Promise.all([
-            crudAction('task', 'update', { id: src.id, sort_order: targetTask.sort_order }),
-            crudAction('task', 'update', { id: targetTask.id, sort_order: src.sort_order })
-        ])
-        await init()
-        successMessage.value = t('tasks.reordered', { name: src.name })
-    } catch (error) {
-        errorMessage.value = error.message
-    } finally {
-        loading.value = false
-        draggingTask.value = null
-    }
-}
-
-function onDragEnd() {
-    draggingTask.value = null
-    dragOverId.value = null
-}
+const { dragOverId, onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd, canMove, moveTask } =
+    useTaskReordering({
+        tasks,
+        reload: init,
+        loading,
+        errorMessage,
+        successMessage,
+        t
+    })
 
 const pageOption = reactive({
     pageIndex: 1,
@@ -712,36 +663,6 @@ function getTaskName(taskId) {
 
 function parentOptions(task) {
     return getParentOptions(tasks.value, task)
-}
-
-function taskSiblings(task) {
-    return getTaskSiblings(tasks.value, task)
-}
-
-function canMove(task, direction) {
-    return canMoveTask(tasks.value, task, direction)
-}
-
-async function moveTask(task, direction) {
-    const siblings = taskSiblings(task)
-    const index = siblings.findIndex(candidate => candidate.id === task.id)
-    const target = siblings[index + direction]
-    if (!target) return
-
-    loading.value = true
-    errorMessage.value = ''
-    try {
-        await Promise.all([
-            crudAction('task', 'update', { id: task.id, sort_order: target.sort_order }),
-            crudAction('task', 'update', { id: target.id, sort_order: task.sort_order })
-        ])
-        await init()
-        successMessage.value = t('tasks.orderSaved')
-    } catch (error) {
-        errorMessage.value = error.message
-    } finally {
-        loading.value = false
-    }
 }
 
 function formatDateToString(date) {

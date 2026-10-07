@@ -228,6 +228,59 @@ test('opens the all-task page without applying a project filter', async ({ page 
     expect(taskCalls.some(({ args }) => !args.data.projectId)).toBe(true)
 })
 
+test('rejects a cross-project drop even when the template prevents dragover defaults', async ({
+    page
+}) => {
+    const secondTask = {
+        ...fixtures.task[0],
+        id: 'task-2',
+        project_id: 'project-2',
+        name: 'Other project task',
+        sort_order: 9
+    }
+    await page.addInitScript(extraTask => {
+        const invoke = window.__TAURI_INTERNALS__.invoke
+        window.__TAURI_INTERNALS__.invoke = async (command, args) => {
+            const result = await invoke(command, args)
+            if (command === 'crud_action' && args.model === 'task' && args.action === 'get_all') {
+                const response =
+                    /** @type {{success: boolean, data: {list: object[], total: number}}} */ (
+                        result
+                    )
+                return {
+                    ...response,
+                    data: {
+                        list: [...response.data.list, extraTask],
+                        total: response.data.total + 1
+                    }
+                }
+            }
+            return result
+        }
+    }, secondTask)
+    await page.goto('/#/tasks')
+    const source = page.locator('.task-tree-name').filter({ hasText: 'Design milestone' })
+    const target = page.locator('.task-tree-name').filter({ hasText: 'Other project task' })
+    await expect(source).toBeVisible()
+    await expect(target).toBeVisible()
+    const transfer = await page.evaluateHandle(() => new DataTransfer())
+    await source.dispatchEvent('dragstart', { dataTransfer: transfer })
+    await target.dispatchEvent('dragover', { dataTransfer: transfer })
+    await expect(target).not.toHaveClass(/drag-over/)
+    // Force the drop handler to run: rejecting hover alone is insufficient.
+    await target.dispatchEvent('drop', { dataTransfer: transfer })
+    await source.dispatchEvent('dragend', { dataTransfer: transfer })
+    expect(
+        await page.evaluate(() =>
+            window.__EASY_PROJECT_CALLS__.filter(
+                ({ args }) =>
+                    args.model === 'task' && ['update', 'swap_order'].includes(args.action)
+            )
+        )
+    ).toEqual([])
+    await transfer.dispose()
+})
+
 test('changes a task assignee from the Gantt editor', async ({ page }) => {
     await page.goto('/#/project/project-1')
     await page.locator('.view-switch button').nth(1).click()

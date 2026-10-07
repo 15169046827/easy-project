@@ -749,3 +749,19 @@
 - 最新远程五job全部success：validate4m9s、rust-security2m43s、Windows3m22s、ARM2m9s、Intel4m20s；run37572579794结束退出0，新Draft405384157仍draft/target完整ae6c、6资产。现在开始一次独立六资产下载，完整摘要/结构/版本/签名尚待核对；不得把job成功自动当真实设备验收通过。
 
 - 安全实际新job输出：525依赖，退出success；仅proc-macro-error1.0.4/RUSTSEC-2024-0370未维护及glib0.18.5/RUSTSEC-2024-0429 unsound两信息性发现，无新漏洞/撤包失败。独立下载session34168仍运行，已出现5个部分文件，不能当有效安装包；网络较慢但未失败，不重复下载/修改网络配置。五小时24%、周88%、重置0（进入资产阶段实查）。准确下一步等待同一下载会话完成，再运行绑定ae6c/405384157/37572579794的只读核验器和Windows两包签名/版本核验；全部成功后更新报告/资产表/最终状态、保存Git并Wolai读回。六文档未提交不含代码，源集不变，签名与真实设备缺口保持。
+
+- 进度文档已提交f3fa3c446a14e9cfb3b33c162d5e05c52d1ad658/tree2e5fae7a5f900fd1fa4c1398368191499eb1f043，精确非强制同步成功，源码候选仍ae6c；Wolai此Git及产物阶段状态已读回。发布下载较慢但五部分文件持续增长，不重启现有session34168。对尚未开始的MSI尝试同一成功工作流备份，artifact11461528048/easyproject-0.1.0-windows-x64-msi下载session21917已退出0；文件位于E盘workflow-37572579794-msi/EasyProject_0.1.0_x64_en-US.msi，6864896字节/SHA256 893FFDC28B231F3785DB2A39B8E9D9AAA418E2D4F66B2015EB4E1BC82F708EB4，与Draft官方MSI大小/digest完全相同。不用该备份冒充其它包通过，原六资产校验仍待其余下载。当前全部未提交仅此检查点，未操作网络/系统/用户数据。
+
+### 新六资产独立验收完成
+
+- 已确认前五包完整传输后，停止自己发起的session34168冗余MSI传输（主动中止退出1，不是产品失败）；其部分文件保存在E盘workflow-37572579794-msi/redundant-release-msi.partial，未删除。以同一run官方MSI备份（已确认发布页同大小/同SHA）复制为发布规范文件名。只读核验器绑定ae6c/405384157/37572579794退出0：六资产全部大小/官方digest/独立SHA匹配，Mac app安全tar路径、0.1.0及ARM/Intel Mach-O CPU通过，DMG仅独立核验UDIF容器（不声称已挂载验证内部应用）；Windows NSIS PE/0.1.0/NotSigned，MSI复合容器/只读ProductVersion0.1.0/NotSigned。未安装或运行任何安装资产。
+- 来源：源码ae6c1c3a5e2d326e9b11941c3ff23aae682361f3/tree23ffcfdaf9460c72e057b37508868e79494365e5，五job run37572579794均success；新Draft405384157仍未公开、六资产，旧404450655/v0.1.0-audit-5e7aced六资产保留不变。Git文档HEADf3fa3c446a14e9cfb3b33c162d5e05c52d1ad658，同分支。当前仅本检查点未提交，报告/四发布整改文档与Wolai待将“下载待验”替换为此已验证结论。
+- 目标与标准、原main/c0bb322基线不变：UPARS1.1.0/WACAS未定义待确认；累计171文本输入+24资源（资源不冒充像素验收），37项/P0=0/P1=2/P2=25/P3=10，34fixed/3P3open，P0/P1/P2未关闭0。170单测/9专项/22E2E/28Rust、lint/类型/fmt/严格Clippy/构建/版本/标准通过，官方npm全量/生产0，当前远程RustSec门禁success仍两既有信息性。CODE003已闭环；BUILD002两体积警告和SEC006/008仍未关闭/批准例外，因此代码审计暂不通过；正式签名公证及干净Windows/Mac ARM/Intel安装升级数据保留回滚仍缺，正式发布不可通过。
+- 准确下一步更新六文档和资产表、保存Git精确非强制同步、Wolai读回；随后需要发布负责人提供签名/公证及真实验收资源，并对三个P3余项作技术整改或逐项明确风险控制/责任/复审条件。仅确认开发Windows环境，无新设备连接/签名身份，未触碰用户DB/系统DNS代理CA，不在C盘安装。没有新增UPARS条款、没有额度重置或自动唤醒。
+
+### 额度门禁暂停检查点（2026-10-07）
+
+- 五小时剩余9%、周86%、重置0，低于长期10%门禁；不再开启新长期阶段，完成必要进度保存后暂停，等待用户额度恢复提醒。目标仍为完整审计整改/复验与正式发布验收，UPARS1.1.0/WACAS未定义待确认，原main/c0bb322基线、codex/audit-release-20261006-api分支不变。
+- 本地六文档已记录37项/34fixed/3P3open、171自有文本输入及24资源边界、170/9/22/28测试、新ae6c源集五job与六资产独立核验通过，并附RELEASING六资产官方大小/SHA表。格式、UPARS校验、Git diff --check通过。源码ae6c不变；保存前HEADf3fa3c4，全部未提交6路径：docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。仅将已完成证据保存提交/精确非强制同步，再将本暂停检查点同步Wolai读回；不启动新修改或远程构建。
+- 源码候选ae6c1c3a5e2d326e9b11941c3ff23aae682361f3/tree23ffcfdaf9460c72e057b37508868e79494365e5；Actions37572579794五job成功，新Draft405384157六资产未公开。代码审计暂不通过（BUILD002体积警告、SEC006/008两个Linux信息性未闭环/批准例外），正式发布不可通过（签名、公证及干净Windows/Mac ARM/Intel安装升级数据保留回滚未验）。仅开发Windows确认，无新增设备连接或签名身份；未安装运行新包、不改用户DB/系统设置，冗余MSI部分文件已保留可恢复，当前所有下载/预览自有会话结束。
+- 恢复后的准确下一步：先读本检查点、查Git与六文档，核对保存提交/远程HEAD及Wolai读回；不重复已完成的170/9/22/28或五job/六资产（除必要最终复验）。评估三个P3的可安全整改/逐项风险控制，并由发布负责人提供签名公证和真实设备验收资源；未经新指示不公开未签名草稿、不购买证书、不重置额度或定时唤醒。本轮无新增通用标准补充。

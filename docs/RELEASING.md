@@ -1,6 +1,6 @@
 # EasyProject release process
 
-2026-10-07 source follow-up: task reordering is atomic and project-scoped; baseline readback, drag cleanup, task query isolation and creation retries are corrected. Gantt viewport/navigation/task dragging and project data loading have separate tested responsibilities. Current gates: 170 unit tests, 9 performance tests, 22 browser tests, lint, type checking, production build (430 modules) and release metadata pass. Rust 28/fmt/strict Clippy and official full/production npm audits (zero findings) passed final verification. UPARS: 37 findings, 34 fixed, 3 open P3. CODE003 is closed with tested responsibility boundaries; the two original chunk warnings and two Linux-only dependency informational findings remain visible. The old dee97ed local installer and 5e7aced remote draft assets do not cover this source; candidate ae6c1c3 has a verified local unsigned NSIS; run 37572579794 and draft 405384157 are in progress, with six new assets and platform acceptance pending. Dependency drag now resolves stable task IDs and uses an independently clickable link handle; a real two-task mouse-drag regression passes.
+2026-10-07 source follow-up: task reordering is atomic and project-scoped; baseline readback, drag cleanup, task query isolation and creation retries are corrected. Gantt viewport/navigation/task dragging and project data loading have separate tested responsibilities. Current gates: 170 unit tests, 9 performance tests, 22 browser tests, lint, type checking, production build (430 modules) and release metadata pass. Rust 28/fmt/strict Clippy and official full/production npm audits (zero findings) passed final verification. UPARS: 37 findings, 34 fixed, 3 open P3. CODE003 is closed with tested responsibility boundaries; the two original chunk warnings and two Linux-only dependency informational findings remain visible. The old dee97ed local installer and 5e7aced remote draft assets do not cover this source; candidate ae6c1c3 has a verified local unsigned NSIS; run 37572579794 passed all five jobs; all six assets in draft 405384157 independently match official sizes/digests, containers and Mac app versions/architectures. Windows packages are NotSigned and real-device acceptance remains pending. Dependency drag now resolves stable task IDs and uses an independently clickable link handle; a real two-task mouse-drag regression passes.
 
 ## Current output
 
@@ -124,9 +124,22 @@ After signing is enabled, validate the Windows Authenticode signature and macOS 
 
 ## Current audit candidate — 2026-10-07
 
-Source `ae6c1c3a5e2d326e9b11941c3ff23aae682361f3`, tree `23ffcfdaf9460c72e057b37508868e79494365e5`, is the immutable candidate for run `37572579794` and unsigned Draft `405384157` (`v0.1.0`). The run is still in progress; its five jobs and six new assets have not yet been accepted. Historical Draft `404450655` now uses `v0.1.0-audit-5e7aced`, retaining all six asset IDs/sizes/digests unchanged. Nothing has been published.
+Source `ae6c1c3a5e2d326e9b11941c3ff23aae682361f3`, tree `23ffcfdaf9460c72e057b37508868e79494365e5`, is the immutable candidate for run `37572579794` and unsigned Draft `405384157` (`v0.1.0`). The run passed all five jobs; all six new assets were independently verified against official sizes/digests, containers and Mac app versions/architectures (DMG container only, not mounted payload). Historical Draft `404450655` now uses `v0.1.0-audit-5e7aced`, retaining all six asset IDs/sizes/digests unchanged. Nothing has been published.
 
 The local NSIS build for this source passed: 5,187,629 bytes, SHA-256 `2AAF183D1A17851EC9DBF7EEF5F319413FCA1E279C7AD6A2222E30C1436533D6`, ProductVersion `0.1.0`, Authenticode `NotSigned`. It was inspected only, not installed. Final local gates: 170 unit tests, 9 performance tests, 22 browser tests, 28 Rust tests, strict Clippy, Rustfmt, lint, type checks, build and release metadata passed. Official full/production npm audits both returned zero findings with strict TLS. Two chunk warnings and two Linux-only informational dependency findings remain; signing/notarization and the clean-device acceptance matrix are still unverified.
+
+### Independently verified six assets
+
+| Asset                                         |     Bytes | SHA-256                                                            |
+| --------------------------------------------- | --------: | ------------------------------------------------------------------ |
+| `EasyProject_0.1.0_darwin_aarch64.app.tar.gz` | 6,881,548 | `198036a541a789079ad17e01e31b5bb3c12657f2c501c21412109baa423689d4` |
+| `EasyProject_0.1.0_darwin_aarch64.dmg`        | 6,983,693 | `112359a3060a902576e978c375d36fc45736ccc4d82e44cf4173fcdfd31a004e` |
+| `EasyProject_0.1.0_darwin_x64.app.tar.gz`     | 7,104,362 | `590d3cd94a557adcd1914fd5b91d3c7181f834086a7b87e622dbe7178fd4703e` |
+| `EasyProject_0.1.0_darwin_x64.dmg`            | 7,199,477 | `25d29af59bb140fa171702b91d9e42606fba7ef340080a62bf6e8d3f1e3516bf` |
+| `EasyProject_0.1.0_windows_x64-setup.exe`     | 5,149,154 | `0317252673a2f0ef94f74fa7a8713f68d8bf46a42260412736058721de66a1c2` |
+| `EasyProject_0.1.0_windows_x64.msi`           | 6,864,896 | `893ffdc28b231f3785db2a39b8e9d9aaa418e2d4f66b2015eb4e1bc82f708eb4` |
+
+MSI was obtained from the same successful workflow artifact and matched the release digest exactly; the redundant partial release download was retained, not deleted. All six files are in the isolated E-drive `src-tauri/target/audit-tools/release-37572579794` directory. Both Windows packages report version 0.1.0 and `NotSigned`. Mac app archives passed path, version and Mach-O CPU checks; DMG payloads were not mounted or run. This is static artifact acceptance, not formal release acceptance.
 
 ## Release notes checklist
 

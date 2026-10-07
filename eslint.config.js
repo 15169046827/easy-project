@@ -39,7 +39,14 @@ export default [
             'src/modules/gantt/composables/useDocumentDragListeners.js',
             'src/modules/task/composables/useTaskListQuery.js',
             'src/modules/task/composables/useTaskRowEditor.js',
-            'src/modules/task/utils/taskRowPersistence.js'
+            'src/modules/task/utils/taskRowPersistence.js',
+            'src/modules/gantt/utils/viewportCalendar.js',
+            'src/modules/gantt/composables/useGanttViewport.js',
+            'src/modules/gantt/composables/useGanttNavigation.js',
+            'src/modules/gantt/composables/useGanttTaskDragging.js',
+            'src/modules/gantt/composables/useGanttProjectData.js',
+            'src/modules/gantt/components/GanttView.vue',
+            'src/modules/task/components/TaskList/TaskList.vue'
         ],
         rules: {
             complexity: ['error', 20],

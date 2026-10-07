@@ -488,7 +488,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import Button from 'primevue/button'
 import Select from 'primevue/select'
 import { useI18n } from 'vue-i18n'
@@ -500,12 +500,16 @@ import { usePlanBaseline } from '../composables/usePlanBaseline.js'
 import { useGanttCreateEditor } from '../composables/useGanttCreateEditor.js'
 import { useGanttEditEditor } from '../composables/useGanttEditEditor.js'
 import { useDocumentDragListeners } from '../composables/useDocumentDragListeners.js'
+import { useGanttViewport } from '../composables/useGanttViewport.js'
+import { useGanttNavigation } from '../composables/useGanttNavigation.js'
+import { useGanttTaskDragging } from '../composables/useGanttTaskDragging.js'
+import { useGanttProjectData } from '../composables/useGanttProjectData.js'
 import {
     baselineDeviation,
     baselineBarStyle,
     baselineTooltip
 } from '../utils/baselinePresentation.js'
-import { countWorkingDays, dateKey, getWorkdayInfo } from '../../calendar/utils/workCalendar.js'
+import { dateKey } from '../../calendar/utils/workCalendar.js'
 import { calculateDependencySchedule } from '../../calendar/utils/scheduling.js'
 import { taskAvailabilityConflict } from '../../calendar/utils/memberAvailability.js'
 import {
@@ -523,19 +527,20 @@ const props = defineProps({
     embedded: { type: Boolean, default: false }
 })
 
-const projects = ref([])
-const tasks = ref([])
-const dependencies = ref([])
-const projectMemberIds = ref([])
 const projectId = ref(props.initialProjectId)
-const embedded = computed(() => props.embedded)
-const activeProject = computed(() => projects.value.find(item => item.id === projectId.value) || {})
-const loading = ref(false)
 const message = ref('')
 const messageType = ref('success')
+const { projects, tasks, dependencies, projectMemberIds, loading, load, loadChecked } =
+    useGanttProjectData({
+        projectId,
+        message,
+        messageType,
+        initViewRange: () => initViewRange(),
+        loadBaseline: () => loadBaseline()
+    })
+const embedded = computed(() => props.embedded)
+const activeProject = computed(() => projects.value.find(item => item.id === projectId.value) || {})
 const scroller = ref(null)
-const dragState = ref(null) // { task, mode:'move'|'resize-left'|'resize-right', startX, origStart:Date, origEnd:Date }
-const dragCursorX = ref(0)
 const createDrag = ref(null) // { startX, startIdx:number, endIdx:number }  day index range
 const {
     creatingTask,
@@ -547,7 +552,7 @@ const {
     recalculateCreateEffort,
     closeCreateEditor,
     saveCreate
-} = useGanttCreateEditor({ projectId, activeProject, message, messageType, load, t })
+} = useGanttCreateEditor({ projectId, activeProject, message, messageType, load: loadChecked, t })
 const {
     editingTask,
     editForm,
@@ -556,23 +561,23 @@ const {
     recalculateEditEffort,
     closeEditor,
     saveEdit
-} = useGanttEditEditor({ activeProject, message, messageType, load, applyAutoSchedule, t })
+} = useGanttEditEditor({
+    activeProject,
+    message,
+    messageType,
+    load: loadChecked,
+    applyAutoSchedule,
+    t
+})
 const linking = ref(null) // { fromTask, cursorX, cursorY, ganttRect }
 const showCritical = ref(false) // 关键路径高亮开关
 
 // 布局常量
-const dayWidth = ref(42)
 const nameWidth = 280
 const rowHeight = 48
 const monthHeaderH = 24
 const dayHeaderH = 38
 const headerHeight = monthHeaderH + dayHeaderH // 62
-const zoomLevel = computed(() => {
-    const v = dayWidth.value
-    if (v >= 36) return t('gantt.zoomDay')
-    if (v >= 18) return t('gantt.zoomWeek')
-    return t('gantt.zoomMonth')
-})
 
 // 清空消息
 function clearMessage() {
@@ -582,8 +587,8 @@ function clearMessage() {
 // 手动刷新（带反馈）
 async function reload() {
     message.value = ''
-    await load()
-    if (!message.value) {
+    const loaded = await load()
+    if (loaded && !message.value) {
         messageType.value = 'success'
         message.value = t('gantt.dataRefreshed')
     }
@@ -597,6 +602,30 @@ const parse = value => {
 const dayStart = date => new Date(date.getFullYear(), date.getMonth(), date.getDate())
 const format = date =>
     `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} 00:00:00`
+const viewport = useGanttViewport({ tasks, activeProject, parse, dayStart, t })
+const { dayWidth, days, months, zoomLevel, offset, initViewRange } = viewport
+const { scrollToday, scrollDays, onWheel } = useGanttNavigation({
+    scroller,
+    viewport,
+    nameWidth,
+    message,
+    messageType,
+    t,
+    clearMessage,
+    dayStart
+})
+const { dragState, dragCursorX, onBarMouseDown } = useGanttTaskDragging({
+    dayWidth,
+    openEditor,
+    activeProject,
+    parse,
+    format,
+    message,
+    messageType,
+    t,
+    load: loadChecked,
+    applyAutoSchedule
+})
 function taskSchedule(task) {
     let start = parse(task.start_time)
     let end = parse(task.end_time)
@@ -617,67 +646,6 @@ function fmtShortRange(task) {
     return `${s.getMonth() + 1}/${s.getDate()} – ${e.getMonth() + 1}/${e.getDate()}`
 }
 
-// ---------- 日期范围 ----------
-const viewRange = ref({ start: new Date(), end: new Date() })
-
-function initViewRange() {
-    const dates = tasks.value.flatMap(t => [parse(t.start_time), parse(t.end_time)]).filter(Boolean)
-    const timestamps = dates.map(date => date.getTime())
-    const start = timestamps.length ? new Date(Math.min(...timestamps)) : new Date()
-    const end = timestamps.length ? new Date(Math.max(...timestamps)) : new Date()
-    start.setDate(start.getDate() - 3)
-    end.setDate(end.getDate() + 7)
-    const minimumEnd = new Date(start)
-    minimumEnd.setDate(minimumEnd.getDate() + 34)
-    if (end < minimumEnd) end.setTime(minimumEnd.getTime())
-    viewRange.value = { start: dayStart(start), end: dayStart(end) }
-}
-
-// ---------- 天列表 ----------
-const todayStart = dayStart(new Date()).getTime()
-const days = computed(() => {
-    const result = []
-    for (
-        let d = new Date(viewRange.value.start);
-        d <= viewRange.value.end;
-        d.setDate(d.getDate() + 1)
-    ) {
-        const copy = new Date(d)
-        const workday = getWorkdayInfo(copy, activeProject.value)
-        result.push({
-            key: copy.toISOString(),
-            day: copy.getDate(),
-            weekday: copy.toLocaleDateString(undefined, { weekday: 'short' }),
-            today: dayStart(copy).getTime() === todayStart,
-            working: workday.working,
-            name: workday.name
-        })
-    }
-    return result
-})
-
-// ---------- 月分组 ----------
-const months = computed(() => {
-    const result = []
-    let current = null
-    for (const day of days.value) {
-        const date = new Date(day.key)
-        const key = `${date.getFullYear()}-${date.getMonth()}`
-        const label = t('gantt.monthFormat', {
-            year: date.getFullYear(),
-            month: date.getMonth() + 1
-        })
-        if (!current || current.key !== key) {
-            current = { key, label, count: 1, containsToday: day.today }
-            result.push(current)
-        } else {
-            current.count++
-            if (day.today) current.containsToday = true
-        }
-    }
-    return result
-})
-
 // ---------- 含日期的任务 ----------
 const datedTasks = computed(() => {
     const source = tasks.value.filter(t => parse(t.start_time) && parse(t.end_time))
@@ -693,9 +661,6 @@ const datedTasks = computed(() => {
     }
     return source.map(t => ({ ...t, level: level(t) }))
 })
-
-const offset = date =>
-    Math.round((dayStart(date).getTime() - viewRange.value.start.getTime()) / 86400000)
 
 function barStyle(task) {
     const ds = dragState.value
@@ -816,41 +781,12 @@ const baselineStyle = task =>
 const baselineTip = task =>
     baselineTooltip(baselineMap.value.get(task.id), task, baselineInfo(task), t)
 
-// ---------- 数据加载 ----------
-async function load() {
-    if (!projectId.value) return
-    loading.value = true
-    try {
-        const [t, d, p, pm] = await Promise.all([
-            crudAction('task', 'get_all', {
-                pageIndex: 1,
-                pageSize: 1000,
-                projectId: projectId.value
-            }),
-            crudAction('task_dependency', 'get_all', { projectId: projectId.value }),
-            crudAction('project', 'get_all', { pageIndex: 1, pageSize: 1000 }),
-            crudAction('project_member', 'get_by_project', { projectId: projectId.value })
-        ])
-        tasks.value = t?.list || []
-        dependencies.value = d?.list || []
-        projects.value = p?.list || projects.value
-        projectMemberIds.value = (pm?.list || []).map(item => item.member_id)
-        initViewRange()
-        await loadBaseline()
-    } catch (e) {
-        messageType.value = 'error'
-        message.value = e.message
-    } finally {
-        loading.value = false
-    }
-}
-
 async function applyAutoSchedule() {
     const result = calculateDependencySchedule(tasks.value, dependencies.value, activeProject.value)
     for (const update of result.updates) {
         await crudAction('task', 'update', update)
     }
-    if (result.updates.length) await load()
+    if (result.updates.length) await loadChecked()
     if (result.conflicts.length) {
         messageType.value = 'warning'
         message.value = t('tasks.scheduleConflicts', { count: result.conflicts.length })
@@ -873,75 +809,11 @@ async function shift(task, delta) {
         })
         messageType.value = 'success'
         message.value = t('gantt.shifted', { name: task.name, delta })
-        await load()
+        await loadChecked()
         await applyAutoSchedule()
     } catch (e) {
         messageType.value = 'error'
         message.value = e.message
-    }
-}
-
-// ---------- 拖拽 task bar ----------
-function onBarMouseDown(task, e, mode = 'move') {
-    if (e.button !== 0) return // 仅左键
-    e.preventDefault()
-    e.stopPropagation()
-    const start = parse(task.start_time)
-    const end = parse(task.end_time)
-    if (!start || !end) return
-    dragState.value = {
-        task,
-        mode,
-        startX: e.clientX,
-        origStart: new Date(start),
-        origEnd: new Date(end)
-    }
-    dragCursorX.value = e.clientX
-    addDocumentListener('mousemove', onDocMouseMove)
-    addDocumentListener('mouseup', onDocMouseUp)
-}
-
-function onDocMouseMove(e) {
-    if (!dragState.value) return
-    dragCursorX.value = e.clientX
-}
-
-async function onDocMouseUp(_e) {
-    removeDocumentListener('mousemove', onDocMouseMove)
-    removeDocumentListener('mouseup', onDocMouseUp)
-
-    const ds = dragState.value
-    dragState.value = null
-    if (!ds) return
-
-    const deltaDays = calculateDragDelta(ds.startX, dragCursorX.value, dayWidth.value)
-    const update = calculateDragUpdate(ds.origStart, ds.origEnd, deltaDays, ds.mode)
-    if (update?.kind === 'edit') {
-        // 纯点击 → 打开编辑面板
-        openEditor(ds.task)
-        return
-    }
-
-    if (!update) return
-
-    try {
-        await crudAction('task', 'update', {
-            id: ds.task.id,
-            start_time: format(update.start),
-            end_time: format(update.end),
-            ...(ds.mode === 'move'
-                ? {}
-                : {
-                      effort_days: countWorkingDays(update.start, update.end, activeProject.value)
-                  })
-        })
-        messageType.value = 'success'
-        message.value = t('gantt.taskUpdated', { name: ds.task.name })
-        await load()
-        await applyAutoSchedule()
-    } catch (err) {
-        messageType.value = 'error'
-        message.value = err.message
     }
 }
 
@@ -1071,7 +943,7 @@ async function createDependency(from, to) {
         })
         messageType.value = 'success'
         message.value = t('gantt.dependencyCreated', { from: from.name, to: to.name })
-        await load()
+        await loadChecked()
         await applyAutoSchedule()
     } catch (err) {
         messageType.value = 'error'
@@ -1102,75 +974,6 @@ async function exportImage() {
         messageType.value = 'error'
         message.value = t('gantt.exportFailed', { msg: err.message })
     }
-}
-
-// ---------- 滚动到今天 ----------
-async function scrollToday() {
-    await nextTick()
-    const index = days.value.findIndex(d => d.today)
-    if (!scroller.value) return
-    if (index < 0) {
-        messageType.value = 'warning'
-        message.value = t('gantt.todayOutside')
-        setTimeout(clearMessage, 3500)
-        return
-    }
-    scroller.value.scrollTo({
-        left: Math.max(0, nameWidth + index * dayWidth.value - scroller.value.clientWidth / 2),
-        behavior: 'smooth'
-    })
-}
-
-// ---------- 滚轮左右滚动时间轴（自动扩展范围） ----------
-function onWheel(e) {
-    // Ctrl + 滚轮 = 缩放时间轴
-    if (e.ctrlKey) {
-        e.preventDefault()
-        const step = e.deltaY > 0 ? -4 : 4
-        dayWidth.value = Math.max(6, Math.min(60, dayWidth.value + step))
-        return
-    }
-    // Shift + 滚轮 = 正常纵向滚动
-    if (e.shiftKey) {
-        e.preventDefault()
-        scroller.value?.scrollBy({ top: e.deltaY, behavior: 'auto' })
-        return
-    }
-
-    // 普通滚轮 → 水平滚动（时间轴）
-    const direction = e.deltaY > 0 ? 1 : -1
-    const steps = Math.max(1, Math.round(Math.abs(e.deltaY) / 80))
-    scrollDays(direction * steps)
-}
-
-// ---------- 时间轴左右滚动（自动扩展范围） ----------
-async function scrollDays(delta) {
-    if (!scroller.value) return
-    const el = scroller.value
-    const EXTEND_DAYS = 21
-
-    if (delta < 0 && el.scrollLeft < 60) {
-        // 向左滚动到边缘 → 扩展左侧
-        const newStart = new Date(viewRange.value.start)
-        newStart.setDate(newStart.getDate() - EXTEND_DAYS)
-        viewRange.value = { start: dayStart(newStart), end: viewRange.value.end }
-        await nextTick()
-        el.scrollLeft = EXTEND_DAYS * dayWidth.value
-        return
-    }
-
-    if (delta > 0) {
-        const maxScroll = el.scrollWidth - el.clientWidth
-        if (el.scrollLeft > maxScroll - 80) {
-            // 向右滚动到边缘 → 扩展右侧
-            const newEnd = new Date(viewRange.value.end)
-            newEnd.setDate(newEnd.getDate() + EXTEND_DAYS)
-            viewRange.value = { start: viewRange.value.start, end: dayStart(newEnd) }
-            return
-        }
-    }
-
-    el.scrollBy({ left: delta * dayWidth.value, behavior: 'smooth' })
 }
 
 // ---------- 响应式 ----------

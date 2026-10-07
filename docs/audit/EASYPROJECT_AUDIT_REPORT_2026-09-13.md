@@ -1,6 +1,6 @@
 # EasyProject 审计与整改报告
 
-> 2026-10-07工作源码续接：排序/基线/编辑/生命周期/查询/失败重试整改，138单测/9专项/21E2E、lint/类型/构建通过；Rust28/fmt/Clippy为未改变Rust源码的有效结果。当前新前端尚未生成新的全平台候选/资产，不以旧dee本地或5e远程包冒充本源集验证。
+> 2026-10-07工作源码续接：排序、基线、编辑、查询、失败重试、视口和拖动职责整改；157单测/9专项/21E2E、lint/类型/构建通过。Rust28/fmt/严格Clippy为未变更Rust源码的有效前阶段结果。新源集未重新打包，旧dee本地及5e远程包不能证明当前源集通过。
 
 > 上一已验证产物候选：codex/audit-release-20261006-api / 5e7aced868c0e95c9644a68ce88ac1acc7767171；候选5e7aced868c0e95c9644a68ce88ac1acc7767171，Actions37432253128五job全部success；Draft404450655六资产独立下载、官方大小/SHA256、结构/版本/Mac架构核验通过；Windows两包NotSigned/0.1.0，真实设备/签名公证未验。2026-10-07核验；历史草稿全部保留。
 
@@ -20,7 +20,7 @@
 
 Tauri配套升级闭环：官方Rust/JS API/CLI2.12.1、build2.7.1、opener2.7.0，Rust最低1.90；完整本地门禁通过。最新NSIS5193100字节，SHA256 A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F，0.1.0/NotSigned。官方NSIS3.11及插件下载并验证哈希，缓存E盘target/.tauri。中途JS/Rust版本门禁失败已协调升级解决；重复allowScripts键已移除并重建前端，除原两体积告警外无新警告。新锁远程五job与六资产已于10-07复验通过，旧25426627证据不可混用。
 
-已检查原137个自有文本输入文件，并检查本次新增19个自有JS模块/测试（续接输入累计156）；累计35项确认问题：P0 0、P1 2、P2 23、P3 10。31项已整改复验；P0/P1/P2未关闭均为0，4项P3保留。锁文件未因本次排序整改改变，上一官方npm全量/生产0及RustSec1290公告/525依赖漏洞0、撤包0仍为最近安全扫描证据，另有2信息性警告。新源码138单测、9专项、21E2E、Rust28测试、严格Clippy和生产构建通过。**代码审计暂不通过**：大组件拆分未完成、信息性和体积警告未闭环。**不具备正式发布条件**：新源集远程产物、签名、公证及真实安装/升级/数据保留矩阵未验。
+已检查原137个自有文本输入文件，并检查本次新增28个自有JS模块/测试（续接输入累计165）；累计36项确认问题：P0 0、P1 2、P2 24、P3 10。32项已整改复验；P0/P1/P2未关闭均为0，4项P3保留。锁文件未因本次排序整改改变，上一官方npm全量/生产0及RustSec1290公告/525依赖漏洞0、撤包0仍为最近安全扫描证据，另有2信息性警告。新源码157单测、9专项、21E2E、Rust28测试、严格Clippy和生产构建通过。**代码审计暂不通过**：大组件拆分未完成、信息性和体积警告未闭环。**不具备正式发布条件**：新源集远程产物、签名、公证及真实安装/升级/数据保留矩阵未验。
 
 ## 2. 范围与排除项
 
@@ -40,15 +40,15 @@ Tauri配套升级闭环：官方Rust/JS API/CLI2.12.1、build2.7.1、opener2.7.0
 
 | 技术栈/组件            | 规范                                             | 测试                             | 构建/安全                                   | 结果                                                |
 | ---------------------- | ------------------------------------------------ | -------------------------------- | ------------------------------------------- | --------------------------------------------------- |
-| Vue/JS、测试和脚本     | ESLint/类型/3 文件复杂度门禁                     | Vitest 82；专项 9；E2E 16        | Vite；官方 npm 全量/生产扫描                | 功能门禁通过，npm 两次均 0；大块警告保留            |
-| Rust/Tauri/SQLite      | `cargo fmt --check`；Clippy `-D warnings`        | 25 项 Rust/SQLite 单测           | Windows x64 NSIS release 构建；RustSec 扫描 | 构建/测试通过；RustSec 漏洞 0、撤包 0、信息性警告 2 |
+| Vue/JS、测试和脚本     | ESLint/类型/20 文件复杂度/长度门禁               | Vitest 157；专项 9；E2E 21       | Vite；官方 npm 全量/生产扫描                | 功能门禁通过，npm 两次均 0；大块警告保留            |
+| Rust/Tauri/SQLite      | `cargo fmt --check`；Clippy `-D warnings`        | 28 项 Rust/SQLite 单测           | Windows x64 NSIS release 构建；RustSec 扫描 | 构建/测试通过；RustSec 漏洞 0、撤包 0、信息性警告 2 |
 | Python/PowerShell/YAML | Python AST、PowerShell AST、YAML 解析与 Prettier | 标准校验脚本、发布脚本和产物校验 | UPARS 1.1.0 版本一致性                      | 已执行项目适用项；Ruff 不可用                       |
 
 ## 4. 编码规范审计
 
 - 初始结果：基线 ESLint 和 Rustfmt 通过；首次严格 Clippy 报 15 条（切片参数、返回控制流、整数范围与分页计算）；引入完整 `checkJs` 后共揭示 96 条类型诊断（首轮 `src` 81 条，扩展 E2E 后又 15 条）。对全部 JS/Vue/脚本额外诊断发现 3 个文件中的 5 条复杂度/函数长度提示：`ResourceLoadPanel.vue` 21、`ics.js` 21/31、`criticalPath.js` 24 且 122 行。
 - 整改结果：修复 Clippy 与类型诊断，补充真实的模型/测试环境类型、边界处理和 CI 门禁；测试目录及 E2E 均保留在类型检查范围内。针对本轮编辑引入的 7 条 Prettier 错误做定向格式化，未删除测试或关闭规则。
-- 最终结果：10-06 ESLint/类型检查均为 0 错误/警告；ICS、关键路径、资源负载的原 5 条复杂度/长度诊断已归零，并对原 3 文件接入复杂度≤20、函数有效行≤100 的持续门禁；正例通过，两个内存超限负例分别被两条规则拒绝。Rustfmt/Clippy 保留 9-14 的 0 错误/警告结果。Gantt/TaskList 文件级大组件尚未拆分，EP-CODE-003 保持 open；没有全局豁免或阈值放宽。
+- 最终结果：10-07 ESLint/类型检查0错误/警告；原5条复杂度/长度诊断已清零，20个重点文件（含新模块与Gantt/TaskList父组件）持续执行复杂度≤20、函数有效行≤100，无阈值放宽。Gantt与TaskList状态/查询/排序/编辑、基线、导航和任务拖动职责已逐步分离；CODE003仍待剩余交互/呈现职责最终复核。Rust28/fmt/严格Clippy前阶段通过且源码未变。
 - 持续控制：CI 和 release tag 验证都运行 ESLint、类型检查、前端测试、Rustfmt/Clippy/Rust 测试；Actions37432253128已在本轮候选执行且全部通过。
 
 ## 5. 发现与整改闭环
@@ -86,6 +86,8 @@ Tauri配套升级闭环：官方Rust/JS API/CLI2.12.1、build2.7.1、opener2.7.0
 | EP-SEC-015   | fixed | P3     | 高     | 开发期 CSS 解析          | GHSA-rj75-hqrm-r3gf；eslint-plugin-vue 10.5.0 引入 parser 6.1.4，长 flat selector 可耗尽 CPU                                                                       | ESLint 开发/CI 路径可达，不属于生产包漏洞条目；源码输入受仓库权限控制                                                                           | 兼容更新插件至 10.11.1，parser 7.1.6；不强制替换旧插件传递主版本                                                        | 全量 audit 0；lint、类型、82 单测/9 专项/16 E2E、构建通过                                                               |
 | EP-SEC-016   | fixed | P2     | 高     | ICS TLS 客户端           | RUSTSEC-2026-0285 / GHSA-2mjx-qc3c-rqvc；rustls 0.23.32 接受跨加密层 TLS 1.3 握手消息                                                                              | 公共 ICS HTTPS/reqwest 链可达；握手 transcript 仍认证，不等同于能伪造握手，但违反消息加密边界并阻断安全门禁                                     | 同兼容线定向 rustls 0.23.45、rustls-webpki 0.103.15                                                                     | 当前 1290 公告快照复扫该公告消失，漏洞/撤包 0；更新锁文件后 Rust 25/25、fmt/严格 Clippy 通过；最终NSIS构建/产物校验通过 |
 | EP-BUILD-003 | fixed | P3     | 高     | CI/release动作运行环境   | run37430197698提示actions/checkout@v4、setup-node@v4声明Node20废弃，runner强制Node24                                                                               | CI及三个发布job每次入口可达；当前兼容但未来可能失败，托管runner不等于本机Node版本                                                               | 官方受支持v6/Node24，保持应用Node22与全部质量检查；CI维护者复验新候选                                                   | 8处最小升级、Prettier和js-yaml结构/引用检查通过；Actions37432253128五job通过、Node20弃用警告消失                        |
+
+EP-REL-010（fixed/P2，高置信度，甘特图维护者）：原Gantt.load未校验请求/项目，项目切换时旧四接口响应可覆盖当前任务与日历；读取失败又被吞掉，变更入口继续自动调度。生产项目切换与保存路径可达，可能展示或调度错误快照。useGanttProjectData集中完整结果提交、请求序号/项目校验和loadChecked；变更入口失败立即停止后续调度。新增6单测验证读取失败、基线失败、旧项目迟到响应和无项目边界；157单测/21E2E回归通过。不宣称跨接口数据库事务；用户数据未操作。
 
 ## 6. 分域结论
 
@@ -128,16 +130,16 @@ CI/release完整门禁及三平台构建均通过；候选5e7aced868c0e95c9644a6
 
 ## 7. 最终验证
 
-前端、Rust规范/25测试/Clippy、版本和Windows NSIS均于2026-10-06在最终Vue/rustls/Tauri2.12.1依赖状态执行。RustSec使用官方固定提交ef6173cbc5c50ec8166f9a5b28f07834144373ee（1290公告/525依赖）的归档快照；不冒充其Git元数据。
+当前前端门禁于2026-10-07在最新工作源码执行：157单测、9专项、21E2E、lint、类型、427模块生产构建和版本检查通过。Rust28/fmt/严格Clippy及下述安全扫描是锁文件/Rust源码未变更的前阶段有效证据；安装包行明确为历史候选，不覆盖当前前端。
 
 | 验证项           | 命令/证据                                                                                        | 结果               | 数量/摘要                                                                                            |
 | ---------------- | ------------------------------------------------------------------------------------------------ | ------------------ | ---------------------------------------------------------------------------------------------------- |
 | 前端规范/类型    | `npm run lint`；`npm run typecheck`；Prettier                                                    | 通过               | 0 lint 错误/警告，0 类型错误；`checkJs` 覆盖测试、E2E、脚本                                          |
-| 前端单测/性能    | `npm test -- --maxWorkers=2`；`npm run test:performance -- --maxWorkers=2`                       | 通过               | 82/82（新增 4 边界用例）；9/9 关键路径测试含原性能预算                                               |
-| 浏览器回归       | `npm run test:e2e`                                                                               | 通过               | 16/16；包含备份失败提示                                                                              |
-| 前端生产构建     | `npm run build`，NSIS 构建前再次执行                                                             | 通过但有警告       | 412 模块，2 个 >500 KB 资源块                                                                        |
-| Rust 规范/测试   | `cargo fmt --check`；`cargo clippy --all-targets --locked -- -D warnings`；`cargo test --locked` | 通过               | 0 Clippy 警告；25/25 测试                                                                            |
-| Windows 目标构建 | 10-06 最终Vue/rustls/Tauri锁文件后 NSIS 构建；产物校验；Authenticode检查                         | 构建通过、签名缺失 | 5,193,100字节；SHA-256 `A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F`；NotSigned |
+| 前端单测/性能    | `npm test -- --maxWorkers=2`；`npm run test:performance -- --maxWorkers=2`                       | 通过               | 157/157（31测试文件）；9/9 关键路径测试含原性能预算                                                  |
+| 浏览器回归       | `npm run test:e2e`                                                                               | 通过               | 21/21；含失败重试、读取失败及卸载拖动回归                                                            |
+| 前端生产构建     | `npm run build`，10-07当前源码                                                                   | 通过但有警告       | 427 模块，2 个 >500 KB 资源块                                                                        |
+| Rust 规范/测试   | `cargo fmt --check`；`cargo clippy --all-targets --locked -- -D warnings`；`cargo test --locked` | 通过               | 0 Clippy 警告；28/28 测试                                                                            |
+| Windows 目标构建 | 历史10-06 最终Vue/rustls/Tauri锁文件后 NSIS 构建；产物校验；Authenticode检查                     | 构建通过、签名缺失 | 5,193,100字节；SHA-256 `A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F`；NotSigned |
 | 发布/标准配置    | `npm run release:check`；UPARS 校验；YAML 解析；PowerShell/Python AST                            | 通过               | 版本 0.1.0；UPARS 1.1.0、6 域、11 字段；AST 错误 0                                                   |
 | npm 安全         | 官方 npm 11.21.0 audit / audit --omit=dev，单进程实时 DNS，strict TLS                            | 通过               | 最新全量/生产所有等级 0、退出码均 0；原三个新根因全部消失                                            |
 | Rust 安全        | cargo-audit0.22.2；官方ef6173cbc5c50ec8166f9a5b28f07834144373ee快照；--no-fetch --deny yanked    | 漏洞/撤包门禁通过  | 1290公告/525依赖，漏洞0、撤包0、退出码0、ignore=[]；1未维护/1unsound仍保留                           |

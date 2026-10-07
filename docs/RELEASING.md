@@ -1,6 +1,6 @@
 # EasyProject release process
 
-2026-10-07 source follow-up: the task reorder boundary/atomicity fixes are newer than the verified 5e7aced draft below. Its six asset hashes remain historical evidence only. New-source local frontend gates pass (138/9/17/28 tests); a new immutable source-to-workflow-to-assets mapping is required before release acceptance. Keep all current and historical releases Draft and do not mix their assets. 基线职责拆分与EP-REL-006错误反馈修复已完成；此最新前端尚未重新打包，dee97ed本地NSIS和5e7aced远程资产仅为上一源集证据。 Gantt编辑/创建职责已拆分、EP-REL-007卸载监听泄漏已修复；最新构建422模块，两体积警告940.20/1495.97KB仍保留。 TaskList查询/行编辑职责已分离，EP-REL-008/009读取反馈与创建重试已闭环，CODE003仍open。
+2026-10-07 source follow-up: task reordering is atomic and project-scoped; baseline readback, drag cleanup, task query isolation and creation retries are corrected. Gantt viewport/navigation/task dragging and project data loading have separate tested responsibilities. Current gates: 157 unit tests, 9 performance tests, 21 browser tests, lint, type checking, production build (427 modules) and release metadata pass. Rust 28/fmt/strict Clippy remain valid from the unchanged native source. UPARS: 36 findings, 32 fixed, 4 open P3. CODE003 remains under final responsibility review; the two original chunk warnings and two Linux-only dependency informational findings remain visible. The old dee97ed local installer and 5e7aced remote draft assets do not cover this source; new candidate packaging and platform acceptance remain pending.
 
 ## Current output
 

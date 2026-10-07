@@ -678,3 +678,25 @@
 - 最新额度五小时67%、周95%、重置0。准确下一步保存报告/文档与本阶段提交、同步Wolai，再继续Gantt拖动与视口职责整理并全量回归。旧dee/5e产物不覆盖新前端；签名/设备缺口不变，无用户数据或系统操作。标准与原基线不变，无新增通用标准条款。
 
 - 保存前全部未提交16项：上述11项加docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。6文档已同步35/31/4与138/9/21/28，格式/Git diff --check通过；准备同分支阶段提交并精确API非强制同步，Wolai随后更新读回。下一阶段开始核对实际HEAD和干净状态，不重复已完成回归。
+
+### Gantt视口与任务拖动阶段入口
+
+- 上批16文件已提交7d1a427da68c0a205f1fdbb951925ccfa1309040/tree5b3a5ecd3ad8e6849dceafdc95292e8b3ff28042并精确API非强制同步成功，同分支Git干净，Wolai35/31/4与138/9/21/28已读回。原基线/标准/WACAS/设备签名状态不变；最近额度五小时67%、周95%、重置0，允许新长阶段。当前未提交仅此检查点。
+- 目标CODE003继续按职责拆分：日期范围/日期格/月分组为可测试纯计算，视口响应状态和导航独立；任务条拖动保存与DOM监听独立，不改template/CSS/API/schema。保留既有日期/几何算法、缩放限制、边缘扩展和点击编辑行为；消息计时器随组件卸载清理。所有新增模块与两个父组件纳入20复杂度/100有效函数行门禁，增加日期/视口/拖动边界测试并全部回归。
+- 准确下一步实现上述模块与集成；闭环需实际职责界限、静态门禁、回归和源码差异证据，不能只因行数降低关闭CODE003。源码稳定后统一新NSIS/远程平台/六资产。新阶段文档/Wolai待同步，无本机安装或用户数据操作。
+
+### 视口/拖动复验与Gantt加载隔离入口
+
+- 视口日期范围/天格/月分组纯计算、视口响应状态/滚动缩放导航、任务条拖动保存均已独立；消息计时器随卸载清理。新增13单测，151单测（30文件）/21E2E、lint/类型通过；模板/CSS未变。新阶段尚未更新报告或打包。
+- 全部未提交10路径：本检查点、eslint.config.js、src/modules/gantt/components/GanttView.vue、`src/modules/gantt/utils/viewportCalendar.js`、`src/modules/gantt/composables/useGanttViewport.js`、`src/modules/gantt/composables/useGanttNavigation.js`、`src/modules/gantt/composables/useGanttTaskDragging.js`、`src/__tests__/gantt/viewportCalendar.test.js`、`src/__tests__/composables/useGanttNavigation.test.js`、`src/__tests__/composables/useGanttTaskDragging.test.js`。HEAD仍7d1a427、同分支；Wolai上一35/31/4待新里程碑同步。
+- 新EP-REL-010/P2：Gantt.load无请求/项目隔离，项目切换期间旧四请求快照可覆盖新视图；后续交互可能在新项目日历下计算旧项目任务。load还吞掉读失败，变更入口继续自动调度。生产项目切换/异步读取可达。准确下一步抽离项目快照加载，校验请求序号和选中项目，只完整当前快照可提交；读操作返回明确成败，变更入口用checked load，失败不继续调度。补跨项目异步/读取失败/基线失败负例，不声称跨接口读是数据库快照事务。
+- 新长阶段前额度五小时62%、周94%、重置0；允许此定向整改。完成后统一36项统计并复验/保存，无用户数据或系统设置操作；UPARS异步状态隔离/错误处理已有覆盖，无新增通用标准条款。
+
+### Gantt加载隔离与交互职责复验完成（2026-10-07）
+
+- 目标仍为全源集审计整改及发布验收，UPARS1.1.0，WACAS未定义/待确认；原main/c0bb3220347f3978f547d0c4841156c648f2711a基线，当前分支codex/audit-release-20261006-api、HEAD7d1a427da68c0a205f1fdbb951925ccfa1309040。
+- EP-REL-010已整改复验：useGanttProjectData只提交完整且属于当前请求/项目的快照，读失败传播到变更入口，阻止后续自动调度；6单测覆盖失败、基线异常及旧项目响应隔离。不声称多接口读取是数据库事务。视口/导航/拖动职责独立，模板/CSS未改；新增13交互/日期单测。157单测（31文件）、9专项、21E2E、lint、类型、生产构建与release:check通过；427模块，两原有体积警告仍在。Rust28/fmt/严格Clippy为未变更Rust源码的有效前阶段证据。报告将统一36项/P0=0/P1=2/P2=24/P3=10、32fixed/4P3open，累计165自有文本输入（原137加28新增JS模块/测试）。CODE003尚待最终职责复核，不能只因行数下降关闭。
+- 全部未提交12文件：本检查点、eslint.config.js、src/modules/gantt/components/GanttView.vue、`src/modules/gantt/utils/viewportCalendar.js`、`src/modules/gantt/composables/useGanttViewport.js`、`src/modules/gantt/composables/useGanttNavigation.js`、`src/modules/gantt/composables/useGanttTaskDragging.js`、`src/modules/gantt/composables/useGanttProjectData.js`、`src/__tests__/gantt/viewportCalendar.test.js`、`src/__tests__/composables/useGanttNavigation.test.js`、`src/__tests__/composables/useGanttTaskDragging.test.js`、`src/__tests__/composables/useGanttProjectData.test.js`。其余五审计/发布文档与Wolai尚为7d1a427阶段待同步。
+- 实查额度五小时55%、周93%、重置0。准确下一步更新报告及四发布/整改文档（纠正当前门禁表中的旧测试数量并保留历史产物边界）、保存Git并精确非强制同步、更新Wolai读回；然后评估CODE003最终范围与体积风险，再统一新源集打包/远程验收。当前本地dee包与远程5e包不覆盖本源集。仅确认本开发Windows环境，无新增设备连接、签名资源；未安装启动程序、未改用户数据库或系统配置。UPARS现有异步隔离/错误传播要求已覆盖，无新通用条款。
+
+- 保存前全部未提交17文件：上述12项加docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。六文档已统一36/32/4和157/9/21/28，UPARS校验/格式/Git diff --check通过；准备阶段提交与精确非强制同步，Wolai随后读回。最新源集打包仍未执行，签名/设备状态不变。

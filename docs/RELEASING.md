@@ -1,6 +1,6 @@
 # EasyProject release process
 
-2026-10-07 source follow-up: task reordering is atomic and project-scoped; baseline readback, drag cleanup, task query isolation and creation retries are corrected. Gantt viewport/navigation/task dragging and project data loading have separate tested responsibilities. Current gates: 170 unit tests, 9 performance tests, 22 browser tests, lint, type checking, production build (430 modules) and release metadata pass. Rust 28/fmt/strict Clippy remain valid from the unchanged native source. UPARS: 37 findings, 34 fixed, 3 open P3. CODE003 is closed with tested responsibility boundaries; the two original chunk warnings and two Linux-only dependency informational findings remain visible. The old dee97ed local installer and 5e7aced remote draft assets do not cover this source; new candidate packaging and platform acceptance remain pending. Dependency drag now resolves stable task IDs and uses an independently clickable link handle; a real two-task mouse-drag regression passes.
+2026-10-07 source follow-up: task reordering is atomic and project-scoped; baseline readback, drag cleanup, task query isolation and creation retries are corrected. Gantt viewport/navigation/task dragging and project data loading have separate tested responsibilities. Current gates: 170 unit tests, 9 performance tests, 22 browser tests, lint, type checking, production build (430 modules) and release metadata pass. Rust 28/fmt/strict Clippy and official full/production npm audits (zero findings) passed final verification. UPARS: 37 findings, 34 fixed, 3 open P3. CODE003 is closed with tested responsibility boundaries; the two original chunk warnings and two Linux-only dependency informational findings remain visible. The old dee97ed local installer and 5e7aced remote draft assets do not cover this source; candidate ae6c1c3 has a verified local unsigned NSIS; run 37572579794 and draft 405384157 are in progress, with six new assets and platform acceptance pending. Dependency drag now resolves stable task IDs and uses an independently clickable link handle; a real two-task mouse-drag regression passes.
 
 ## Current output
 
@@ -116,11 +116,17 @@ Draft404450655, source5e7aced, run37432253128. All sizes and SHA256 match GitHub
 
 All names above are prefixed `EasyProject_0.1.0_`; downloads are retained in ignored `src-tauri/target/audit-tools/release-37432253128`. Initial local verification misread Windows tar CRLF separators; correcting the diagnostic script and re-running verified all six. This was a diagnostic formatting issue, not a bundle defect.
 
-The active unsigned draft is `404450655` (`v0.1.0`), bound to commit `5e7aced868c0e95c9644a68ce88ac1acc7767171` on `codex/audit-release-20261006-api`. Run `37432253128` passed all five jobs. All six assets were downloaded and independently verified on 2026-10-07; see the table below. Historical drafts `404435429`, `404242113`, and `370399919` retain their assets. This is not signed or real-device release acceptance.
+The previous verified unsigned draft is `404450655` (`v0.1.0`), bound to commit `5e7aced868c0e95c9644a68ce88ac1acc7767171` on `codex/audit-release-20261006-api`. Run `37432253128` passed all five jobs. All six assets were downloaded and independently verified on 2026-10-07; see the table below. Historical drafts `404435429`, `404242113`, and `370399919` retain their assets. This is not signed or real-device release acceptance.
 
 The current workflow intentionally produces unsigned artifacts. Before public distribution, configure Windows and Apple signing credentials according to the official Tauri signing guides, then expose only the required secrets to the release environment. Do not place certificates, private keys, passwords, or notarization credentials in the repository.
 
 After signing is enabled, validate the Windows Authenticode signature and macOS code signature/notarization result before publishing the draft release.
+
+## Current audit candidate — 2026-10-07
+
+Source `ae6c1c3a5e2d326e9b11941c3ff23aae682361f3`, tree `23ffcfdaf9460c72e057b37508868e79494365e5`, is the immutable candidate for run `37572579794` and unsigned Draft `405384157` (`v0.1.0`). The run is still in progress; its five jobs and six new assets have not yet been accepted. Historical Draft `404450655` now uses `v0.1.0-audit-5e7aced`, retaining all six asset IDs/sizes/digests unchanged. Nothing has been published.
+
+The local NSIS build for this source passed: 5,187,629 bytes, SHA-256 `2AAF183D1A17851EC9DBF7EEF5F319413FCA1E279C7AD6A2222E30C1436533D6`, ProductVersion `0.1.0`, Authenticode `NotSigned`. It was inspected only, not installed. Final local gates: 170 unit tests, 9 performance tests, 22 browser tests, 28 Rust tests, strict Clippy, Rustfmt, lint, type checks, build and release metadata passed. Official full/production npm audits both returned zero findings with strict TLS. Two chunk warnings and two Linux-only informational dependency findings remain; signing/notarization and the clean-device acceptance matrix are still unverified.
 
 ## Release notes checklist
 

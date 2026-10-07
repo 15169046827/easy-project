@@ -1,6 +1,6 @@
 # EasyProject 审计与整改报告
 
-> 2026-10-07工作源码续接：排序、基线、编辑、查询、失败重试、视口和拖动职责整改；170单测/9专项/22E2E、lint/类型/构建通过。Rust28/fmt/严格Clippy为未变更Rust源码的有效前阶段结果。新源集未重新打包，旧dee本地及5e远程包不能证明当前源集通过。
+> 2026-10-07工作源码续接：排序、基线、编辑、查询、失败重试、视口和拖动职责整改；170单测/9专项/22E2E、lint/类型/构建通过。Rust28/fmt/严格Clippy本轮最终复验通过，官方npm全量/生产0。新ae6c源集本地NSIS已构建核验、远程37572579794仍执行中，旧dee本地及5e远程包不能证明当前源集通过。
 
 > 上一已验证产物候选：codex/audit-release-20261006-api / 5e7aced868c0e95c9644a68ce88ac1acc7767171；候选5e7aced868c0e95c9644a68ce88ac1acc7767171，Actions37432253128五job全部success；Draft404450655六资产独立下载、官方大小/SHA256、结构/版本/Mac架构核验通过；Windows两包NotSigned/0.1.0，真实设备/签名公证未验。2026-10-07核验；历史草稿全部保留。
 
@@ -10,7 +10,7 @@
 - 审计日期：2026-09-13—14；前端依赖整改复验：2026-10-06；六资产核验：2026-10-07
 - 审计模式：审计并整改
 - 项目版本：0.1.0；数据库及 JSON 交换 schema v5
-- 提交基线：main/c0bb3220347f3978f547d0c4841156c648f2711a；已验证候选codex/audit-release-20261006-api/5e7aced868c0e95c9644a68ce88ac1acc7767171；续接文档HEAD a9df642，未改变候选产物源码。
+- 提交基线：main/c0bb3220347f3978f547d0c4841156c648f2711a；当前源码候选codex/audit-release-20261006-api/ae6c1c3a5e2d326e9b11941c3ff23aae682361f3，tree23ffcfdaf9460c72e057b37508868e79494365e5；前次已验远程产物5e7aced保留为历史候选。
 - 发布目标：Windows x64 NSIS/MSI、macOS Apple Silicon/Intel APP/DMG；目前为未签名草稿
 - 审计任务：EasyProject 全源集 UPARS 审计与整改
 
@@ -18,7 +18,7 @@
 
 发布流程EP-BUILD-003（P3/fixed）：原Node20动作弃用告警；8处升级官方v6/Node24，保留应用Node22与全部门禁。Prettier/js-yaml与Actions37432253128五job全部通过，弃用告警消失；负责人CI维护者。
 
-Tauri配套升级闭环：官方Rust/JS API/CLI2.12.1、build2.7.1、opener2.7.0，Rust最低1.90；完整本地门禁通过。最新NSIS5193100字节，SHA256 A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F，0.1.0/NotSigned。官方NSIS3.11及插件下载并验证哈希，缓存E盘target/.tauri。中途JS/Rust版本门禁失败已协调升级解决；重复allowScripts键已移除并重建前端，除原两体积告警外无新警告。新锁远程五job与六资产已于10-07复验通过，旧25426627证据不可混用。
+Tauri配套升级闭环：官方Rust/JS API/CLI2.12.1、build2.7.1、opener2.7.0，Rust最低1.90；完整本地门禁通过。历史10-06 NSIS5193100字节，SHA256 A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F，0.1.0/NotSigned。官方NSIS3.11及插件下载并验证哈希，缓存E盘target/.tauri。中途JS/Rust版本门禁失败已协调升级解决；重复allowScripts键已移除并重建前端，除原两体积告警外无新警告。新锁远程五job与六资产已于10-07复验通过，旧25426627证据不可混用。
 
 已检查原137个自有文本输入文件，并检查本次新增34个自有JS模块/测试（续接输入累计171）；累计37项确认问题：P0 0、P1 2、P2 25、P3 10。34项已整改复验；P0/P1/P2未关闭均为0，3项P3保留。锁文件未因本次排序整改改变，上一官方npm全量/生产0及RustSec1290公告/525依赖漏洞0、撤包0仍为最近安全扫描证据，另有2信息性警告。新源码170单测、9专项、22E2E、Rust28测试、严格Clippy和生产构建通过。**代码审计暂不通过**：信息性和体积警告未闭环。**不具备正式发布条件**：新源集远程产物、签名、公证及真实安装/升级/数据保留矩阵未验。
 
@@ -150,6 +150,8 @@ CI/release完整门禁及三平台构建均通过；候选5e7aced868c0e95c9644a6
 
 一次直接 `playwright test -g` 因未通过项目包装脚本启动 Vite 而报连接拒绝；随后使用项目标准 `npm run test:e2e` 完整复验 16/16。此环境操作失误不作为产品缺陷或最终测试失败。
 
+当前源集原生最终复验（2026-10-07）：ae6c1c3源码，Rustfmt、28Rust测试、严格Clippy全部退出0；官方npm全量/生产复扫所有等级0、严格TLS，无锁文件变化。新本地NSIS5187629字节、SHA256 `2AAF183D1A17851EC9DBF7EEF5F319413FCA1E279C7AD6A2222E30C1436533D6`、0.1.0/NotSigned，构建退出0且未安装。新远程Actions37572579794/Draft405384157当前仍执行中，五job/六资产不能提前算通过。上表历史包保留为历史证据。
+
 ## 8. 例外、未知与环境缺口
 
 | 类型            | 内容                                                                                                                                                                                                          | 风险                                                | 责任/复查条件                                                                                          |
@@ -165,8 +167,8 @@ CI/release完整门禁及三平台构建均通过；候选5e7aced868c0e95c9644a6
 ## 9. 发布判定
 
 - P0 未关闭：0；P1 未关闭：0；P2 未关闭或已接受：0。P3 未关闭：3（EP-BUILD-002、EP-SEC-006、EP-SEC-008）。
-- 新排序源码前端规范/类型、96单测/9专项/17E2E、Rustfmt/严格Clippy/28测试与NSIS构建通过；npm全量/生产0、RustSec漏洞/撤包0为未改变锁文件的最近扫描证据。2条信息性与2项体积警告、真实设备验收仍待闭环。
-- **代码层判定：暂不通过**。31项整改有复验证据；4项P3及相关信息性/体积警告未关闭或批准最窄例外。5e7aced远程质量/安全和六资产通过仅覆盖旧源集，新排序/基线/编辑/监听器/查询/重试源码本地通过、远程产物待更新。
+- 当前ae6c源码前端规范/类型、170单测/9专项/22E2E、Rustfmt/严格Clippy/28测试及本地NSIS构建通过；官方npm全量/生产新复扫0。Actions37572579794正在执行，Rust安全job已成功；新五job/六资产尚不能认定通过。2条信息性与2项体积警告、真实设备验收仍待闭环。
+- **代码层判定：暂不通过**。34项整改有复验证据；3项P3及相关信息性/体积警告未关闭或批准最窄例外。CODE003已据职责边界/门禁/回归关闭；历史5e7aced远程与六资产不覆盖当前源码，新候选ae6c产物待完成远程验收。
 - **正式发布判定：不可发布**。签名/公证、真实安装/升级/数据保留和回滚演练均尚未满足 `docs/RELEASING.md`。
 
 ## 10. 变更与证据索引
@@ -174,4 +176,4 @@ CI/release完整门禁及三平台构建均通过；候选5e7aced868c0e95c9644a6
 - 代码与门禁：`src-tauri/src/services/calendar_service.rs`、`src-tauri/src/services/data_service.rs`、`src-tauri/src/common/db_state.rs`、`src-tauri/src/db/`、`src/api/index.js`、`src/App.vue`、`tsconfig.json`、`e2e/smoke.spec.js`、`.github/workflows/ci.yml`、`.github/workflows/release.yml`、`package-lock.json`、`src-tauri/Cargo.lock`。RustSec 公告库与工具位于 E 盘被 Git 忽略的 `src-tauri/target/audit-tools`，未进入交付文件。
 - 标准补充：`docs/audit/UNIVERSAL_PROJECT_AUDIT_STANDARD.md` 1.1.0、`docs/audit/AUDIT_REPORT_TEMPLATE.md`、`config/audit/audit-standard.json`、`scripts/verify-audit-standard.ps1`。适用场景为校验外部地址后再连接；风险为 DNS/跳转/代理使检查对象与连接目标分离；检查方法为沿每次连接追踪解析结果；通过条件为连接使用已校验目标或等价策略；验证方式为目标变化负例。已在本项目完成检查、整改和测试，标记为“建议补充通用标准”。
 - 文档与续接：README、CONTRIBUTING、RELEASING、检查点与发布验收记录已更新；Wolai相关首发状态已同步并读回，Git候选5e7aced已保存，Actions37432253128与六资产已核验；用户数据未改。
-- 余项安排：`docs/audit/EASYPROJECT_REMEDIATION_PLAN.md` 列明 4 项开放 P3、当前信息性警告与远程门禁及独立发布验收；不构成例外批准或远程验证结果。10-06 使用兼容 npm 11.21.0，Vitest 4.1.11、@types/node 22.20.5 和定向传递依赖补丁均通过前端回归；Vue/source-map-js/CSS解析依赖/rustls新告警亦已修复；本次没有新增通用标准条款。
+- 余项安排：`docs/audit/EASYPROJECT_REMEDIATION_PLAN.md` 当前开放3项P3（BUILD002/SEC006/SEC008），前次4项记录为历史阶段；信息性/体积风险及独立发布验收不构成例外批准。10-06兼容npm11.21.0与定向依赖修复证据保留；10-07当前源集前端/原生/本地包复验及新远程来源见检查点。此次没有新增通用标准条款。

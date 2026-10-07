@@ -730,3 +730,22 @@
 - 五小时35%、周90%、重置0；准确下一步核对独立E2E，失败则继续定位，全部门禁通过后据职责边界关闭CODE003（预计37/34fixed/3P3open），保存同步并统一新NSIS/远程源集产物。原标准/基线/设备签名缺口和用户数据未操作状态不变。
 
 - 独立完整E2E22/22退出0，类型/lint0诊断、170单测/430模块构建/版本检查已核对。CODE003按持久化/编辑/交互/纯呈现职责、23文件20/100门禁和独立/真实回归证据关闭；模板/CSS较大仍明确登记，不以LOC单独证明。最终37项/P0=0/P1=2/P2=25/P3=10，34fixed/3P3open，所有P0/P1/P2未关闭0。六文档已同步，全部未提交12路径：上述7项加docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。准确下一步保存精确同步与Wolai，再查询额度、记录候选来源，统一新NSIS与远程五job/六资产，不公开发布；正式签名/真实设备仍未验。
+
+### 新源集打包验收入口
+
+- 源码候选ae6c1c3a5e2d326e9b11941c3ff23aae682361f3/tree23ffcfdaf9460c72e057b37508868e79494365e5，原分支不变，12文件已精确非强制同步，Git干净；Wolai37/34/3及170/9/22/28已读回。UPARS1.1.0/WACAS未定义、原审计基线及设备签名状态不变。
+- 长阶段前额度五小时32%、周89%、重置0，允许打包。当前未提交仅此检查点。范围最终Rustfmt/28测试/严格Clippy、E盘工具/缓存/临时路径离线NSIS构建及只读大小/哈希/版本/签名核验；不安装或启动。随后保留旧5e Draft六资产为历史草稿，为ae6c源集建立独立Draft与远程五job映射，避免同名旧资产混入。
+- 准确下一步执行上述本地门禁，核验官方GitHub旧Draft/tag状态；常规沙箱网络读被系统拒绝，不改变DNS/TLS，使用已授权的安全网络通路重试。正式签名/真实设备仍缺，不公开发布，不触碰用户数据。远程新构建尚未发起，禁止把旧五job成功充作新证据。
+
+- 本地最终Rustfmt/28测试/严格Clippy退出0；官方npm全量及生产安全复验全部等级0、退出0，严格TLS、仅扫描进程实时DNS，缓存/临时E盘。NSIS构建session24392正在执行，尚无新包核验结果。
+- 已只读确认旧Draft404450655/draft=true/target5e7aced/6资产，无正式v0.1.0 tag引用。旧草稿保留六资产并改历史tag v0.1.0-audit-5e7aced；新Draft405384157/v0.1.0/draft=true/target完整ae6c1c3a5e2d326e9b11941c3ff23aae682361f3，初始资产0。仅启动一次Actions37572579794，head同ae6c，初始queued；禁止重复发起、不得宣称远程通过。全部未提交仅此检查点，其他文档/Wolai远程来源待新里程碑同步。
+- 准确下一步等待已有本地构建并只读摘要/版本/签名；查询已有远程run五job至终态，全部成功后下载新六资产到独立E盘目录并核对官方digest/size/结构/架构。任何失败需记录并整改，不复用旧成功。正式发布仍需签名与真实设备，历史草稿未删除/公开。
+
+- 本地NSIS新源集ae6c构建退出0：5187629字节，SHA256 2AAF183D1A17851EC9DBF7EEF5F319413FCA1E279C7AD6A2222E30C1436533D6，ProductVersion0.1.0、NotSigned；只读检查未安装。自有native crate release编译57秒、E盘NSIS缓存，无新增编译诊断，前端原两体积警告保留。历史Draft404450655六资产ID/大小/官方digest均读回保持原值。新Actions37572579794仍in_progress，只有validate/rust-security已开始，三平台build尚未出现；新六资产未验证。
+
+- 远程里程碑：validate4m9s、rust-security2m43s均success，Mac ARM2m9s success；Windows与Intel仍in_progress，新Draft已生成4资产（ARM app/DMG及Windows MSI/NSIS），尚无最终五job/六资产结论。最新五小时25%、周88%、重置0，允许后续独立资产下载/验证长阶段。六本地文档已记录ae6c/Draft405384157/run37572579794和本地新包，全部未提交6文档（检查点、报告、验收、整改、RELEASING、RELEASE_NOTES），Wolai仍源码保存里程碑待产物结果同步。
+- 准确下一步只等待现有run终态和Intel资产齐备，再一次下载六资产到`src-tauri/target/audit-tools/release-37572579794`并用参数化只读核验器绑定SHA/Draft/run。前次五job与旧六资产仍历史；无新的设备连接/签名身份或用户数据操作。
+
+- 最新远程五job全部success：validate4m9s、rust-security2m43s、Windows3m22s、ARM2m9s、Intel4m20s；run37572579794结束退出0，新Draft405384157仍draft/target完整ae6c、6资产。现在开始一次独立六资产下载，完整摘要/结构/版本/签名尚待核对；不得把job成功自动当真实设备验收通过。
+
+- 安全实际新job输出：525依赖，退出success；仅proc-macro-error1.0.4/RUSTSEC-2024-0370未维护及glib0.18.5/RUSTSEC-2024-0429 unsound两信息性发现，无新漏洞/撤包失败。独立下载session34168仍运行，已出现5个部分文件，不能当有效安装包；网络较慢但未失败，不重复下载/修改网络配置。五小时24%、周88%、重置0（进入资产阶段实查）。准确下一步等待同一下载会话完成，再运行绑定ae6c/405384157/37572579794的只读核验器和Windows两包签名/版本核验；全部成功后更新报告/资产表/最终状态、保存Git并Wolai读回。六文档未提交不含代码，源集不变，签名与真实设备缺口保持。

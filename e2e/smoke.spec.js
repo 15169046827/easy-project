@@ -281,6 +281,28 @@ test('rejects a cross-project drop even when the template prevents dragover defa
     await transfer.dispose()
 })
 
+test('shows baseline readback failure instead of a save success banner', async ({ page }) => {
+    await page.addInitScript(() => {
+        const invoke = window.__TAURI_INTERNALS__.invoke
+        let saved = false
+        window.__TAURI_INTERNALS__.invoke = async (command, args) => {
+            if (args.model === 'plan_baseline' && args.action === 'save') saved = true
+            if (saved && args.model === 'plan_baseline' && args.action === 'get_by_project') {
+                return { success: false, message: 'Simulated baseline readback failure' }
+            }
+            return invoke(command, args)
+        }
+    })
+    await page.goto('/#/project/project-1')
+    await page.locator('.view-switch button').nth(1).click()
+    await expect(page.locator('.task-bar')).toBeVisible()
+    await page.getByRole('button', { name: /保存基线|Save baseline/i }).click()
+    await expect(page.locator('.gantt-banner.error')).toHaveText(
+        'Simulated baseline readback failure'
+    )
+    await expect(page.locator('.gantt-banner.success')).toHaveCount(0)
+})
+
 test('changes a task assignee from the Gantt editor', async ({ page }) => {
     await page.goto('/#/project/project-1')
     await page.locator('.view-switch button').nth(1).click()

@@ -30,7 +30,9 @@ export default [
             'src/modules/calendar/utils/ics.js',
             'src/modules/gantt/utils/criticalPath.js',
             'src/components/ResourceLoadPanel.vue',
-            'src/modules/task/composables/useTaskReordering.js'
+            'src/modules/task/composables/useTaskReordering.js',
+            'src/modules/gantt/composables/usePlanBaseline.js',
+            'src/modules/gantt/utils/baselinePresentation.js'
         ],
         rules: {
             complexity: ['error', 20],

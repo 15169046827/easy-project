@@ -627,3 +627,18 @@
 - 后续打包闭环：新NSIS5185831字节，SHA256 C7FF3849877D9D2D33645EE524A38418DE8788741428F0E796FD850E8B61E228，0.1.0/NotSigned；构建退出0，未安装或启动。Rustfmt、UPARS1.1.0脚本、Git diff --check通过；报告和发布/整改文档已统一31/27/4并明确新旧源集证据边界。保存前五小时58%、周41%、重置0。
 - 全部未提交17路径：上述12路径加docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md。准备保存同一分支阶段提交并精确同树/同SHA、非强制同步；Wolai已重读outline及状态块，待本里程碑替换读回。无新增设备连接/签名资源，缓存E盘。
 - 准确下一步：继续CODE003中的Gantt计划基线职责拆分；检查发现loadBaseline吞掉请求错误，saveBaseline在读回失败后仍报成功，需以独立finding登记并用失败用例整改，不直接搬移缺陷。新代码开始前再次保存范围/额度，完成后回归；新候选远程打包安排在该批源码稳定之后，避免重复构建。正式发布仍不可验收。
+
+### Gantt基线职责阶段入口（2026-10-07）
+
+- 上批17文件已保存并精确同树/同SHA非强制同步：HEAD dee97edbd21c15ab52217e972c3de99005e3af17，tree9004ebc766283932bd9eb6af95a02e1ee1817cbf；同分支，Git干净。Wolai排序里程碑已同步并读回。原基线/UPARS1.1.0/WACAS未定义与设备/签名状态不变。
+- 额度五小时55%、周40%、重置0，允许开始。目标继续CODE003，抽离Gantt计划基线读写状态与呈现计算，不变更UI结构/schema；新EP-REL-006/P2：loadBaseline的catch静默清空数据，saveBaseline接着设置成功和显示状态，读回失败可被错误报告为完成。范围是基线保存/读取、主项目甘特图生产入口；整改传播读取失败到既有错误反馈，并测试写失败/读回失败/清除失败，避免搬移后保留缺陷。
+- 当前全部未提交仅此检查点；计划改GanttView/ESLint，新增基线composable/呈现纯工具与单测。准确下一步实现明确失败状态与职责分离，运行局部门禁及全部前端回归，按结果关闭REL006、更新32项统计，不提前关闭CODE003。完成后保存检查点/同步；远程候选打包待源码稳定，旧5e与本地dee包均不覆盖下一批。Wolai当前仍为上批，待新里程碑同步；无额外设备连接或用户数据操作。
+
+### 基线职责复验完成
+
+- EP-REL-006关闭：Gantt基线持久化状态抽至usePlanBaseline，偏差/几何/提示纯计算抽至baselinePresentation；读取异常传播到错误横幅，读回失败不报保存成功，清除失败保留快照，旧项目响应不写入当前项目。新增12单测和1界面回归；108单测（22文件）/9专项/18E2E、lint/类型/构建通过，415模块，原两体积警告不变；Rust28/fmt/严格Clippy仍有效（Rust源码未变）。测试resolve类型错误已初始化修复并复验，未豁免检查。
+- 统计32项/P0=0/P1=2/P2=20/P3=10，28fixed/4P3open；原137文本加7新增JS输入累计144。CODE003仍open：Gantt减少约100行基线职责，编辑器/交互与TaskList编辑/筛选仍需拆分。
+- 全部未提交9路径：本检查点、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、e2e/smoke.spec.js、eslint.config.js、src/modules/gantt/components/GanttView.vue、`src/modules/gantt/composables/usePlanBaseline.js`、`src/modules/gantt/utils/baselinePresentation.js`、`src/__tests__/composables/usePlanBaseline.test.js`、`src/__tests__/gantt/baselinePresentation.test.js`。HEAD仍dee97edbd21c15ab52217e972c3de99005e3af17，准备阶段保存；Wolai待同步。新前端未再打NSIS，dee本地包和5e远程包均非当前源集。
+- 最新实查额度五小时96%、周99%、重置0（窗口重置后的工具值，非本任务重置操作）；永久门禁仍有效。准确下一步：提交同步本批与Wolai，继续Gantt编辑/创建职责拆分；源码稳定再统一新NSIS/远程五job/六资产，避免重复打包。签名/真实设备缺口、未操作用户数据状态不变；UPARS1.1.0/WACAS未定义，无新增通用标准条款。
+
+- 保存前发布说明/RELEASING/验收/整改计划四文档已追加基线阶段，全部未提交共13路径：上述9项加docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。格式与Git diff --check通过。准备同分支保存并精确非强制API同步，Wolai更新32/28/4和108/9/18/28后读回；阶段提交之后未提交应为0，以下一阶段开始实查为准。

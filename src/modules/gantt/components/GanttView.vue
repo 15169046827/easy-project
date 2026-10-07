@@ -496,12 +496,17 @@ import { crudAction } from '../../../api'
 import { useMembers } from '../../../composables/useMembers'
 import MemberSelect from '../../member/components/MemberSelect.vue'
 import { calculateCriticalPath } from '../utils/criticalPath.js'
+import { usePlanBaseline } from '../composables/usePlanBaseline.js'
+import {
+    baselineDeviation,
+    baselineBarStyle,
+    baselineTooltip
+} from '../utils/baselinePresentation.js'
 import {
     calculateEndDate,
     countWorkingDays,
     dateKey,
-    getWorkdayInfo,
-    workingDayDelta
+    getWorkdayInfo
 } from '../../calendar/utils/workCalendar.js'
 import { calculateDependencySchedule } from '../../calendar/utils/scheduling.js'
 import { taskAvailabilityConflict } from '../../calendar/utils/memberAvailability.js'
@@ -564,9 +569,6 @@ const editForm = ref({
 })
 const linking = ref(null) // { fromTask, cursorX, cursorY, ganttRect }
 const showCritical = ref(false) // 关键路径高亮开关
-const baseline = ref([]) // 计划基线快照
-const showBaseline = ref(false) // 是否叠加显示基线
-const savingBaseline = ref(false) // 保存基线中
 
 // 布局常量
 const dayWidth = ref(42)
@@ -801,112 +803,28 @@ function taskTip(task) {
 }
 
 // ---------- 计划基线 ----------
-const baselineMap = computed(() => {
-    const map = new Map()
-    for (const b of baseline.value) map.set(b.task_id, b)
-    return map
-})
+const { baseline, showBaseline, savingBaseline, loadBaseline, saveBaseline, clearBaseline } =
+    usePlanBaseline({ projectId, datedTasks, message, messageType, t })
+const baselineMap = computed(() => new Map(baseline.value.map(entry => [entry.task_id, entry])))
 const baselineSavedAt = computed(() => {
-    if (!baseline.value.length) return ''
-    const ts = baseline.value[0].created_at
-    const d = parse(ts)
-    return d
-        ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-        : ts
+    const timestamp = baseline.value[0]?.created_at || ''
+    return dateKey(timestamp) || timestamp
 })
-// 单任务偏差：返回相对于基线的开始/完成偏移（天）与延期判定
-function baselineInfo(task) {
-    const b = baselineMap.value.get(task.id)
-    if (!b) return null
-    if (![task.start_time, task.end_time, b.start_time, b.end_time].every(parse)) return null
-    const startSlip = workingDayDelta(b.start_time, task.start_time, activeProject.value)
-    const endSlip = workingDayDelta(b.end_time, task.end_time, activeProject.value)
-    return {
-        startSlip,
-        endSlip,
-        delayed: endSlip > 0 || startSlip > 0,
-        advanced: endSlip < 0 && startSlip <= 0
-    }
-}
-const delayedCount = computed(() => datedTasks.value.filter(t => baselineInfo(t)?.delayed).length)
-function baselineDelayed(task) {
-    return Boolean(baselineInfo(task)?.delayed)
-}
-
-// 基线幽灵条位置（与任务条同算法，仅换数据源）
-function baselineStyle(task) {
-    const b = baselineMap.value.get(task.id)
-    if (!b) return null
-    const s = parse(b.start_time)
-    const e = parse(b.end_time)
-    if (!s || !e) return null
-    const left = nameWidth + offset(s) * dayWidth.value + 6
-    if (task.type === 'Milestone') {
-        return { left: `${left + dayWidth.value / 2 - 8}px`, top: '34px' }
-    }
-    const barW = Math.max(dayWidth.value - 10, (offset(e) - offset(s) + 1) * dayWidth.value - 12)
-    return { left: `${left}px`, width: `${barW}px`, top: '34px' }
-}
-function baselineTip(task) {
-    const info = baselineInfo(task)
-    const b = baselineMap.value.get(task.id)
-    if (!info || !b) return task.name
-    const slip = info.endSlip
-    const verb =
-        slip > 0
-            ? t('gantt.baselineDelay', { count: slip })
-            : slip < 0
-              ? t('gantt.baselineAdvance', { count: Math.abs(slip) })
-              : t('gantt.baselineMatch')
-    return `${task.name}\n基线: ${b.start_time?.slice(0, 10)} → ${b.end_time?.slice(0, 10)}\n实际: ${task.start_time?.slice(0, 10)} → ${task.end_time?.slice(0, 10)}\n${verb}`
-}
-
-async function loadBaseline() {
-    if (!projectId.value) return
-    try {
-        const res = await crudAction('plan_baseline', 'get_by_project', {
-            projectId: projectId.value
-        })
-        baseline.value = res?.list || []
-    } catch {
-        baseline.value = []
-    }
-}
-async function saveBaseline() {
-    if (!projectId.value) return
-    savingBaseline.value = true
-    try {
-        const inputs = datedTasks.value.map(t => ({
-            task_id: t.id,
-            task_name: t.name,
-            start_time: t.start_time,
-            end_time: t.end_time
-        }))
-        await crudAction('plan_baseline', 'save', { project_id: projectId.value, tasks: inputs })
-        await loadBaseline()
-        showBaseline.value = true
-        messageType.value = 'success'
-        message.value = t('gantt.baselineSavedMsg', { count: inputs.length })
-    } catch (e) {
-        messageType.value = 'error'
-        message.value = e.message
-    } finally {
-        savingBaseline.value = false
-    }
-}
-async function clearBaseline() {
-    if (!projectId.value) return
-    try {
-        await crudAction('plan_baseline', 'clear', { projectId: projectId.value })
-        baseline.value = []
-        showBaseline.value = false
-        messageType.value = 'success'
-        message.value = t('gantt.baselineCleared')
-    } catch (e) {
-        messageType.value = 'error'
-        message.value = e.message
-    }
-}
+const baselineInfo = task =>
+    baselineDeviation(baselineMap.value.get(task.id), task, activeProject.value, parse)
+const delayedCount = computed(
+    () => datedTasks.value.filter(task => baselineInfo(task)?.delayed).length
+)
+const baselineDelayed = task => Boolean(baselineInfo(task)?.delayed)
+const baselineStyle = task =>
+    baselineBarStyle(baselineMap.value.get(task.id), task, {
+        parse,
+        offset,
+        nameWidth,
+        dayWidth: dayWidth.value
+    })
+const baselineTip = task =>
+    baselineTooltip(baselineMap.value.get(task.id), task, baselineInfo(task), t)
 
 // ---------- 数据加载 ----------
 async function load() {

@@ -1,6 +1,6 @@
 # EasyProject release process
 
-2026-10-07 source follow-up: the task reorder boundary/atomicity fixes are newer than the verified 5e7aced draft below. Its six asset hashes remain historical evidence only. New-source local frontend gates pass (108/9/17/28 tests); a new immutable source-to-workflow-to-assets mapping is required before release acceptance. Keep all current and historical releases Draft and do not mix their assets. 基线职责拆分与EP-REL-006错误反馈修复已完成；此最新前端尚未重新打包，dee97ed本地NSIS和5e7aced远程资产仅为上一源集证据。
+2026-10-07 source follow-up: the task reorder boundary/atomicity fixes are newer than the verified 5e7aced draft below. Its six asset hashes remain historical evidence only. New-source local frontend gates pass (124/9/17/28 tests); a new immutable source-to-workflow-to-assets mapping is required before release acceptance. Keep all current and historical releases Draft and do not mix their assets. 基线职责拆分与EP-REL-006错误反馈修复已完成；此最新前端尚未重新打包，dee97ed本地NSIS和5e7aced远程资产仅为上一源集证据。 Gantt编辑/创建职责已拆分、EP-REL-007卸载监听泄漏已修复；最新构建419模块，两体积警告940.20/1495.97KB仍保留。
 
 ## Current output
 

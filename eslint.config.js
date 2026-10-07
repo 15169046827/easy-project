@@ -32,7 +32,11 @@ export default [
             'src/components/ResourceLoadPanel.vue',
             'src/modules/task/composables/useTaskReordering.js',
             'src/modules/gantt/composables/usePlanBaseline.js',
-            'src/modules/gantt/utils/baselinePresentation.js'
+            'src/modules/gantt/utils/baselinePresentation.js',
+            'src/modules/gantt/composables/useGanttCreateEditor.js',
+            'src/modules/gantt/composables/useGanttEditEditor.js',
+            'src/modules/gantt/utils/taskFormSchedule.js',
+            'src/modules/gantt/composables/useDocumentDragListeners.js'
         ],
         rules: {
             complexity: ['error', 20],

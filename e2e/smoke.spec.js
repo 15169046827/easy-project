@@ -281,6 +281,33 @@ test('rejects a cross-project drop even when the template prevents dragover defa
     await transfer.dispose()
 })
 
+test('does not save a stale Gantt drag after leaving its route', async ({ page }) => {
+    await page.goto('/#/project/project-1')
+    await page.locator('.view-switch button').nth(1).click()
+    const bar = page.locator('.task-bar')
+    await expect(bar).toBeVisible()
+    const box = await bar.boundingBox()
+    expect(box).not.toBeNull()
+    const x = box.x + box.width / 2
+    const y = box.y + box.height / 2
+    await page.mouse.move(x, y)
+    await page.mouse.down()
+    await page.evaluate(() => {
+        window.location.hash = '#/tasks'
+    })
+    await expect(page.locator('.workspace-table')).toBeVisible()
+    await expect(page.locator('.gantt')).toHaveCount(0)
+    await page.mouse.move(x + 84, y)
+    await page.mouse.up()
+    expect(
+        await page.evaluate(() =>
+            window.__EASY_PROJECT_CALLS__.filter(
+                ({ args }) => args.model === 'task' && args.action === 'update'
+            )
+        )
+    ).toEqual([])
+})
+
 test('shows baseline readback failure instead of a save success banner', async ({ page }) => {
     await page.addInitScript(() => {
         const invoke = window.__TAURI_INTERNALS__.invoke

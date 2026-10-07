@@ -497,28 +497,25 @@ import { useMembers } from '../../../composables/useMembers'
 import MemberSelect from '../../member/components/MemberSelect.vue'
 import { calculateCriticalPath } from '../utils/criticalPath.js'
 import { usePlanBaseline } from '../composables/usePlanBaseline.js'
+import { useGanttCreateEditor } from '../composables/useGanttCreateEditor.js'
+import { useGanttEditEditor } from '../composables/useGanttEditEditor.js'
+import { useDocumentDragListeners } from '../composables/useDocumentDragListeners.js'
 import {
     baselineDeviation,
     baselineBarStyle,
     baselineTooltip
 } from '../utils/baselinePresentation.js'
-import {
-    calculateEndDate,
-    countWorkingDays,
-    dateKey,
-    getWorkdayInfo
-} from '../../calendar/utils/workCalendar.js'
+import { countWorkingDays, dateKey, getWorkdayInfo } from '../../calendar/utils/workCalendar.js'
 import { calculateDependencySchedule } from '../../calendar/utils/scheduling.js'
 import { taskAvailabilityConflict } from '../../calendar/utils/memberAvailability.js'
 import {
     calculateDragDelta,
     calculateDragUpdate,
-    createTaskCreatePayload,
-    createTaskEditPayload,
     evaluateDependency
 } from '../utils/interaction.js'
 
 const { t } = useI18n()
+const { addDocumentListener, removeDocumentListener } = useDocumentDragListeners()
 const { members, loadMembers } = useMembers()
 
 const props = defineProps({
@@ -540,33 +537,26 @@ const scroller = ref(null)
 const dragState = ref(null) // { task, mode:'move'|'resize-left'|'resize-right', startX, origStart:Date, origEnd:Date }
 const dragCursorX = ref(0)
 const createDrag = ref(null) // { startX, startIdx:number, endIdx:number }  day index range
-const creatingTask = ref(false)
-const savingTask = ref(false)
-const createError = ref('')
-const createForm = ref({
-    name: '',
-    start_time: '',
-    end_time: '',
-    effort_days: 1,
-    schedule_mode: 'fixed_effort',
-    type: 'Task',
-    priority: '3',
-    status: 'Pending',
-    assignee: '',
-    comment: ''
-})
-const editingTask = ref(null)
-const editForm = ref({
-    name: '',
-    start_time: '',
-    end_time: '',
-    effort_days: 0,
-    schedule_mode: 'fixed_dates',
-    type: 'Task',
-    status: 'Pending',
-    progress: 0,
-    assignee: ''
-})
+const {
+    creatingTask,
+    savingTask,
+    createError,
+    createForm,
+    openCreateEditor,
+    recalculateCreateEnd,
+    recalculateCreateEffort,
+    closeCreateEditor,
+    saveCreate
+} = useGanttCreateEditor({ projectId, activeProject, message, messageType, load, t })
+const {
+    editingTask,
+    editForm,
+    openEditor,
+    recalculateEditEnd,
+    recalculateEditEffort,
+    closeEditor,
+    saveEdit
+} = useGanttEditEditor({ activeProject, message, messageType, load, applyAutoSchedule, t })
 const linking = ref(null) // { fromTask, cursorX, cursorY, ganttRect }
 const showCritical = ref(false) // 关键路径高亮开关
 
@@ -891,60 +881,6 @@ async function shift(task, delta) {
     }
 }
 
-// ---------- 编辑任务面板 ----------
-function openEditor(task) {
-    editingTask.value = task
-    editForm.value = {
-        name: task.name || '',
-        start_time: (task.start_time || '').replace(' ', 'T').slice(0, 10),
-        end_time: (task.end_time || '').replace(' ', 'T').slice(0, 10),
-        effort_days: task.effort_days || 0,
-        schedule_mode: task.schedule_mode || 'fixed_dates',
-        type: task.type || 'Task',
-        status: task.status || 'Pending',
-        progress: task.progress || 0,
-        assignee: task.assignee || ''
-    }
-}
-function recalculateEditEnd() {
-    if (editForm.value.schedule_mode === 'fixed_dates') {
-        recalculateEditEffort()
-        return
-    }
-    const end = calculateEndDate(
-        editForm.value.start_time,
-        editForm.value.effort_days,
-        activeProject.value
-    )
-    if (end) editForm.value.end_time = dateKey(end)
-}
-function recalculateEditEffort() {
-    if (editForm.value.schedule_mode !== 'fixed_dates') return
-    editForm.value.effort_days = countWorkingDays(
-        editForm.value.start_time,
-        editForm.value.end_time,
-        activeProject.value
-    )
-}
-function closeEditor() {
-    editingTask.value = null
-}
-async function saveEdit() {
-    const task = editingTask.value
-    if (!task) return
-    try {
-        await crudAction('task', 'update', createTaskEditPayload(task.id, editForm.value))
-        messageType.value = 'success'
-        message.value = t('gantt.taskUpdated', { name: editForm.value.name })
-        closeEditor()
-        await load()
-        await applyAutoSchedule()
-    } catch (err) {
-        messageType.value = 'error'
-        message.value = err.message
-    }
-}
-
 // ---------- 拖拽 task bar ----------
 function onBarMouseDown(task, e, mode = 'move') {
     if (e.button !== 0) return // 仅左键
@@ -961,8 +897,8 @@ function onBarMouseDown(task, e, mode = 'move') {
         origEnd: new Date(end)
     }
     dragCursorX.value = e.clientX
-    document.addEventListener('mousemove', onDocMouseMove)
-    document.addEventListener('mouseup', onDocMouseUp)
+    addDocumentListener('mousemove', onDocMouseMove)
+    addDocumentListener('mouseup', onDocMouseUp)
 }
 
 function onDocMouseMove(e) {
@@ -971,8 +907,8 @@ function onDocMouseMove(e) {
 }
 
 async function onDocMouseUp(_e) {
-    document.removeEventListener('mousemove', onDocMouseMove)
-    document.removeEventListener('mouseup', onDocMouseUp)
+    removeDocumentListener('mousemove', onDocMouseMove)
+    removeDocumentListener('mouseup', onDocMouseUp)
 
     const ds = dragState.value
     dragState.value = null
@@ -1034,8 +970,8 @@ function onGridMouseDown(e) {
     if (idx < 0 || idx >= days.value.length) return
     e.preventDefault()
     createDrag.value = { startX: e.clientX, startIdx: idx, endIdx: idx }
-    document.addEventListener('mousemove', onGridMouseMove)
-    document.addEventListener('mouseup', onGridMouseUp)
+    addDocumentListener('mousemove', onGridMouseMove)
+    addDocumentListener('mouseup', onGridMouseUp)
 }
 function onGridMouseMove(e) {
     if (!createDrag.value) return
@@ -1047,8 +983,8 @@ function onGridMouseMove(e) {
     createDrag.value.endIdx = idx
 }
 function onGridMouseUp(_e) {
-    document.removeEventListener('mousemove', onGridMouseMove)
-    document.removeEventListener('mouseup', onGridMouseUp)
+    removeDocumentListener('mousemove', onGridMouseMove)
+    removeDocumentListener('mouseup', onGridMouseUp)
     const cd = createDrag.value
     createDrag.value = null
     if (!cd) return
@@ -1058,74 +994,6 @@ function onGridMouseUp(_e) {
     const startDate = new Date(days.value[s].key)
     const endDate = new Date(days.value[e].key)
     openCreateEditor(startDate, endDate)
-}
-
-function openCreateEditor(startDate, endDate) {
-    createError.value = ''
-    createForm.value = {
-        name: '',
-        start_time: format(startDate).slice(0, 10),
-        end_time: format(endDate).slice(0, 10),
-        effort_days: Math.max(1, countWorkingDays(startDate, endDate, activeProject.value)),
-        schedule_mode: 'fixed_effort',
-        type: 'Task',
-        priority: '3',
-        status: 'Pending',
-        assignee: '',
-        comment: ''
-    }
-    creatingTask.value = true
-}
-
-function recalculateCreateEnd() {
-    if (createForm.value.schedule_mode === 'fixed_dates') {
-        recalculateCreateEffort()
-        return
-    }
-    const end = calculateEndDate(
-        createForm.value.start_time,
-        createForm.value.effort_days,
-        activeProject.value
-    )
-    if (end) createForm.value.end_time = dateKey(end)
-}
-
-function recalculateCreateEffort() {
-    if (createForm.value.schedule_mode !== 'fixed_dates') return
-    createForm.value.effort_days = countWorkingDays(
-        createForm.value.start_time,
-        createForm.value.end_time,
-        activeProject.value
-    )
-}
-
-function closeCreateEditor() {
-    if (savingTask.value) return
-    creatingTask.value = false
-    createError.value = ''
-}
-
-async function saveCreate() {
-    if (!createForm.value.name.trim()) {
-        createError.value = `${t('tasks.columnName')} ${t('common.required')}`
-        return
-    }
-    savingTask.value = true
-    createError.value = ''
-    try {
-        const payload = createTaskCreatePayload(projectId.value, createForm.value)
-        await crudAction('task', 'add', payload)
-        messageType.value = 'success'
-        message.value = t('gantt.taskCreated', { name: payload.name })
-        creatingTask.value = false
-        await load()
-    } catch (err) {
-        messageType.value = 'error'
-        message.value = err.message
-        createError.value = err.message
-    } finally {
-        savingTask.value = false
-    }
 }
 
 // ---------- 依赖链接线预览 ----------
@@ -1155,8 +1023,8 @@ function startLink(task, e) {
         cursorY: e.clientY,
         ganttRect: rect
     }
-    document.addEventListener('mousemove', onLinkMove)
-    document.addEventListener('mouseup', onLinkUp)
+    addDocumentListener('mousemove', onLinkMove)
+    addDocumentListener('mouseup', onLinkUp)
 }
 function onLinkMove(e) {
     if (!linking.value) return
@@ -1164,8 +1032,8 @@ function onLinkMove(e) {
     linking.value.cursorY = e.clientY
 }
 function onLinkUp(e) {
-    document.removeEventListener('mousemove', onLinkMove)
-    document.removeEventListener('mouseup', onLinkUp)
+    removeDocumentListener('mousemove', onLinkMove)
+    removeDocumentListener('mouseup', onLinkUp)
     const link = linking.value
     linking.value = null
     if (!link) return

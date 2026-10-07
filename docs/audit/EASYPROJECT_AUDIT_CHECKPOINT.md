@@ -642,3 +642,23 @@
 - 最新实查额度五小时96%、周99%、重置0（窗口重置后的工具值，非本任务重置操作）；永久门禁仍有效。准确下一步：提交同步本批与Wolai，继续Gantt编辑/创建职责拆分；源码稳定再统一新NSIS/远程五job/六资产，避免重复打包。签名/真实设备缺口、未操作用户数据状态不变；UPARS1.1.0/WACAS未定义，无新增通用标准条款。
 
 - 保存前发布说明/RELEASING/验收/整改计划四文档已追加基线阶段，全部未提交共13路径：上述9项加docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。格式与Git diff --check通过。准备同分支保存并精确非强制API同步，Wolai更新32/28/4和108/9/18/28后读回；阶段提交之后未提交应为0，以下一阶段开始实查为准。
+
+### Gantt任务编辑职责阶段入口
+
+- 基线阶段13文件已提交12cbc64d6cbce114b988cce83e07c5ddab1ebfaf、tree348b4320819789180fa900e463a9bb4e7c02ba3c并精确API非强制同步成功，同分支Git干净；Wolai32/28/4与108/9/18/28已同步读回。原main/c0bb322基线、UPARS1.1.0/WACAS未定义、设备/签名状态不变。
+- 长阶段前实查五小时84%、周98%、重置0；当前全部未提交仅此检查点。目标CODE003第三批，按创建/编辑表单职责抽离Gantt状态、字段初始化、工作日重算、提交与反馈，不改变模板/CSS/schema；保留既有payload纯工具并集中重复工作日计算。新增模块接入原复杂度/函数长度门禁，补保存/失败/日期与状态测试，再完整前端回归；失败继续修复，不关闭规则。
+- 准确下一步实现useGanttCreateEditor/useGanttEditEditor及共用表单日期重算，集成GanttView；记录实际新增文件/测试并更新报告。源码稳定再统一打包/远程验证，旧dee/5e包不覆盖新源集。Wolai阶段待同步，无新设备连接、用户数据或系统设置变更。
+
+### 编辑职责复验与监听器生命周期入口
+
+- 创建/编辑表单状态与提交已独立为两个composable，工作日重算共用taskFormSchedule；Gantt不再持有重复表单初始化/提交逻辑，保持模板/CSS/schema。新增13单测覆盖初始化/完整payload/日期/保存失败重试/提交顺序/防重复提交。121单测（24文件）/18E2E、lint/类型/生产构建通过，418模块、原两体积警告；9专项上批有效，Rust28/fmt/Clippy未受本批影响。CODE003仍open。
+- 全部未提交8路径：本检查点、eslint.config.js、src/modules/gantt/components/GanttView.vue、`src/modules/gantt/composables/useGanttCreateEditor.js`、`src/modules/gantt/composables/useGanttEditEditor.js`、`src/modules/gantt/utils/taskFormSchedule.js`、`src/__tests__/composables/useGanttTaskEditors.test.js`、`src/__tests__/gantt/taskFormSchedule.test.js`。HEAD/分支仍12cbc64，新增5自有文本（累计149）；报告/Wolai仍上批32/28/4与108测试，本里程碑待统一。
+- 新EP-REL-007/P2：Gantt三个拖动入口注册document mousemove/mouseup，仅在mouseup移除，无组件卸载清理。拖动中路由切换后仍可触发旧组件状态/后端更新；生产鼠标交互入口可达，涉及资源释放和迟到写入。准确下一步用组件生命周期管理器统一注册/移除、卸载时全部释放，并mount/unmount负例验证旧回调不再执行；不改交互视觉或用户数据。先保留本进度，再修复/全量复验后更新33项统计；UPARS资源释放已有覆盖，无通用条款新增需求。
+
+### 编辑及监听器复验完成
+
+- EP-REL-007已关闭：三类document拖动监听统一生命周期注册/移除，onBeforeUnmount全部释放；3个新增生命周期单测与浏览器拖动中离开路由负例证实后续mouseup不产生task.update。编辑/创建职责和日期重算13新增单测也通过。全量124单测（25文件）/9专项/19E2E、lint/类型/生产构建通过，419模块，体积警告940.20/1495.97KB仍保留；Rust28/fmt/严格Clippy未变仍有效。测试setup闭包类型错误已用明确类型状态容器修复，随后格式错误已定向格式化并复验，不排除测试。
+- 统计33项/P0=0/P1=2/P2=21/P3=10，29fixed/4P3open；原137文本加14新增自有JS累计151。CODE003仍open，Gantt基线/创建/编辑已分离，TaskList编辑/筛选与Gantt交互仍待整理；本阶段不做视觉结构变更。6发布/审计文档将同步本地，Wolai仍为12cbc64基线阶段待更新；未提交列表在保存前实查后逐项补齐。
+- 最近实查额度五小时77%、周96%、重置0；准确下一步保存本批并同步Git/Wolai，再提取TaskList行编辑与请求/筛选并回归；稳定源码统一新NSIS和远程全平台产物，不复用旧包。无新增设备连接、签名资源或用户数据操作；UPARS1.1.0/WACAS未定义，无新增通用标准条款。
+
+- 保存前全部未提交16文件：docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、e2e/smoke.spec.js、eslint.config.js、src/modules/gantt/components/GanttView.vue、`src/__tests__/composables/useDocumentDragListeners.test.js`、`src/__tests__/composables/useGanttTaskEditors.test.js`、`src/__tests__/gantt/taskFormSchedule.test.js`、`src/modules/gantt/composables/useDocumentDragListeners.js`、`src/modules/gantt/composables/useGanttCreateEditor.js`、`src/modules/gantt/composables/useGanttEditEditor.js`、`src/modules/gantt/utils/taskFormSchedule.js`。6文档已同步33/29/4和124/9/19/28；格式/Git diff --check通过；阶段提交/精确非强制同步后Wolai更新并读回，保存成功状态以下一阶段Git核对为准。

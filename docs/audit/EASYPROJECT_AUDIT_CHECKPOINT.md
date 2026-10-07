@@ -700,3 +700,18 @@
 - 实查额度五小时55%、周93%、重置0。准确下一步更新报告及四发布/整改文档（纠正当前门禁表中的旧测试数量并保留历史产物边界）、保存Git并精确非强制同步、更新Wolai读回；然后评估CODE003最终范围与体积风险，再统一新源集打包/远程验收。当前本地dee包与远程5e包不覆盖本源集。仅确认本开发Windows环境，无新增设备连接、签名资源；未安装启动程序、未改用户数据库或系统配置。UPARS现有异步隔离/错误传播要求已覆盖，无新通用条款。
 
 - 保存前全部未提交17文件：上述12项加docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。六文档已统一36/32/4和157/9/21/28，UPARS校验/格式/Git diff --check通过；准备阶段提交与精确非强制同步，Wolai随后读回。最新源集打包仍未执行，签名/设备状态不变。
+
+### 依赖拖放识别整改入口
+
+- 上批17文件已保存08bc2a26ffa397242f7c8bdf90f8290ae8a3c3be/tree d703394dacce03ee3ed24521a8a27dacd1ee0329，精确非强制同步成功，Git干净，Wolai36/32/4与157/9/21/28读回一致。标准/原基线/设备签名状态不变；当前额度五小时49%、周92%、重置0，可进入定向阶段。
+- 新EP-REL-011/P2：Gantt.onLinkUp读取目标任务条style.left与父行style.top，但匹配barStyle(t).top（固定11px/16px），行top从62px开始，因此目标匹配失败、依赖无法创建。生产依赖拖放入口可达，影响依赖规划。整改通过稳定任务ID识别目标，不再由视觉坐标猜测业务身份；提取依赖拖动职责，保留循环/重复校验、checked reload和卸载监听清理。仅增加DOM数据属性，不改变视觉布局；测试真实两任务拖放与错误/自链接/未知ID边界。
+- 当前未提交仅此检查点。准确下一步实现useGanttDependencyDragging与集成，补单测/真实E2E，全量前端复验后统一37项统计并同步；当前新源集尚未打包，无用户数据库或系统修改。UPARS稳定身份/正确性已有覆盖，无新标准条款。
+
+### 依赖拖放复验完成
+
+- EP-REL-011根因含两部分：目标身份由不同坐标系错误匹配；连接span又被进度span通用CSS的pointer-events:none/left:0覆盖，并与z-index4的右缩放手柄重叠。已改为data-task-id精确身份、独立依赖拖动composable、进度样式只作用非连接span、连接手柄内移到right16px避开缩放区域。初两轮真实E2E失败没有掩盖；增加临时连接线可见断言及DOM命中诊断后定位样式冲突，修复后22E2E全通过。6单测覆盖稳定ID/未知目标/自连接/重复依赖/读取失败/卸载释放，163单测全通过；类型测试fixture诊断定向修复，未排除测试。
+- 应用内安全demo在1280×800、960×640暗/浅色布局截图检查，三连接手柄DOM命中均为link-handle、pointer:auto；布局无新增视觉遮挡。仅临时演示主题切换，预览已关闭/视口重置，停止自己启动的开发服务器；没有本机桌面交互、安装或用户数据库修改。Rust与锁文件未变。
+- 当前全部未提交6路径：本检查点、e2e/smoke.spec.js、eslint.config.js、src/modules/gantt/components/GanttView.vue、`src/modules/gantt/composables/useGanttDependencyDragging.js`、`src/__tests__/composables/useGanttDependencyDragging.test.js`。报告/四发布整改文档尚为36/32/4，Wolai08bc阶段；当前HEAD08bc2a26、同分支。预计统一37项/P0=0/P1=2/P2=25/P3=10、33fixed/4P3open；原137加30新增JS累计167文本。
+- 实查五小时43%、周91%、重置0；下一步保存37项报告与Git/Wolai，再继续CODE003剩余网格/呈现职责复核，源码稳定统一打包。UPARS1.1.0/WACAS未定义、原基线与签名/真实设备缺口不变，无新标准条款。构建/类型/lint最终复验结果以下次会话输出核对，不提前宣称打包完成。
+
+- 最终会话已核对：类型/lint退出0，428模块生产构建与release:check退出0，原两体积警告未改变。全部未提交11项：上述6路径加docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md；六文档已统一37/33/4与163/9/22/28。保存提交、精确非强制同步及Wolai读回后进入下一阶段，仍不宣称当前源集安装包通过。

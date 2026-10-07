@@ -186,6 +186,7 @@
                         </div>
                         <div
                             class="task-bar"
+                            :data-task-id="task.id"
                             :class="{
                                 milestone: task.type === 'Milestone',
                                 done: task.status === 'Done',
@@ -503,6 +504,7 @@ import { useDocumentDragListeners } from '../composables/useDocumentDragListener
 import { useGanttViewport } from '../composables/useGanttViewport.js'
 import { useGanttNavigation } from '../composables/useGanttNavigation.js'
 import { useGanttTaskDragging } from '../composables/useGanttTaskDragging.js'
+import { useGanttDependencyDragging } from '../composables/useGanttDependencyDragging.js'
 import { useGanttProjectData } from '../composables/useGanttProjectData.js'
 import {
     baselineDeviation,
@@ -512,11 +514,7 @@ import {
 import { dateKey } from '../../calendar/utils/workCalendar.js'
 import { calculateDependencySchedule } from '../../calendar/utils/scheduling.js'
 import { taskAvailabilityConflict } from '../../calendar/utils/memberAvailability.js'
-import {
-    calculateDragDelta,
-    calculateDragUpdate,
-    evaluateDependency
-} from '../utils/interaction.js'
+import { calculateDragDelta, calculateDragUpdate } from '../utils/interaction.js'
 
 const { t } = useI18n()
 const { addDocumentListener, removeDocumentListener } = useDocumentDragListeners()
@@ -569,7 +567,6 @@ const {
     applyAutoSchedule,
     t
 })
-const linking = ref(null) // { fromTask, cursorX, cursorY, ganttRect }
 const showCritical = ref(false) // 关键路径高亮开关
 
 // 布局常量
@@ -868,88 +865,21 @@ function onGridMouseUp(_e) {
     openCreateEditor(startDate, endDate)
 }
 
-// ---------- 依赖链接线预览 ----------
-const linkLine = computed(() => {
-    if (!linking.value) return { x1: 0, y1: 0, x2: 0, y2: 0 }
-    const lk = linking.value
-    const task = lk.fromTask
-    const end = parse(task.end_time)
-    const idx = datedTasks.value.findIndex(t => t.id === task.id)
-    const x1 = (offset(end) + 1) * dayWidth.value - 5
-    const y1 = headerHeight + idx * rowHeight + 24
-    const x2 = lk.cursorX - lk.ganttRect.left - nameWidth
-    const y2 = lk.cursorY - lk.ganttRect.top
-    return { x1, y1, x2, y2 }
+const { linking, linkLine, startLink } = useGanttDependencyDragging({
+    datedTasks,
+    dependencies,
+    parse,
+    offset,
+    dayWidth,
+    nameWidth,
+    headerHeight,
+    rowHeight,
+    message,
+    messageType,
+    load: loadChecked,
+    applyAutoSchedule,
+    t
 })
-
-// ---------- 依赖链接拖拽 ----------
-function startLink(task, e) {
-    e.preventDefault()
-    e.stopPropagation()
-    const ganttEl = e.currentTarget.closest('.gantt')
-    if (!ganttEl) return
-    const rect = ganttEl.getBoundingClientRect()
-    linking.value = {
-        fromTask: task,
-        cursorX: e.clientX,
-        cursorY: e.clientY,
-        ganttRect: rect
-    }
-    addDocumentListener('mousemove', onLinkMove)
-    addDocumentListener('mouseup', onLinkUp)
-}
-function onLinkMove(e) {
-    if (!linking.value) return
-    linking.value.cursorX = e.clientX
-    linking.value.cursorY = e.clientY
-}
-function onLinkUp(e) {
-    removeDocumentListener('mousemove', onLinkMove)
-    removeDocumentListener('mouseup', onLinkUp)
-    const link = linking.value
-    linking.value = null
-    if (!link) return
-
-    // 找到鼠标释放位置下的 task bar
-    const target = document.elementFromPoint(link.cursorX, link.cursorY)
-    const barEl = target?.closest?.('.task-bar')
-    if (!(barEl instanceof HTMLElement)) return
-    // 通过 datedTasks 中找到对应的 task
-    const barLeft = parseFloat(barEl.style.left || '0')
-    const barTop = parseFloat(barEl.parentElement?.style?.top || '0')
-    const match = datedTasks.value.find(t => {
-        const bs = barStyle(t)
-        return (
-            Math.abs(parseFloat(bs.left) - barLeft) < 2 && Math.abs(parseFloat(bs.top) - barTop) < 2
-        )
-    })
-    if (!match || match.id === link.fromTask.id) return
-
-    createDependency(link.fromTask, match)
-}
-async function createDependency(from, to) {
-    try {
-        // 找到 successor task 的现有前驱列表，追加 from.id
-        const evaluation = evaluateDependency(dependencies.value, from.id, to.id)
-        if (!evaluation.allowed) {
-            const reason = evaluation.reason
-            messageType.value = 'error'
-            message.value = t(`gantt.dependency${reason[0].toUpperCase()}${reason.slice(1)}`)
-            return
-        }
-        await crudAction('task_dependency', 'set_for_task', {
-            taskId: to.id,
-            predecessorIds: evaluation.predecessorIds
-        })
-        messageType.value = 'success'
-        message.value = t('gantt.dependencyCreated', { from: from.name, to: to.name })
-        await loadChecked()
-        await applyAutoSchedule()
-    } catch (err) {
-        messageType.value = 'error'
-        message.value = err.message
-    }
-}
 
 // ---------- 导出图片 ----------
 async function exportImage() {
@@ -1320,7 +1250,7 @@ onMounted(async () => {
 .task-bar:active {
     cursor: grabbing;
 }
-.task-bar span {
+.task-bar > span:not(.link-handle) {
     position: absolute;
     left: 0;
     top: 0;
@@ -1349,7 +1279,7 @@ onMounted(async () => {
 .task-bar.done {
     background: #22c55e;
 }
-.task-bar.done span {
+.task-bar.done > span:not(.link-handle) {
     background: #166534;
 }
 .task-bar.milestone {
@@ -1520,7 +1450,7 @@ onMounted(async () => {
 /* ---------- 依赖链接手柄 ---------- */
 .link-handle {
     position: absolute;
-    right: -6px;
+    right: 16px;
     top: 50%;
     transform: translateY(-50%);
     width: 12px;

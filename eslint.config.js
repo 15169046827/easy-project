@@ -45,6 +45,7 @@ export default [
             'src/modules/gantt/composables/useGanttNavigation.js',
             'src/modules/gantt/composables/useGanttTaskDragging.js',
             'src/modules/gantt/composables/useGanttProjectData.js',
+            'src/modules/gantt/composables/useGanttDependencyDragging.js',
             'src/modules/gantt/components/GanttView.vue',
             'src/modules/task/components/TaskList/TaskList.vue'
         ],

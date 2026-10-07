@@ -511,6 +511,62 @@ test('resizes a task schedule from the right edge of its Gantt bar', async ({ pa
     ).toBe(true)
 })
 
+test('creates a dependency by dropping on the actual target task bar', async ({ page }) => {
+    await page.addInitScript(() => {
+        const original = window.__TAURI_INTERNALS__.invoke
+        window.__TAURI_INTERNALS__.invoke = async (command, args) => {
+            const result = /** @type {{success: boolean, data: {list: object[]}}} */ (
+                await original(command, args)
+            )
+            if (args?.model === 'task' && args?.action === 'get_all') {
+                return {
+                    success: true,
+                    data: {
+                        list: [
+                            ...result.data.list,
+                            {
+                                ...result.data.list[0],
+                                id: 'task-2',
+                                name: 'Implementation',
+                                sort_order: 2,
+                                start_time: '2026-07-04 00:00:00',
+                                end_time: '2026-07-06 00:00:00'
+                            }
+                        ]
+                    }
+                }
+            }
+            return result
+        }
+    })
+    await page.goto('/#/project/project-1')
+    await page.locator('.view-switch button').nth(1).click()
+    const handle = page.locator('[data-task-id="task-1"] .link-handle')
+    const target = page.locator('[data-task-id="task-2"]')
+    await expect(target).toBeVisible()
+    const start = await handle.boundingBox()
+    const end = await target.boundingBox()
+    expect(start).not.toBeNull()
+    expect(end).not.toBeNull()
+    await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2)
+    await page.mouse.down()
+    await expect(page.locator('.link-temp-layer')).toBeVisible()
+    await page.mouse.move(end.x + end.width / 2, end.y + end.height / 2)
+    await page.mouse.up()
+    await expect
+        .poll(() =>
+            page.evaluate(() =>
+                window.__EASY_PROJECT_CALLS__
+                    .filter(
+                        ({ args }) =>
+                            args?.model === 'task_dependency' && args?.action === 'set_for_task'
+                    )
+                    .map(({ args }) => args.data)
+            )
+        )
+        .toEqual([{ taskId: 'task-2', predecessorIds: ['task-1'] }])
+})
+
 test('saves a custom project workday override', async ({ page }) => {
     await page.goto('/#/project/project-1')
     await page.getByRole('button', { name: /工作日历|Calendar/ }).click()

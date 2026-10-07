@@ -548,7 +548,6 @@
 
 ## 2026-10-06 配套前端升级与打包前检查点
 
-
 后续完成：新NSIS5193100字节/A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F，NotSigned/0.1.0，产物检查通过；NSIS3.11与插件官方哈希校验通过，缓存E盘target/.tauri。重复allowScripts键已修复，前端重建仅原两体积告警；npm全量/生产正式复扫退出0、所有等级0。EP-SEC-009关闭，累计28/24fixed/4P3open；剩proc-macro-error与glib仅Linux GTK树。最新五小时49%、周54%、重置0。全部未提交12文件：上述8文件加docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、docs/RELEASE_NOTES_0.1.0.md。下一步保存新候选并触发远程五job；签名、设备、Wolai待本轮里程碑同步，无新增设备或系统修改。
 
 - 目标仍为全项目UPARS整改与发布验收；UPARS1.1.0，WACAS未定义/待确认。原基线main/c0bb322，当前分支codex/audit-release-20261006，HEAD7447d5d；旧候选25426627六资产证据有效，但不覆盖当前升级。
@@ -583,6 +582,8 @@
 
 ## 2026-10-06 五小时9%门禁暂停——最新续接检查点
 
+本节为历史暂停记录；2026-10-07已恢复，最新续接以本文末尾2026-10-07检查点为准。
+
 - 目标/范围：继续全项目UPARS代码整改、复验与正式发布验收，不公开未验收草稿。UPARS1.1.0，WACAS未定义/待确认；原源基线main/c0bb3220347f3978f547d0c4841156c648f2711a，当前源码/流程候选codex/audit-release-20261006-api/5e7aced868c0e95c9644a68ce88ac1acc7767171，树4dd58911b1cb667a67a7d6c08606a3bc162bb07b。本地和远程同SHA；原f987分支与全部历史草稿保留。
 - 额度：五小时9%、周48%、重置0。按永久10%长任务门禁保存后暂停，等待用户恢复提醒；不重置、不定时唤醒。新长阶段不再开始；已启动下载不取消或重发，恢复后先核对其完成状态。
 - 已完成修改/复验：Tauri Rust/JS API/CLI2.12.1、build2.7.1、opener2.7.0协调升级；Rust最低1.90；工具缓存E盘target/.tauri，精确esbuild脚本批准；checkout/setup-node共8引用升级官方v6/Node24。82单测/9专项/16浏览器E2E/25 Rust、lint/类型/fmt/严格Clippy、生产构建/版本、UPARS/工作流Prettier与js-yaml通过；官方npm全量/生产0，RustSec1290公告/525依赖漏洞0、撤包0、ignore=[]，仅proc-macro-error/glib两Linux GTK公告（Windows/Mac六目标树无路径）。本地NSIS5193100字节/A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F，0.1.0/NotSigned。
@@ -592,3 +593,13 @@
 - 未提交/保存：暂停前全部未提交仅docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md；准备将本检查点单独提交并通过同树/同SHA校验API非强制保存，源码候选仍固定5e7aced，不因文档提交改Draft target。ignored的下载目录与两个验证/上传脚本留在E盘，不进入Git。Wolai已读回上一5e启动状态，本次暂停检查点将同步该项目状态块并读回；报告/验收/RELEASING最终候选资产表待恢复后更新。
 - 已确认设备状态：仅本机开发Windows；无独立干净Windows/Mac ARM/Intel连接确认，当前用户代码签名证书0。未安装/启动候选程序、不触碰数据库、不改系统DNS/代理/CA、不在C盘安装工具；真实安装升级回滚、签名公证仍未验，不具备正式发布条件。
 - 准确下一步：恢复后先读本节、核对Git分支/HEAD/全部状态；查询额度≥10%再开始长期阶段。先查看session43082/六文件是否完整（若会话消失，以官方大小/digest核对），不重复构建或盲目重下；完成后运行固定脚本verify-draft-assets.cjs、Windows两包Authenticode/版本检查；失败仅重取明确损坏/缺失资产。记录六资产证据，统一报告29/25/4和BUILD003关闭，更新验收/RELEASING/Wolai并保存文档。最后仍须处理4P3及有效签名和真实设备矩阵，不宣称正式验收已完成。
+
+## 2026-10-07 六资产复验闭环——最新检查点
+
+- 目标/范围：全项目UPARS整改复验和正式发布验收，UPARS1.1.0/WACAS未定义/待确认；原main/c0bb322基线，分支codex/audit-release-20261006-api，恢复HEAD a9df642746fa3c6bd982b9f691c80b45c78a20ff，产物源码固定5e7aced868c0e95c9644a68ce88ac1acc7767171。恢复时Git干净；仅文档续接，不重做有效构建。
+- 额度恢复后五小时99%、周47%；完成核验后五小时82%、周44%、重置0，未触及门禁。本项目10%长阶段与5%硬停止永久规范继续有效，无重置/自动唤醒。本阶段等待发布资源不是额度暂停。
+- session43082已消失，但六完整文件均已在E盘；无需重下。只读脚本初次因Windows tar输出CRLF漏识别plist，修正诊断分隔符后完整重验成功。六资产大小/SHA256全部与Draft404450655官方digest一致，安全tar路径、app0.1.0、ARM/Intel Mach-O CPU、PE/MSI/UDIF均通过。Windows两包NotSigned，EXE0.1.0；MSI通过只读WindowsInstaller数据库确认ProductVersion0.1.0，COM资源已释放，未执行安装。六哈希/大小详见RELEASING当前候选表。
+- Actions37432253128/head5e7aced五job success再次确认；Draft404450655仍draft且target5e7aced，6资产；历史草稿保留，不公开发布。EP-BUILD-003关闭，报告已统一29问题/P0=0/P1=2/P2=17/P3=10，25fixed/4P3open，P0/P1/P2未关闭0。原82/9/16/25测试与完整前端/Rust门禁有效，npm0/RustSec漏洞撤包0；2体积/2 Linux GTK信息性仍保留，不暗中批准例外。正文及模板/规则UPARS1.1.0完整读过，本次未新增标准条款。
+- 全部未提交6文档：docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。应用/配置/锁文件无新增变化；准备统一文档校验、同树/同SHA提交同步。Wolai先读outline及相关状态块，只更新阶段状态并读回，最终同步结果在Git保存后确认。
+- 未解决：CODE003大组件/BUILD002体积为P3质量债，SEC006宏包未维护/SEC008glib为Linux GTK上游链；不强制跨主版本覆盖或静默接受风险。正式Windows/Apple签名身份、公证、独立Windows与Mac ARM/Intel安装升级回滚证据缺失。10-07只读当前用户代码签名证书与仓库Secrets均0；仅本机开发Windows，无独立设备连接确认。不动用户数据库、系统DNS/代理/证书，不在C盘安装或启动候选。
+- 准确下一步：正式验收需要负责人提供受控签名/公证资源及可验收的干净Windows/Mac环境，并对4P3安排整改或批准最窄范围、带负责人和复查条件的例外；不自动购买、申请身份或公开未验收包。资源确认后先核对最新Git/检查点与额度，再按RELEASING真实设备矩阵执行。源码若有新改动，须生成新候选、门禁与资产，旧5e7aced证据不可冒充新源集；浮窗仍仅记录，未开发。

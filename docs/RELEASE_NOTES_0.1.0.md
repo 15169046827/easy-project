@@ -18,6 +18,8 @@ EasyProject v0.1.0 is the first public candidate of the open-source, local-first
 
 ## Verification status
 
+2026-10-07: candidate `5e7aced` passed all five jobs in Actions `37432253128`. All six assets in draft `404450655` were independently downloaded and matched GitHub sizes/digests, package structures, version0.1.0 and the expected Mac architectures. Windows NSIS/MSI are NotSigned; signing/notarization and actual installation/upgrade/rollback remain unverified. UPARS:29 findings,25 verified fixes,4 open P3. Historical installation tests do not certify this candidate.
+
 - ESLint: passed with zero warnings.
 - Vitest: 82/82 passed; 9/9 critical-path and performance tests passed.
 - Playwright: 16/16 passed on Windows WebView mocks, including backup-failure feedback, the custom title bar, and outer-scroll regression.

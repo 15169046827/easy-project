@@ -99,7 +99,22 @@ Before publishing, also verify that a schema-v5 export retains plan baselines, a
 
 ## Signing status
 
-The active unsigned draft is now `404435429` (`v0.1.0`), bound to commit `5998a87db32b760da0002fed32b43556c65fe4d4` on `codex/audit-release-20261006-api`. Its source tree `22cbe4038ed40c4318153c668c62dd503cde88fa` exactly matches locally tested `f987a0c` (only the commit-message trailing newline differs). Run `37430197698` has passed validation/security; its three bundle jobs and six-asset verification are pending. Draft `404242113` is retained as historical candidate `25426627`, now tagged `v0.1.0-audit-25426627`, with all six previous assets preserved. Do not treat the older asset table as evidence for the new Tauri stack.
+### Verified current candidate assets — 2026-10-07
+
+Draft404450655, source5e7aced, run37432253128. All sizes and SHA256 match GitHub's digest. No installer was executed. NSIS/MSI versions are0.1.0 and Authenticode is NotSigned. App metadata is0.1.0, Mach-O CPU is ARM0x0100000c / Intel0x01000007; tar paths are safe, DMGs have UDIF trailers. macOS signing/notarization cannot be certified on this Windows host.
+
+| Asset                     |   Bytes | SHA256                                                           |
+| ------------------------- | ------: | ---------------------------------------------------------------- |
+| darwin_aarch64.app.tar.gz | 6878621 | b1bb92ba10c19322ee29882bb29df35dc3004bf036b818686582274124b0cf55 |
+| darwin_aarch64.dmg        | 6977912 | b0ee49eea457fa925f8f913bb713e441fe5c8722d89e4a9968551b4aacf528e5 |
+| darwin_x64.app.tar.gz     | 7095788 | 0e5088f8b57fea75bc449465e829d6a7018c54ee6acc08d9557083adeba77aeb |
+| darwin_x64.dmg            | 7190861 | 624ed7b308bbbc3fa77a6001bf8f59682c8524ee8615907e6fc5a320115c3b6a |
+| windows_x64-setup.exe     | 5146499 | 9eb04adfa9e50a8193814d99996e17435f3a8099eb45a2cd9e7c02201bb1da9c |
+| windows_x64.msi           | 6864896 | bcce989702e5941866e3018247169be09946d5d34c383193f507f4c9dffb6120 |
+
+All names above are prefixed `EasyProject_0.1.0_`; downloads are retained in ignored `src-tauri/target/audit-tools/release-37432253128`. Initial local verification misread Windows tar CRLF separators; correcting the diagnostic script and re-running verified all six. This was a diagnostic formatting issue, not a bundle defect.
+
+The active unsigned draft is `404450655` (`v0.1.0`), bound to commit `5e7aced868c0e95c9644a68ce88ac1acc7767171` on `codex/audit-release-20261006-api`. Run `37432253128` passed all five jobs. All six assets were downloaded and independently verified on 2026-10-07; see the table below. Historical drafts `404435429`, `404242113`, and `370399919` retain their assets. This is not signed or real-device release acceptance.
 
 The current workflow intentionally produces unsigned artifacts. Before public distribution, configure Windows and Apple signing credentials according to the official Tauri signing guides, then expose only the required secrets to the release environment. Do not place certificates, private keys, passwords, or notarization credentials in the repository.
 

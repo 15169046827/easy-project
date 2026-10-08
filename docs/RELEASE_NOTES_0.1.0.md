@@ -1,5 +1,7 @@
 # EasyProject v0.1.0 release notes (draft)
 
+> 2026-10-08加载整改复验（最新工作区，尚未生成新安装包）：新增2个自有文本输入，累计173文本+24资源引用；37项/34fixed/3P3open不变。174单测（35文件）、23项生产构建浏览器回归、lint/类型/构建/版本/UPARS通过；Rust28及官方npm扫描沿用ae6c未变源集/锁文件证据，不冒充本日重跑。移除全依赖vendor聚合，显式分块不再吸入CommonJS共享辅助，构建门禁检查完整入口静态依赖闭包。入口JS原1967202字节→601209字节（减少69.4%，不是整页加载时间）；仪表盘工作量功能仍需要完整日历规则。Excel在仪表盘和进入数据页时均不加载，点击导出后加载，真实下载再导入六表映射通过。保留500KB阈值和两体积警告：XLSX940.04KB、workCalendar1368.65KB，BUILD002仅部分整改仍open。CI与发布校验改测实际dist产物；旧ae6c五job/六安装资产仅证明历史候选，不证明此新打包配置。SEC006/008复查Linux逆依赖路径及官方公告，GTK0.18约束不兼容glib≥0.20，无安全的直接锁文件升级；不强制跨版本、不忽略扫描。代码审计暂不通过，正式发布仍需签名公证、干净Windows/Mac ARM/Intel安装升级数据保留回滚及逐项风险处置授权。
+
 > Do not publish this draft until Windows and macOS signing and the complete platform smoke-test matrix are finished.
 
 EasyProject v0.1.0 is the first public candidate of the open-source, local-first desktop project planner. It combines structured task management, dependency-aware Gantt planning, team and work-calendar views, portable data exchange, and SQLite recovery without requiring an account.

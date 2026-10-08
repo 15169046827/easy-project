@@ -15,6 +15,7 @@
         "test:watch": "vitest",
         "test:performance": "vitest run src/__tests__/gantt/criticalPath.test.js",
         "test:e2e": "node scripts/run-e2e.js",
+        "test:e2e:production": "node scripts/run-e2e.js --production",
         "release:check": "node scripts/check-release.js"
     },
     "dependencies": {

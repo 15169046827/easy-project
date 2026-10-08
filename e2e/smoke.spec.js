@@ -1,4 +1,34 @@
 import { expect, test } from '@playwright/test'
+import { readFile } from 'node:fs/promises'
+
+test('keeps heavy features deferred on the dashboard and loads XLSX on demand', async ({
+    page
+}) => {
+    const requests = []
+    page.on('request', request => requests.push(request.url()))
+    await page.goto('/#/dashboard')
+    await expect(page.locator('.dashboard')).toBeVisible()
+    // The dashboard workload panel legitimately needs calendar rules.
+    // Spreadsheet and screenshot tools do not belong to that user path.
+    expect(requests.some(url => /xlsx-vendor|exceljs|capture-vendor/.test(url))).toBe(false)
+    await page.goto('/#/data')
+    await expect(page.locator('.data-page')).toBeVisible()
+    expect(requests.some(url => /xlsx-vendor|exceljs/.test(url))).toBe(false)
+    const downloadPromise = page.waitForEvent('download')
+    await page.getByRole('button', { name: 'Excel', exact: true }).click()
+    const download = await downloadPromise
+    expect(download.suggestedFilename()).toMatch(/\.xlsx$/)
+    const file = await download.path()
+    await page.locator('#project-import-file').setInputFiles({
+        name: download.suggestedFilename(),
+        mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        buffer: await readFile(file)
+    })
+    await expect(page.locator('.import-preview')).toBeVisible()
+    await expect(page.locator('.preview-warning')).toHaveCount(0)
+    await expect(page.locator('.import-preview > p')).toHaveCount(6)
+    expect(requests.some(url => /xlsx-vendor|exceljs/.test(url))).toBe(true)
+})
 
 const fixtures = {
     project: [

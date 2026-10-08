@@ -1,9 +1,18 @@
 import { spawn } from 'node:child_process'
 
 const root = new URL('../', import.meta.url)
+const production = process.argv.includes('--production')
 const server = spawn(
     process.execPath,
-    ['./node_modules/vite/bin/vite.js', '--host', '127.0.0.1', '--port', '4173'],
+    [
+        './node_modules/vite/bin/vite.js',
+        ...(production ? ['preview'] : []),
+        '--host',
+        '127.0.0.1',
+        '--port',
+        '4173',
+        '--strictPort'
+    ],
     { cwd: root, stdio: 'ignore', windowsHide: true }
 )
 

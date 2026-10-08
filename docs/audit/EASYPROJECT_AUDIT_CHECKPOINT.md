@@ -765,3 +765,18 @@
 - 本地六文档已记录37项/34fixed/3P3open、171自有文本输入及24资源边界、170/9/22/28测试、新ae6c源集五job与六资产独立核验通过，并附RELEASING六资产官方大小/SHA表。格式、UPARS校验、Git diff --check通过。源码ae6c不变；保存前HEADf3fa3c4，全部未提交6路径：docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md。仅将已完成证据保存提交/精确非强制同步，再将本暂停检查点同步Wolai读回；不启动新修改或远程构建。
 - 源码候选ae6c1c3a5e2d326e9b11941c3ff23aae682361f3/tree23ffcfdaf9460c72e057b37508868e79494365e5；Actions37572579794五job成功，新Draft405384157六资产未公开。代码审计暂不通过（BUILD002体积警告、SEC006/008两个Linux信息性未闭环/批准例外），正式发布不可通过（签名、公证及干净Windows/Mac ARM/Intel安装升级数据保留回滚未验）。仅开发Windows确认，无新增设备连接或签名身份；未安装运行新包、不改用户DB/系统设置，冗余MSI部分文件已保留可恢复，当前所有下载/预览自有会话结束。
 - 恢复后的准确下一步：先读本检查点、查Git与六文档，核对保存提交/远程HEAD及Wolai读回；不重复已完成的170/9/22/28或五job/六资产（除必要最终复验）。评估三个P3的可安全整改/逐项风险控制，并由发布负责人提供签名公证和真实设备验收资源；未经新指示不公开未签名草稿、不购买证书、不重置额度或定时唤醒。本轮无新增通用标准补充。
+
+### 恢复检查点（2026-10-08）
+
+- 目标仍为完整审计整改、复验和发布验收；适用UPARS1.1.0，WACAS未定义/待确认。原基线main/c0bb3220347f3978f547d0c4841156c648f2711a；当前codex/audit-release-20261006-api/6972b482efa95505c398d92a4813fe0858087bae。恢复时Git干净，Wolai版本23与暂停检查点一致；记录后未提交文件仅本检查点。
+- 已完成34/37整改、170单测/9专项/22E2E/28Rust及ae6c源集五job/六资产证据仍有效，不重复构建或下载。未解决BUILD002体积警告、SEC006/008 Linux GTK信息性，以及签名、公证、独立干净设备安装升级回滚验收缺口。
+- 恢复实查五小时100%、周86%；进入体积分析阶段复查97%、周85%，允许继续，无重置授权或自动唤醒。准确下一步先分析生产模块依赖/首屏引入，采用不损失全球节假日、时区和XLSX功能的加载优化，再复验；禁止扩大500KB阈值或仅任意拆包隐藏警告。
+- 本地文档正在记录恢复进度，Wolai仍保留上一暂停点，阶段完成后同步并读回。仅开发Windows环境确认，无新增设备/签名身份，未安装运行资产、未改用户DB或系统DNS/代理/CA，不在C盘安装。
+
+### 加载边界里程碑（2026-10-08）
+
+- 移除catch-all vendor并启用显式手工分块，防止CommonJS辅助模块将Excel提前引入仪表盘；新增scripts/check-bundle-loading.js及src/**tests**/bundleLoading.test.js，遍历入口静态依赖闭包，以4正负例防止重依赖被改名后重新进入入口。CI与release校验切换生产dist浏览器回归，runner显式preview/strictPort，保持开发模式命令。累计173文本输入+24资源；37/34fixed/3P3open不变。
+- 复验：174单测35文件、23生产E2E、lint/类型/构建/版本/UPARS均通过。第一次生产回归揭示CommonJS辅助提前吸入Excel，已修正；第二次新测试失败因Playwright下载临时名无.xlsx扩展导致按JSON读取，保留真实文件名/MIME后全23通过，没有放宽超时。原Rust28、npm0沿用未变Rust源集/锁文件历史证据，不冒充本日执行。入口静态JS1967202→601209字节，非整页耗时测量；仪表盘资源工作量仍加载日历。两警告XLSX940.04KB/workCalendar1368.65KB保留，BUILD002仅部分整改。
+- SEC006/008已执行Linux目标cargo tree --locked离线逆依赖确认GTK宏链；缓存GTK0.18要求glib0.18，官方glib修复≥0.20、proc-macro-error无已修复版本。因此不进行破坏性强制跨版本升级；扫描仍不忽略。尚需负责人批准最窄平台/资源警告例外或进一步架构替换；未自行接受风险。签名公证及真实干净设备矩阵仍无新资源。
+- 全部未提交14文件：.github/workflows/ci.yml、.github/workflows/release.yml、docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、e2e/smoke.spec.js、package.json、scripts/run-e2e.js、vite.config.js、新scripts/check-bundle-loading.js、新src/**tests**/bundleLoading.test.js。HEAD/分支及原基线同上；新打包配置尚无对应安装资产，旧ae6c五job/六包完整证据保持但不得证明新源集。
+- 里程碑额度五小时90%、周84%，未触发额度暂停；准确下一步格式/差异最终核验、保存Git精确非强制同步及Wolai读回，再请求必须的风险处置授权/签名与真实验收资源，不公开未签名草稿、不购买证书、不安装应用或改系统。六文档已记录新阶段，Wolai待同步；仅开发Windows确认，无新增设备/账号/签名连接；本轮无通用标准补充、无重置/定时唤醒。

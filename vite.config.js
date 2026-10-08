@@ -1,15 +1,17 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { bundleLoadingGate } from './scripts/check-bundle-loading.js'
 
 const host = process.env.TAURI_DEV_HOST
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
-    plugins: [vue()],
+    plugins: [vue(), bundleLoadingGate()],
 
     build: {
         rollupOptions: {
             output: {
+                onlyExplicitManualChunks: true,
                 manualChunks(id) {
                     if (!id.includes('node_modules')) return undefined
                     if (id.includes('exceljs')) return 'xlsx-vendor'
@@ -23,7 +25,9 @@ export default defineConfig(async () => ({
                     ) {
                         return 'vue-vendor'
                     }
-                    return 'vendor'
+                    // Let Rollup preserve route-level loading for unrelated dependencies.
+                    // A catch-all vendor chunk pulls the full holiday engine into startup.
+                    return undefined
                 }
             }
         }

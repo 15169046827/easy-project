@@ -1,12 +1,31 @@
 # EasyProject release process
 
+> 2026-10-08内部测试版完成：用户批准3项限定例外并选择未签名内部测试版。37项=34fixed+3accepted/open0（P0=0/P1=2/P2=25/P3=10，P0/P1/P2未关闭0）；责任Ym_Li，复审2026-10-22或依赖/资源增长/平台变化，以先发生为准。源码3d62039c4761efa70c34a5b57a19557521da922d/tree76bb5e22531a8676a27658e74f958ebceb512e0e；Actions37715193321五job成功：validate3m46s、安全2m4s、Windows3m10s、Mac ARM3m12s、Intel4m30s。新远程174单测35文件/9专项/23生产E2E/28Rust、lint/类型/fmt/严格Clippy/构建/元数据/UPARS通过；官方npm安装/生产安全扫描0，RustSec525依赖仅2既有已批准信息性告警。独立Draft406330701/v0.1.0-internal.1/draft+prerelease/target完整同SHA，六资产官方大小/digest/独立SHA、结构/0.1.0/Mac架构验证通过。Windows NSIS/MSI明确NotSigned；Mac app归档路径与Mach-O CPU通过，DMG只验容器未挂载；未安装或运行新包。内部测试版打包及静态产物验收通过，代码层通过含例外，正式签名/公证/真实干净设备安装升级数据保留回滚仍未验，正式发布未通过。历史草稿不变、不公开。本轮不新增UPARS条款。以下较早状态保留为历史，不作为当前结论。
+
 > 2026-10-08用户批准记录：用户明确“都批准”，随后选择“先交付未签名内部测试版，保留正式发布验收未通过状态”。EP-BUILD-002、EP-SEC-006、EP-SEC-008改为accepted（不是fixed）；累计37项＝34fixed+3accepted，open=0，P0/P1/P2未关闭0。责任人/批准人：项目发布负责人Ym_Li；复查期限2026-10-22或下一次依赖/资源增长/平台变更，以先发生为准。例外仅限当前XLSX940.04KB、workCalendar1368.65KB两资源及Windows x64/Mac ARM/Intel不可达的Linux GTK链；保留500KB警告、入口加载门禁、174单测/23生产E2E与RustSec全部公告，Linux支持前必须关闭两个GTK例外。基于已验证6cde72e源集，代码层审计通过（含3项限定例外）；正式发布验收未通过，签名/公证/干净设备安装升级数据保留回滚仍待。仅生成独立内部测试草稿v0.1.0-internal.1，不公开、不覆盖历史草稿、不购买证书或操作用户数据库。以下未批准/open/暂不通过记录均为批准前历史。新内部安装包尚待本轮构建及独立验证。
 
 > 2026-10-08加载整改复验（最新工作区，尚未生成新安装包）：新增2个自有文本输入，累计173文本+24资源引用；37项/34fixed/3P3open不变。174单测（35文件）、23项生产构建浏览器回归、lint/类型/构建/版本/UPARS通过；Rust28及官方npm扫描沿用ae6c未变源集/锁文件证据，不冒充本日重跑。移除全依赖vendor聚合，显式分块不再吸入CommonJS共享辅助，构建门禁检查完整入口静态依赖闭包。入口JS原1967202字节→601209字节（减少69.4%，不是整页加载时间）；仪表盘工作量功能仍需要完整日历规则。Excel在仪表盘和进入数据页时均不加载，点击导出后加载，真实下载再导入六表映射通过。保留500KB阈值和两体积警告：XLSX940.04KB、workCalendar1368.65KB，BUILD002仅部分整改仍open。CI与发布校验改测实际dist产物；旧ae6c五job/六安装资产仅证明历史候选，不证明此新打包配置。SEC006/008复查Linux逆依赖路径及官方公告，GTK0.18约束不兼容glib≥0.20，无安全的直接锁文件升级；不强制跨版本、不忽略扫描。代码审计暂不通过，正式发布仍需签名公证、干净Windows/Mac ARM/Intel安装升级数据保留回滚及逐项风险处置授权。
 
 2026-10-07 source follow-up: task reordering is atomic and project-scoped; baseline readback, drag cleanup, task query isolation and creation retries are corrected. Gantt viewport/navigation/task dragging and project data loading have separate tested responsibilities. Current gates: 170 unit tests, 9 performance tests, 22 browser tests, lint, type checking, production build (430 modules) and release metadata pass. Rust 28/fmt/strict Clippy and official full/production npm audits (zero findings) passed final verification. UPARS: 37 findings, 34 fixed, 3 open P3. CODE003 is closed with tested responsibility boundaries; the two original chunk warnings and two Linux-only dependency informational findings remain visible. The old dee97ed local installer and 5e7aced remote draft assets do not cover this source; candidate ae6c1c3 has a verified local unsigned NSIS; run 37572579794 passed all five jobs; all six assets in draft 405384157 independently match official sizes/digests, containers and Mac app versions/architectures. Windows packages are NotSigned and real-device acceptance remains pending. Dependency drag now resolves stable task IDs and uses an independently clickable link handle; a real two-task mouse-drag regression passes.
 
-## Current output
+## Internal test 1 — verified artifacts (2026-10-08)
+
+Source: `3d62039c4761efa70c34a5b57a19557521da922d`; [workflow 37715193321](https://github.com/15169046827/easy-project/actions/runs/37715193321), all five jobs successful. [Internal draft 406330701](https://github.com/15169046827/easy-project/releases/tag/untagged-16f5a0c81c94a993ad66) is draft/prerelease, not public. The package version remains 0.1.0; the separate release tag is `v0.1.0-internal.1`.
+
+All six files below were independently checked against GitHub size/digest and downloaded-file SHA256. Windows MSI, NSIS and ARM DMG came from the exact same successful workflow backups, with byte-identical release digests; other files came directly from the internal draft. Stored under `src-tauri/target/audit-tools/release-37715193321/` on E:.
+
+| Asset                                       |   Bytes | SHA256                                                           |
+| ------------------------------------------- | ------: | ---------------------------------------------------------------- |
+| EasyProject_0.1.0_darwin_aarch64.app.tar.gz | 6882168 | c836dabeceecd97207aba4e0e9494ddb21b1fbb22fb8f44df573b7b4824a5b81 |
+| EasyProject_0.1.0_darwin_aarch64.dmg        | 6985164 | 8c19f2a48971a6e720cbcce2b3b01adb1abc260b8233485a6ecd9b1f1cd4cb68 |
+| EasyProject_0.1.0_darwin_x64.app.tar.gz     | 7105371 | 409d4fc07b672bb8dc23ff1595c676b06e22456428791fec8acb7701f3d1c50b |
+| EasyProject_0.1.0_darwin_x64.dmg            | 7200310 | a053d322b0d8a93c66aeadd650fc91a5d4fdaa25aa4fee46ac85b9344d4d7987 |
+| EasyProject_0.1.0_windows_x64-setup.exe     | 5149435 | fa56b80ec8b95b5c66a69d3032cf82c103c8ab8f84b716d64a3249141b5f394e |
+| EasyProject_0.1.0_windows_x64.msi           | 6868992 | 43655fb29e8bd7cc34ff642b92d04a40e092941ff52e71b0b64e7751429f246e |
+
+Windows ProductVersion/FileVersion is 0.1.0 and both packages are NotSigned. App archives have safe paths and matching ARM/Intel Mach-O architecture. DMG validation covers the UDIF container only, not a mounted filesystem. No new package was installed or executed; formal signing, notarization and clean-device install/upgrade/data-retention/rollback acceptance remain incomplete. Internal bundle/static-artifact acceptance does not replace runtime acceptance.
+
+## Historical output before internal test 1
 
 The `Release desktop` GitHub Actions workflow builds three native variants:
 

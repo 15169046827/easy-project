@@ -775,10 +775,10 @@
 
 ### 加载边界里程碑（2026-10-08）
 
-- 移除catch-all vendor并启用显式手工分块，防止CommonJS辅助模块将Excel提前引入仪表盘；新增scripts/check-bundle-loading.js及src/**tests**/bundleLoading.test.js，遍历入口静态依赖闭包，以4正负例防止重依赖被改名后重新进入入口。CI与release校验切换生产dist浏览器回归，runner显式preview/strictPort，保持开发模式命令。累计173文本输入+24资源；37/34fixed/3P3open不变。
+- 移除catch-all vendor并启用显式手工分块，防止CommonJS辅助模块将Excel提前引入仪表盘；新增scripts/check-bundle-loading.js及`src/__tests__/bundleLoading.test.js`，遍历入口静态依赖闭包，以4正负例防止重依赖被改名后重新进入入口。CI与release校验切换生产dist浏览器回归，runner显式preview/strictPort，保持开发模式命令。累计173文本输入+24资源；37/34fixed/3P3open不变。
 - 复验：174单测35文件、23生产E2E、lint/类型/构建/版本/UPARS均通过。第一次生产回归揭示CommonJS辅助提前吸入Excel，已修正；第二次新测试失败因Playwright下载临时名无.xlsx扩展导致按JSON读取，保留真实文件名/MIME后全23通过，没有放宽超时。原Rust28、npm0沿用未变Rust源集/锁文件历史证据，不冒充本日执行。入口静态JS1967202→601209字节，非整页耗时测量；仪表盘资源工作量仍加载日历。两警告XLSX940.04KB/workCalendar1368.65KB保留，BUILD002仅部分整改。
 - SEC006/008已执行Linux目标cargo tree --locked离线逆依赖确认GTK宏链；缓存GTK0.18要求glib0.18，官方glib修复≥0.20、proc-macro-error无已修复版本。因此不进行破坏性强制跨版本升级；扫描仍不忽略。尚需负责人批准最窄平台/资源警告例外或进一步架构替换；未自行接受风险。签名公证及真实干净设备矩阵仍无新资源。
-- 全部未提交14文件：.github/workflows/ci.yml、.github/workflows/release.yml、docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、e2e/smoke.spec.js、package.json、scripts/run-e2e.js、vite.config.js、新scripts/check-bundle-loading.js、新src/**tests**/bundleLoading.test.js。HEAD/分支及原基线同上；新打包配置尚无对应安装资产，旧ae6c五job/六包完整证据保持但不得证明新源集。
+- 全部未提交14文件：.github/workflows/ci.yml、.github/workflows/release.yml、docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、e2e/smoke.spec.js、package.json、scripts/run-e2e.js、vite.config.js、新scripts/check-bundle-loading.js、新`src/__tests__/bundleLoading.test.js`。HEAD/分支及原基线同上；新打包配置尚无对应安装资产，旧ae6c五job/六包完整证据保持但不得证明新源集。
 - 里程碑额度五小时90%、周84%，未触发额度暂停；准确下一步格式/差异最终核验、保存Git精确非强制同步及Wolai读回，再请求必须的风险处置授权/签名与真实验收资源，不公开未签名草稿、不购买证书、不安装应用或改系统。六文档已记录新阶段，Wolai待同步；仅开发Windows确认，无新增设备/账号/签名连接；本轮无通用标准补充、无重置/定时唤醒。
 
 ### 保存完成与授权边界
@@ -793,3 +793,17 @@
 - 目标与范围仍为UPARS1.1.0审计整改/复验；WACAS未定义待确认。原main/c0bb322基线不变，当前分支codex/audit-release-20261006-api、HEAD7db6d7c04419c919292e2805d77b42e8ba61b503；代码6cde72e/174单测23生产E2E及未变Rust/锁文件历史证据有效。工作区恢复时干净，当前全部未提交7文件：.github/workflows/release.yml及六文档（本检查点、报告、验收、整改计划、RELEASING、RELEASE_NOTES）。
 - 发布工作流新增显式internal_test布尔参数，默认false保持既有正式草稿路径；内部模式单独v0.1.0-internal.1、unsigned标题/声明、draft/prerelease，避免覆盖历史草稿，不公开。准确下一步格式/YAML/元数据/标准核验、保存精确同步Git、确认该内部标签未占用，再dispatch当前完整SHA，等待五job及六资产验证；旧ae6c六包不是新配置结果。当前额度五小时85%、周83%，长阶段允许，无重置/自动唤醒。
 - 六文档批准状态已更新、Wolai仍旧未批准状态待同步读回。仅开发Windows确认，未新增设备/签名身份；不购买证书、不安装程序或动用户DB/系统DNS代理CA，签名/真实设备正式缺口保留。本轮无新增UPARS条款。
+
+- 已保存并精确非强制同步3d62039c4761efa70c34a5b57a19557521da922d/tree76bb5e22531a8676a27658e74f958ebceb512e0e，工作区保存后干净；用户批准、例外责任/范围/期限、内部交付目标及实际生产校验已同步Wolai并读回。独立标签v0.1.0-internal.1预查未占用，已dispatch一次internal_test=true，run37715193321绑定完整3d62039；当前queued/运行中，不得声称五job或六资产通过。五小时81%、周83%，长阶段允许。追加此条后全部未提交仅本检查点；准确下一步等同一run终态，校验草稿/来源/六资产，不公开、不过写历史草稿。
+
+- 远程里程碑：run37715193321的validate3m46s/rust-security2m4s均success，含本次174单测及23生产E2E完整门禁；Windows、Mac ARM/Intel三build已开始，六资产未验证。GitHub提供Ubuntu宿主10-19迁移提示，这是上游runner环境通知，不是新应用漏洞/编译诊断，需后续环境复审；不冒充扫描结果消失。检查点两处被Markdown误渲染的测试路径已恢复为代码格式，未改代码/包/标准。准确下一步待同一run终态和六资产；仅本检查点未提交，源集3d62039不变，Wolai已批准记录读回、产物终态待同步；无新设备/签名操作。
+
+- Windows3m10s、Mac ARM3m12s success，Intel仍运行；新内部Draft406330701/draft=true/prerelease=true/target完整3d62039/标签v0.1.0-internal.1已出现4资产。当前五小时77%、周82%，允许进入独立产物下载阶段；使用E盘新目录，官方workflow备份可用于MSI/NSIS/DMG，只有其摘要与对应发布资产相同才可替代。Mac app发布归档仍需下载自身，不用另一ZIP或历史包替代。准确下一步同源下载/匹配，等待Intel与六资产齐备再绑定SHA/Draft/run完整核验；部分文件不当有效包，未安装/运行。
+
+### 内部测试版打包与静态验收完成
+
+- 源码3d62039c4761efa70c34a5b57a19557521da922d/tree76bb5e22531a8676a27658e74f958ebceb512e0e；run37715193321五job全部success：validate3m46s、安全2m4s、Windows3m10s、Mac ARM3m12s、Intel4m30s。最新日志证实174单测35文件、9专项、23生产E2E、28Rust、lint/类型/fmt/严格Clippy/构建/元数据/UPARS通过；npm安装与生产扫描0，RustSec525依赖只保留两个已批准信息性告警。本日新远程证明替代先前沿用的测试证据，不复用旧包结论。
+- Draft406330701/v0.1.0-internal.1/draft=true/prerelease=true/target完整3d62039，六资产独立大小/官方digest/SHA/容器核验全部通过。Mac app安全tar路径/0.1.0/ARM与Intel CPU正确，DMG只验证UDIF容器、未挂载内部文件；Windows两包只读ProductVersion0.1.0（NSIS FileVersion同）、NotSigned。COM资源全部释放。三个官方workflow备份MSI/NSIS/ARM DMG与对应release摘要逐一匹配后复制为规范名；其它3文件直接下载原始发布资产，未重构归档、未覆盖历史包。全部位于E盘release-37715193321，完整字节/SHA表在RELEASING。
+- 审计173文本+24资源，37项/P0=0/P1=2/P2=25/P3=10，34fixed+3accepted/open0，代码层通过含已批准例外。责任Ym_Li/复查2026-10-22或依赖、资源增长、平台变更，以先发生为准；所有告警/门禁保留。用户明确的新目标“未签名内部测试版”打包和静态产物验收通过；没有真实安装/运行、签名公证、干净设备安装升级数据保留回滚验收，正式发布仍未通过。历史Draft405384157/404450655等未改/删/公开。
+- 目标范围、UPARS1.1.0/WACAS未定义、main/c0bb322原基线与当前分支同上；当前全部未提交六文档：本检查点、报告、验收、整改计划、RELEASING、RELEASE_NOTES。六文档已写内部验收结果，Git待保存，Wolai批准里程碑已读回、产物结论待同步。最新五小时73%、周81%，未触额度门禁；所有自有下载/watch会话完成，无新设备/签名身份或系统/用户数据变更、不在C盘安装。
+- 准确下一步格式/报告清单/标准/差异检查，保存Git精确非强制同步、Wolai读回，再交付内部草稿及本地包。后续只在用户明确要求时进行真实环境测试或正式签名发布，不把内部验收当正式通过；无新增通用标准条款、无重置/定时唤醒。

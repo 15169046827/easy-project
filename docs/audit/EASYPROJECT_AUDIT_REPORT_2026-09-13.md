@@ -1,5 +1,7 @@
 # EasyProject 审计与整改报告
 
+> 2026-10-08内部测试版完成：用户批准3项限定例外并选择未签名内部测试版。37项=34fixed+3accepted/open0（P0=0/P1=2/P2=25/P3=10，P0/P1/P2未关闭0）；责任Ym_Li，复审2026-10-22或依赖/资源增长/平台变化，以先发生为准。源码3d62039c4761efa70c34a5b57a19557521da922d/tree76bb5e22531a8676a27658e74f958ebceb512e0e；Actions37715193321五job成功：validate3m46s、安全2m4s、Windows3m10s、Mac ARM3m12s、Intel4m30s。新远程174单测35文件/9专项/23生产E2E/28Rust、lint/类型/fmt/严格Clippy/构建/元数据/UPARS通过；官方npm安装/生产安全扫描0，RustSec525依赖仅2既有已批准信息性告警。独立Draft406330701/v0.1.0-internal.1/draft+prerelease/target完整同SHA，六资产官方大小/digest/独立SHA、结构/0.1.0/Mac架构验证通过。Windows NSIS/MSI明确NotSigned；Mac app归档路径与Mach-O CPU通过，DMG只验容器未挂载；未安装或运行新包。内部测试版打包及静态产物验收通过，代码层通过含例外，正式签名/公证/真实干净设备安装升级数据保留回滚仍未验，正式发布未通过。历史草稿不变、不公开。本轮不新增UPARS条款。以下较早状态保留为历史，不作为当前结论。
+
 > 2026-10-08用户批准记录：用户明确“都批准”，随后选择“先交付未签名内部测试版，保留正式发布验收未通过状态”。EP-BUILD-002、EP-SEC-006、EP-SEC-008改为accepted（不是fixed）；累计37项＝34fixed+3accepted，open=0，P0/P1/P2未关闭0。责任人/批准人：项目发布负责人Ym_Li；复查期限2026-10-22或下一次依赖/资源增长/平台变更，以先发生为准。例外仅限当前XLSX940.04KB、workCalendar1368.65KB两资源及Windows x64/Mac ARM/Intel不可达的Linux GTK链；保留500KB警告、入口加载门禁、174单测/23生产E2E与RustSec全部公告，Linux支持前必须关闭两个GTK例外。基于已验证6cde72e源集，代码层审计通过（含3项限定例外）；正式发布验收未通过，签名/公证/干净设备安装升级数据保留回滚仍待。仅生成独立内部测试草稿v0.1.0-internal.1，不公开、不覆盖历史草稿、不购买证书或操作用户数据库。以下未批准/open/暂不通过记录均为批准前历史。新内部安装包尚待本轮构建及独立验证。
 
 > 2026-10-08加载整改复验（最新工作区，尚未生成新安装包）：新增2个自有文本输入，累计173文本+24资源引用；37项/34fixed/3P3open不变。174单测（35文件）、23项生产构建浏览器回归、lint/类型/构建/版本/UPARS通过；Rust28及官方npm扫描沿用ae6c未变源集/锁文件证据，不冒充本日重跑。移除全依赖vendor聚合，显式分块不再吸入CommonJS共享辅助，构建门禁检查完整入口静态依赖闭包。入口JS原1967202字节→601209字节（减少69.4%，不是整页加载时间）；仪表盘工作量功能仍需要完整日历规则。Excel在仪表盘和进入数据页时均不加载，点击导出后加载，真实下载再导入六表映射通过。保留500KB阈值和两体积警告：XLSX940.04KB、workCalendar1368.65KB，BUILD002仅部分整改仍open。CI与发布校验改测实际dist产物；旧ae6c五job/六安装资产仅证明历史候选，不证明此新打包配置。SEC006/008复查Linux逆依赖路径及官方公告，GTK0.18约束不兼容glib≥0.20，无安全的直接锁文件升级；不强制跨版本、不忽略扫描。代码审计暂不通过，正式发布仍需签名公证、干净Windows/Mac ARM/Intel安装升级数据保留回滚及逐项风险处置授权。
@@ -14,7 +16,7 @@
 - 审计日期：2026-09-13—14；前端依赖整改复验：2026-10-06；六资产核验：2026-10-07
 - 审计模式：审计并整改
 - 项目版本：0.1.0；数据库及 JSON 交换 schema v5
-- 提交基线：main/c0bb3220347f3978f547d0c4841156c648f2711a；当前源码候选codex/audit-release-20261006-api/ae6c1c3a5e2d326e9b11941c3ff23aae682361f3，tree23ffcfdaf9460c72e057b37508868e79494365e5；前次已验远程产物5e7aced保留为历史候选。
+- 提交基线：main/c0bb3220347f3978f547d0c4841156c648f2711a；当前内部源码候选codex/audit-release-20261006-api/3d62039c4761efa70c34a5b57a19557521da922d，tree76bb5e22531a8676a27658e74f958ebceb512e0e；6cde72e加载整改和ae6c/5e7aced产物证据按历史保留。
 - 发布目标：Windows x64 NSIS/MSI、macOS Apple Silicon/Intel APP/DMG；目前为未签名草稿
 - 审计任务：EasyProject 全源集 UPARS 审计与整改
 
@@ -24,7 +26,7 @@
 
 Tauri配套升级闭环：官方Rust/JS API/CLI2.12.1、build2.7.1、opener2.7.0，Rust最低1.90；完整本地门禁通过。历史10-06 NSIS5193100字节，SHA256 A4FE17287D045C450E18B131E55466AB06DDD312263B23897C9EAC0CF2536C4F，0.1.0/NotSigned。官方NSIS3.11及插件下载并验证哈希，缓存E盘target/.tauri。中途JS/Rust版本门禁失败已协调升级解决；重复allowScripts键已移除并重建前端，除原两体积告警外无新警告。新锁远程五job与六资产已于10-07复验通过，旧25426627证据不可混用。
 
-已检查原137个自有文本输入文件，并检查续接新增36个自有模块/测试/门禁（累计173文本输入，另24资源引用）；37项确认问题：P0 0、P1 2、P2 25、P3 10。34项整改复验，P0/P1/P2未关闭均0，3项P3仍open。10-08当前工作区174单测/35文件、23生产E2E、lint/类型/430模块构建/版本/UPARS通过。Rust28、严格Clippy、npm全量/生产0及RustSec525依赖沿用ae6c未变Rust源集/锁文件证据，不能当本日重跑。新加载配置尚未构建安装包；ae6c五job/六资产独立核验保留为上一产物基线。**代码审计暂不通过**：体积及Linux信息性警告未获逐项例外批准。**不具备正式发布条件**：签名、公证及真实安装/升级/数据保留/回滚矩阵未验。无新增UPARS补充。
+累计审计173个自有文本输入（原137+续接36）及24个资源引用。37项确认问题：P0 0、P1 2、P2 25、P3 10；34fixed+3accepted/open0，P0/P1/P2未关闭均0。三个P3由Ym_Li明确批准最窄例外，10-22或依赖/资源增长/平台变化复审。本轮3d62039源集新远程174单测/9专项/23生产E2E/28Rust及规范、类型、构建、安全门禁通过，五job与六内部资产独立验证通过。**代码审计通过（含限定例外）**；**正式发布未通过**，签名公证及真实设备安装升级数据保留回滚仍未验。用户选择未签名内部测试版，该版本打包/静态资产验收完成，没有将其等同正式发布或运行验收。无新增通用标准条款。
 
 ## 2. 范围与排除项
 
@@ -171,8 +173,8 @@ CI/release完整门禁及三平台构建均通过；候选5e7aced868c0e95c9644a6
 ## 9. 发布判定
 
 - P0/P1/P2未关闭：0；P3 open：0，accepted：3（EP-BUILD-002、EP-SEC-006、EP-SEC-008，用户10-08批准、责任人Ym_Li、10-22或变更触发复查）。34fixed+3accepted，接受风险不冒充代码修复。
-- 当前ae6c源码前端规范/类型、170单测/9专项/22E2E、Rustfmt/严格Clippy/28测试及本地NSIS构建通过；官方npm全量/生产新复扫0。Actions37572579794五job成功、六资产独立核验通过；Windows两包0.1.0/NotSigned，Mac app0.1.0/CPU及DMG容器通过，不替代真实设备验收。2条信息性与2项体积警告、真实设备验收仍待闭环。
-- **代码层判定：通过（含3项已批准限定例外）**。34项整改有复验证据；6cde72e源集174单测/23生产E2E、lint/类型/构建通过，未变Rust/锁文件证据仍有效。3项P3按首段责任、期限、平台及资源范围接受；保留告警与复审，不降低门禁。内部包另行构建验收，签名与真实设备未知不冒充正式发布通过。
+- 当前3d62039内部候選：Actions37715193321五job成功，174单测/9专项/23生产E2E/28Rust与规范/类型/安全门禁通过，六资产独立核验通过；3项P3限定accepted，告警保留。Windows包NotSigned/0.1.0，Mac app版本/CPU与DMG容器通过；签名公证/真实设备未知。ae6c五job和旧资产保留为历史，不冒充当前证据。
+- **代码层判定：通过（含3项已批准限定例外）**。34项整改有复验证据，3d62039新远程完整门禁/三平台构建/六资产静态验收通过。三个P3按首段责任、期限、平台及资源范围accepted，保留警告与复审，不降低门禁。签名和真实设备仍未知；用户明确只交付未签名内部测试版，不构成正式验收通过。
 - **正式发布判定：不可发布**。签名/公证、真实安装/升级/数据保留和回滚演练均尚未满足 `docs/RELEASING.md`。
 
 ## 10. 变更与证据索引
@@ -180,4 +182,4 @@ CI/release完整门禁及三平台构建均通过；候选5e7aced868c0e95c9644a6
 - 代码与门禁：`src-tauri/src/services/calendar_service.rs`、`src-tauri/src/services/data_service.rs`、`src-tauri/src/common/db_state.rs`、`src-tauri/src/db/`、`src/api/index.js`、`src/App.vue`、`tsconfig.json`、`e2e/smoke.spec.js`、`.github/workflows/ci.yml`、`.github/workflows/release.yml`、`package-lock.json`、`src-tauri/Cargo.lock`。RustSec 公告库与工具位于 E 盘被 Git 忽略的 `src-tauri/target/audit-tools`，未进入交付文件。
 - 标准补充：`docs/audit/UNIVERSAL_PROJECT_AUDIT_STANDARD.md` 1.1.0、`docs/audit/AUDIT_REPORT_TEMPLATE.md`、`config/audit/audit-standard.json`、`scripts/verify-audit-standard.ps1`。适用场景为校验外部地址后再连接；风险为 DNS/跳转/代理使检查对象与连接目标分离；检查方法为沿每次连接追踪解析结果；通过条件为连接使用已校验目标或等价策略；验证方式为目标变化负例。已在本项目完成检查、整改和测试，标记为“建议补充通用标准”。
 - 文档与续接：README、CONTRIBUTING、RELEASING、检查点与发布验收记录已更新；Wolai相关首发状态已同步并读回，Git候选5e7aced已保存，Actions37432253128与六资产已核验；用户数据未改。
-- 余项安排：`docs/audit/EASYPROJECT_REMEDIATION_PLAN.md` 当前开放3项P3（BUILD002/SEC006/SEC008），前次4项记录为历史阶段；信息性/体积风险及独立发布验收不构成例外批准。10-06兼容npm11.21.0与定向依赖修复证据保留；10-07当前源集前端/原生/本地包复验及新远程来源见检查点。此次没有新增通用标准条款。
+- 余项安排：`docs/audit/EASYPROJECT_REMEDIATION_PLAN.md` 三P3已按用户批准登记accepted/责任Ym_Li/10-22或变更复查；原open/未批准状态为历史。当前内部六资产大小/SHA及准确来源见RELEASING；签名公证和真实设备发布验收仍单独未通过。本轮不新增通用标准条款。

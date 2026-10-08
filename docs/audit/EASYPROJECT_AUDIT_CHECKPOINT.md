@@ -780,3 +780,9 @@
 - SEC006/008已执行Linux目标cargo tree --locked离线逆依赖确认GTK宏链；缓存GTK0.18要求glib0.18，官方glib修复≥0.20、proc-macro-error无已修复版本。因此不进行破坏性强制跨版本升级；扫描仍不忽略。尚需负责人批准最窄平台/资源警告例外或进一步架构替换；未自行接受风险。签名公证及真实干净设备矩阵仍无新资源。
 - 全部未提交14文件：.github/workflows/ci.yml、.github/workflows/release.yml、docs/RELEASE_NOTES_0.1.0.md、docs/RELEASING.md、docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md、docs/audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md、docs/audit/EASYPROJECT_RELEASE_ACCEPTANCE_2026-10-06.md、docs/audit/EASYPROJECT_REMEDIATION_PLAN.md、e2e/smoke.spec.js、package.json、scripts/run-e2e.js、vite.config.js、新scripts/check-bundle-loading.js、新src/**tests**/bundleLoading.test.js。HEAD/分支及原基线同上；新打包配置尚无对应安装资产，旧ae6c五job/六包完整证据保持但不得证明新源集。
 - 里程碑额度五小时90%、周84%，未触发额度暂停；准确下一步格式/差异最终核验、保存Git精确非强制同步及Wolai读回，再请求必须的风险处置授权/签名与真实验收资源，不公开未签名草稿、不购买证书、不安装应用或改系统。六文档已记录新阶段，Wolai待同步；仅开发Windows确认，无新增设备/账号/签名连接；本轮无通用标准补充、无重置/定时唤醒。
+
+### 保存完成与授权边界
+
+- 加载整改提交6cde72e0467ba6b7f098d5daaad82b16239a6bee/tree371ca7b4c32a2c3e1119ae2b0185f67d5c9c0a34，14文件已精确同树同SHA非强制同步GitHub；保存后Git干净，追加本条后全部未提交仅本检查点。基线/分支/UPARS/WACAS同上。174单测、23生产E2E、lint/类型/构建/元数据/标准/YAML/diff通过；Windows/macOS包仍是历史ae6c，没有把旧包冒充新配置通过。
+- 最新五小时88%、周84%，额度充足，停止扩展工作不是额度门禁，而是需要发布负责人确认最窄3P3例外的责任/期限，或者授权明确的架构替换，以及提供正式签名、公证和干净平台验收资源。建议处置已写入整改计划且明确未批准；下一步获得选择后先核对本检查点/Git，再执行对应阶段，不自行接受风险、不公开草稿。
+- 六文档同步至Git已完成；本条保存同步后更新Wolai状态并读回。只确认开发Windows，无新设备/签名身份、无用户数据或系统设置修改，无额外安装/重置/自动唤醒。代码审计暂不通过，正式发布未通过；本轮无新增通用标准补充。

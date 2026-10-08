@@ -1,6 +1,8 @@
 # EasyProject 审计余项整改安排
 
-## 2026-10-08需要负责人确认的最小风险处置（未批准）
+> 2026-10-08用户批准记录：用户明确“都批准”，随后选择“先交付未签名内部测试版，保留正式发布验收未通过状态”。EP-BUILD-002、EP-SEC-006、EP-SEC-008改为accepted（不是fixed）；累计37项＝34fixed+3accepted，open=0，P0/P1/P2未关闭0。责任人/批准人：项目发布负责人Ym_Li；复查期限2026-10-22或下一次依赖/资源增长/平台变更，以先发生为准。例外仅限当前XLSX940.04KB、workCalendar1368.65KB两资源及Windows x64/Mac ARM/Intel不可达的Linux GTK链；保留500KB警告、入口加载门禁、174单测/23生产E2E与RustSec全部公告，Linux支持前必须关闭两个GTK例外。基于已验证6cde72e源集，代码层审计通过（含3项限定例外）；正式发布验收未通过，签名/公证/干净设备安装升级数据保留回滚仍待。仅生成独立内部测试草稿v0.1.0-internal.1，不公开、不覆盖历史草稿、不购买证书或操作用户数据库。以下未批准/open/暂不通过记录均为批准前历史。新内部安装包尚待本轮构建及独立验证。
+
+## 2026-10-08批准前风险处置提议（已由用户批准，当前状态见首段）
 
 - EP-BUILD-002：提议仅对当前完整XLSX及全球日历/时区数据的两个资源警告登记例外，保留500KB警告、入口依赖门禁及生产Excel往返回归。若资源继续增长、依赖升级或发布范围变化，重新复审；不能扩展成所有体积警告豁免。
 - EP-SEC-006/008：提议仅对当前Windows x64、Mac ARM/Intel不可达的Linux GTK链登记平台限定例外，不忽略RustSec公告；新增Linux目标前必须关闭。官方[glib公告](https://rustsec.org/advisories/RUSTSEC-2024-0429.html)修复版本≥0.20，与GTK0.18链不兼容；[proc-macro-error公告](https://rustsec.org/advisories/RUSTSEC-2024-0370.html)无已修复版本。已离线核对Linux逆依赖与GTK manifest，不进行不兼容强制升级。

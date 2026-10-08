@@ -4,6 +4,11 @@ on:
     push:
         tags: ['v*']
     workflow_dispatch:
+        inputs:
+            internal_test:
+                description: Build a separate unsigned internal-test draft
+                type: boolean
+                default: false
 
 permissions:
     contents: write
@@ -148,11 +153,11 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
-                  tagName: v__VERSION__
-                  releaseName: EasyProject v__VERSION__
-                  releaseBody: Download the installer for your operating system from the assets below.
+                  tagName: ${{ inputs.internal_test && 'v__VERSION__-internal.1' || 'v__VERSION__' }}
+                  releaseName: ${{ inputs.internal_test && 'EasyProject v__VERSION__ — Internal Test 1 (unsigned)' || 'EasyProject v__VERSION__' }}
+                  releaseBody: ${{ inputs.internal_test && 'Unsigned internal test only. Formal release acceptance is NOT complete. Windows signing, macOS notarization, clean-device install/upgrade/data-retention/rollback checks remain pending. Do not treat this draft as a public release.' || 'Download the installer for your operating system from the assets below.' }}
                   releaseDraft: true
-                  prerelease: false
+                  prerelease: ${{ inputs.internal_test == true }}
                   generateReleaseNotes: true
                   uploadUpdaterJson: false
                   uploadWorkflowArtifacts: true

@@ -5,6 +5,7 @@
 pub mod cmds;
 pub mod common;
 pub mod db;
+pub mod floating_window;
 pub mod models;
 pub mod services;
 
@@ -44,7 +45,21 @@ pub fn run() {
             info!("Database ready at {}", database_path.display());
             Ok(())
         })
-        .invoke_handler(generate_handler![cmds::crud_action::crud_action])
+        .on_window_event(|window, event| {
+            if window.label() == "main" && matches!(event, tauri::WindowEvent::Destroyed) {
+                if let Some(floating) = window
+                    .app_handle()
+                    .get_webview_window(floating_window::FLOATING_LABEL)
+                {
+                    let _ = floating.close();
+                }
+            }
+        })
+        .invoke_handler(generate_handler![
+            cmds::crud_action::crud_action,
+            floating_window::open_task_window,
+            floating_window::show_main_window
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

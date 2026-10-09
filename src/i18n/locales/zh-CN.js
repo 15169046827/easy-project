@@ -1,4 +1,23 @@
 export default {
+    floating: {
+        title: '当前任务',
+        open: '任务悬浮窗',
+        close: '关闭悬浮窗',
+        expand: '展开',
+        collapse: '收起',
+        currentTask: '选择当前任务',
+        empty: '暂无未完成任务',
+        noProject: '未关联项目',
+        deadline: '截止日期',
+        noDeadline: '未设置',
+        progress: '任务进度',
+        onTop: '置顶',
+        refresh: '刷新',
+        openMain: '打开主窗口',
+        refreshHint: '每30秒刷新，获得焦点时立即更新',
+        loadFailed: '加载失败，请展开重试',
+        openFailed: '无法打开悬浮窗'
+    },
     common: {
         save: '保存',
         cancel: '取消',

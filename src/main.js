@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import FloatingTaskWindow from './modules/floating/FloatingTaskWindow.vue'
 
 // PrimeVue
 import PrimeVue from 'primevue/config'
@@ -9,7 +10,9 @@ import 'primeicons/primeicons.css'
 import router from './router'
 import { i18n } from './i18n'
 
-const app = createApp(App)
+const floating =
+    window.__EASYPROJECT_FLOATING_WINDOW__ || window.location.hash.split('?')[0] === '#/floating'
+const app = createApp(floating ? FloatingTaskWindow : App)
 const EasyProjectPreset = definePreset(Aura, {
     semantic: {
         primary: {
@@ -36,7 +39,7 @@ app.use(PrimeVue, {
         }
     }
 })
-app.use(router)
+if (!floating) app.use(router)
 app.use(i18n)
 
 app.mount('#app')

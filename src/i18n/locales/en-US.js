@@ -1,4 +1,23 @@
 export default {
+    floating: {
+        title: 'Current task',
+        open: 'Task floating window',
+        close: 'Close floating window',
+        expand: 'Expand',
+        collapse: 'Collapse',
+        currentTask: 'Select current task',
+        empty: 'No unfinished tasks',
+        noProject: 'No project',
+        deadline: 'Due date',
+        noDeadline: 'Not set',
+        progress: 'Task progress',
+        onTop: 'On top',
+        refresh: 'Refresh',
+        openMain: 'Open main window',
+        refreshHint: 'Refreshes every 30 seconds and on focus',
+        loadFailed: 'Load failed; expand to retry',
+        openFailed: 'Unable to open the floating window'
+    },
     common: {
         save: 'Save',
         cancel: 'Cancel',

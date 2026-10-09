@@ -6,6 +6,7 @@ All notable changes to EasyProject are documented here.
 
 ### Added
 
+- Independent task floating window with collapse/expand, task selection, due date and progress, optional always-on-top, refresh, and return-to-project navigation. It is read-only and closes with the main window; native window behavior remains pending device acceptance.
 - Project creation templates for blank projects, software releases, marketing campaigns, and writing projects, including work-calendar scheduling and dependency generation.
 - Automatic, manual, pre-import, and pre-restore SQLite recovery points with metadata and restore preview.
 - Global undo and redo for data-changing actions.

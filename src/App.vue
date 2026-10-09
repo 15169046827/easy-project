@@ -44,6 +44,15 @@
                 </button>
             </nav>
             <div class="header-actions">
+                <button
+                    type="button"
+                    class="theme-toggle"
+                    :title="$t('floating.open')"
+                    :aria-label="$t('floating.open')"
+                    @click="openTaskWindow"
+                >
+                    <i class="pi pi-window-maximize" aria-hidden="true" />
+                </button>
                 <Select
                     class="lang-select"
                     :modelValue="locale"
@@ -126,6 +135,9 @@ import { useKeyboard, SHORTCUTS_HELP } from './composables/useKeyboard'
 import { setLocale } from './i18n'
 import { canRedo, canUndo, crudAction, enableHistory, redoLastAction, undoLastAction } from './api'
 import { getWindowChromeMode } from './utils/windowChrome'
+import { openFloatingWindow } from './modules/floating/windowActions'
+import { listen } from '@tauri-apps/api/event'
+import { isTauri } from '@tauri-apps/api/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -181,7 +193,36 @@ function refreshAfterHistory() {
     viewRevision.value += 1
 }
 
+let stopFloatingNavigation
+let disposed = false
+let openingTaskWindow = false
+async function openTaskWindow() {
+    if (openingTaskWindow) return
+    openingTaskWindow = true
+    try {
+        await openFloatingWindow()
+    } catch {
+        showHistoryMessage(t('floating.openFailed'), true)
+    } finally {
+        openingTaskWindow = false
+    }
+}
+async function connectFloatingNavigation() {
+    if (!isTauri()) return
+    try {
+        const stop = await listen('easyproject:open-project', ({ payload }) => {
+            if (typeof payload === 'string' && payload)
+                router.push(`/project/${encodeURIComponent(payload)}`)
+        })
+        if (disposed) stop()
+        else stopFloatingNavigation = stop
+    } catch (error) {
+        console.warn('Floating window navigation is unavailable:', error)
+    }
+}
+
 onMounted(() => {
+    connectFloatingNavigation()
     enableHistory()
     window.addEventListener('easyproject:data-changed', refreshAfterHistory)
     backupTimer = setInterval(
@@ -193,6 +234,8 @@ onMounted(() => {
     )
 })
 onUnmounted(() => {
+    disposed = true
+    stopFloatingNavigation?.()
     window.removeEventListener('easyproject:data-changed', refreshAfterHistory)
     clearTimeout(historyTimer)
     clearInterval(backupTimer)

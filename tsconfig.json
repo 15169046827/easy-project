@@ -12,5 +12,12 @@
         "types": ["vite/client", "node"],
         "paths": { "@/*": ["./src/*"] }
     },
-    "include": ["src/**/*.js", "src/**/*.vue", "scripts/**/*.js", "e2e/**/*", "*.config.js"]
+    "include": [
+        "src/**/*.js",
+        "src/**/*.vue",
+        "src/**/*.d.ts",
+        "scripts/**/*.js",
+        "e2e/**/*",
+        "*.config.js"
+    ]
 }

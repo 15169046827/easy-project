@@ -146,6 +146,29 @@ test('loads the dashboard shell with mocked Tauri data', async ({ page }) => {
     await expect(page.getByText('Alpha Project').first()).toBeVisible()
 })
 
+test('renders the standalone task window and retains it after reload', async ({
+    page
+}, testInfo) => {
+    await page.setViewportSize({ width: 340, height: 360 })
+    await page.goto('/#/floating')
+    await expect(page.getByTestId('floating-window')).toBeVisible()
+    await expect(page.locator('.app-header')).toHaveCount(0)
+    await expect(page.getByText('Design milestone').first()).toBeVisible()
+    await page.getByRole('button', { name: '展开', exact: true }).click()
+    await expect(page.locator('.floating-project')).toHaveText('Alpha Project')
+    await expect(page.getByRole('progressbar')).toHaveAttribute('value', '50')
+    await page.screenshot({ path: testInfo.outputPath('floating-light.png') })
+    await page.evaluate(() => localStorage.setItem('easyproject-theme', 'dark'))
+    await page.reload()
+    await page.getByRole('button', { name: '展开', exact: true }).click()
+    await expect(page.locator('html')).toHaveClass(/app-dark/)
+    await page.screenshot({ path: testInfo.outputPath('floating-dark.png') })
+    await page.getByRole('button', { name: '收起', exact: true }).click()
+    await expect(page.locator('.floating-content')).toHaveCount(0)
+    await page.reload()
+    await expect(page.getByTestId('floating-window')).toBeVisible()
+})
+
 test('shows an accessible warning when automatic backup fails', async ({ page }) => {
     await page.clock.install()
     await page.goto('/#/dashboard')

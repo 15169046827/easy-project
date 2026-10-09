@@ -6,6 +6,7 @@ pub mod cmds;
 pub mod common;
 pub mod db;
 pub mod floating_window;
+pub mod mcp;
 pub mod models;
 pub mod services;
 

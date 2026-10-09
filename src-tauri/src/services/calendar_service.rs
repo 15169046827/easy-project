@@ -4,7 +4,6 @@ use serde_json::{json, Value};
 use std::io::Read;
 use std::net::{IpAddr, SocketAddr, ToSocketAddrs};
 use std::time::Duration;
-use tauri::State;
 
 const MAX_CALENDAR_BYTES: u64 = 5 * 1024 * 1024;
 const MAX_REDIRECTS: usize = 5;
@@ -133,7 +132,7 @@ fn fetch_ics_text(raw_url: &str) -> Result<String, String> {
 }
 
 pub fn handle_action(
-    _db: &State<DbState>,
+    _db: &DbState,
     action: String,
     data: Value,
 ) -> Result<ApiResponse<Value>, String> {

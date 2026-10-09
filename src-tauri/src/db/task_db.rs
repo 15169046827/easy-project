@@ -1,8 +1,7 @@
 use crate::common::db_state::DbState;
 use crate::models::task::{NewTask, Task};
 use rusqlite::params_from_iter;
-use rusqlite::{params, Row, Transaction};
-use tauri::State;
+use rusqlite::{params, Connection, Row};
 
 pub struct TaskQuery<'a> {
     pub page_index: u64,
@@ -16,11 +15,7 @@ pub struct TaskQuery<'a> {
     pub sort_direction: &'a str,
 }
 
-pub fn swap_task_order(
-    db: &State<DbState>,
-    source_id: &str,
-    target_id: &str,
-) -> Result<(), String> {
+pub fn swap_task_order(db: &DbState, source_id: &str, target_id: &str) -> Result<(), String> {
     let mut conn = db.lock_connection().map_err(|error| error.to_string())?;
     swap_task_order_connection(&mut conn, source_id, target_id)
 }
@@ -70,15 +65,15 @@ fn swap_task_order_connection(
     transaction.commit().map_err(|error| error.to_string())
 }
 
-pub fn insert_task(db: &State<DbState>, p: &NewTask) -> rusqlite::Result<()> {
+pub fn insert_task(db: &DbState, p: &NewTask) -> rusqlite::Result<()> {
     let mut conn = db.lock_connection()?;
-    let transaction = conn.transaction()?;
+    let transaction = conn.savepoint()?;
     insert_task_transaction(&transaction, p)?;
     transaction.commit()
 }
 
 pub(crate) fn insert_task_transaction(
-    transaction: &Transaction<'_>,
+    transaction: &Connection,
     p: &NewTask,
 ) -> rusqlite::Result<()> {
     transaction.execute(
@@ -110,7 +105,7 @@ pub(crate) fn insert_task_transaction(
 }
 
 pub fn get_all_task(
-    db: &State<DbState>,
+    db: &DbState,
     page_index: u64,
     page_size: u64,
     project_id: Option<&str>,
@@ -166,10 +161,7 @@ pub fn get_all_task(
     Ok((list, total))
 }
 
-pub fn query_tasks(
-    db: &State<DbState>,
-    query: &TaskQuery<'_>,
-) -> rusqlite::Result<(Vec<Task>, u64)> {
+pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec<Task>, u64)> {
     let conn = db.lock_connection()?;
     let offset = super::pagination_offset(query.page_index, query.page_size);
     let select_sql = "SELECT id, COALESCE(project_id, ''), COALESCE(sort_order, 0), name,
@@ -244,7 +236,7 @@ pub fn query_tasks(
 }
 
 pub fn update_task(
-    db: &State<DbState>,
+    db: &DbState,
     param_set: &[String],
     value_set: &[String],
 ) -> rusqlite::Result<()> {
@@ -254,7 +246,7 @@ pub fn update_task(
     Ok(())
 }
 
-pub fn remove_task(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<()> {
+pub fn remove_task(db: &DbState, ids: &[String]) -> rusqlite::Result<()> {
     let conn: std::sync::MutexGuard<'_, rusqlite::Connection> = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let sql = format!(
@@ -291,11 +283,7 @@ fn map_task(row: &Row<'_>) -> rusqlite::Result<Task> {
     })
 }
 
-pub fn next_sort_order(
-    db: &State<DbState>,
-    project_id: &str,
-    parent: &str,
-) -> rusqlite::Result<i64> {
+pub fn next_sort_order(db: &DbState, project_id: &str, parent: &str) -> rusqlite::Result<i64> {
     let conn = db.lock_connection()?;
     conn.query_row(
         "SELECT COALESCE(MAX(sort_order), 0) + 1 FROM task
@@ -305,7 +293,7 @@ pub fn next_sort_order(
     )
 }
 
-pub fn get_task_relation(db: &State<DbState>, task_id: &str) -> rusqlite::Result<(String, String)> {
+pub fn get_task_relation(db: &DbState, task_id: &str) -> rusqlite::Result<(String, String)> {
     let conn = db.lock_connection()?;
     conn.query_row(
         "SELECT COALESCE(project_id, ''), COALESCE(parent, '') FROM task
@@ -315,7 +303,7 @@ pub fn get_task_relation(db: &State<DbState>, task_id: &str) -> rusqlite::Result
     )
 }
 
-pub fn get_task_schedule(db: &State<DbState>, task_id: &str) -> rusqlite::Result<(String, String)> {
+pub fn get_task_schedule(db: &DbState, task_id: &str) -> rusqlite::Result<(String, String)> {
     let conn = db.lock_connection()?;
     conn.query_row(
         "SELECT COALESCE(start_time, ''), COALESCE(end_time, '') FROM task WHERE id = ?1 AND stateflag = '0'",
@@ -324,7 +312,7 @@ pub fn get_task_schedule(db: &State<DbState>, task_id: &str) -> rusqlite::Result
     )
 }
 
-pub fn get_task_assignee(db: &State<DbState>, task_id: &str) -> rusqlite::Result<String> {
+pub fn get_task_assignee(db: &DbState, task_id: &str) -> rusqlite::Result<String> {
     let conn = db.lock_connection()?;
     conn.query_row(
         "SELECT COALESCE(assignee, '') FROM task WHERE id = ?1 AND stateflag = '0'",
@@ -334,7 +322,7 @@ pub fn get_task_assignee(db: &State<DbState>, task_id: &str) -> rusqlite::Result
 }
 
 pub fn validate_parent(
-    db: &State<DbState>,
+    db: &DbState,
     task_id: Option<&str>,
     project_id: &str,
     parent_id: &str,
@@ -371,7 +359,7 @@ pub fn validate_parent(
     Err("Task hierarchy is too deep".to_string())
 }
 
-pub fn tasks_have_active_children(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<bool> {
+pub fn tasks_have_active_children(db: &DbState, ids: &[String]) -> rusqlite::Result<bool> {
     let conn = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let sql = format!(
@@ -380,6 +368,15 @@ pub fn tasks_have_active_children(db: &State<DbState>, ids: &[String]) -> rusqli
     );
     let count: u64 = conn.query_row(&sql, params_from_iter(ids), |row| row.get(0))?;
     Ok(count > 0)
+}
+
+pub fn has_project_bound_relations(db: &DbState, id: &str) -> rusqlite::Result<bool> {
+    db.lock_connection()?.query_row(
+        "SELECT EXISTS(SELECT 1 FROM task WHERE parent = ?1 AND stateflag = '0')
+         OR EXISTS(SELECT 1 FROM task_dependency WHERE predecessor_task_id = ?1 OR successor_task_id = ?1)
+         OR EXISTS(SELECT 1 FROM plan_baseline WHERE task_id = ?1)",
+        [id], |row| row.get(0),
+    )
 }
 
 #[cfg(test)]

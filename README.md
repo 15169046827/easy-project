@@ -31,6 +31,8 @@ EasyProject is an open-source, local-first desktop project planning application.
 - Preserve the legacy development database on first upgrade by copying it into the application-data directory.
 - Validate editable fields in the Rust service layer.
 - Restrict remote calendar targets, backup restore paths, WebView content sources, and production log verbosity.
+- Use an independent task floating window for read-only task progress and project navigation.
+- Connect a trusted local MCP client to project/task/member CRUD and project-team tools; opt-in write/delete permissions, recovery points, and client approval protect mutations. See the [MCP guide](docs/MCP.md).
 
 ## Technology
 
@@ -64,6 +66,7 @@ cargo test --locked
 
 ## Project documentation
 
+- Local MCP setup, permissions, contracts, and limits: [`docs/MCP.md`](docs/MCP.md)
 - Product and implementation plan: [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md)
 - v0.1 release audit and remaining risks: [`docs/AUDIT_2026-08-08.md`](docs/AUDIT_2026-08-08.md)
 - Current code audit and remediation standard: [`docs/audit/UNIVERSAL_PROJECT_AUDIT_STANDARD.md`](docs/audit/UNIVERSAL_PROJECT_AUDIT_STANDARD.md) (UPARS 1.1.0)

@@ -4,7 +4,6 @@ use crate::models::common::ApiResponse;
 use crate::models::task::{NewTask, TaskCreateRequest};
 use log::info;
 use serde_json::Value;
-use tauri::State;
 use uuid::Uuid;
 
 fn validate_schedule(start: &str, end: &str) -> Result<(), String> {
@@ -14,7 +13,7 @@ fn validate_schedule(start: &str, end: &str) -> Result<(), String> {
     Ok(())
 }
 
-fn validate_assignee(db: &State<DbState>, project_id: &str, assignee: &str) -> Result<(), String> {
+fn validate_assignee(db: &DbState, project_id: &str, assignee: &str) -> Result<(), String> {
     if assignee.is_empty() {
         return Ok(());
     }
@@ -31,7 +30,7 @@ fn validate_assignee(db: &State<DbState>, project_id: &str, assignee: &str) -> R
 }
 
 pub fn handle_action(
-    db: &State<DbState>,
+    db: &DbState,
     action: String,
     data: Value,
 ) -> Result<ApiResponse<Value>, String> {
@@ -210,6 +209,12 @@ pub fn handle_action(
                 .get("parent")
                 .and_then(|value| value.as_str())
                 .unwrap_or(&current_parent);
+            if target_project_id != current_project_id
+                && task_db::has_project_bound_relations(db, id)
+                    .map_err(|error| error.to_string())?
+            {
+                return ApiResponse::err("Cannot move a task across projects while it has children, dependencies, or plan baselines");
+            }
             let current_assignee =
                 task_db::get_task_assignee(db, id).map_err(|_| "Task not found".to_string())?;
             let target_assignee = data
@@ -285,7 +290,12 @@ pub fn handle_action(
                 "assignee",
                 "sort_order",
             ];
-            let completing_task = data.get("status").and_then(Value::as_str) == Some("Done");
+            let current = crate::services::entity_api::get(db, "task", id)?;
+            let completing_task = data
+                .get("status")
+                .and_then(Value::as_str)
+                .or_else(|| current.get("status").and_then(Value::as_str))
+                == Some("Done");
             for (key, value) in data.as_object().unwrap() {
                 if key == "id" {
                     continue;

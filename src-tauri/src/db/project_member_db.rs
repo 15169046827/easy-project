@@ -3,9 +3,8 @@ use crate::models::project_member::{
     NewProjectMember, ProjectMemberWithMember, ProjectMemberWithProject,
 };
 use rusqlite::params;
-use tauri::State;
 
-pub fn insert(db: &State<DbState>, m: &NewProjectMember) -> rusqlite::Result<()> {
+pub fn insert(db: &DbState, m: &NewProjectMember) -> rusqlite::Result<()> {
     let conn = db.lock_connection()?;
     conn.execute(
         "INSERT INTO project_member (id, project_id, member_id, role, joined_at, stateflag)
@@ -16,7 +15,7 @@ pub fn insert(db: &State<DbState>, m: &NewProjectMember) -> rusqlite::Result<()>
 }
 
 /// 判断某成员是否已在该项目中（用于去重）
-pub fn exists(db: &State<DbState>, project_id: &str, member_id: &str) -> rusqlite::Result<bool> {
+pub fn exists(db: &DbState, project_id: &str, member_id: &str) -> rusqlite::Result<bool> {
     let conn = db.lock_connection()?;
     let count: i64 = conn.query_row(
         "SELECT COUNT(*) FROM project_member WHERE project_id = ?1 AND member_id = ?2 AND stateflag = '0'",
@@ -28,7 +27,7 @@ pub fn exists(db: &State<DbState>, project_id: &str, member_id: &str) -> rusqlit
 
 /// 按成员查询其参与的项目（含项目信息）
 pub fn get_by_member(
-    db: &State<DbState>,
+    db: &DbState,
     member_id: &str,
 ) -> rusqlite::Result<Vec<ProjectMemberWithProject>> {
     let conn = db.lock_connection()?;
@@ -61,7 +60,7 @@ pub fn get_by_member(
 
 /// 按项目查询其成员（含成员信息）
 pub fn get_by_project(
-    db: &State<DbState>,
+    db: &DbState,
     project_id: &str,
 ) -> rusqlite::Result<Vec<ProjectMemberWithMember>> {
     let conn = db.lock_connection()?;
@@ -94,7 +93,7 @@ pub fn get_by_project(
 }
 
 /// 软删除（逻辑删除）
-pub fn delete(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<()> {
+pub fn delete(db: &DbState, ids: &[String]) -> rusqlite::Result<()> {
     let conn = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let sql = format!(
@@ -106,10 +105,7 @@ pub fn delete(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<()> {
     Ok(())
 }
 
-pub fn removal_blocker(
-    db: &State<DbState>,
-    ids: &[String],
-) -> rusqlite::Result<Option<&'static str>> {
+pub fn removal_blocker(db: &DbState, ids: &[String]) -> rusqlite::Result<Option<&'static str>> {
     if ids.is_empty() {
         return Ok(None);
     }

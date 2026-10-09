@@ -2,7 +2,6 @@ use crate::common::db_state::DbState;
 use crate::models::task_dependency::TaskDependency;
 use rusqlite::{params, OptionalExtension};
 use std::collections::{HashMap, HashSet};
-use tauri::State;
 use uuid::Uuid;
 
 /// 有向图环检测 DFS，导出便于测试
@@ -26,10 +25,7 @@ pub fn has_cycle(graph: &HashMap<String, Vec<String>>, start: &str, target: &str
     reaches(graph, start, target, &mut HashSet::new())
 }
 
-pub fn list_for_project(
-    db: &State<DbState>,
-    project_id: &str,
-) -> Result<Vec<TaskDependency>, String> {
+pub fn list_for_project(db: &DbState, project_id: &str) -> Result<Vec<TaskDependency>, String> {
     let conn =
         db.0.lock()
             .map_err(|_| "Database lock failed".to_string())?;
@@ -56,7 +52,7 @@ pub fn list_for_project(
 }
 
 pub fn replace_predecessors(
-    db: &State<DbState>,
+    db: &DbState,
     successor_id: &str,
     predecessors: &[String],
 ) -> Result<(), String> {

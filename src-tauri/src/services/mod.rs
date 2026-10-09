@@ -1,5 +1,6 @@
 pub mod calendar_service;
 pub mod data_service;
+pub mod entity_api;
 pub mod member_service;
 pub mod plan_baseline_service;
 pub mod project_member_service;

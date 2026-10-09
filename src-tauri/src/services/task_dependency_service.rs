@@ -2,10 +2,9 @@ use crate::common::db_state::DbState;
 use crate::db::task_dependency_db;
 use crate::models::common::ApiResponse;
 use serde_json::Value;
-use tauri::State;
 
 pub fn handle_action(
-    db: &State<DbState>,
+    db: &DbState,
     action: String,
     data: Value,
 ) -> Result<ApiResponse<Value>, String> {

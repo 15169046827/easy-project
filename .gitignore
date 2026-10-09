@@ -35,6 +35,9 @@ dist-ssr
 /playwright-report/
 /coverage/
 
+# Generated local MCP delivery only (source and tests remain tracked)
+/artifacts/mcp/
+
 # Local environment files
 .env
 .env.*

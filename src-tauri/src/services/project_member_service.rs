@@ -4,11 +4,10 @@ use crate::models::common::ApiResponse;
 use crate::models::project_member::{NewProjectMember, ProjectMemberCreateRequest};
 use log::info;
 use serde_json::Value;
-use tauri::State;
 use uuid::Uuid;
 
 pub fn handle_action(
-    db: &State<DbState>,
+    db: &DbState,
     action: String,
     data: Value,
 ) -> Result<ApiResponse<Value>, String> {

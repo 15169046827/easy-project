@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Local-first desktop project planning with tasks and Gantt charts"
 authors = ["Ym_Li"]
 edition = "2021"
+default-run = "easy-project"
 rust-version = "1.90"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

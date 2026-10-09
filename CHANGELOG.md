@@ -6,6 +6,7 @@ All notable changes to EasyProject are documented here.
 
 ### Added
 
+- Opt-in local stdio MCP companion: project/task/member CRUD plus project-team membership tools, default read-only permissions, explicit deletion confirmation, write recovery points and privacy-reduced operation audit. Desktop and MCP entity writes share business validation and an atomic SQLite boundary.
 - Independent task floating window with collapse/expand, task selection, due date and progress, optional always-on-top, refresh, and return-to-project navigation. It is read-only and closes with the main window; native window behavior remains pending device acceptance.
 - Project creation templates for blank projects, software releases, marketing campaigns, and writing projects, including work-calendar scheduling and dependency generation.
 - Automatic, manual, pre-import, and pre-restore SQLite recovery points with metadata and restore preview.
@@ -18,6 +19,7 @@ All notable changes to EasyProject are documented here.
 
 ### Improved
 
+- Completed tasks retain 100% when editing only progress; tasks with children, dependency edges, or plan baselines cannot move across projects and invalidate those relationships.
 - Windows now uses an EasyProject-styled title bar with native dragging and minimize, maximize/restore, and close controls while other desktop platforms retain their native window chrome.
 - Fixed outer-window scrolling so the custom title bar remains pinned at the top.
 - Redesigned the cross-platform application icon around a compact task timeline, with validated Windows transparency, small-size previews, and a seven-size ICO package.

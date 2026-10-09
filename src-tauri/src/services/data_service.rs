@@ -5,7 +5,6 @@ use rusqlite::{params_from_iter, DatabaseName};
 use serde_json::{json, Value};
 use std::fs;
 use std::path::{Path, PathBuf};
-use tauri::State;
 
 fn table_rows(
     conn: &rusqlite::Connection,
@@ -290,7 +289,7 @@ fn backup_info(path: &Path) -> Value {
         .and_then(|value| value.split('-').next())
         .unwrap_or("manual");
     let reason = match parsed_reason {
-        "auto" | "import" | "restore" | "manual" => parsed_reason,
+        "auto" | "import" | "restore" | "manual" | "mcp" => parsed_reason,
         _ => "manual",
     };
     let metadata = fs::metadata(path).ok();
@@ -335,13 +334,19 @@ pub fn create_backup(db: &DbState, reason: &str) -> Result<Value, String> {
     let dir = backup_directory(db);
     fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
     let safe_reason = match reason {
-        "auto" | "import" | "restore" | "manual" => reason,
+        "auto" | "import" | "restore" | "manual" | "mcp" => reason,
         _ => "manual",
     };
+    let unique_suffix = if safe_reason == "mcp" {
+        format!("-{}", uuid::Uuid::new_v4().simple())
+    } else {
+        String::new()
+    };
     let path = dir.join(format!(
-        "easy-project-{}-{}.db",
+        "easy-project-{}-{}{}.db",
         safe_reason,
-        Local::now().format("%Y%m%d-%H%M%S-%3f")
+        Local::now().format("%Y%m%d-%H%M%S-%3f"),
+        unique_suffix
     ));
     let conn =
         db.0.lock()
@@ -395,7 +400,7 @@ fn restore_backup(db: &DbState, source: &Path) -> Result<Value, String> {
 }
 
 pub fn handle_action(
-    db: &State<DbState>,
+    db: &DbState,
     action: String,
     data: Value,
 ) -> Result<ApiResponse<Value>, String> {

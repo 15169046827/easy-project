@@ -7,7 +7,6 @@ use log::info;
 use rusqlite::params;
 use serde_json::Value;
 use std::collections::{HashMap, HashSet};
-use tauri::State;
 use uuid::Uuid;
 
 fn generated_id(prefix: &str) -> String {
@@ -16,7 +15,7 @@ fn generated_id(prefix: &str) -> String {
 }
 
 pub fn handle_action(
-    db: &State<DbState>,
+    db: &DbState,
     action: String,
     data: Value,
 ) -> Result<ApiResponse<Value>, String> {

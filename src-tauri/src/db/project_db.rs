@@ -1,11 +1,10 @@
 use crate::common::db_state::DbState;
 use crate::models::project::{NewProject, Project};
 use rusqlite::params_from_iter;
-use rusqlite::{params, Transaction};
-use tauri::State;
+use rusqlite::{params, Connection};
 
 fn ensure_owner_membership(
-    transaction: &Transaction<'_>,
+    transaction: &Connection,
     relationship_id: &str,
     project_id: &str,
     member_id: &str,
@@ -23,19 +22,19 @@ fn ensure_owner_membership(
 }
 
 pub fn insert_project(
-    db: &State<DbState>,
+    db: &DbState,
     p: &NewProject,
     owner_membership_id: Option<&str>,
 ) -> rusqlite::Result<()> {
     let mut conn = db.lock_connection()?;
-    let transaction = conn.transaction()?;
+    let transaction = conn.savepoint()?;
     insert_project_transaction(&transaction, p, owner_membership_id)?;
     transaction.commit()?;
     Ok(())
 }
 
 pub(crate) fn insert_project_transaction(
-    transaction: &Transaction<'_>,
+    transaction: &Connection,
     p: &NewProject,
     owner_membership_id: Option<&str>,
 ) -> rusqlite::Result<()> {
@@ -65,7 +64,7 @@ pub(crate) fn insert_project_transaction(
 }
 
 pub fn get_all_project(
-    db: &State<DbState>,
+    db: &DbState,
     page_index: u64,
     page_size: u64,
 ) -> rusqlite::Result<(Vec<Project>, u64)> {
@@ -114,20 +113,20 @@ pub fn get_all_project(
 }
 
 pub fn update_project(
-    db: &State<DbState>,
+    db: &DbState,
     param_set: &[String],
     value_set: &[String],
     owner_membership: Option<(&str, &str)>,
 ) -> rusqlite::Result<()> {
     let mut conn = db.lock_connection()?;
-    let transaction = conn.transaction()?;
+    let transaction = conn.savepoint()?;
     update_project_transaction(&transaction, param_set, value_set, owner_membership)?;
     transaction.commit()?;
     Ok(())
 }
 
 fn update_project_transaction(
-    transaction: &Transaction<'_>,
+    transaction: &Connection,
     param_set: &[String],
     value_set: &[String],
     owner_membership: Option<(&str, &str)>,
@@ -141,7 +140,7 @@ fn update_project_transaction(
     Ok(())
 }
 
-pub fn remove_project(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<()> {
+pub fn remove_project(db: &DbState, ids: &[String]) -> rusqlite::Result<()> {
     let conn: std::sync::MutexGuard<'_, rusqlite::Connection> = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let sql = format!(
@@ -153,7 +152,7 @@ pub fn remove_project(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<(
     Ok(())
 }
 
-pub fn project_exists(db: &State<DbState>, id: &str) -> rusqlite::Result<bool> {
+pub fn project_exists(db: &DbState, id: &str) -> rusqlite::Result<bool> {
     let conn = db.lock_connection()?;
     let count: u64 = conn.query_row(
         "SELECT COUNT(*) FROM project WHERE id = ?1 AND stateflag = '0'",
@@ -163,7 +162,7 @@ pub fn project_exists(db: &State<DbState>, id: &str) -> rusqlite::Result<bool> {
     Ok(count > 0)
 }
 
-pub fn projects_have_active_tasks(db: &State<DbState>, ids: &[String]) -> rusqlite::Result<bool> {
+pub fn projects_have_active_tasks(db: &DbState, ids: &[String]) -> rusqlite::Result<bool> {
     let conn = db.lock_connection()?;
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
     let sql = format!(

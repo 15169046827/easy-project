@@ -1,10 +1,9 @@
 use crate::common::db_state::DbState;
 use crate::models::plan_baseline::{NewPlanBaseline, PlanBaseline};
 use rusqlite::params;
-use tauri::State;
 
 pub fn replace_for_project(
-    db: &State<DbState>,
+    db: &DbState,
     project_id: &str,
     baselines: &[NewPlanBaseline],
 ) -> rusqlite::Result<()> {
@@ -32,10 +31,7 @@ pub fn replace_for_project(
     tx.commit()
 }
 
-pub fn get_by_project(
-    db: &State<DbState>,
-    project_id: &str,
-) -> rusqlite::Result<Vec<PlanBaseline>> {
+pub fn get_by_project(db: &DbState, project_id: &str) -> rusqlite::Result<Vec<PlanBaseline>> {
     let conn = db.lock_connection()?;
     let mut stmt = conn.prepare(
         "SELECT id, project_id, task_id, task_name, start_time, end_time, created_at
@@ -59,7 +55,7 @@ pub fn get_by_project(
     Ok(list)
 }
 
-pub fn delete_by_project(db: &State<DbState>, project_id: &str) -> rusqlite::Result<()> {
+pub fn delete_by_project(db: &DbState, project_id: &str) -> rusqlite::Result<()> {
     let conn = db.lock_connection()?;
     conn.execute(
         "DELETE FROM plan_baseline WHERE project_id = ?1",

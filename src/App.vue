@@ -641,8 +641,8 @@ nav button.active {
 }
 
 .lang-select {
-    min-width: 7.5rem;
-    width: 7.5rem;
+    min-width: 8.25rem;
+    width: 8.25rem;
     font-size: 0.82rem;
 }
 
@@ -811,6 +811,33 @@ nav button.active {
     }
 }
 
+@media (max-width: 1100px) {
+    .app-header,
+    .app-header--window-chrome {
+        display: flex;
+        align-items: center;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        gap: 0.5rem;
+    }
+    .header-left {
+        min-width: 9rem;
+    }
+    .header-left h1 {
+        font-size: 1.4rem;
+    }
+    nav {
+        gap: 0.1rem;
+    }
+    nav button {
+        min-width: 0;
+        padding: 0.55rem 0.65rem;
+        font-size: 0.8rem;
+    }
+    .floating-entry {
+        padding: 0 0.3rem;
+    }
+}
 @media (max-width: 820px) {
     .app-header {
         align-items: flex-start;

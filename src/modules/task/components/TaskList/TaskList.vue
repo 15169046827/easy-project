@@ -124,7 +124,7 @@
                         :title="$t('tasks.resetColumns')"
                         :aria-label="$t('tasks.resetColumns')"
                         text
-                        @click="selectedColumns = [...defaultTaskColumns]"
+                        @click="selectedColumns = [...defaultColumns]"
                     />
                 </div>
             </div>
@@ -200,7 +200,7 @@
                 :label="$t('tasks.resetColumns')"
                 text
                 size="small"
-                @click="selectedColumns = [...defaultTaskColumns]"
+                @click="selectedColumns = [...defaultColumns]"
             />
         </div>
         <p v-if="errorMessage" class="error-banner">{{ errorMessage }}</p>
@@ -718,7 +718,11 @@ const showLoading = useDelayedBusy(loading)
 const columnStorageKey = props.embedded
     ? 'easyproject-task-columns-embedded-v1'
     : 'easyproject-task-columns-global-v1'
-const selectedColumns = ref(readTaskColumns(localStorage, columnStorageKey))
+const applicableColumn = key => !props.embedded || key !== 'project_id'
+const defaultColumns = defaultTaskColumns.filter(applicableColumn)
+const selectedColumns = ref(
+    readTaskColumns(localStorage, columnStorageKey).filter(applicableColumn)
+)
 const columnLabels = {
     project_id: 'columnProject',
     parent: 'columnParent',

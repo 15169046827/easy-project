@@ -112,6 +112,24 @@ test.beforeEach(async ({ page }) => {
     }, fixtures)
 })
 
+async function measureWorkspace(page) {
+    return page.evaluate(() => {
+        const element = document.querySelector('.workspace-page')
+        const rect = selector => {
+            const r = element.querySelector(selector).getBoundingClientRect()
+            return { x: r.x, y: r.y, width: r.width, height: r.height }
+        }
+        return {
+            heading: rect('.workspace-heading'),
+            stats: rect('.workspace-stats'),
+            card: rect('.workspace-stats > *'),
+            toolbar: rect('.workspace-toolbar'),
+            content: rect('.dashboard-grid, .table-card'),
+            scroll: document.documentElement.scrollHeight > window.innerHeight
+        }
+    })
+}
+
 for (const size of [
     { width: 1280, height: 800 },
     { width: 960, height: 640 }
@@ -130,29 +148,21 @@ for (const size of [
                 await page.goto('/#/' + path)
                 await expect(page.locator('.workspace-stats > *')).toHaveCount(4)
                 await expect(page.locator('.workspace-page')).toBeVisible()
+                const controlsInViewport = await page.locator('.app-header').evaluate(header =>
+                    [...header.querySelectorAll('button, .lang-select')].every(node => {
+                        const rect = node.getBoundingClientRect()
+                        return rect.x >= 0 && rect.right <= window.innerWidth
+                    })
+                )
+                expect(controlsInViewport).toBe(true)
                 await expect(page.locator('.workspace-stats > *').first()).toBeVisible()
+                let geometry = await measureWorkspace(page)
                 await expect
-                    .poll(() =>
-                        page
-                            .locator('.workspace-stats > *')
-                            .first()
-                            .evaluate(node => node.getBoundingClientRect().height)
-                    )
+                    .poll(async () => {
+                        geometry = await measureWorkspace(page)
+                        return geometry.card.height
+                    })
                     .toBe(76)
-                const geometry = await page.locator('.workspace-page').evaluate(element => {
-                    const rect = selector => {
-                        const r = element.querySelector(selector).getBoundingClientRect()
-                        return { x: r.x, y: r.y, width: r.width, height: r.height }
-                    }
-                    return {
-                        heading: rect('.workspace-heading'),
-                        stats: rect('.workspace-stats'),
-                        card: rect('.workspace-stats > *'),
-                        toolbar: rect('.workspace-toolbar'),
-                        content: rect('.dashboard-grid, .table-card'),
-                        scroll: document.documentElement.scrollHeight > window.innerHeight
-                    }
-                })
                 layouts.push(geometry)
                 expect(geometry.card.height).toBe(76)
                 expect(geometry.scroll).toBe(false)
@@ -167,6 +177,37 @@ for (const size of [
                         ).toBeLessThanOrEqual(1)
                 }
             }
+        })
+    }
+}
+
+for (const locale of ['zh-CN', 'en-US']) {
+    for (const windowChrome of [false, true]) {
+        test(`keeps all header controls visible at 960px in ${locale}, chrome=${windowChrome}`, async ({
+            page
+        }) => {
+            await page.setViewportSize({ width: 960, height: 640 })
+            await page.addInitScript(
+                value => localStorage.setItem('easyproject-lang', value),
+                locale
+            )
+            await page.goto(windowChrome ? '/?windowChrome=1#/dashboard' : '/#/dashboard')
+            await expect(page.locator('.help-toggle')).toBeInViewport({ ratio: 1 })
+            const boxes = await page.locator('.app-header').evaluate(header => {
+                const nav = header.querySelector('nav').getBoundingClientRect()
+                const actions = header.querySelector('.header-actions').getBoundingClientRect()
+                const label = header.querySelector('.p-select-label')
+                return {
+                    navRight: nav.right,
+                    actionsLeft: actions.left,
+                    actionsRight: actions.right,
+                    width: window.innerWidth,
+                    labelFits: label.scrollWidth <= label.clientWidth
+                }
+            })
+            expect(boxes.navRight).toBeLessThanOrEqual(boxes.actionsLeft)
+            expect(boxes.actionsRight).toBeLessThanOrEqual(boxes.width)
+            expect(boxes.labelFits).toBe(true)
         })
     }
 }
@@ -193,6 +234,16 @@ test('keeps fixed, left-aligned names visible while optional columns scroll', as
     })
     const after = await name.boundingBox()
     expect(Math.abs(after.x - before.x)).toBeLessThanOrEqual(1)
+})
+
+test('excludes the hidden project column from embedded column preferences', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/#/project/p1')
+    await expect(page.locator('.column-toolbar .p-multiselect-label')).toHaveText('已选5列')
+    await page.getByRole('button', { name: '恢复默认列', exact: true }).click()
+    await expect(page.locator('.column-toolbar .p-multiselect-label')).toHaveText('已选5列')
+    const container = page.locator('.p-datatable-table-container')
+    expect(await container.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true)
 })
 
 test('shows relationship names and saves an empty predecessor selection', async ({ page }) => {

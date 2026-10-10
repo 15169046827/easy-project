@@ -7,8 +7,8 @@
                     aria-hidden="true"
                     :data-tauri-drag-region="native ? '' : undefined"
                 />
-                <span :aria-label="task?.name" :data-tauri-drag-region="native ? '' : undefined">{{
-                    task?.name || $t('floating.title')
+                <span :data-tauri-drag-region="native ? '' : undefined">{{
+                    $t('floating.title')
                 }}</span>
             </div>
             <Button
@@ -34,25 +34,22 @@
             <Message v-if="error || actionError" severity="error" :closable="false">
                 {{ error || actionError }}
             </Message>
-            <p v-if="loading" role="status">{{ $t('common.loading') }}</p>
-            <label for="floating-task-select">{{ $t('floating.currentTask') }}</label>
-            <Select
-                inputId="floating-task-select"
-                :modelValue="task?.id || ''"
-                :options="tasks"
-                optionLabel="name"
-                optionValue="id"
-                :placeholder="$t('floating.empty')"
-                appendTo="body"
-                scrollHeight="140px"
-                filter
-                fluid
-                :disabled="!tasks.length"
-                @update:modelValue="selectTask"
-            />
-            <template v-if="task">
-                <h2>{{ task.name }}</h2>
-                <p class="floating-project">{{ project?.name || $t('floating.noProject') }}</p>
+            <p v-if="initialLoading" role="status">{{ $t('common.loading') }}</p>
+            <article
+                v-for="task in tasks"
+                :key="task.id"
+                class="floating-task"
+                :data-task-id="task.id"
+            >
+                <h2 v-tooltip.bottom="task.name">{{ task.name }}</h2>
+                <Button
+                    class="floating-project"
+                    text
+                    size="small"
+                    :label="projectNames.get(task.project_id) || $t('floating.noProject')"
+                    v-tooltip.bottom="projectNames.get(task.project_id) || $t('floating.noProject')"
+                    @click="run(() => returnToMain(task.project_id || ''))"
+                />
                 <p>
                     {{ $t('floating.deadline') }}:
                     {{ task.end_time?.slice(0, 10) || $t('floating.noDeadline') }}
@@ -64,8 +61,8 @@
                         :aria-label="$t('floating.progress')"
                     /><span>{{ taskProgress(task) }}%</span>
                 </div>
-            </template>
-            <p v-else-if="!loading && !error">{{ $t('floating.empty') }}</p>
+            </article>
+            <p v-if="!initialLoading && !tasks.length && !error">{{ $t('floating.empty') }}</p>
             <p class="floating-hint">{{ $t('floating.refreshHint') }}</p>
         </div>
         <footer v-if="expanded">
@@ -75,7 +72,7 @@
             <Button type="button" :disabled="loading" @click="run(refresh)">{{
                 $t('floating.refresh')
             }}</Button>
-            <Button type="button" @click="run(() => returnToMain(task?.project_id || ''))">
+            <Button type="button" @click="run(() => returnToMain(''))">
                 {{ $t('floating.openMain') }}
             </Button>
         </footer>
@@ -88,7 +85,6 @@
 <script setup>
 import { ref } from 'vue'
 import Button from 'primevue/button'
-import Select from 'primevue/select'
 import ProgressBar from 'primevue/progressbar'
 import Message from 'primevue/message'
 import { useTheme } from '../../composables/useTheme'
@@ -107,7 +103,7 @@ const native = isFloatingNative()
 const expanded = ref(true)
 const onTop = ref(true)
 const actionError = ref('')
-const { tasks, task, project, error, loading, selectTask, refresh } = useFloatingTasks()
+const { tasks, projectNames, error, loading, initialLoading, refresh } = useFloatingTasks()
 
 async function run(action) {
     try {
@@ -179,8 +175,7 @@ button {
 button:hover {
     background: var(--color-subtle-hover);
 }
-button:focus-visible,
-select:focus-visible {
+button:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
@@ -190,24 +185,18 @@ select:focus-visible {
     overflow-y: auto;
     padding: 8px;
 }
-label {
-    display: block;
-    font-size: 12px;
-    margin-bottom: 4px;
-    color: var(--color-text-secondary);
-}
-select {
-    width: 100%;
-    padding: 6px;
-    background: var(--color-surface);
-    color: var(--color-text);
+.floating-task {
+    padding: 10px;
+    margin-bottom: 8px;
     border: 1px solid var(--color-border);
-    border-radius: 6px;
+    border-radius: 8px;
 }
 h2 {
-    font-size: 16px;
-    margin: 14px 0 4px;
-    overflow-wrap: anywhere;
+    font-size: 14px;
+    margin: 0 0 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 p {
     font-size: 12px;
@@ -216,6 +205,22 @@ p {
 .floating-project,
 .floating-hint {
     color: var(--color-text-secondary);
+}
+.floating-project {
+    max-width: 100%;
+    min-height: 24px;
+    padding: 0;
+    justify-content: flex-start;
+    background: transparent;
+    font-size: 12px;
+}
+.floating-project :deep(.p-button-label) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.floating-progress :deep(.p-progressbar-value) {
+    transition: none;
 }
 .floating-progress {
     display: flex;

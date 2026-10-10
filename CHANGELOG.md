@@ -7,7 +7,7 @@ All notable changes to EasyProject are documented here.
 ### Added
 
 - Opt-in local stdio MCP companion: project/task/member CRUD plus project-team membership tools, default read-only permissions, explicit deletion confirmation, write recovery points and privacy-reduced operation audit. Desktop and MCP entity writes share business validation and an atomic SQLite boundary.
-- Independent task floating window with collapse/expand, task selection, due date and progress, optional always-on-top, refresh, and return-to-project navigation. It is read-only and closes with the main window; native window behavior remains pending device acceptance.
+- Independent read-only task floating window with nearby task cards, collapse/expand, due dates and progress, optional always-on-top, refresh, and return-to-project navigation. It closes with the main window; Windows behavior has been checked on the current device.
 - Project creation templates for blank projects, software releases, marketing campaigns, and writing projects, including work-calendar scheduling and dependency generation.
 - Automatic, manual, pre-import, and pre-restore SQLite recovery points with metadata and restore preview.
 - Global undo and redo for data-changing actions.
@@ -19,6 +19,8 @@ All notable changes to EasyProject are documented here.
 
 ### Improved
 
+- Floating window now lists the five nearest dated unfinished tasks with project navigation, due dates and progress, without manual task selection. Background refresh retains keyed task cards and does not show a transient loading row or resize/focus a window.
+- Task editing now uses an independent-draft PrimeVue dialog instead of crowded row editors; hidden table columns stay hidden and cancellation discards unsaved changes. Navigation hover/focus keeps border dimensions stable.
 - Aligned route headings, 76px statistic cards, toolbars, and content borders across dashboard/project/task/member pages, with shared responsive spacing and the same outer grid for data/project workspaces.
 - Task tables now use fixed-width ellipsis cells, pinned left-aligned names, configurable remembered columns, and parent/predecessor names that remain available across filters and pagination. Predecessors use a clearable PrimeVue selector; delete confirmation is an in-app dialog and search has an inline clear button.
 - In-progress statistics are static; short loads no longer flash a gray mask, startup initializes the saved theme before paint, and the floating-window entry is visibly labeled.

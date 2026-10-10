@@ -1,12 +1,11 @@
 export default {
     floating: {
-        title: '当前任务',
+        title: '临近任务',
         open: '任务悬浮窗',
         close: '关闭悬浮窗',
         expand: '展开',
         collapse: '收起',
-        currentTask: '选择当前任务',
-        empty: '暂无未完成任务',
+        empty: '暂无设置截止日期的未完成任务',
         noProject: '未关联项目',
         deadline: '截止日期',
         noDeadline: '未设置',
@@ -14,7 +13,7 @@ export default {
         onTop: '置顶',
         refresh: '刷新',
         openMain: '打开主窗口',
-        refreshHint: '每30秒刷新，获得焦点时立即更新',
+        refreshHint: '最近截止的5项未完成任务（含逾期），每30秒后台更新',
         loadFailed: '加载失败，请展开重试',
         openFailed: '无法打开悬浮窗'
     },

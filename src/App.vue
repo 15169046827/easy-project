@@ -626,11 +626,15 @@ nav button.p-button {
     white-space: nowrap;
     min-width: 5.5rem;
     text-align: center;
-    transition: all 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
     position: relative;
 }
 
-nav button.p-button:hover {
+nav button.p-button:not(:disabled):hover,
+nav button.p-button:focus-visible {
+    border: 0;
     color: var(--color-header-text);
     background: rgba(255, 255, 255, 0.08);
 }

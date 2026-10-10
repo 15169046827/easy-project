@@ -1,21 +1,16 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { crudAction } from '../../api'
-import { activeFloatingTasks, chooseFloatingTask, SELECTED_TASK_KEY } from './taskSelection'
+import { nearbyFloatingTasks } from './taskSelection'
 
 export function useFloatingTasks() {
     const tasks = ref([])
     const projects = ref([])
-    const selectedId = ref('')
     const error = ref('')
     const loading = ref(true)
+    const initialized = ref(false)
     let generation = 0
     let disposed = false
     let timer
-    try {
-        selectedId.value = localStorage.getItem(SELECTED_TASK_KEY) || ''
-    } catch {
-        // Selection is optional; blocked storage must not prevent loading tasks.
-    }
     async function fetchAll(model, request) {
         const result = await crudAction(model, 'get_all', { pageIndex: 1, pageSize: 1000 })
         const list = [...(result?.list || [])]
@@ -39,25 +34,20 @@ export function useFloatingTasks() {
                 fetchAll('project', request)
             ])
             if (disposed || request !== generation) return
-            tasks.value = activeFloatingTasks(nextTasks)
+            tasks.value = nearbyFloatingTasks(nextTasks)
             projects.value = nextProjects
             error.value = ''
         } catch (cause) {
             if (!disposed && request === generation) error.value = String(cause?.message || cause)
         } finally {
-            if (!disposed && request === generation) loading.value = false
+            if (!disposed && request === generation) {
+                loading.value = false
+                initialized.value = true
+            }
         }
     }
-    function selectTask(id) {
-        selectedId.value = id
-        try {
-            localStorage.setItem(SELECTED_TASK_KEY, id)
-        } catch {
-            // Keep the current selection for this session.
-        }
-    }
-    const task = computed(() => chooseFloatingTask(tasks.value, selectedId.value))
-    const project = computed(() => projects.value.find(item => item.id === task.value?.project_id))
+    const initialLoading = computed(() => loading.value && !initialized.value)
+    const projectNames = computed(() => new Map(projects.value.map(item => [item.id, item.name])))
     onMounted(() => {
         refresh()
         window.addEventListener('focus', refresh)
@@ -69,5 +59,5 @@ export function useFloatingTasks() {
         clearInterval(timer)
         window.removeEventListener('focus', refresh)
     })
-    return { tasks, task, project, error, loading, selectTask, refresh }
+    return { tasks, projectNames, error, loading, initialLoading, refresh }
 }

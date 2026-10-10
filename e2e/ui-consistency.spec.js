@@ -26,7 +26,7 @@ const fixtures = {
             start_time: '2026-10-10',
             end_time: '2026-10-12',
             type: 'Task',
-            priority: '2',
+            priority: 'High',
             comment: 'Long task comment',
             effort_days: 1,
             schedule_mode: 'fixed_dates'
@@ -37,7 +37,7 @@ const fixtures = {
             project_id: 'p1',
             parent: 't1',
             sort_order: 2,
-            status: 'Pending',
+            status: 'Todo',
             progress: 0,
             start_time: '2026-10-13',
             end_time: '2026-10-14',
@@ -270,18 +270,58 @@ test('excludes the hidden project column from embedded column preferences', asyn
     expect(await container.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true)
 })
 
+test('keeps navigation geometry unchanged on hover and keyboard focus', async ({ page }) => {
+    await page.setViewportSize({ width: 960, height: 640 })
+    await page.goto('/#/dashboard')
+    const nav = page.getByRole('navigation')
+    const initial = await nav.boundingBox()
+    for (const button of await nav.getByRole('button').all()) {
+        const box = await button.boundingBox()
+        await button.hover()
+        await expect.poll(() => button.boundingBox()).toEqual(box)
+        await button.focus()
+        await expect.poll(() => button.boundingBox()).toEqual(box)
+        expect(await nav.boundingBox()).toEqual(initial)
+    }
+})
+
+test('edits in a modal without expanding hidden columns and cancels its draft at narrow widths', async ({
+    page
+}) => {
+    await page.setViewportSize({ width: 960, height: 640 })
+    await page.goto('/#/tasks')
+    const table = page.locator('.workspace-table')
+    const count = await table.getByRole('columnheader').count()
+    await table.getByRole('button', { name: '编辑', exact: true }).first().click()
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await expect(dialog.locator('#task-edit-priority')).toHaveText('P2 - 高')
+    expect(await table.getByRole('columnheader').count()).toBe(count)
+    await dialog.locator('#task-edit-name').fill('Unsaved draft')
+    const cancel = dialog.getByRole('button', { name: '取消', exact: true })
+    const bounds = await cancel.boundingBox()
+    expect(bounds.y + bounds.height).toBeLessThanOrEqual(640)
+    await cancel.click()
+    await expect(dialog).toHaveCount(0)
+    await expect(table.locator('.task-name-text').first()).toHaveText(taskName)
+    expect(await table.getByRole('columnheader').count()).toBe(count)
+    const calls = await page.evaluate(() => window.__EASY_PROJECT_CALLS__)
+    expect(
+        calls.filter(call => ['add', 'update', 'set_for_task'].includes(call.args.action))
+    ).toHaveLength(0)
+})
+
 test('shows relationship names and saves an empty predecessor selection', async ({ page }) => {
     await page.goto('/#/tasks')
     await page.getByRole('button', { name: '展开任务', exact: true }).click()
     const child = page.getByRole('row').filter({ hasText: 'Child task' })
     await expect(child.locator('.cell-ellipsis').filter({ hasText: taskName })).toHaveCount(2)
-    await child.locator('.p-datatable-row-editor-init').click()
-    const editingRow = page
-        .locator('tr')
-        .filter({ has: page.locator('.p-datatable-row-editor-save') })
-    await expect(editingRow.locator('select[multiple]')).toHaveCount(0)
-    await editingRow.locator('.p-multiselect-clear-icon').click()
-    await editingRow.locator('.p-datatable-row-editor-save').click()
+    await child.getByRole('button', { name: '编辑', exact: true }).click()
+    const dialog = page.getByRole('dialog')
+    await expect(dialog.locator('#task-edit-status')).toHaveText('待办')
+    await expect(dialog.locator('select[multiple]')).toHaveCount(0)
+    await dialog.locator('.p-multiselect-clear-icon').click()
+    await dialog.getByRole('button', { name: '保存', exact: true }).click()
     await expect(page.locator('.success-banner')).toBeVisible()
     const calls = await page.evaluate(() => window.__EASY_PROJECT_CALLS__)
     expect(

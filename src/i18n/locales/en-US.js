@@ -1,12 +1,11 @@
 export default {
     floating: {
-        title: 'Current task',
+        title: 'Upcoming tasks',
         open: 'Task floating window',
         close: 'Close floating window',
         expand: 'Expand',
         collapse: 'Collapse',
-        currentTask: 'Select current task',
-        empty: 'No unfinished tasks',
+        empty: 'No unfinished tasks with a due date',
         noProject: 'No project',
         deadline: 'Due date',
         noDeadline: 'Not set',
@@ -14,7 +13,8 @@ export default {
         onTop: 'On top',
         refresh: 'Refresh',
         openMain: 'Open main window',
-        refreshHint: 'Refreshes every 30 seconds and on focus',
+        refreshHint:
+            'Next 5 unfinished tasks by due date (including overdue), updated in the background every 30 seconds',
         loadFailed: 'Load failed; expand to retry',
         openFailed: 'Unable to open the floating window'
     },

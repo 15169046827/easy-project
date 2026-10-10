@@ -211,7 +211,6 @@
         <div class="table-card">
             <DataTable
                 v-model:selection="selectedTasks"
-                v-model:editingRows="editingRows"
                 :value="visibleTasks"
                 :loading="showLoading"
                 :aria-busy="loading"
@@ -224,25 +223,14 @@
                 scrollHeight="flex"
                 :rows="pageOption.pageSize"
                 :rows-per-page-options="pageOption.pageOptions"
-                editMode="row"
                 dataKey="id"
                 :pt="{
                     root: { class: 'workspace-table' },
                     table: {
                         style: `table-layout: fixed; width: ${tableWidth}rem; min-width: 100%`
                     },
-                    mask: { style: 'background: transparent' },
-                    column: {
-                        bodycell: ({ state }) => ({
-                            style:
-                                state['d_editing'] &&
-                                'padding-top: 0.75rem; padding-bottom: 0.75rem'
-                        })
-                    }
+                    mask: { style: 'background: transparent' }
                 }"
-                @row-edit-init="onRowEditInit"
-                @row-edit-save="onRowEditSave"
-                @row-edit-cancel="onRowEditCancel"
                 @page="onPage"
             >
                 <Column
@@ -259,15 +247,12 @@
                     :style="columnStyle('name')"
                     class="name-column"
                 >
-                    <template #editor="{ data, field }">
-                        <InputText v-model="data[field]" />
-                    </template>
                     <template #body="{ data }">
                         <div
                             class="task-tree-name"
                             :class="{ 'drag-over': dragOverId === data.id }"
                             :style="{ paddingLeft: `${data._level * 1.25}rem` }"
-                            :draggable="!editingRows.length"
+                            :draggable="!editDialogVisible"
                             @dragstart="onDragStart($event, data)"
                             @dragover.prevent="onDragOver($event, data)"
                             @dragleave="onDragLeave(data)"
@@ -307,16 +292,6 @@
                     :header="$t('tasks.columnProject')"
                     :style="columnStyle('project_id')"
                 >
-                    <template #editor="{ data, field }">
-                        <Select
-                            v-model="data[field]"
-                            :options="projects"
-                            optionLabel="name"
-                            optionValue="id"
-                            :placeholder="$t('tasks.selectProject')"
-                            fluid
-                        />
-                    </template>
                     <template #body="{ data }">
                         <span
                             class="cell-ellipsis"
@@ -331,17 +306,6 @@
                     :header="$t('tasks.columnParent')"
                     :style="columnStyle('parent')"
                 >
-                    <template #editor="{ data, field }">
-                        <Select
-                            v-model="data[field]"
-                            :options="parentOptions(data)"
-                            optionLabel="name"
-                            optionValue="id"
-                            :placeholder="$t('tasks.noParent')"
-                            showClear
-                            fluid
-                        />
-                    </template>
                     <template #body="{ data }">
                         <span class="cell-ellipsis" v-tooltip.bottom="getTaskName(data.parent)">{{
                             getTaskName(data.parent) || '-'
@@ -354,21 +318,6 @@
                     :header="$t('tasks.columnPredecessors')"
                     :style="columnStyle('_predecessorIds')"
                 >
-                    <template #editor="{ data, field }">
-                        <MultiSelect
-                            :modelValue="data[field] || []"
-                            @update:modelValue="data[field] = $event || []"
-                            :options="dependencyOptions(data)"
-                            optionLabel="name"
-                            optionValue="id"
-                            :placeholder="$t('tasks.noPredecessors')"
-                            :aria-label="$t('tasks.columnPredecessors')"
-                            filter
-                            showClear
-                            fluid
-                            :maxSelectedLabels="1"
-                        />
-                    </template>
                     <template #body="{ data }"
                         ><span
                             class="cell-ellipsis"
@@ -383,13 +332,6 @@
                     :header="$t('tasks.columnStart')"
                     :style="columnStyle('start_time')"
                 >
-                    <template #editor="{ data, field }">
-                        <DateTimePickerString
-                            v-model="data[field]"
-                            :placeholder="$t('tasks.selectStart')"
-                            @update:model-value="recalculateEnd(data)"
-                        />
-                    </template>
                     <template #body="{ data }">
                         <span class="cell-ellipsis" v-tooltip.bottom="data.start_time">{{
                             formatDisplayDate(data.start_time)
@@ -402,19 +344,6 @@
                     :header="$t('tasks.columnEffort')"
                     :style="columnStyle('effort_days')"
                 >
-                    <template #editor="{ data, field }">
-                        <InputNumber
-                            v-model="data[field]"
-                            :min="0"
-                            :step="0.5"
-                            :maxFractionDigits="2"
-                            :useGrouping="false"
-                            fluid
-                            class="number-input"
-                            v-tooltip.bottom="$t('tasks.effortHint')"
-                            @update:modelValue="recalculateEnd(data)"
-                        />
-                    </template>
                     <template #body="{ data }">
                         {{ data.effort_days > 0 ? data.effort_days : '-' }}
                     </template>
@@ -425,16 +354,6 @@
                     :header="$t('tasks.columnScheduleMode')"
                     :style="columnStyle('schedule_mode')"
                 >
-                    <template #editor="{ data, field }">
-                        <Select
-                            v-model="data[field]"
-                            :options="scheduleModes"
-                            optionLabel="label"
-                            optionValue="value"
-                            fluid
-                            @change="recalculateEnd(data)"
-                        />
-                    </template>
                     <template #body="{ data }">
                         {{ scheduleModeLabel(data.schedule_mode) }}
                     </template>
@@ -445,13 +364,6 @@
                     :header="$t('tasks.columnEnd')"
                     :style="columnStyle('end_time')"
                 >
-                    <template #editor="{ data, field }">
-                        <DateTimePickerString
-                            v-model="data[field]"
-                            :placeholder="$t('tasks.selectEnd')"
-                            @update:model-value="recalculateEffort(data)"
-                        />
-                    </template>
                     <template #body="{ data }">
                         <span class="cell-ellipsis" v-tooltip.bottom="data.end_time">{{
                             formatDisplayDate(data.end_time)
@@ -464,17 +376,6 @@
                     :header="$t('tasks.columnType')"
                     :style="columnStyle('type')"
                 >
-                    <template #editor="{ data, field }">
-                        <Select
-                            v-model="data[field]"
-                            :options="taskTypes"
-                            optionLabel="label"
-                            optionValue="value"
-                            :placeholder="$t('tasks.selectType')"
-                            showClear
-                            fluid
-                        />
-                    </template>
                 </Column>
                 <Column
                     v-if="columnVisible('priority')"
@@ -482,17 +383,6 @@
                     :header="$t('tasks.columnPriority')"
                     :style="columnStyle('priority')"
                 >
-                    <template #editor="{ data, field }">
-                        <Select
-                            v-model="data[field]"
-                            :options="taskPriority"
-                            optionLabel="label"
-                            optionValue="value"
-                            :placeholder="$t('tasks.selectPriority')"
-                            showClear
-                            fluid
-                        />
-                    </template>
                     <template #body="{ data }">
                         <span :class="['priority-badge', priorityClass(data.priority)]">
                             {{ getPriorityLabel(data.priority) || '-' }}
@@ -505,17 +395,6 @@
                     :header="$t('tasks.columnStatus')"
                     :style="columnStyle('status')"
                 >
-                    <template #editor="{ data, field }">
-                        <Select
-                            v-model="data[field]"
-                            :options="taskStatus"
-                            optionLabel="label"
-                            optionValue="value"
-                            :placeholder="$t('tasks.selectStatus')"
-                            showClear
-                            fluid
-                        />
-                    </template>
                     <template #body="{ data }">
                         <span :class="['pill', statusPillClass(data.status)]">
                             <span class="pill-dot"></span>
@@ -529,16 +408,6 @@
                     :header="$t('tasks.columnProgress')"
                     :style="columnStyle('progress')"
                 >
-                    <template #editor="{ data, field }">
-                        <InputNumber
-                            v-model="data[field]"
-                            :min="0"
-                            :max="100"
-                            :useGrouping="false"
-                            fluid
-                            class="number-input"
-                        />
-                    </template>
                     <template #body="{ data }">
                         <div class="mini-progress">
                             <span class="mini-progress-bar">
@@ -554,9 +423,6 @@
                     :header="$t('tasks.columnComment')"
                     :style="columnStyle('comment')"
                 >
-                    <template #editor="{ data, field }">
-                        <InputText v-model="data[field]" />
-                    </template>
                     <template #body="{ data }"
                         ><span class="cell-ellipsis" v-tooltip.bottom="data.comment">{{
                             data.comment || '-'
@@ -569,13 +435,6 @@
                     :header="$t('tasks.columnAssignee')"
                     :style="columnStyle('assignee')"
                 >
-                    <template #editor="{ data, field }">
-                        <MemberSelect
-                            v-model="data[field]"
-                            :allowed-member-ids="teamMemberIdsByProject[data.project_id] || null"
-                            placeholder="Select assignee"
-                        />
-                    </template>
                     <template #body="{ data }">
                         <span v-if="memberMap[data.assignee]" class="member-cell">
                             <span
@@ -622,15 +481,223 @@
                         </div>
                     </template>
                 </Column>
-                <Column
-                    :rowEditor="true"
-                    frozen
-                    alignFrozen="right"
-                    style="width: 5rem; min-width: 5rem"
-                    body-style="text-align:center"
-                ></Column>
+                <Column frozen alignFrozen="right" style="width: 5rem; min-width: 5rem">
+                    <template #body="{ data }">
+                        <Button
+                            icon="pi pi-pencil"
+                            text
+                            rounded
+                            :aria-label="$t('common.edit')"
+                            @click="openTaskEditor(data)"
+                        />
+                    </template>
+                </Column>
             </DataTable>
         </div>
+        <Dialog
+            :visible="editDialogVisible"
+            modal
+            :header="
+                editDraft?.id?.startsWith('NEWTASK:') ? $t('tasks.newTask') : $t('common.edit')
+            "
+            :style="{ width: '48rem', maxWidth: 'calc(100vw - 2rem)' }"
+            :breakpoints="{ '700px': 'calc(100vw - 2rem)' }"
+            :closable="!editSaving"
+            :closeOnEscape="!editSaving"
+            :draggable="false"
+            @update:visible="
+                value => {
+                    if (!value) cancelTaskEditor()
+                }
+            "
+        >
+            <Message v-if="errorMessage" severity="error" :closable="false">{{
+                errorMessage
+            }}</Message>
+            <form
+                v-if="editDraft"
+                id="task-edit-form"
+                class="task-edit-form"
+                @submit.prevent="saveTaskEditor"
+            >
+                <div class="task-edit-field">
+                    <label for="task-edit-name">{{ $t('tasks.columnName') }}</label
+                    ><InputText id="task-edit-name" v-model="editDraft.name" />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-project_id">{{ $t('tasks.columnProject') }}</label
+                    ><Select
+                        inputId="task-edit-project_id"
+                        v-model="editDraft.project_id"
+                        @update:modelValue="
+                            projectId =>
+                                loadTeamMemberIds(projectId).catch(cause => {
+                                    errorMessage = String(cause?.message || cause)
+                                })
+                        "
+                        :options="projects"
+                        optionLabel="name"
+                        optionValue="id"
+                        :placeholder="$t('tasks.selectProject')"
+                        fluid
+                    />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-parent">{{ $t('tasks.columnParent') }}</label
+                    ><Select
+                        inputId="task-edit-parent"
+                        v-model="editDraft.parent"
+                        :options="parentOptions(editDraft)"
+                        optionLabel="name"
+                        optionValue="id"
+                        :placeholder="$t('tasks.noParent')"
+                        showClear
+                        fluid
+                    />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-_predecessorIds">{{
+                        $t('tasks.columnPredecessors')
+                    }}</label
+                    ><MultiSelect
+                        inputId="task-edit-_predecessorIds"
+                        :modelValue="editDraft._predecessorIds || []"
+                        @update:modelValue="editDraft._predecessorIds = $event || []"
+                        :options="dependencyOptions(editDraft)"
+                        optionLabel="name"
+                        optionValue="id"
+                        :placeholder="$t('tasks.noPredecessors')"
+                        :aria-label="$t('tasks.columnPredecessors')"
+                        filter
+                        showClear
+                        fluid
+                        :maxSelectedLabels="1"
+                    />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-start_time">{{ $t('tasks.columnStart') }}</label
+                    ><DateTimePickerString
+                        inputId="task-edit-start_time"
+                        v-model="editDraft.start_time"
+                        :placeholder="$t('tasks.selectStart')"
+                        @update:model-value="recalculateEnd(editDraft)"
+                    />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-effort_days">{{ $t('tasks.columnEffort') }}</label
+                    ><InputNumber
+                        inputId="task-edit-effort_days"
+                        v-model="editDraft.effort_days"
+                        :min="0"
+                        :step="0.5"
+                        :maxFractionDigits="2"
+                        :useGrouping="false"
+                        fluid
+                        v-tooltip.bottom="$t('tasks.effortHint')"
+                        @update:modelValue="recalculateEnd(editDraft)"
+                    />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-schedule_mode">{{ $t('tasks.columnScheduleMode') }}</label
+                    ><Select
+                        inputId="task-edit-schedule_mode"
+                        v-model="editDraft.schedule_mode"
+                        :options="scheduleModes"
+                        optionLabel="label"
+                        optionValue="value"
+                        fluid
+                        @change="recalculateEnd(editDraft)"
+                    />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-end_time">{{ $t('tasks.columnEnd') }}</label
+                    ><DateTimePickerString
+                        inputId="task-edit-end_time"
+                        v-model="editDraft.end_time"
+                        :placeholder="$t('tasks.selectEnd')"
+                        @update:model-value="recalculateEffort(editDraft)"
+                    />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-type">{{ $t('tasks.columnType') }}</label
+                    ><Select
+                        inputId="task-edit-type"
+                        v-model="editDraft.type"
+                        :options="taskTypes"
+                        optionLabel="label"
+                        optionValue="value"
+                        :placeholder="$t('tasks.selectType')"
+                        showClear
+                        fluid
+                    />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-priority">{{ $t('tasks.columnPriority') }}</label
+                    ><Select
+                        inputId="task-edit-priority"
+                        v-model="editDraft.priority"
+                        :options="taskPriority"
+                        optionLabel="label"
+                        optionValue="value"
+                        :placeholder="$t('tasks.selectPriority')"
+                        showClear
+                        fluid
+                    />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-status">{{ $t('tasks.columnStatus') }}</label
+                    ><Select
+                        inputId="task-edit-status"
+                        v-model="editDraft.status"
+                        :options="taskStatus"
+                        optionLabel="label"
+                        optionValue="value"
+                        :placeholder="$t('tasks.selectStatus')"
+                        showClear
+                        fluid
+                    />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-progress">{{ $t('tasks.columnProgress') }}</label
+                    ><InputNumber
+                        inputId="task-edit-progress"
+                        v-model="editDraft.progress"
+                        :min="0"
+                        :max="100"
+                        :useGrouping="false"
+                        fluid
+                    />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-comment">{{ $t('tasks.columnComment') }}</label
+                    ><InputText id="task-edit-comment" v-model="editDraft.comment" />
+                </div>
+                <div class="task-edit-field">
+                    <label for="task-edit-assignee">{{ $t('tasks.columnAssignee') }}</label
+                    ><MemberSelect
+                        inputId="task-edit-assignee"
+                        v-model="editDraft.assignee"
+                        :allowed-member-ids="teamMemberIdsByProject[editDraft.project_id] || null"
+                        :placeholder="$t('common.unassigned')"
+                    />
+                </div>
+            </form>
+            <template #footer>
+                <Button
+                    :label="$t('common.cancel')"
+                    text
+                    :disabled="editSaving"
+                    @click="cancelTaskEditor"
+                />
+                <Button
+                    type="submit"
+                    form="task-edit-form"
+                    :label="$t('common.save')"
+                    icon="pi pi-check"
+                    :loading="editSaving"
+                />
+            </template>
+        </Dialog>
         <Dialog
             v-model:visible="deleteDialogVisible"
             modal
@@ -670,6 +737,7 @@ import InputNumber from 'primevue/inputnumber'
 import Select from 'primevue/select'
 import MultiSelect from 'primevue/multiselect'
 import Dialog from 'primevue/dialog'
+import Message from 'primevue/message'
 import { useI18n } from 'vue-i18n'
 import { crudAction } from '../../../../api'
 import DateTimePickerString from './components/DateTimePickerString.vue'
@@ -755,7 +823,7 @@ const columnOptions = computed(() =>
         .map(([value, key]) => ({ value, label: t(`tasks.${key}`) }))
 )
 function columnVisible(key) {
-    return editingRows.value.length > 0 || selectedColumns.value.includes(key)
+    return selectedColumns.value.includes(key)
 }
 function columnStyle(key) {
     return { width: `${taskColumnWidths[key]}rem`, minWidth: `${taskColumnWidths[key]}rem` }
@@ -842,6 +910,7 @@ const taskTypes = computed(() => [
 
 // 可编辑/远端请求
 const taskStatus = computed(() => [
+    { label: t('tasks.statusPending'), value: 'Todo' },
     { label: t('tasks.statusPending'), value: 'Pending' },
     { label: t('tasks.statusInProgress'), value: 'InProgress' },
     { label: t('tasks.statusDone'), value: 'Done' }
@@ -849,6 +918,9 @@ const taskStatus = computed(() => [
 
 // 可编辑/远端请求
 const taskPriority = computed(() => [
+    { label: t('tasks.p2'), value: 'High' },
+    { label: t('tasks.p3'), value: 'Normal' },
+    { label: t('tasks.p4'), value: 'Low' },
     { label: t('tasks.p5'), value: '5' },
     { label: t('tasks.p4'), value: '4' },
     { label: t('tasks.p3'), value: '3' },
@@ -993,6 +1065,41 @@ function dependencyNames(ids = []) {
     return ids.map(getTaskName).filter(Boolean).join(', ')
 }
 
+const editDialogVisible = ref(false)
+const editDraft = ref(null)
+const editSaving = ref(false)
+async function openTaskEditor(task) {
+    if (editSaving.value) return
+    errorMessage.value = ''
+    const copy = JSON.parse(JSON.stringify(task))
+    await onRowEditInit({ data: copy })
+    if (activeEditingId.value !== copy.id) return
+    editDraft.value = copy
+    editDialogVisible.value = true
+}
+function cancelTaskEditor() {
+    if (editSaving.value || !editDraft.value) return
+    onRowEditCancel({ newData: editDraft.value })
+    editingRows.value = []
+    editDraft.value = null
+    editDialogVisible.value = false
+    errorMessage.value = ''
+}
+async function saveTaskEditor() {
+    if (editSaving.value || !editDraft.value) return
+    editSaving.value = true
+    try {
+        await onRowEditSave({ newData: editDraft.value })
+        if (!activeEditingId.value) {
+            editingRows.value = []
+            editDialogVisible.value = false
+            editDraft.value = null
+        }
+    } finally {
+        editSaving.value = false
+    }
+}
+
 async function addTask() {
     if (!selectedProjectId.value) {
         errorMessage.value = t('tasks.selectProjectFirst')
@@ -1020,14 +1127,7 @@ async function addTask() {
         sort_order: 0
     }
 
-    tasks.value = [newRow, ...tasks.value]
-
-    editingRows.value = [newRow]
-    activeEditingId.value = newRow.id
-    const event = {
-        data: newRow
-    }
-    onRowEditInit(event)
+    await openTaskEditor(newRow)
 }
 
 function deleteTask() {
@@ -1077,6 +1177,31 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.task-edit-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    padding-top: 1rem;
+}
+.task-edit-field {
+    min-width: 0;
+}
+.task-edit-field label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+}
+.task-edit-field :deep(.p-inputtext),
+.task-edit-field :deep(.p-select),
+.task-edit-field :deep(.p-multiselect) {
+    width: 100%;
+}
+@media (max-width: 700px) {
+    .task-edit-form {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
 .panel {
     display: flex;
     flex-direction: column;

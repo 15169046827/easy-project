@@ -3,10 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import FloatingTaskWindow from '../../modules/floating/FloatingTaskWindow.vue'
 import { i18n } from '../../i18n'
 import PrimeVue from 'primevue/config'
-import Select from 'primevue/select'
 import {
     activeFloatingTasks,
-    chooseFloatingTask,
+    nearbyFloatingTasks,
     taskProgress
 } from '../../modules/floating/taskSelection'
 
@@ -57,24 +56,31 @@ describe('task floating window', () => {
             list: model === 'task' ? tasks : [{ id: 'p1', name: 'Alpha' }]
         }))
     })
-    it('selects unfinished tasks by due date and retains a valid preference', () => {
+    it('shows the nearest five dated unfinished tasks, including overdue tasks', () => {
         const active = activeFloatingTasks(tasks)
         expect(active.map(item => item.id)).toEqual(['early', 'late'])
-        expect(chooseFloatingTask(active, 'late').id).toBe('late')
-        expect(chooseFloatingTask(active, 'deleted').id).toBe('early')
-        expect(chooseFloatingTask([], '')).toBeNull()
+        expect(
+            nearbyFloatingTasks([...tasks, { id: 'undated', name: 'Undated' }]).map(task => task.id)
+        ).toEqual(['early', 'late'])
+        expect(
+            nearbyFloatingTasks(
+                Array.from({ length: 8 }, (_, i) => ({
+                    id: i,
+                    name: String(i),
+                    end_time: `2026-10-${10 + i}`
+                }))
+            )
+        ).toHaveLength(5)
+        expect(nearbyFloatingTasks([])).toEqual([])
         expect(taskProgress({ progress: 200 })).toBe(100)
         expect(taskProgress({ progress: 'bad' })).toBe(0)
     })
-    it('expands, switches task, and opens its project without changing business data', async () => {
+    it('lists tasks and opens their project without selecting or changing business data', async () => {
         const wrapper = mount(FloatingTaskWindow, { global: { plugins: [i18n, PrimeVue] } })
         await flushPromises()
-        expect(wrapper.get('h2').text()).toBe('Early task')
-        wrapper.getComponent(Select).vm.$emit('update:modelValue', 'late')
-        await flushPromises()
-        expect(wrapper.get('h2').text()).toBe('Late task')
-        expect(localStorage.getItem('easyproject-floating-task')).toBe('late')
-        await wrapper.findAll('footer button')[2].trigger('click')
+        expect(wrapper.findAll('h2').map(node => node.text())).toEqual(['Early task', 'Late task'])
+        expect(wrapper.find('[role="combobox"]').exists()).toBe(false)
+        await wrapper.get('.floating-project').trigger('click')
         expect(mocks.main).toHaveBeenCalledWith('p1')
         expect(mocks.crud.mock.calls.every(([, action]) => action === 'get_all')).toBe(true)
         wrapper.unmount()
@@ -98,7 +104,12 @@ describe('task floating window', () => {
             if (model === 'project') return { list: [], totalPage: 1 }
             return query.pageIndex === 1
                 ? { list: [{ id: 'done', status: 'Done' }], totalPage: 2 }
-                : { list: [{ id: 'todo', name: 'Todo task', status: 'Todo' }], totalPage: 2 }
+                : {
+                      list: [
+                          { id: 'todo', name: 'Todo task', status: 'Todo', end_time: '2026-10-12' }
+                      ],
+                      totalPage: 2
+                  }
         })
         const wrapper = mount(FloatingTaskWindow, { global: { plugins: [i18n, PrimeVue] } })
         await flushPromises()
@@ -143,6 +154,32 @@ describe('task floating window', () => {
         resolveOld({ list: [] })
         await flushPromises()
         expect(wrapper.text()).toContain('Early task')
+        wrapper.unmount()
+    })
+    it('keeps task nodes visible during background refresh without resizing or focusing windows', async () => {
+        const wrapper = mount(FloatingTaskWindow, { global: { plugins: [i18n, PrimeVue] } })
+        await flushPromises()
+        const first = wrapper.get('.floating-task').element
+        /** @type {(result: any) => void} */
+        let resolveTasks = _result => {
+            throw new Error('Pending refresh was not captured')
+        }
+        mocks.crud.mockImplementation(model =>
+            model === 'task'
+                ? new Promise(resolve => {
+                      resolveTasks = resolve
+                  })
+                : Promise.resolve({ list: [{ id: 'p1', name: 'Alpha' }] })
+        )
+        await wrapper.findAll('footer button')[1].trigger('click')
+        expect(wrapper.find('[role="status"]').exists()).toBe(false)
+        expect(wrapper.get('.floating-task').element).toBe(first)
+        resolveTasks({ list: tasks })
+        await flushPromises()
+        expect(wrapper.get('.floating-task').element).toBe(first)
+        expect(mocks.resize).not.toHaveBeenCalled()
+        expect(mocks.main).not.toHaveBeenCalled()
+        expect(mocks.top).not.toHaveBeenCalled()
         wrapper.unmount()
     })
 })

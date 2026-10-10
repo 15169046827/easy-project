@@ -121,3 +121,36 @@
 - Wolai页面h4VsMhyWaL9UHrYLEkfnLx的状态块28dPKMDkPpLCFu557s8exF已追加脱敏交付记录，报告版本43读回确认代码SHA与最终安装包SHA，未保存真实任务名称/内容。README/CHANGELOG/PROJECT_PLAN及本检查点与安装现状一致；之后只追加本同步闭环的文档提交号。
 - 当前基线切换为1b1653ec2630fbe113fd051a81c5c0c303b142a6，分支不变；本段保存时唯一未提交文件是本检查点。代码/配置/安装包不再修改。WACAS未定义/待确认，UPARS1.1.0，五小时49%、周31%（最后查询），未重置额度或建立唤醒。Windows最终浅色主程序与任务浮窗已打开，暗色验收后恢复原主题；其它设备未连接。
 - 本次整改与复验完成。准确下一步：提交并同步本闭环文档，确认工作区干净与远端同SHA，然后等待用户真实使用反馈；不自动开发后续功能。正式发布/多屏DPI/其它平台未验证风险仍按上节保留，内部测试交付不等同正式发布验收通过。
+
+### 临近任务/刷新稳定性/弹窗编辑续接（2026-10-10）
+
+- 目标与范围：只读浮窗展示最近截止5项未完成任务（含逾期、排除无日期）；后台刷新不插入加载行、不改变窗口；导航悬停/聚焦不变形；任务新增/修改改为PrimeVue独立草稿弹窗，保留隐藏列和可见取消操作。用户新反馈均纳入本轮，不涉及数据库模式或MCP权限。
+- WACAS未定义/待确认；实际UPARS1.1.0与项目PrimeVue、CSP、数据保护、质量门禁。基线65f457454b610614ce35bfb8929e97e478af44a6；分支codex/audit-release-20261006-api，开工工作区干净。五小时剩余30%、周28%（里程碑查询），未重置/唤醒。
+- 未提交文件：README.md、CHANGELOG.md、docs/PROJECT_PLAN.md、docs/UI_EXPERIENCE_CHECKPOINT.md、e2e/smoke.spec.js、e2e/ui-consistency.spec.js、src/App.vue、src/__tests__/components/FloatingTaskWindow.test.js、src/i18n/locales/en-US.js、src/i18n/locales/zh-CN.js、src/modules/floating/FloatingTaskWindow.vue、src/modules/floating/taskSelection.js、src/modules/floating/useFloatingTasks.js、src/modules/task/components/TaskList/TaskList.vue。
+- 已完成：移除选中任务偏好依赖与下拉；分页后只读排序取5条、项目跳转、键控卡片；初次与后台加载分离、保留刷新失败前数据、关闭进度条动画；行内表单迁移到草稿弹窗，保留原持久化/失败重试逻辑；双语文本与文档。
+- 验证：192单测/39文件通过；首轮生产40例39通过，导航几何1例真实失败（悬停边框/媒体查询优先级），已继续修复而未放宽断言。类型检查发现新测试函数注解不足，已修复待最终复验。其它保存重试/关系清空/弹窗取消/隐藏列回归通过。
+- 未解决/下一步：最新lint/typecheck/build完成后运行完整40例生产回归，检查演示深浅与窄屏；通过后构建NSIS并安全覆盖原E盘目录、真实Windows检查刷新与弹窗、只读数据库检查；再Git/Wolai同步。现有安装仍是上一包，不能称本轮已交付。本地文档已更新，外部未同步；Windows工具可用，尚未重新确认当前窗口，其它设备未连接。正式发布原有限制保持。
+
+- 打包前里程碑：最新lint/typecheck/build/release:check通过；完整生产40/40通过（41.2秒，无重试），192单测/39文件通过。导航尺寸断言未放宽；非几何悬停/聚焦样式解决窄窗口规则冲突。演示深色弹窗在960×640实看确认滚动正文与固定保存/取消页脚；取消后原表格保持。五小时24%、周27%，允许开始打包。未提交范围同上；下一步安全覆盖与真实设备验收、Git/Wolai。原正式发布限制不变。
+
+- 首包安装B7B05A992904F41A88F12672F756A2734E70F4288F8ABCE9053A9D8D858F5202成功，11数据文件SHA不变，安全副本nearby-tasks-update-20261010/safety-copy保留；已安装exe1EC8883CC31EE58071BCE75A66D5B054A029E5E7E6FD531CAD9D4FE70D0032DF按NSIS标记归一后与release逐字节相同。真实浮窗展示5个Todo任务与项目/日期/进度，刷新窗口ID不变，滚动位置保持；真实PrimeVue编辑弹窗保存/取消固定可见，未写业务数据。
+- 原生复验新发现：模板Todo及High/Normal/Low值不在旧选择器选项中，显示成占位；已补齐兼容值、不迁移真实数据，新增生产断言并移除数字输入冗余外框。当前五小时15%、周26%，允许开始本轮最终复验/打包；未提交范围同上。下一步最终40例通过后重打包、安全覆盖另建副本、复验旧值与取消、同步Git/Wolai。若剩余低于10%不启动新长期阶段，保存进度暂停。外部文档尚未同步；只确认Windows，正式发布限制保持。
+
+- 最终兼容修正lint/typecheck/build/release:check通过，192/192单测再次通过；生产40例收尾中，前36例通过。主程序无草稿后正常退出，真实库完整性ok/外键0、原业务计数不变。五小时13%、周25%（最终打包前查询）；下一步本轮40例结果确认后在E盘重建NSIS、安全覆盖nearby-tasks-final-20261010副本、仅打开/取消兼容表单复验、Git/Wolai。所有未提交文件同上；无其它设备或正式发布承诺。
+
+### 10%额度门禁暂停检查点（2026-10-10）
+
+- 五小时剩余9%、周25%，触发长期任务门禁，保存后暂停；未使用重置或定时唤醒。目标/范围、WACAS未定义、UPARS1.1.0、分支与基线65f457454b610614ce35bfb8929e97e478af44a6不变。
+- 最新完整生产40/40通过（1.3分钟，无重试），192单测/39文件通过；lint/typecheck/build/release:check与diff空白检查通过。NSIS重建通过，最终包6223939字节，SHA6F27BC81C2601F2F3C9B1B60DBFC33E352F8ABB5EFD7AC618E310383D00AA342。
+- 最终包已覆盖原E盘runtime-current-user/app，Exit0；11文件安装前后SHA相同，安全副本nearby-tasks-final-20261010/safety-copy保留，前一副本也保留。已安装exeSHA2BF9E710E2DBDCCB7FFF8E2241864D1B4A0BE7965045D6CEE3359C14551FA49A，与release按NSIS标记归一后逐字节一致。最终库integrity ok、外键0、1项目/5任务/4依赖/5基线/0人员保持。
+- 已确认设备：仅Windows；最终主程序已启动，没有打开编辑草稿。用户调整了窗口边界，工具已重新观察；不继续抢占操作。前包同一浮窗/弹窗逻辑已实际确认5条任务、刷新同窗口且保持滚动、固定保存/取消；最后新增Todo/High/Normal/Low选项及数字外框调整仅自动化复验通过，尚未在最终真实弹窗复核。
+- 全部未提交文件仍为14个：CHANGELOG.md、README.md、docs/PROJECT_PLAN.md、docs/UI_EXPERIENCE_CHECKPOINT.md、e2e/smoke.spec.js、e2e/ui-consistency.spec.js、src/App.vue、src/__tests__/components/FloatingTaskWindow.test.js、src/i18n/locales/en-US.js、src/i18n/locales/zh-CN.js、src/modules/floating/FloatingTaskWindow.vue、src/modules/floating/taskSelection.js、src/modules/floating/useFloatingTasks.js、src/modules/task/components/TaskList/TaskList.vue。忽略目录安装脚本只改独立副本路径。
+- 准确下一步：额度恢复后先读此段/查询额度/核对Git与最终包SHA；只对最终桌面打开任务编辑确认模板旧值可见、取消关闭（不修改业务），并复核浮窗；不重跑仍有效192/40门禁或重打包。随后提交14文件、非强制同步同SHA原GitHub分支，追加Wolai交付状态读回，再保存同步闭环。不要使用卸载脚本、删除业务数据、扩大MCP权限或公开Release。
+- 文档同步：README/CHANGELOG/PROJECT_PLAN已更新；Git提交/远端同步尚未做。Wolai本次仅追加暂停检查点，非最终交付记录；恢复后须读回确认并完成正式同步。剩余正式发布、多屏DPI/其它平台风险保持原有记录，不宣称正式发布验收通过。
+
+### 恢复与最终桌面复验（2026-10-11）
+
+- 恢复后已完整读取本检查点，核对分支/基线65f4574、14个未提交文件、最终安装包SHA6F27BC81C2601F2F3C9B1B60DBFC33E352F8ABB5EFD7AC618E310383D00AA342和已安装exeSHA2BF9E710E2DBDCCB7FFF8E2241864D1B4A0BE7965045D6CEE3359C14551FA49A均一致，未发现新增代码或并发改动。五小时起始99%、桌面里程碑90%，周22%；不重置/唤醒。
+- 最终原生复验通过：已安装版本PrimeVue编辑弹窗显示模板High为“P2 - 高”、Todo为“待办”，数字输入无冗余外框，保存/取消固定可见；点击取消后弹窗关闭且原表格及隐藏列保持。仅打开与取消，没有业务保存/删除。浮窗重新打开显示5项未完成任务及项目/截止/进度；手动刷新窗口ID保持、卡片及滚动布局保持，无加载行插入。主程序与浅色浮窗保持打开供试用。
+- 数据复查完整性ok、外键0、1项目/5任务/4依赖/5基线/0人员不变。原192单测/40生产回归和lint/typecheck/build/release:check仍有效，未重复运行或重打包。本轮没有Rust业务代码变化，原Rust门禁结果保持；其它平台/多屏DPI与正式发布限制仍不作通过承诺。
+- 目标与范围已实现；WACAS未定义/待确认，实际UPARS1.1.0和项目组件/CSP/数据安全规范。所有未提交文件同上14个。README/CHANGELOG/PROJECT_PLAN与安装行为一致；Wolai暂停记录版本45已读回。准确下一步：提交14文件并同SHA非强制同步GitHub当前分支、追加Wolai最终脱敏交付记录并读回，再保存同步闭环，等待用户反馈；不自动开启新功能或公开Release。

@@ -31,3 +31,29 @@
 - Wolai状态块`28dPKMDkPpLCFu557s8exF`已同步MCP范围、权限/风险、验证、摘要、Git和准确下一步，并读回确认（version36）。本地README/CHANGELOG/计划/接入文档已同步。
 - 最后额度五小时69%、周63%，未重置/定时唤醒。设备仍仅本开发Windows；没有修改真实库、安装程序或任何客户端配置。
 - 下一步：选择并配置可信stdio客户端，先只读发现/查询，再按用户授权启用写入/删除及客户端审批。真实数据演练和平台验收单独安排，当前正式发布仍未通过。
+
+## Codex 本机接入检查点（2026-10-09）
+
+- 目标与范围：用户授权接入当前Codex；仅本地stdio配置、真实Codex握手/工具发现，不修改项目数据，不启用写入/删除，不安装或重启桌面程序。
+- 标准：项目维护及额度门禁；WACAS未定义/待确认，既有UPARS1.1.0，非新一轮完整审计。
+- 基线：codex/audit-release-20261006-api / 6bbebcebde92bd725cd845a778cf37f5e9fe5e72；开始工作区干净。
+- 已完成：官方CLI新增全局easyproject服务器。command=E:/Project/Project/easy-project/artifacts/mcp/easyproject-mcp.exe；数据库=C:/Users/Canace/AppData/Roaming/com.easyproject.desktop/project_manager.db；仅--database参数，无allow-write/allow-delete，未覆盖其它服务器配置。
+- 复验：程序SHA256仍为8C11FCDFAA263BBA8E9AE52F7FE9F6162737D44A075F15FEF589EC01C50AD5B3；数据库存在；codex mcp get读回正确。本机Codex app-server的mcpServerStatus/list发现7个只读工具，无create/update/delete。authStatus=unsupported表示本地stdio不采用网络认证；runtimeStatus=null，该库存查询不证明当前聊天已加载。
+- 未验证：未发起真实数据查询或写入，未发起模型请求；当前聊天工具列表未包含新增服务器，需重新加载连接后验证实际调用。其它平台/客户端仍未实测，正式发布结论不变。
+- 未提交文件：docs/MCP_CHECKPOINT.md、docs/MCP.md。诊断脚本/协议生成文件位于已忽略src-tauri/target/audit-tools，不纳入源码或发布包；全局Codex用户配置不提交Git。
+- 准确下一步：Codex重新加载MCP连接（必要时重启客户端）后，调用一次easyproject_project_list验证当前聊天查询。保持只读，不自动开始真实库写入演练。
+- 文档同步：本地检查点及Codex说明已更新；本轮未同步Wolai、提交或推送Git。
+- 额度：开始五小时剩余63%、周62%，满足门禁；未重置、定时唤醒或创建新聊天。
+- 设备：仅本Windows开发机；真实Codex子进程工具发现成功，当前聊天热加载未确认；Mac/干净设备未连接。
+
+## Codex 只读验收完成（2026-10-10）
+
+- 目标与范围：完成当前客户端只读工具验收及隔离交付程序回归；不启用真实库写入/删除，不安装或发布产品。WACAS未定义/待确认，项目维护及既有UPARS1.1.0适用。
+- 基线与分支：6bbebcebde92bd725cd845a778cf37f5e9fe5e72 / codex/audit-release-20261006-api。开始未提交docs/MCP.md及docs/MCP_CHECKPOINT.md为上一接入阶段保留修改，已续接，没有覆盖其它用户改动。
+- 已完成：用户重启后，本聊天7只读工具全部调用，项目/任务单条读取、人员/团队空集、人员不存在ID错误、任务过滤与分页通过。现库1项目/5任务/0人员，仅记录统计，不将业务正文同步外部文档。
+- 复验：交付SHA256未变；真实Codex配置无allow参数；既有隔离真实子进程CRUD/默认拒绝测试针对交付exe再跑1通过0失败（0.31秒），临时目录在E盘，真实库未写。完整证据docs/MCP_CODEX_ACCEPTANCE.md；文档diff检查另行核对。
+- 未解决与边界：当前只读任务无阻塞；现库无人员，因此member_get存在记录未在真实库验证，隔离回归提供补充。真实库写入、其它客户端/平台与正式发布尚未验，不能扩大通过结论。
+- 未提交文件：docs/MCP.md、docs/MCP_CHECKPOINT.md、docs/MCP_CODEX_ACCEPTANCE.md、docs/PROJECT_PLAN.md；均为本任务文档，用户全局Codex配置及target诊断产物不提交。
+- 准确下一步：保存文档提交，非强制同步Git及Wolai验收摘要并读回，随后结束当前只读接入任务；后续仅按用户授权启用真实库写入/删除。
+- 文档同步：本地验收/检查点/计划已更新，Git及Wolai最终结果待保存；交付exe和manifest源码仍e534644，无重建。
+- 额度与设备：开始五小时94%、周53%；未重置/唤醒。本Windows当前聊天MCP实际调用确认，Mac/干净设备未连接；不依赖原生UI验证。

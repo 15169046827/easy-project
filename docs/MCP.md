@@ -30,6 +30,19 @@ MCP客户端需支持本地stdio并允许配置可执行文件与参数。默认
 
 ## 工具契约
 
+### Codex 本机接入
+
+2026-10-09经用户授权，已在本机Codex新增全局`easyproject`只读stdio配置；2026-10-10用户重启后，本聊天已加载7个查询工具，并完成项目/任务/人员/团队查询、分页和不存在记录错误分支验收。未启用写入/删除，未修改真实项目数据。之前开发交付阶段“不修改客户端配置”的范围已由本次明确授权改变。详细证据：[Codex接入验收](MCP_CODEX_ACCEPTANCE.md)。
+
+其它设备可使用下列模板（替换数据库路径）：
+
+```powershell
+codex mcp add easyproject -- E:/Project/Project/easy-project/artifacts/mcp/easyproject-mcp.exe --database C:/Users/YOUR_USER/AppData/Roaming/com.easyproject.desktop/project_manager.db
+codex mcp get easyproject --json
+```
+
+配置成功不等于已有聊天已加载；重新加载MCP连接，必要时重启客户端，再调用查询工具验证。不要为接入测试添加allow-write/allow-delete。客户端配置格式不同不影响通用MCP业务契约。[Codex官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)。
+
 `entity`为`project`、`task`、`member`；完整字段以`tools/list`的严格`inputSchema`为准，不接受未知字段、空白名称、错误类型或越界进度。列表只返回活跃记录，分页最多100条，默认沿用实体服务的页大小。
 
 | 工具 | 参数 |

@@ -144,8 +144,17 @@ for (const size of [
                 dark ? 'dark' : 'light'
             )
             const layouts = []
+            const routeEyebrows = {
+                dashboard: 'DASHBOARD',
+                projects: 'PROJECT MANAGEMENT',
+                tasks: 'TASK MANAGEMENT',
+                members: 'TEAM MANAGEMENT'
+            }
             for (const path of ['dashboard', 'projects', 'tasks', 'members']) {
                 await page.goto('/#/' + path)
+                await expect(page.locator('.workspace-heading .eyebrow')).toHaveText(
+                    routeEyebrows[path]
+                )
                 await expect(page.locator('.workspace-stats > *')).toHaveCount(4)
                 await expect(page.locator('.workspace-page')).toBeVisible()
                 const controlsInViewport = await page.locator('.app-header').evaluate(header =>

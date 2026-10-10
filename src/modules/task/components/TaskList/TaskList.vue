@@ -1,8 +1,8 @@
 <template>
-    <section class="panel" :class="{ embedded }">
+    <section class="panel" :class="{ embedded, 'workspace-page': !embedded }">
         <!-- 非嵌入模式的头部和统计 -->
         <template v-if="!embedded">
-            <header class="task-page-header">
+            <header class="task-page-header workspace-heading">
                 <div class="header-info">
                     <span class="eyebrow">{{ $t('tasks.eyebrow') }}</span>
                     <h2>{{ $t('tasks.title') }}</h2>
@@ -30,7 +30,7 @@
                 </div>
             </header>
 
-            <div class="task-stats">
+            <div class="task-stats workspace-stats">
                 <div class="tstat-card">
                     <span class="tstat-icon total"><i class="pi pi-list"></i></span>
                     <div>
@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="tstat-card">
-                    <span class="tstat-icon progress"><i class="pi pi-spin pi-spinner"></i></span>
+                    <span class="tstat-icon progress"><i class="pi pi-play-circle"></i></span>
                     <div>
                         <strong>{{ taskStats.inProgress }}</strong
                         ><small>{{ $t('tasks.inProgress') }}</small>
@@ -61,13 +61,23 @@
                 </div>
             </div>
 
-            <div class="filter-card">
+            <div class="filter-card workspace-toolbar">
                 <div class="filter-bar">
-                    <InputText
-                        v-model="keywordInput"
-                        :placeholder="$t('tasks.searchPlaceholder')"
-                        @keyup.enter="applySearch"
-                    />
+                    <div class="clearable-search">
+                        <InputText
+                            v-model="keywordInput"
+                            :placeholder="$t('tasks.searchPlaceholder')"
+                            @keyup.enter="applySearch"
+                        />
+                        <Button
+                            v-if="keywordInput"
+                            icon="pi pi-times"
+                            text
+                            rounded
+                            :aria-label="$t('tasks.clearSearch')"
+                            @click="clearSearch"
+                        />
+                    </div>
                     <Select
                         v-model="statusFilter"
                         :options="taskStatus"
@@ -98,6 +108,24 @@
                         @click="applySearch"
                     />
                     <Button :label="$t('tasks.clearBtn')" text @click="clearFilters" />
+                    <MultiSelect
+                        v-model="selectedColumns"
+                        :options="columnOptions"
+                        optionLabel="label"
+                        optionValue="value"
+                        :placeholder="$t('tasks.chooseColumns')"
+                        :aria-label="$t('tasks.chooseColumns')"
+                        :maxSelectedLabels="0"
+                        :selectedItemsLabel="$t('tasks.selectedColumns', { count: '{0}' })"
+                        class="column-picker"
+                    />
+                    <Button
+                        icon="pi pi-refresh"
+                        :title="$t('tasks.resetColumns')"
+                        :aria-label="$t('tasks.resetColumns')"
+                        text
+                        @click="selectedColumns = [...defaultTaskColumns]"
+                    />
                 </div>
             </div>
         </template>
@@ -109,12 +137,21 @@
                         <strong>{{ tasks.length }}</strong>
                         <span>{{ $t('tasks.unit') }}</span>
                     </div>
-                    <InputText
-                        v-model="keywordInput"
-                        :placeholder="$t('tasks.searchTasks')"
-                        class="embedded-search"
-                        @keyup.enter="applySearch"
-                    />
+                    <div class="clearable-search embedded-search">
+                        <InputText
+                            v-model="keywordInput"
+                            :placeholder="$t('tasks.searchTasks')"
+                            @keyup.enter="applySearch"
+                        />
+                        <Button
+                            v-if="keywordInput"
+                            icon="pi pi-times"
+                            text
+                            rounded
+                            :aria-label="$t('tasks.clearSearch')"
+                            @click="clearSearch"
+                        />
+                    </div>
                     <Select
                         v-model="statusFilter"
                         :options="taskStatus"
@@ -146,6 +183,26 @@
                 </div>
             </header>
         </template>
+        <div v-if="embedded" class="column-toolbar">
+            <span>{{ $t('tasks.columnHint') }}</span>
+            <MultiSelect
+                v-model="selectedColumns"
+                :options="columnOptions"
+                optionLabel="label"
+                optionValue="value"
+                :placeholder="$t('tasks.chooseColumns')"
+                :aria-label="$t('tasks.chooseColumns')"
+                :maxSelectedLabels="0"
+                :selectedItemsLabel="$t('tasks.selectedColumns', { count: '{0}' })"
+                class="column-picker"
+            />
+            <Button
+                :label="$t('tasks.resetColumns')"
+                text
+                size="small"
+                @click="selectedColumns = [...defaultTaskColumns]"
+            />
+        </div>
         <p v-if="errorMessage" class="error-banner">{{ errorMessage }}</p>
         <p v-if="successMessage" class="success-banner">{{ successMessage }}</p>
         <p v-if="!loading && projects.length === 0" class="empty-state">
@@ -156,7 +213,8 @@
                 v-model:selection="selectedTasks"
                 v-model:editingRows="editingRows"
                 :value="visibleTasks"
-                :loading="loading"
+                :loading="showLoading"
+                :aria-busy="loading"
                 stripedRows
                 paginator
                 :lazy="!selectedProjectId"
@@ -170,7 +228,10 @@
                 dataKey="id"
                 :pt="{
                     root: { class: 'workspace-table' },
-                    table: { style: 'min-width: 115rem' },
+                    table: {
+                        style: `table-layout: fixed; width: ${tableWidth}rem; min-width: 100%`
+                    },
+                    mask: { style: 'background: transparent' },
                     column: {
                         bodycell: ({ state }) => ({
                             style:
@@ -188,9 +249,16 @@
                     selectionMode="multiple"
                     frozen
                     alignFrozen="left"
-                    headerStyle="width: 3rem"
+                    style="width: 3.5rem; min-width: 3.5rem"
                 />
-                <Column field="name" :header="$t('tasks.columnName')">
+                <Column
+                    field="name"
+                    :header="$t('tasks.columnName')"
+                    frozen
+                    alignFrozen="left"
+                    :style="columnStyle('name')"
+                    class="name-column"
+                >
                     <template #editor="{ data, field }">
                         <InputText v-model="data[field]" />
                     </template>
@@ -227,12 +295,16 @@
                                     "
                                 ></i>
                             </button>
-                            <span v-else class="tree-spacer"></span>
-                            <span class="task-name-text">{{ data.name }}</span>
+                            <span class="task-name-text" :title="data.name">{{ data.name }}</span>
                         </div>
                     </template>
                 </Column>
-                <Column v-if="!embedded" field="project_id" :header="$t('tasks.columnProject')">
+                <Column
+                    v-if="!embedded && columnVisible('project_id')"
+                    field="project_id"
+                    :header="$t('tasks.columnProject')"
+                    :style="columnStyle('project_id')"
+                >
                     <template #editor="{ data, field }">
                         <Select
                             v-model="data[field]"
@@ -244,10 +316,17 @@
                         />
                     </template>
                     <template #body="{ data }">
-                        {{ getProjectName(data.project_id) }}
+                        <span class="cell-ellipsis" :title="getProjectName(data.project_id)">{{
+                            getProjectName(data.project_id)
+                        }}</span>
                     </template>
                 </Column>
-                <Column field="parent" :header="$t('tasks.columnParent')">
+                <Column
+                    v-if="columnVisible('parent')"
+                    field="parent"
+                    :header="$t('tasks.columnParent')"
+                    :style="columnStyle('parent')"
+                >
                     <template #editor="{ data, field }">
                         <Select
                             v-model="data[field]"
@@ -260,33 +339,45 @@
                         />
                     </template>
                     <template #body="{ data }">
-                        {{ getTaskName(data.parent) }}
+                        <span class="cell-ellipsis" :title="getTaskName(data.parent)">{{
+                            getTaskName(data.parent) || '-'
+                        }}</span>
                     </template>
                 </Column>
                 <Column
+                    v-if="columnVisible('_predecessorIds')"
                     field="_predecessorIds"
                     :header="$t('tasks.columnPredecessors')"
-                    style="min-width: 14rem"
+                    :style="columnStyle('_predecessorIds')"
                 >
                     <template #editor="{ data, field }">
-                        <select v-model="data[field]" multiple class="dependency-select">
-                            <option
-                                v-for="candidate in dependencyOptions(data)"
-                                :key="candidate.id"
-                                :value="candidate.id"
-                            >
-                                {{ candidate.name }}
-                            </option>
-                        </select>
+                        <MultiSelect
+                            :modelValue="data[field] || []"
+                            @update:modelValue="data[field] = $event || []"
+                            :options="dependencyOptions(data)"
+                            optionLabel="name"
+                            optionValue="id"
+                            :placeholder="$t('tasks.noPredecessors')"
+                            :aria-label="$t('tasks.columnPredecessors')"
+                            filter
+                            showClear
+                            fluid
+                            :maxSelectedLabels="1"
+                        />
                     </template>
-                    <template #body="{ data }">{{
-                        dependencyNames(data._predecessorIds)
-                    }}</template>
+                    <template #body="{ data }"
+                        ><span
+                            class="cell-ellipsis"
+                            :title="dependencyNames(data._predecessorIds)"
+                            >{{ dependencyNames(data._predecessorIds) || '-' }}</span
+                        ></template
+                    >
                 </Column>
                 <Column
+                    v-if="columnVisible('start_time')"
                     field="start_time"
                     :header="$t('tasks.columnStart')"
-                    style="min-width: 14rem"
+                    :style="columnStyle('start_time')"
                 >
                     <template #editor="{ data, field }">
                         <DateTimePickerString
@@ -296,13 +387,16 @@
                         />
                     </template>
                     <template #body="{ data }">
-                        {{ formatDisplayDate(data.start_time) }}
+                        <span class="cell-ellipsis" :title="data.start_time">{{
+                            formatDisplayDate(data.start_time)
+                        }}</span>
                     </template>
                 </Column>
                 <Column
+                    v-if="columnVisible('effort_days')"
                     field="effort_days"
                     :header="$t('tasks.columnEffort')"
-                    style="min-width: 10rem"
+                    :style="columnStyle('effort_days')"
                 >
                     <template #editor="{ data, field }">
                         <input
@@ -320,9 +414,10 @@
                     </template>
                 </Column>
                 <Column
+                    v-if="columnVisible('schedule_mode')"
                     field="schedule_mode"
                     :header="$t('tasks.columnScheduleMode')"
-                    style="min-width: 11rem"
+                    :style="columnStyle('schedule_mode')"
                 >
                     <template #editor="{ data, field }">
                         <Select
@@ -338,7 +433,12 @@
                         {{ scheduleModeLabel(data.schedule_mode) }}
                     </template>
                 </Column>
-                <Column field="end_time" :header="$t('tasks.columnEnd')" style="min-width: 14rem">
+                <Column
+                    v-if="columnVisible('end_time')"
+                    field="end_time"
+                    :header="$t('tasks.columnEnd')"
+                    :style="columnStyle('end_time')"
+                >
                     <template #editor="{ data, field }">
                         <DateTimePickerString
                             v-model="data[field]"
@@ -347,10 +447,17 @@
                         />
                     </template>
                     <template #body="{ data }">
-                        {{ formatDisplayDate(data.end_time) }}
+                        <span class="cell-ellipsis" :title="data.end_time">{{
+                            formatDisplayDate(data.end_time)
+                        }}</span>
                     </template>
                 </Column>
-                <Column field="type" :header="$t('tasks.columnType')">
+                <Column
+                    v-if="columnVisible('type')"
+                    field="type"
+                    :header="$t('tasks.columnType')"
+                    :style="columnStyle('type')"
+                >
                     <template #editor="{ data, field }">
                         <Select
                             v-model="data[field]"
@@ -363,7 +470,12 @@
                         />
                     </template>
                 </Column>
-                <Column field="priority" :header="$t('tasks.columnPriority')">
+                <Column
+                    v-if="columnVisible('priority')"
+                    field="priority"
+                    :header="$t('tasks.columnPriority')"
+                    :style="columnStyle('priority')"
+                >
                     <template #editor="{ data, field }">
                         <Select
                             v-model="data[field]"
@@ -381,7 +493,12 @@
                         </span>
                     </template>
                 </Column>
-                <Column field="status" :header="$t('tasks.columnStatus')">
+                <Column
+                    v-if="columnVisible('status')"
+                    field="status"
+                    :header="$t('tasks.columnStatus')"
+                    :style="columnStyle('status')"
+                >
                     <template #editor="{ data, field }">
                         <Select
                             v-model="data[field]"
@@ -396,14 +513,15 @@
                     <template #body="{ data }">
                         <span :class="['pill', statusPillClass(data.status)]">
                             <span class="pill-dot"></span>
-                            {{ data.status || '-' }}
+                            {{ taskStatusLabel(data.status) }}
                         </span>
                     </template>
                 </Column>
                 <Column
+                    v-if="columnVisible('progress')"
                     field="progress"
                     :header="$t('tasks.columnProgress')"
-                    style="min-width: 8rem"
+                    :style="columnStyle('progress')"
                 >
                     <template #editor="{ data, field }">
                         <input
@@ -423,15 +541,26 @@
                         </div>
                     </template>
                 </Column>
-                <Column field="comment" :header="$t('tasks.columnComment')">
+                <Column
+                    v-if="columnVisible('comment')"
+                    field="comment"
+                    :header="$t('tasks.columnComment')"
+                    :style="columnStyle('comment')"
+                >
                     <template #editor="{ data, field }">
                         <InputText v-model="data[field]" />
                     </template>
+                    <template #body="{ data }"
+                        ><span class="cell-ellipsis" :title="data.comment">{{
+                            data.comment || '-'
+                        }}</span></template
+                    >
                 </Column>
                 <Column
+                    v-if="columnVisible('assignee')"
                     field="assignee"
                     :header="$t('tasks.columnAssignee')"
-                    style="min-width: 11rem"
+                    :style="columnStyle('assignee')"
                 >
                     <template #editor="{ data, field }">
                         <MemberSelect
@@ -447,14 +576,20 @@
                                 :style="{ background: avatarBg(memberMap[data.assignee].name) }"
                                 >{{ avatarInitial(memberMap[data.assignee].name) }}</span
                             >
-                            {{ memberMap[data.assignee].name }}
+                            <span class="cell-ellipsis" :title="memberMap[data.assignee].name">{{
+                                memberMap[data.assignee].name
+                            }}</span>
                         </span>
                         <span v-else class="no-value">{{
                             data.assignee || $t('common.unassigned')
                         }}</span>
                     </template>
                 </Column>
-                <Column :header="$t('tasks.columnOrder')" style="width: 7rem; min-width: 7rem">
+                <Column
+                    v-if="columnVisible('order')"
+                    :header="$t('tasks.columnOrder')"
+                    :style="columnStyle('order')"
+                >
                     <template #body="{ data }">
                         <div class="order-actions">
                             <Button
@@ -482,11 +617,37 @@
                     :rowEditor="true"
                     frozen
                     alignFrozen="right"
-                    style="width: 9rem; min-width: 9rem"
+                    style="width: 5rem; min-width: 5rem"
                     body-style="text-align:center"
                 ></Column>
             </DataTable>
         </div>
+        <Dialog
+            v-model:visible="deleteDialogVisible"
+            modal
+            :header="$t('tasks.deleteTitle')"
+            :style="{ width: '28rem', maxWidth: 'calc(100vw - 2rem)' }"
+            :closable="!deleting"
+            :closeOnEscape="!deleting"
+            :draggable="false"
+        >
+            <p>{{ deleteMessage }}</p>
+            <template #footer>
+                <Button
+                    :label="$t('common.cancel')"
+                    text
+                    :disabled="deleting"
+                    @click="deleteDialogVisible = false"
+                />
+                <Button
+                    :label="$t('common.delete')"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    :loading="deleting"
+                    @click="confirmDeleteTask"
+                />
+            </template>
+        </Dialog>
     </section>
 </template>
 
@@ -497,6 +658,8 @@ import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 import InputText from 'primevue/inputtext'
 import Select from 'primevue/select'
+import MultiSelect from 'primevue/multiselect'
+import Dialog from 'primevue/dialog'
 import { useI18n } from 'vue-i18n'
 import { crudAction } from '../../../../api'
 import DateTimePickerString from './components/DateTimePickerString.vue'
@@ -504,6 +667,13 @@ import MemberSelect from '../../../member/components/MemberSelect.vue'
 import { useMembers } from '../../../../composables/useMembers'
 import { useTaskReordering } from '../../composables/useTaskReordering.js'
 import { useTaskListQuery } from '../../composables/useTaskListQuery.js'
+import { useDelayedBusy } from '../../../../composables/useDelayedBusy.js'
+import {
+    defaultTaskColumns,
+    taskColumnWidths,
+    readTaskColumns,
+    normalizeTaskColumns
+} from '../../utils/taskColumns.js'
 import { useTaskRowEditor } from '../../composables/useTaskRowEditor.js'
 import { avatarBg, avatarInitial } from '../../../../composables/useAvatar'
 import {
@@ -523,6 +693,7 @@ const { t, locale } = useI18n()
 const {
     tasks,
     dependencies,
+    relatedTasks,
     selectedProjectId,
     selectedTasks,
     loading,
@@ -539,8 +710,72 @@ const {
     resetPageAndLoad,
     applySearch,
     clearFilters,
+    clearSearch,
     onPage
 } = useTaskListQuery(props.initialProjectId)
+
+const showLoading = useDelayedBusy(loading)
+const columnStorageKey = props.embedded
+    ? 'easyproject-task-columns-embedded-v1'
+    : 'easyproject-task-columns-global-v1'
+const selectedColumns = ref(readTaskColumns(localStorage, columnStorageKey))
+const columnLabels = {
+    project_id: 'columnProject',
+    parent: 'columnParent',
+    _predecessorIds: 'columnPredecessors',
+    start_time: 'columnStart',
+    effort_days: 'columnEffort',
+    schedule_mode: 'columnScheduleMode',
+    end_time: 'columnEnd',
+    type: 'columnType',
+    priority: 'columnPriority',
+    status: 'columnStatus',
+    progress: 'columnProgress',
+    comment: 'columnComment',
+    assignee: 'columnAssignee',
+    order: 'columnOrder'
+}
+const columnOptions = computed(() =>
+    Object.entries(columnLabels)
+        .filter(([key]) => !props.embedded || key !== 'project_id')
+        .map(([value, key]) => ({ value, label: t(`tasks.${key}`) }))
+)
+function columnVisible(key) {
+    return editingRows.value.length > 0 || selectedColumns.value.includes(key)
+}
+function columnStyle(key) {
+    return { width: `${taskColumnWidths[key]}rem`, minWidth: `${taskColumnWidths[key]}rem` }
+}
+const tableWidth = computed(
+    () =>
+        22.5 +
+        columnOptions.value
+            .filter(option => columnVisible(option.value))
+            .reduce((sum, option) => sum + taskColumnWidths[option.value], 0)
+)
+watch(
+    selectedColumns,
+    value => {
+        try {
+            localStorage.setItem(columnStorageKey, JSON.stringify(normalizeTaskColumns(value)))
+        } catch {
+            /* Column preferences are optional when local storage is unavailable. */
+        }
+    },
+    { deep: true }
+)
+
+const deleteDialogVisible = ref(false)
+const deleting = ref(false)
+const pendingDeleteTasks = ref([])
+const deleteMessage = computed(() =>
+    pendingDeleteTasks.value.length === 1
+        ? t('tasks.deleteOne', { name: pendingDeleteTasks.value[0].name })
+        : t('tasks.deleteMany', {
+              count: pendingDeleteTasks.value.length,
+              name: pendingDeleteTasks.value[0]?.name || ''
+          })
+)
 
 function formatDisplayDate(value) {
     if (!value) return '-'
@@ -548,8 +783,8 @@ function formatDisplayDate(value) {
     if (Number.isNaN(date.getTime())) return value
     return new Intl.DateTimeFormat(locale.value, {
         year: 'numeric',
-        month: 'short',
-        day: 'numeric'
+        month: '2-digit',
+        day: '2-digit'
     }).format(date)
 }
 
@@ -634,6 +869,10 @@ function statusPillClass(status) {
     return map[status] || 'pill-draft'
 }
 
+function taskStatusLabel(status) {
+    return taskStatus.value.find(item => item.value === status)?.label || status || '-'
+}
+
 function priorityClass(priority) {
     return `priority-p${priority || '5'}`
 }
@@ -652,11 +891,15 @@ function isExpanded(taskId) {
 }
 
 function getTaskName(taskId) {
-    return tasks.value.find(task => task.id === taskId)?.name || ''
+    return (
+        [...tasks.value, ...relatedTasks.value].find(task => task.id === taskId)?.name ||
+        taskId ||
+        ''
+    )
 }
 
 function parentOptions(task) {
-    return getParentOptions(tasks.value, task)
+    return getParentOptions(relatedTasks.value, task)
 }
 
 function formatDateToString(date) {
@@ -727,7 +970,7 @@ function getProjectName(projectId) {
 }
 
 function dependencyOptions(task) {
-    return tasks.value.filter(
+    return relatedTasks.value.filter(
         candidate => candidate.project_id === task.project_id && candidate.id !== task.id
     )
 }
@@ -773,26 +1016,27 @@ async function addTask() {
     onRowEditInit(event)
 }
 
-async function deleteTask() {
-    const tasks = selectedTasks.value
-    const ids = tasks.map(task => task.id)
-
-    if (ids.length == 0) {
-        confirm(t('tasks.selectToDelete'))
-        return
-    } else if (ids.length == 1) {
-        if (!confirm(t('tasks.deleteOne', { name: tasks[0].name }))) return
-    } else if (ids.length > 1) {
-        if (!confirm(t('tasks.deleteMany', { count: ids.length, name: tasks[0].name }))) return
-    }
+function deleteTask() {
+    if (!selectedTasks.value.length || deleting.value) return
+    pendingDeleteTasks.value = selectedTasks.value.map(task => ({ id: task.id, name: task.name }))
+    deleteDialogVisible.value = true
+}
+async function confirmDeleteTask() {
+    if (deleting.value || !pendingDeleteTasks.value.length) return
+    deleting.value = true
     errorMessage.value = ''
     try {
-        await crudAction('task', 'delete', { ids })
+        await crudAction('task', 'delete', { ids: pendingDeleteTasks.value.map(task => task.id) })
+        deleteDialogVisible.value = false
+        pendingDeleteTasks.value = []
         selectedTasks.value = []
         await initChecked()
         successMessage.value = t('tasks.deleted')
     } catch (error) {
         errorMessage.value = error.message
+        deleteDialogVisible.value = false
+    } finally {
+        deleting.value = false
     }
 }
 
@@ -992,7 +1236,7 @@ onMounted(async () => {
 }
 .filter-bar {
     display: grid;
-    grid-template-columns: minmax(15rem, 1fr) repeat(3, minmax(9rem, auto)) auto auto;
+    grid-template-columns: minmax(10rem, 1fr) repeat(3, minmax(7rem, 8.5rem)) auto auto 10rem auto;
     gap: 0.65rem;
 }
 :deep(.workspace-table) {
@@ -1019,8 +1263,11 @@ onMounted(async () => {
 .task-tree-name {
     display: flex;
     align-items: center;
-    min-width: 12rem;
+    min-width: 0;
+    justify-content: flex-start;
+    width: 100%;
     cursor: default;
+    position: relative;
 }
 .task-tree-name .drag-handle {
     display: flex;
@@ -1032,6 +1279,10 @@ onMounted(async () => {
     color: var(--color-text-muted);
     opacity: 0;
     transition: opacity 0.15s ease;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
 }
 .task-tree-name:hover .drag-handle {
     opacity: 1;
@@ -1059,8 +1310,78 @@ onMounted(async () => {
 .tree-toggle:hover {
     background: var(--color-subtle-hover);
 }
-.tree-spacer {
-    width: 1.5rem;
+.drag-handle,
+.tree-toggle {
+    flex-shrink: 0;
+}
+.task-name-text,
+.cell-ellipsis {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+.task-name-text {
+    flex: 1 1 auto;
+    padding-right: 1.5rem;
+}
+:deep(.workspace-table td),
+:deep(.workspace-table th) {
+    text-align: left;
+}
+:deep(.workspace-table td) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+:deep(.workspace-table td:first-child) {
+    overflow: visible;
+    text-overflow: clip;
+}
+:deep(.workspace-table td .p-inputtext),
+:deep(.workspace-table td .p-select),
+:deep(.workspace-table td .p-multiselect) {
+    width: 100%;
+    min-width: 0;
+}
+:deep(.workspace-table .p-select-label),
+:deep(.workspace-table .p-multiselect-label) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.clearable-search {
+    position: relative;
+    min-width: 0;
+}
+.clearable-search > :deep(input) {
+    width: 100%;
+    padding-right: 2.5rem;
+}
+.clearable-search > :deep(button) {
+    position: absolute;
+    right: 0.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2rem;
+    height: 2rem;
+}
+.column-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.65rem;
+    flex: 0 0 auto;
+}
+.column-toolbar > span {
+    margin-right: auto;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+.column-picker {
+    width: 11rem;
 }
 
 /* 表格卡片容器 */
@@ -1129,15 +1450,6 @@ onMounted(async () => {
 
 .order-actions {
     display: flex;
-}
-.dependency-select {
-    width: 100%;
-    min-height: 5rem;
-    padding: 0.35rem;
-    border: 1px solid var(--color-border);
-    border-radius: 0.45rem;
-    color: var(--color-text);
-    background: var(--color-surface);
 }
 .number-input {
     width: 100%;

@@ -24,13 +24,18 @@ describe('task query state ownership', () => {
         expect(state.totalRecords.value).toBe(1)
         expect(state.loading.value).toBe(false)
     })
-    it('does not request project dependencies on the global paginated page', async () => {
-        crudAction.mockResolvedValueOnce({ list: [task('a')], total: 1 })
+    it('decorates global pages with related names and dependencies outside the current page', async () => {
+        crudAction
+            .mockResolvedValueOnce({ list: [task('a')], total: 1 })
+            .mockResolvedValueOnce({ list: [{ successor_task_id: 'a', predecessor_task_id: 'b' }] })
+            .mockResolvedValueOnce({ list: [task('a'), task('b')], total: 2 })
         const state = useTaskListQuery()
         state.pageOption.pageIndex = 3
         state.sortBy.value = 'update_time'
         await state.init()
-        expect(crudAction).toHaveBeenCalledOnce()
+        expect(crudAction).toHaveBeenCalledTimes(3)
+        expect(state.tasks.value[0]._predecessorIds).toEqual(['b'])
+        expect(state.relatedTasks.value.map(task => task.id)).toEqual(['a', 'b'])
         expect(crudAction.mock.calls[0][2]).toMatchObject({
             pageIndex: 3,
             pageSize: 20,
@@ -109,5 +114,44 @@ describe('task query state ownership', () => {
         await state.clearFilters()
         expect(state.appliedKeyword.value).toBe('')
         expect(state.sortBy.value).toBe('sort_order')
+    })
+    it('keeps references available when a project is searched', async () => {
+        crudAction
+            .mockResolvedValueOnce({ list: [{ ...task('a'), parent: 'b' }], total: 1 })
+            .mockResolvedValueOnce({ list: [] })
+            .mockResolvedValueOnce({ list: [task('a'), task('b')], total: 2 })
+        const state = useTaskListQuery('p1')
+        state.keywordInput.value = 'a'
+        await state.applySearch()
+        expect(state.relatedTasks.value).toHaveLength(2)
+        await state.clearSearch()
+        expect(state.keywordInput.value).toBe('')
+        expect(state.appliedKeyword.value).toBe('')
+    })
+    it('loads reference catalogs for every project represented on a global page', async () => {
+        crudAction.mockImplementation(async (model, action, query) => {
+            if (model === 'task_dependency')
+                return {
+                    list: [
+                        {
+                            successor_task_id: query.projectId,
+                            predecessor_task_id: 'pre-' + query.projectId
+                        }
+                    ]
+                }
+            if (!query.projectId)
+                return { list: [task('p1'), { ...task('p2'), project_id: 'p2' }], total: 2 }
+            return {
+                list: [{ ...task('pre-' + query.projectId), project_id: query.projectId }],
+                total: 1
+            }
+        })
+        const state = useTaskListQuery()
+        await state.init()
+        expect(state.tasks.value.map(task => task._predecessorIds)).toEqual([
+            ['pre-p1'],
+            ['pre-p2']
+        ])
+        expect(state.relatedTasks.value).toHaveLength(2)
     })
 })

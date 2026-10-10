@@ -46,12 +46,13 @@
             <div class="header-actions">
                 <button
                     type="button"
-                    class="theme-toggle"
+                    class="theme-toggle floating-entry"
                     :title="$t('floating.open')"
                     :aria-label="$t('floating.open')"
                     @click="openTaskWindow"
                 >
                     <i class="pi pi-window-maximize" aria-hidden="true" />
+                    <span class="floating-entry-label">{{ $t('floating.open') }}</span>
                 </button>
                 <Select
                     class="lang-select"
@@ -530,7 +531,11 @@ textarea {
 }
 
 .app-shell {
-    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    min-height: 0;
+    overflow: hidden;
     --window-titlebar-height: 0px;
 }
 
@@ -542,6 +547,7 @@ textarea {
 }
 
 .app-header {
+    flex: 0 0 auto;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -657,6 +663,15 @@ nav button.active {
     height: 2.1rem;
 }
 
+.floating-entry {
+    width: auto;
+    gap: 0.4rem;
+    padding: 0 0.6rem;
+}
+.floating-entry-label {
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
 .theme-toggle:hover,
 .help-toggle:hover {
     color: var(--color-header-text);

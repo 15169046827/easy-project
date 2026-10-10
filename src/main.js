@@ -7,6 +7,7 @@ import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
 import { definePreset } from '@primeuix/themes'
 import 'primeicons/primeicons.css'
+import './assets/workspace-layout.css'
 import router from './router'
 import { i18n } from './i18n'
 

@@ -1,0 +1,128 @@
+/* One outer grid for route pages; embedded project views keep their own toolbar. */
+:root {
+    --workspace-padding: 1.5rem;
+    --workspace-gap: 0.75rem;
+    --workspace-heading-height: 4.5rem;
+    --workspace-stat-height: 4.75rem;
+    --workspace-toolbar-height: 4rem;
+}
+.app-shell > section.workspace-page {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    min-width: 0;
+    padding: var(--workspace-padding);
+    gap: var(--workspace-gap);
+    overflow: hidden;
+}
+section.workspace-page > header.workspace-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    min-height: var(--workspace-heading-height);
+    flex: 0 0 auto;
+    margin: 0;
+    gap: 1rem;
+}
+.workspace-heading h2 {
+    margin: 0.15rem 0 0;
+    font-size: 1.6rem;
+    line-height: 1.2;
+}
+.workspace-heading p {
+    margin: 0.2rem 0 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+section.workspace-page > div.workspace-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--workspace-gap);
+    margin: 0;
+    flex: 0 0 auto;
+}
+section.workspace-page > div.workspace-stats > * {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: var(--workspace-stat-height);
+    min-height: var(--workspace-stat-height);
+    padding: var(--card-padding);
+    border-radius: var(--radius-md);
+}
+section.workspace-page > div.workspace-stats strong {
+    display: block;
+    font-size: var(--stat-num-size);
+    line-height: 1.2;
+}
+section.workspace-page > div.workspace-stats small {
+    display: block;
+    line-height: 1.35;
+}
+section.workspace-page > div.workspace-toolbar {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    min-height: var(--workspace-toolbar-height);
+    margin: 0;
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    box-shadow: 0 2px 6px var(--color-card-shadow);
+}
+.workspace-toolbar .search-box {
+    width: min(24rem, 100%);
+}
+.workspace-toolbar .filter-bar {
+    width: 100%;
+    min-width: 0;
+}
+.workspace-toolbar .filter-bar .column-picker {
+    width: 100%;
+    min-width: 0;
+}
+.workspace-toolbar .toolbar-summary {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+}
+.workspace-toolbar .toolbar-summary + button {
+    margin-left: auto;
+}
+section.workspace-page > .dashboard-grid {
+    margin: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--workspace-gap);
+}
+section.workspace-page > .cards {
+    gap: var(--workspace-gap);
+}
+.workspace-page .dashboard-card,
+.workspace-page .data-card {
+    padding: 1rem;
+}
+@media (max-width: 1100px) {
+    :root {
+        --workspace-padding: 1rem;
+    }
+    section.workspace-page > div.workspace-toolbar .filter-bar {
+        grid-template-columns: minmax(8rem, 1fr) repeat(3, minmax(5rem, 6rem)) auto auto 8rem auto;
+    }
+}
+@media (max-width: 900px) {
+    section.workspace-page > div.workspace-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    section.workspace-page > div.workspace-toolbar .filter-bar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    section.workspace-page > header.workspace-heading {
+        flex-wrap: wrap;
+    }
+    section.workspace-page > .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}

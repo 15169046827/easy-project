@@ -1,20 +1,13 @@
 <template>
-    <section class="members-page">
+    <section class="members-page workspace-page">
         <!-- 头部 -->
-        <header class="page-header">
+        <header class="page-header workspace-heading">
             <div class="header-info">
                 <span class="eyebrow">{{ $t('members.eyebrow') }}</span>
                 <h2>{{ $t('members.title') }}</h2>
                 <p>{{ $t('members.subtitle') }}</p>
             </div>
             <div class="header-actions">
-                <span class="search-box">
-                    <i class="pi pi-search"></i>
-                    <input v-model="searchQuery" :placeholder="$t('members.searchPlaceholder')" />
-                    <button v-if="searchQuery" class="search-clear" @click="searchQuery = ''">
-                        <i class="pi pi-times"></i>
-                    </button>
-                </span>
                 <Button :label="$t('members.addMember')" icon="pi pi-plus" @click="openAddDialog" />
                 <Button
                     :label="$t('members.delete')"
@@ -28,7 +21,7 @@
         </header>
 
         <!-- 统计卡片 -->
-        <div class="stats-row">
+        <div class="stats-row workspace-stats">
             <div class="stat-card">
                 <span class="stat-icon total"><i class="pi pi-users"></i></span>
                 <div>
@@ -59,6 +52,20 @@
             </div>
         </div>
 
+        <div class="workspace-toolbar">
+            <span class="search-box">
+                <i class="pi pi-search"></i>
+                <input v-model="searchQuery" :placeholder="$t('members.searchPlaceholder')" />
+                <button
+                    v-if="searchQuery"
+                    class="search-clear"
+                    :aria-label="$t('common.clear')"
+                    @click="searchQuery = ''"
+                >
+                    <i class="pi pi-times"></i>
+                </button>
+            </span>
+        </div>
         <p v-if="errorMessage" class="error-banner">{{ errorMessage }}</p>
 
         <!-- 表格 -->
@@ -67,7 +74,8 @@
                 v-model:selection="selectedMembers"
                 v-model:editingRows="editingRows"
                 :value="filteredMembers"
-                :loading="loading"
+                :loading="showLoading"
+                :aria-busy="loading"
                 dataKey="id"
                 editMode="row"
                 stripedRows
@@ -329,6 +337,7 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { useDelayedBusy } from '../../../composables/useDelayedBusy.js'
 import { crudAction } from '../../../api'
 import { useMembers } from '../../../composables/useMembers'
 import Button from 'primevue/button'
@@ -344,6 +353,7 @@ import { parseAvailabilityExceptions } from '../../calendar/utils/memberAvailabi
 const { t } = useI18n()
 const { members, loadMembers } = useMembers()
 const loading = ref(false)
+const showLoading = useDelayedBusy(loading)
 const errorMessage = ref('')
 const searchQuery = ref('')
 const selectedMembers = ref([])

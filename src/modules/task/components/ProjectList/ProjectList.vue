@@ -1,20 +1,13 @@
 <template>
-    <section class="projects-page">
+    <section class="projects-page workspace-page">
         <!-- 头部 -->
-        <header class="page-header">
+        <header class="page-header workspace-heading">
             <div class="header-info">
                 <span class="eyebrow">{{ $t('projects.eyebrow') }}</span>
                 <h2>{{ $t('projects.title') }}</h2>
                 <p>{{ $t('projects.subtitle') }}</p>
             </div>
             <div class="header-actions">
-                <span class="search-box">
-                    <i class="pi pi-search"></i>
-                    <input v-model="searchQuery" :placeholder="$t('projects.searchPlaceholder')" />
-                    <button v-if="searchQuery" class="search-clear" @click="searchQuery = ''">
-                        <i class="pi pi-times"></i>
-                    </button>
-                </span>
                 <Button
                     :label="$t('projects.newProject')"
                     icon="pi pi-plus"
@@ -32,7 +25,7 @@
         </header>
 
         <!-- 统计卡片 -->
-        <div class="stats-row">
+        <div class="stats-row workspace-stats">
             <div class="stat-card">
                 <span class="stat-icon total"><i class="pi pi-folder"></i></span>
                 <div>
@@ -63,6 +56,20 @@
             </div>
         </div>
 
+        <div class="workspace-toolbar">
+            <span class="search-box">
+                <i class="pi pi-search"></i>
+                <input v-model="searchQuery" :placeholder="$t('projects.searchPlaceholder')" />
+                <button
+                    v-if="searchQuery"
+                    class="search-clear"
+                    :aria-label="$t('common.clear')"
+                    @click="searchQuery = ''"
+                >
+                    <i class="pi pi-times"></i>
+                </button>
+            </span>
+        </div>
         <p v-if="errorMessage" class="error-banner">{{ errorMessage }}</p>
 
         <!-- 表格容器 -->
@@ -71,7 +78,8 @@
                 v-model:selection="selectedProjects"
                 v-model:editingRows="editingRows"
                 :value="filteredProjects"
-                :loading="loading"
+                :loading="showLoading"
+                :aria-busy="loading"
                 dataKey="id"
                 editMode="row"
                 stripedRows
@@ -196,6 +204,7 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { useDelayedBusy } from '../../../../composables/useDelayedBusy.js'
 import Button from 'primevue/button'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
@@ -222,6 +231,7 @@ const editingRows = ref([])
 const editingCache = ref({})
 const activeEditingId = ref('')
 const loading = ref(false)
+const showLoading = useDelayedBusy(loading)
 const errorMessage = ref('')
 const searchQuery = ref('')
 const templateDialogVisible = ref(false)

@@ -1,6 +1,6 @@
 <template>
-    <section class="dashboard">
-        <header class="dashboard-header">
+    <section class="dashboard workspace-page">
+        <header class="dashboard-header workspace-heading">
             <div>
                 <span class="eyebrow">{{ $t('dashboard.eyebrow') }}</span>
                 <h2>{{ $t('dashboard.title') }}</h2>
@@ -17,7 +17,7 @@
 
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
-        <div class="metrics" aria-label="Workspace metrics">
+        <div class="metrics workspace-stats" aria-label="Workspace metrics">
             <button class="metric-card" @click="go('/projects')">
                 <span class="metric-icon blue"><i class="pi pi-folder"></i></span>
                 <span
@@ -48,6 +48,13 @@
             </div>
         </div>
 
+        <div class="workspace-toolbar">
+            <span class="toolbar-summary"
+                >{{ completionRate }}% {{ $t('dashboard.complete') }} ·
+                {{ $t('dashboard.next7days') }}</span
+            >
+            <Button :label="$t('dashboard.viewAll')" icon="pi pi-list" text @click="go('/tasks')" />
+        </div>
         <div class="dashboard-grid">
             <article class="dashboard-card status-card">
                 <header>

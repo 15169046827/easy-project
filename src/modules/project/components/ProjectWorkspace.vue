@@ -1,5 +1,5 @@
 <template>
-    <section class="project-workspace">
+    <section class="project-workspace workspace-page">
         <!-- 项目信息头部 -->
         <header class="workspace-banner">
             <div class="banner-left">

@@ -31,7 +31,8 @@ EasyProject is an open-source, local-first desktop project planning application.
 - Preserve the legacy development database on first upgrade by copying it into the application-data directory.
 - Validate editable fields in the Rust service layer.
 - Restrict remote calendar targets, backup restore paths, WebView content sources, and production log verbosity.
-- Use an independent task floating window for read-only task progress and project navigation.
+- Use the top-right **任务悬浮窗 / Task floating window** button to open an independent read-only task window for progress and project navigation (requires the updated desktop build).
+- View consistently aligned page borders and statistic cards. Task names stay pinned while optional columns scroll; choose visible columns, hover truncated values for full text, and clear parent/predecessor selections.
 - Connect a trusted local MCP client to project/task/member CRUD and project-team tools; opt-in write/delete permissions, recovery points, and client approval protect mutations. See the [MCP guide](docs/MCP.md).
 
 ## Technology

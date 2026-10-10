@@ -1,6 +1,6 @@
 <template>
-    <section class="data-page">
-        <header class="data-header">
+    <section class="data-page workspace-page">
+        <header class="data-header workspace-heading">
             <div>
                 <span class="eyebrow">{{ $t('data.eyebrow') }}</span>
                 <h2>{{ $t('data.title') }}</h2>

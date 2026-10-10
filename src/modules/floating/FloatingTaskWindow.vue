@@ -7,11 +7,11 @@
                     aria-hidden="true"
                     :data-tauri-drag-region="native ? '' : undefined"
                 />
-                <span :title="task?.name" :data-tauri-drag-region="native ? '' : undefined">{{
+                <span :aria-label="task?.name" :data-tauri-drag-region="native ? '' : undefined">{{
                     task?.name || $t('floating.title')
                 }}</span>
             </div>
-            <button
+            <Button
                 type="button"
                 :aria-label="expanded ? $t('floating.collapse') : $t('floating.expand')"
                 :aria-expanded="expanded"
@@ -21,31 +21,35 @@
                     :class="expanded ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
                     aria-hidden="true"
                 />
-            </button>
-            <button
+            </Button>
+            <Button
                 type="button"
                 :aria-label="$t('floating.close')"
                 @click="run(closeFloatingWindow)"
             >
                 <i class="pi pi-times" aria-hidden="true" />
-            </button>
+            </Button>
         </header>
         <div v-if="expanded" class="floating-content">
-            <p v-if="error || actionError" role="alert" class="floating-error">
+            <Message v-if="error || actionError" severity="error" :closable="false">
                 {{ error || actionError }}
-            </p>
+            </Message>
+            <p v-if="loading" role="status">{{ $t('common.loading') }}</p>
             <label for="floating-task-select">{{ $t('floating.currentTask') }}</label>
-            <select
-                id="floating-task-select"
-                :value="task?.id || ''"
+            <Select
+                inputId="floating-task-select"
+                :modelValue="task?.id || ''"
+                :options="tasks"
+                optionLabel="name"
+                optionValue="id"
+                :placeholder="$t('floating.empty')"
+                appendTo="body"
+                scrollHeight="140px"
+                filter
+                fluid
                 :disabled="!tasks.length"
-                @change="onTaskChange"
-            >
-                <option v-if="!tasks.length" value="">{{ $t('floating.empty') }}</option>
-                <option v-for="item in tasks" :key="item.id" :value="item.id">
-                    {{ item.name }}
-                </option>
-            </select>
+                @update:modelValue="selectTask"
+            />
             <template v-if="task">
                 <h2>{{ task.name }}</h2>
                 <p class="floating-project">{{ project?.name || $t('floating.noProject') }}</p>
@@ -54,24 +58,26 @@
                     {{ task.end_time?.slice(0, 10) || $t('floating.noDeadline') }}
                 </p>
                 <div class="floating-progress">
-                    <progress
+                    <ProgressBar
                         :value="taskProgress(task)"
-                        max="100"
+                        :showValue="false"
                         :aria-label="$t('floating.progress')"
                     /><span>{{ taskProgress(task) }}%</span>
                 </div>
             </template>
-            <p v-else>{{ $t('floating.empty') }}</p>
+            <p v-else-if="!loading && !error">{{ $t('floating.empty') }}</p>
             <p class="floating-hint">{{ $t('floating.refreshHint') }}</p>
         </div>
         <footer v-if="expanded">
-            <button type="button" :aria-pressed="onTop" :disabled="!native" @click="toggleOnTop">
+            <Button type="button" :aria-pressed="onTop" :disabled="!native" @click="toggleOnTop">
                 <i class="pi pi-thumbtack" aria-hidden="true" /> {{ $t('floating.onTop') }}
-            </button>
-            <button type="button" @click="run(refresh)">{{ $t('floating.refresh') }}</button>
-            <button type="button" @click="run(() => returnToMain(task?.project_id || ''))">
+            </Button>
+            <Button type="button" :disabled="loading" @click="run(refresh)">{{
+                $t('floating.refresh')
+            }}</Button>
+            <Button type="button" @click="run(() => returnToMain(task?.project_id || ''))">
                 {{ $t('floating.openMain') }}
-            </button>
+            </Button>
         </footer>
         <p v-if="!expanded && (error || actionError)" class="collapsed-error" role="alert">
             {{ $t('floating.loadFailed') }}
@@ -81,6 +87,10 @@
 
 <script setup>
 import { ref } from 'vue'
+import Button from 'primevue/button'
+import Select from 'primevue/select'
+import ProgressBar from 'primevue/progressbar'
+import Message from 'primevue/message'
 import { useTheme } from '../../composables/useTheme'
 import { useFloatingTasks } from './useFloatingTasks'
 import { taskProgress } from './taskSelection'
@@ -94,15 +104,10 @@ import {
 
 useTheme()
 const native = isFloatingNative()
-const expanded = ref(false)
+const expanded = ref(true)
 const onTop = ref(true)
 const actionError = ref('')
-const { tasks, task, project, error, selectTask, refresh } = useFloatingTasks()
-
-/** @param {Event} event */
-function onTaskChange(event) {
-    if (event.target instanceof HTMLSelectElement) selectTask(event.target.value)
-}
+const { tasks, task, project, error, loading, selectTask, refresh } = useFloatingTasks()
 
 async function run(action) {
     try {
@@ -218,9 +223,9 @@ p {
     align-items: center;
     font-size: 12px;
 }
-progress {
+.floating-progress :deep(.p-progressbar) {
     width: 100%;
-    accent-color: var(--color-primary);
+    height: 8px;
 }
 footer {
     display: flex;

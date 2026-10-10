@@ -56,3 +56,61 @@
 - 首次直接对比installed/release exe摘要失败，诊断发现同长度仅3字节差异，Tauri标记__TAURI_BUNDLE_TYPE_VAR_UNK→__TAURI_BUNDLE_TYPE_VAR_NSS；内存规范化该唯一标记后两文件逐字节相同，不修改任何二进制。安装exe SHA256 C2509822DF53898228002C8C3BA835B6EA8D48D96FF6EE1527317A2E711A2AE6，确认对应最终源15c551a。
 - 新版已启动PID18804，窗口EasyProject、未退出、Responding=true；启动后只读SQLite完整性ok、外键0，1项目/5任务/4依赖/5基线、人员与团队0，与覆盖前相同。启动产生正常自动备份，不把启动后文件字节变动当安装期间改动。用户现在可实际试用；未进行真实数据编辑或原生点击验收。
 - 下一步等待用户体验反馈；悬浮窗入口右上“任务悬浮窗”。原生拖动/置顶/DPI/主窗退出仍未验，正式发布条件及其它平台限制不变；MCP权限不变，只确认当前Windows，无其它设备。唯一未提交文件为本检查点，收尾同步Git/Wolai。
+
+## 新反馈续接：悬浮窗任务与PrimeVue约束（2026-10-10）
+
+- 用户要求：悬浮窗打开没有任务、仅一行文字；本轮出现原生HTML控件，UI必须使用PrimeVue，授权整改。目标覆盖悬浮窗初始展示/真实只读任务读取、主导航/悬浮按钮、任务编辑输入及本轮新控件/悬停提示；保留布局与功能，不删除数据或扩大MCP权限。应用easyproject-maintenance及token-saver；WACAS未定义/待确认，实际标准UPARS1.1.0与项目质量门禁。
+- 基线49d1aacce379a6099466461e4bf9761fbf97a09c，分支codex/audit-release-20261006-api，开始工作区干净。当前只有本检查点未提交，未修改代码、配置、安装包或外部文档。
+- 已确认事实：Rust floating_window创建340×72初始窗；FloatingTaskWindow expanded=false，选择器/详情/错误详细信息在展开时才显示。原生select、button、progress存在，任务表effort/progress仍原生input number，App导航/悬浮入口及树展开为原生button，新增全文提示使用HTML title。这不符合用户明确PrimeVue约束。DateTimePickerString已经是PrimeVue DatePicker，不应重复替换。
+- 只读数据库汇总：任务5条均Todo，不是所有任务已完成；安装上一阶段完整性ok、外键0。初查误用is_deleted字段报错，按schema核对为stateflag后仅汇总status，不修改数据；未保存业务名称/内容。现有浮窗筛选仅排除Done/Archived，不排除Todo，因此“无任务”不能归因于状态过滤。crud_action未额外限制窗口，task-floating能力包含size/top/drag；没有据此证明实际IPC/渲染正常，根因尚待原生/独立窗口复验。
+- 准确下一步：先核对本检查点/Git及相关源；将浮窗首次打开改为明显可见的任务面板（前后端360px/expanded一致，保留收起）、显示真实loading/empty/error区分；用PrimeVue Button/Select/ProgressBar及必要Message替代浮窗原生控件，Select弹层注意340px窗口内可见性与appendTo；任务数字编辑改InputNumber，导航/动作按钮改Button、全文提示改Tooltip，并检查这次改动涉及其它页面的同类控件。不得只用CSS把原生控件装成PrimeVue。
+- 后续验证：更新FloatingTaskWindow单测（PrimeVue插件、初始展开/选择/错误/收起）、生产E2E真实独立窗口路径与启动标识、任务数字编辑/导航/悬停及340×360深浅主题；确认分页total/totalPage真实契约、异步/错误时显示；静态/类型/单元/生产浏览器/Rust（若修改初始尺寸）/构建/发布门禁。进入重建前查询额度；完成后E盘NSIS、授权覆盖到原E盘目录（仍应正常关闭窗口并保护数据）并复验，不能用模拟库冒充真实窗任务验收。
+- 同步状态：本地反馈检查点已保存；当前反馈尚未Git提交或Wolai同步，原已安装版/源15c551a与包BF5FA321...不变，不能声称已修复。长期UI约束需补项目AGENTS或项目文档：可交互通用控件优先PrimeVue；自绘布局/拖动区域允许语义HTML，隐藏文件选择等明确例外另行记录，不豁免普通按钮/输入/下拉。
+- 设备：当前Windows新版已打开，用户已实际点悬浮入口；工具未获得原生截图/点击证据，浏览器只能模拟。其它设备未连接。最后五小时剩余10%、周40%，不进入新的高耗费修改/构建阶段，保存检查点等待用户额度恢复提醒；无重置或自动唤醒。
+- 保存后额度再次确认：五小时剩余9%、周39%，已触发低于10%长期门禁；暂停开发，唯一未提交文件仍为本检查点。恢复后从本节“准确下一步”继续。
+
+### 恢复与控件整改里程碑（2026-10-10）
+
+- 已从上述基线恢复，WACAS未定义，适用UPARS1.1.0与项目门禁；五小时剩余89%、周37%。没有使用重置。Windows本机连接有效，其它设备未确认。
+- 已改浮窗前后端默认展开360px、PrimeVue Button/Select/ProgressBar/Message及加载状态；导航、仪表盘、项目工作区、项目/任务/人员列表普通按钮改Button；搜索改InputText、数字改InputNumber、人员日期改DatePicker适配器、导入确认改Checkbox，任务全文提示改Tooltip。AGENTS新增长期组件约束；隐藏文件选择器保留明确例外。
+- 当前未提交文件：AGENTS.md、本检查点、e2e/smoke.spec.js、e2e/ui-consistency.spec.js、src-tauri/src/floating_window.rs、src/App.vue、src/main.js、src/__tests__/components/FloatingTaskWindow.test.js、src/__tests__/project/ProjectWorkspace.test.js、src/modules/dashboard/components/DashboardView.vue、src/modules/data/components/DataView.vue、src/modules/floating/FloatingTaskWindow.vue、src/modules/floating/useFloatingTasks.js、src/modules/member/components/MemberList.vue、src/modules/project/components/ProjectWorkspace.vue、src/modules/task/components/ProjectList/ProjectList.vue、src/modules/task/components/TaskList/TaskList.vue；新文件src/components/DatePickerDateString.vue、src/__tests__/components/PrimeVueControls.test.js。
+- 初步类型检查通过。新增浮窗单测已通过；完整单测发现ProjectWorkspace浅挂载Button桩不再渲染button，已更新桩保留实际按钮交互。格式检查发现差异已修正。此前启动的一轮生产E2E未先重建dist，结果不能作为本次修改验收证据。
+- 准确下一步：重新静态/类型/单元检查，重建dist后运行生产E2E，修正日期与布局回归；补原生启动标识、失败/分页测试；Rust/NSIS构建前再次检查额度。未完成真实原生任务展示验证及覆盖安装，真实数据未修改。Git/Wolai尚未同步本次整改。
+
+### 自动复验与打包前检查点
+
+- 基线/分支/目标和标准不变。新增usePrimeConfirmation.js（项目/人员删除PrimeVue确认）、README/CHANGELOG/PROJECT_PLAN文档修改，全部其它未提交文件同上。确认控件适配后190单测/39文件通过，静态/类型通过，Rust39+stdio1通过，release:check与UPARS1.1.0校验通过。构建仅保留原已登记的延迟加载大包警告，未关闭任何检查。
+- 生产浏览器发现并整改：PrimeVue输入额外内边距导致工具栏相差14px；日期组件根span被旧“所有span隐藏”选择器隐藏，现限定分隔符；英文960px导航挤压，现降低窄屏导航内边距并禁止悬浮入口缩小。35/37曾通过，最后两例正在最新dist上复验，不把失败当通过。浮窗初始任务、原生启动标识、深浅主题、下拉窗口边界、日期实际保存、关系/清空/删除、四页布局已在测试覆盖。
+- 打包前额度五小时79%、周36%，可以继续；无重置。Windows工具已初始化并能列出窗口，当前没有EasyProject运行窗口。下一步等37例完整通过后构建NSIS，安全复制真实数据后覆盖原E盘目录，使用Windows窗口工具检查真实任务展示和选择；最后Git/Wolai同步。原生/DPI/多屏尚未确认，正式发布限制保持。
+
+- 最终自动界面复验：最新dist上37/37通过（23.5秒），190/190单测通过，lint/typecheck通过。英文挤压进一步确认为App全局按钮选择器优先级低于PrimeVue，现使用nav button.p-button和header-actions组件类选择器；语言选择器保留8.25rem避免英文截断。浮窗弹层挂body并限高140px防父容器裁切。下一步NSIS构建/安全安装/真实窗检查，忽略目录下的install-primevue-update.ps1只用于本次同版本安全覆盖，不执行卸载。当前五小时77%、周35%。
+
+### 真实设备发现动态样式安全策略问题（继续整改）
+
+- 首个修正版NSIS构建通过，SHA42B784D322181D59BBB9F7CFE00B057F23600ADE5D34D4329E20CDEB33D0EC85，覆盖原E盘目录成功，12个数据文件安装前后SHA全部不变，安全副本在target/audit-tools/primevue-update-20261010/safety-copy。与release仅NSIS标记3字节不同已验证。
+- Windows真实窗口已确认浮窗默认展开并读取真实任务、项目、截止/进度，不能再称“没有任务”。但是实际截图发现PrimeVue动态样式未生效：Tauri自动为style-src加nonce后，未携带nonce的动态style被拒绝。已根据本地Tauri2.12.1 manager/mod.rs及PrimeVue核心config源码，将初始style的DOM nonce交给PrimeVue csp.nonce；不关闭CSP或nonce保护、不硬编码运行nonce。
+- 新增src/security/styleNonce.js及nonce单测，新增严格nonce CSP生产浏览器测试；其它未提交文件同上。新一轮lint/typecheck/191单测/38生产E2E正在运行。额度五小时72%、周34%。目标/基线/分支/UPARS不变；WACAS未定义。
+- 准确下一步：以上复验通过后重新打包、正常关闭程序、安全覆盖（须使用新的安全副本目录，不能覆盖已有），验证真实PrimeVue边框/下拉/任务切换/收起展开/返主界面；再Git/Wolai同步。当前安装42B784版不是最终交付，样式问题未完成原生复验。当前只有Windows，未连接其它设备，文档未同步外部。
+
+- CSP整改复验里程碑：191/191单测（39文件）、38/38最新生产E2E（含严格nonce CSP）、lint/typecheck/build全部通过。实际主程序与浮窗已通过正常Alt+F4一同关闭，未触碰业务数据。最终NSIS重建中；安全安装脚本改用primevue-csp-update-20261010/safety-copy新目录。AGENTS已记录动态nonce与真实桌面复验规范。下一步最终安装/原生复验/同步；没有自动重置或唤醒。
+
+- 最后补齐主题/帮助/关闭帮助图标的aria-label（Tooltip替换title不能丢失可访问名称）；静态/类型复验通过，最新38/38生产E2E再次通过（43.1秒）。打包前额度五小时66%、周34%，GitHub分支仍等于本地基线49d1aac，未发现并发改动。仅Windows设备已确认。下一步对这一最终代码重新打包，安全覆盖新副本目录并完成真实窗口复验。
+
+### 原生功能验收与最终视觉收尾
+
+- CSP/可访问名称版本包88E5127D86C8CA4C4546D56C8D81DFFA09E0F20D492D1451E56688D037DE4156已覆盖，安装前后11文件哈希不变，副本primevue-csp-update-20261010/safety-copy，已安装SHA5740D8ADF943CF3E2A5CD41EB60C35C2A5BE0D47BE8BE958A1BFE999BC533749。
+- Windows真实截图确认PrimeVue Select边框/弹层/ProgressBar生效；真实菜单提供5个未完成任务，切换后标题和截止日期更新；72px收起保留选中任务，360px展开恢复详情；打开主窗口定位所属项目。主窗口正常关闭同时关闭浮窗已在前一版确认。没有业务增删改操作，仅任务选择的设备偏好变化；名称不写入外部文档。
+- 原生截图发现仪表盘可点击统计卡片因PrimeVue默认justify-content居中，与其它两卡不一致。已明确flex-start，并为卡片/关注任务/最近项目选用PrimeVue text按钮避免实心主色悬停影响文字对比；生产E2E新增加卡片内部图标偏移对齐断言。静态/类型通过。
+- 最新并行38例复验未正常退出，已中止本次自己的测试进程；不记录为通过。保持完整范围，使用CI=1单worker复验中；此前38例CSP版本通过仍有效但不能替代收尾复验。下一步完整通过后最终打包、另建安全副本覆盖、检查真实统计卡片和浮窗；同步Git/Wolai。基线/分支/UPARS/WACAS同前，所有未提交文件仍同前，目标范围不扩大。
+
+- 单worker最新生产复验38/38全部通过（59.0秒，无重试），含新增统计卡片内部对齐断言。主程序与浮窗已正常退出，真实库复查完整性ok、外键0，1项目/5任务/4依赖/5基线不变。进入最终打包；安全副本另用primevue-final-update-20261010，保留前两个副本。后续只读原生外观复验与文档/Git同步，不增删改业务。
+
+### 最终交付检查点（2026-10-10）
+
+- 目标与范围已完成：默认展开的只读任务浮窗、受影响页面的真实PrimeVue通用组件、动态样式CSP nonce、导航/统计内部布局回归。WACAS未定义/待确认；实际UPARS1.1.0、项目静态/类型/测试/发布门禁及新增AGENTS组件约束。基线49d1aacce379a6099466461e4bf9761fbf97a09c，分支codex/audit-release-20261006-api。
+- 最终NSIS 6,223,606字节，SHA06B74F60F7AE972515AA3147C2B2AFF6A421BE527CD39D297131173F95519231；覆盖原E盘runtime-current-user/app成功，Exit0，11个已有数据文件安装前后SHA完全一致。安全副本target/audit-tools/primevue-final-update-20261010/safety-copy；前序副本保留。已安装exe SHA2D70CABA2B11FF89647DB43BFC069368239404D2420DED7E5189161B604F4D9C，与release按NSIS标记规范归一后逐字节一致。
+- 最终Windows真实截图已确认统计卡片内部图标/文本左对齐、关注列表柔和悬停、深浅主题；深色浮窗Select/进度/按钮显示正常，关闭后将主程序恢复原浅色主题，并重新开启浅色浮窗供用户试用。上一CSP版同一浮窗实现已验证5条真实Todo、切换、折叠/展开、返主项目，最终版仍能展示已记忆任务。真实库复查integrity ok、foreignKeyErrors0，1项目/5任务/4依赖/5基线未变。
+- 验证：lint/typecheck通过，191单测/39文件通过；最新完整生产38例单worker59秒通过（无重试，包含nonce CSP、初始任务、分页单测、深浅/1280与960、内部/外框对齐、悬停全文、日期保存、关系清空及删除取消）；Rust39+真实stdio1通过，NSIS构建、release:check、UPARS标准校验通过。保留已登记的延迟加载大包警告，没有禁用规则或删除测试。
+- 未提交文件（准备提交的全部范围）：AGENTS.md、CHANGELOG.md、README.md、docs/PROJECT_PLAN.md、docs/UI_EXPERIENCE_CHECKPOINT.md、e2e/smoke.spec.js、e2e/ui-consistency.spec.js、src-tauri/src/floating_window.rs、src/App.vue、src/main.js、src/__tests__/components/FloatingTaskWindow.test.js、src/__tests__/project/ProjectWorkspace.test.js、src/modules/dashboard/components/DashboardView.vue、src/modules/data/components/DataView.vue、src/modules/floating/FloatingTaskWindow.vue、src/modules/floating/useFloatingTasks.js、src/modules/member/components/MemberList.vue、src/modules/project/components/ProjectWorkspace.vue、src/modules/task/components/ProjectList/ProjectList.vue、src/modules/task/components/TaskList/TaskList.vue；新增src/__tests__/components/PrimeVueControls.test.js、src/components/DatePickerDateString.vue、src/composables/usePrimeConfirmation.js、src/security/styleNonce.js。
+- 未解决/未验证：未做多显示器/DPI/平台外观全矩阵，当前任务不公开发布；仍为未签名内部测试版，正式发布原有限制与3项已批准P3例外/截止日期保持。跨窗口实时主题切换不属于本轮承诺，已验证打开时使用保存主题。未扩大MCP写权限，未修改业务数据。当前Windows已确认，其它设备未连接。
+- 准确下一步：提交以上已验收整改，非强制同步同SHA到当前GitHub分支，追加Wolai脱敏技术状态并读回；再保存同步结果。后续等待用户试用反馈，不自动开启新功能/重置额度/定时唤醒。此时本地README/CHANGELOG/计划/检查点已更新，Git/Wolai最终同步尚未完成。

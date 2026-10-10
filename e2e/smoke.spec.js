@@ -154,19 +154,64 @@ test('renders the standalone task window and retains it after reload', async ({
     await expect(page.getByTestId('floating-window')).toBeVisible()
     await expect(page.locator('.app-header')).toHaveCount(0)
     await expect(page.getByText('Design milestone').first()).toBeVisible()
-    await page.getByRole('button', { name: '展开', exact: true }).click()
     await expect(page.locator('.floating-project')).toHaveText('Alpha Project')
-    await expect(page.getByRole('progressbar')).toHaveAttribute('value', '50')
+    await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50')
     await page.screenshot({ path: testInfo.outputPath('floating-light.png') })
     await page.evaluate(() => localStorage.setItem('easyproject-theme', 'dark'))
     await page.reload()
-    await page.getByRole('button', { name: '展开', exact: true }).click()
     await expect(page.locator('html')).toHaveClass(/app-dark/)
     await page.screenshot({ path: testInfo.outputPath('floating-dark.png') })
     await page.getByRole('button', { name: '收起', exact: true }).click()
     await expect(page.locator('.floating-content')).toHaveCount(0)
     await page.reload()
     await expect(page.getByTestId('floating-window')).toBeVisible()
+})
+
+test('uses the native initialization flag without a floating hash route', async ({ page }) => {
+    await page.addInitScript(() => {
+        window.__EASYPROJECT_FLOATING_WINDOW__ = true
+    })
+    await page.setViewportSize({ width: 340, height: 360 })
+    await page.goto('/')
+    await expect(page.locator('.floating-content h2')).toHaveText('Design milestone')
+    await expect(page.locator('.app-header')).toHaveCount(0)
+    await page.getByRole('combobox').click()
+    await expect(page.getByRole('listbox')).toBeVisible()
+    const box = await page.getByRole('listbox').boundingBox()
+    expect(box.x).toBeGreaterThanOrEqual(0)
+    expect(box.x + box.width).toBeLessThanOrEqual(340)
+    expect(box.y + box.height).toBeLessThanOrEqual(360)
+})
+
+test('styles PrimeVue in the task window under desktop-like nonce CSP', async ({ page }) => {
+    await page.addInitScript(() => {
+        window.__EASYPROJECT_FLOATING_WINDOW__ = true
+    })
+    await page.route('http://127.0.0.1:4173/', async route => {
+        const response = await route.fetch()
+        const html = (await response.text()).replace(
+            /<style>/g,
+            '<style nonce="e2e-response-nonce">'
+        )
+        await route.fulfill({
+            response,
+            body: html,
+            headers: {
+                ...response.headers(),
+                'content-security-policy': "style-src 'self' 'nonce-e2e-response-nonce'"
+            }
+        })
+    })
+    await page.goto('/')
+    await expect(page.locator('.floating-content h2')).toHaveText('Design milestone')
+    await expect(page.locator('.p-select')).toHaveCSS('border-top-width', '1px')
+    expect(
+        await page
+            .locator('style[data-primevue-style-id]')
+            .evaluateAll(styles => styles.every(style => style.nonce === 'e2e-response-nonce'))
+    ).toBe(true)
+    await page.getByRole('combobox').click()
+    await expect(page.getByRole('listbox')).toBeVisible()
 })
 
 test('shows an accessible warning when automatic backup fails', async ({ page }) => {
@@ -514,10 +559,12 @@ test('saves a member unavailable date range', async ({ page }) => {
     await page.goto('/#/members')
     await page.locator('.member-trigger').filter({ hasText: 'Alice' }).click()
 
-    await page.locator('.availability-form .p-inputtext').fill('Conference')
-    await page.locator('.availability-form input[type="date"]').first().fill('2026-08-03')
-    await page.locator('.availability-form input[type="date"]').nth(1).fill('2026-08-05')
-    await page.locator('.availability-form .p-button').click()
+    await page.locator('.availability-form > .p-inputtext').fill('Conference')
+    await page.getByLabel('Start date', { exact: true }).fill('2026-08-03')
+    await page.getByLabel('Start date', { exact: true }).press('Tab')
+    await page.getByLabel('End date', { exact: true }).fill('2026-08-05')
+    await page.getByLabel('End date', { exact: true }).press('Tab')
+    await page.getByRole('button', { name: '添加', exact: true }).click()
 
     const updateCalls = await page.evaluate(() =>
         window.__EASY_PROJECT_CALLS__.filter(

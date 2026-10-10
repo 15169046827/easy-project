@@ -18,20 +18,20 @@
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
         <div class="metrics workspace-stats" aria-label="Workspace metrics">
-            <button class="metric-card" @click="go('/projects')">
+            <Button class="metric-card" text severity="secondary" @click="go('/projects')">
                 <span class="metric-icon blue"><i class="pi pi-folder"></i></span>
                 <span
                     ><strong>{{ metrics.projects }}</strong
                     ><small>{{ $t('dashboard.activeProjects') }}</small></span
                 >
-            </button>
-            <button class="metric-card" @click="go('/tasks')">
+            </Button>
+            <Button class="metric-card" text severity="secondary" @click="go('/tasks')">
                 <span class="metric-icon indigo"><i class="pi pi-list-check"></i></span>
                 <span
                     ><strong>{{ metrics.tasks }}</strong
                     ><small>{{ $t('dashboard.totalTasks') }}</small></span
                 >
-            </button>
+            </Button>
             <div class="metric-card">
                 <span class="metric-icon green"><i class="pi pi-check-circle"></i></span>
                 <span
@@ -78,7 +78,9 @@
                     <span>{{ $t('dashboard.next7days') }}</span>
                 </header>
                 <div v-if="attentionTasks.length" class="attention-list">
-                    <button
+                    <Button
+                        text
+                        severity="secondary"
                         v-for="task in attentionTasks"
                         :key="task.id"
                         @click="openProject(task.project_id)"
@@ -88,7 +90,7 @@
                         <time :class="{ overdue: isOverdue(task) }">{{
                             formatDate(task.end_time)
                         }}</time>
-                    </button>
+                    </Button>
                 </div>
                 <p v-else class="empty">{{ $t('dashboard.noAttention') }}</p>
             </article>
@@ -96,10 +98,12 @@
             <article class="dashboard-card recent-card">
                 <header>
                     <h3>{{ $t('dashboard.recentProjects') }}</h3>
-                    <button @click="go('/projects')">{{ $t('dashboard.viewAll') }}</button>
+                    <Button text @click="go('/projects')">{{ $t('dashboard.viewAll') }}</Button>
                 </header>
                 <div v-if="recentProjects.length" class="recent-list">
-                    <button
+                    <Button
+                        text
+                        severity="secondary"
                         v-for="project in recentProjects"
                         :key="project.id"
                         @click="openProject(project.id)"
@@ -113,7 +117,7 @@
                             }}</small></span
                         >
                         <span class="status-pill">{{ projectStatusLabel(project.status) }}</span>
-                    </button>
+                    </Button>
                 </div>
                 <p v-else class="empty">{{ $t('dashboard.createFirst') }}</p>
             </article>
@@ -292,6 +296,7 @@ onMounted(loadDashboard)
 }
 .metric-card {
     display: flex;
+    justify-content: flex-start;
     align-items: center;
     gap: 0.9rem;
     min-height: 7rem;

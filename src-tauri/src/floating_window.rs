@@ -20,7 +20,7 @@ pub async fn open_task_window(app: AppHandle, window: WebviewWindow) -> Result<(
     WebviewWindowBuilder::new(&app, FLOATING_LABEL, WebviewUrl::App("index.html".into()))
         .title("EasyProject — Tasks")
         .initialization_script("window.__EASYPROJECT_FLOATING_WINDOW__ = true;")
-        .inner_size(340.0, 72.0)
+        .inner_size(340.0, 360.0)
         .min_inner_size(340.0, 72.0)
         .decorations(false)
         .resizable(false)

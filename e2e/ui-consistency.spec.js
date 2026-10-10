@@ -174,6 +174,19 @@ for (const size of [
                     .toBe(76)
                 layouts.push(geometry)
                 expect(geometry.card.height).toBe(76)
+                if (path === 'dashboard') {
+                    const offsets = await page
+                        .locator('.metric-card')
+                        .evaluateAll(cards =>
+                            cards.map(
+                                card =>
+                                    card.querySelector('.metric-icon').getBoundingClientRect().x -
+                                    card.getBoundingClientRect().x
+                            )
+                        )
+                    for (const offset of offsets)
+                        expect(Math.abs(offset - offsets[0])).toBeLessThanOrEqual(1)
+                }
                 expect(geometry.scroll).toBe(false)
                 expect(Math.abs(geometry.heading.x - geometry.content.x)).toBeLessThanOrEqual(1)
                 await page.screenshot({ path: testInfo.outputPath(path + '.png') })
@@ -226,7 +239,9 @@ test('keeps fixed, left-aligned names visible while optional columns scroll', as
     await page.goto('/#/tasks')
     await expect(page.locator('.tstat-icon.progress .pi-spin')).toHaveCount(0)
     const name = page.locator('.task-name-text').first()
-    await expect(name).toHaveAttribute('title', taskName)
+    await name.hover()
+    await expect(page.getByRole('tooltip')).toHaveText(taskName)
+    await page.mouse.move(0, 0)
     expect(await name.evaluate(node => getComputedStyle(node).textAlign)).toBe('left')
     const container = page.locator('.p-datatable-table-container')
     expect(await container.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true)
@@ -259,7 +274,7 @@ test('shows relationship names and saves an empty predecessor selection', async 
     await page.goto('/#/tasks')
     await page.getByRole('button', { name: '展开任务', exact: true }).click()
     const child = page.getByRole('row').filter({ hasText: 'Child task' })
-    await expect(child.locator('.cell-ellipsis[title="' + taskName + '"]')).toHaveCount(2)
+    await expect(child.locator('.cell-ellipsis').filter({ hasText: taskName })).toHaveCount(2)
     await child.locator('.p-datatable-row-editor-init').click()
     const editingRow = page
         .locator('tr')

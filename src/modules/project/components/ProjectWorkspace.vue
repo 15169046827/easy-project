@@ -3,13 +3,13 @@
         <!-- 项目信息头部 -->
         <header class="workspace-banner">
             <div class="banner-left">
-                <button
+                <Button
                     class="back-button"
                     :aria-label="$t('project.back')"
                     @click="go('/projects')"
                 >
                     <i class="pi pi-arrow-left"></i>
-                </button>
+                </Button>
                 <div class="project-meta">
                     <span class="workspace-eyebrow">{{ $t('project.eyebrow') }}</span>
                     <div class="title-line">
@@ -43,21 +43,21 @@
                 </div>
             </div>
             <div class="view-switch" aria-label="Project views">
-                <button :class="{ active: view === 'tasks' }" @click="view = 'tasks'">
+                <Button :class="{ active: view === 'tasks' }" @click="view = 'tasks'">
                     <i class="pi pi-list-check"></i> {{ $t('project.viewTasks') }}
-                </button>
-                <button :class="{ active: view === 'gantt' }" @click="view = 'gantt'">
+                </Button>
+                <Button :class="{ active: view === 'gantt' }" @click="view = 'gantt'">
                     <i class="pi pi-chart-bar"></i> {{ $t('project.viewGantt') }}
-                </button>
-                <button :class="{ active: view === 'board' }" @click="view = 'board'">
+                </Button>
+                <Button :class="{ active: view === 'board' }" @click="view = 'board'">
                     <i class="pi pi-th-large"></i> {{ $t('project.viewBoard') }}
-                </button>
-                <button :class="{ active: view === 'team' }" @click="view = 'team'">
+                </Button>
+                <Button :class="{ active: view === 'team' }" @click="view = 'team'">
                     <i class="pi pi-users"></i> {{ $t('project.viewTeam') }}
-                </button>
-                <button :class="{ active: view === 'calendar' }" @click="view = 'calendar'">
+                </Button>
+                <Button :class="{ active: view === 'calendar' }" @click="view = 'calendar'">
                     <i class="pi pi-calendar"></i> {{ $t('project.viewCalendar') }}
-                </button>
+                </Button>
             </div>
         </header>
 
@@ -96,6 +96,7 @@
 </template>
 
 <script setup>
+import Button from 'primevue/button'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'

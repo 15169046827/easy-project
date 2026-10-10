@@ -59,15 +59,15 @@
         <div class="workspace-toolbar">
             <span class="search-box">
                 <i class="pi pi-search"></i>
-                <input v-model="searchQuery" :placeholder="$t('projects.searchPlaceholder')" />
-                <button
+                <InputText v-model="searchQuery" :placeholder="$t('projects.searchPlaceholder')" />
+                <Button
                     v-if="searchQuery"
                     class="search-clear"
                     :aria-label="$t('common.clear')"
                     @click="searchQuery = ''"
                 >
                     <i class="pi pi-times"></i>
-                </button>
+                </Button>
             </span>
         </div>
         <p v-if="errorMessage" class="error-banner">{{ errorMessage }}</p>
@@ -105,10 +105,10 @@
                         />
                     </template>
                     <template #body="{ data }">
-                        <button class="project-link" @click="openProject(data.id)">
+                        <Button class="project-link" @click="openProject(data.id)">
                             <i class="pi pi-folder"></i>
                             {{ data.name || $t('projects.untitled') }}
-                        </button>
+                        </Button>
                     </template>
                 </Column>
                 <Column field="version" :header="$t('projects.columnVersion')" style="width: 6rem">
@@ -204,6 +204,7 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { usePrimeConfirmation } from '../../../../composables/usePrimeConfirmation'
 import { useDelayedBusy } from '../../../../composables/useDelayedBusy.js'
 import Button from 'primevue/button'
 import Column from 'primevue/column'
@@ -221,6 +222,7 @@ import { avatarBg, avatarInitial } from '../../../../composables/useAvatar'
 
 const router = useRouter()
 const { t } = useI18n()
+const confirmDeletion = usePrimeConfirmation()
 function openProject(id) {
     router.push('/project/' + id)
 }
@@ -385,7 +387,7 @@ function cancelRow({ data }) {
 
 async function deleteProjects() {
     const names = selectedProjects.value.map(project => project.name).join(', ')
-    if (!confirm(t('projects.deleteConfirm', { names }))) return
+    if (!(await confirmDeletion(t('projects.deleteConfirm', { names })))) return
     loading.value = true
     errorMessage.value = ''
     try {
@@ -464,6 +466,8 @@ onMounted(loadProjects)
     font-size: 0.85rem;
 }
 .search-box input {
+    padding: 0;
+    box-shadow: none;
     border: 0;
     outline: none;
     background: transparent;

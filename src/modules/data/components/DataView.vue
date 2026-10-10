@@ -86,7 +86,7 @@
                     </p>
                 </div>
                 <label class="confirm-row">
-                    <input v-model="confirmed" type="checkbox" />
+                    <Checkbox v-model="confirmed" binary />
                     <span>{{ $t('data.confirmReplace') }}</span>
                 </label>
                 <Button
@@ -188,6 +188,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import Button from 'primevue/button'
+import Checkbox from 'primevue/checkbox'
 import { useI18n } from 'vue-i18n'
 import { revealItemInDir } from '@tauri-apps/plugin-opener'
 import { crudAction } from '../../../api'

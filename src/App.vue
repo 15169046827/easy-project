@@ -7,53 +7,53 @@
                 <h1>EasyProject</h1>
             </div>
             <nav aria-label="Workspace views">
-                <button
+                <Button
                     :class="{ active: route.name === 'Dashboard' }"
                     @click="go('/dashboard')"
-                    :title="$t('nav.dashboard') + ' (Ctrl+1)'"
+                    v-tooltip.bottom="$t('nav.dashboard') + ' (Ctrl+1)'"
                 >
                     {{ $t('nav.dashboard') }}
-                </button>
-                <button
+                </Button>
+                <Button
                     :class="{ active: route.name === 'Projects' || route.name === 'Project' }"
                     @click="go('/projects')"
-                    :title="$t('nav.projects') + ' (Ctrl+2)'"
+                    v-tooltip.bottom="$t('nav.projects') + ' (Ctrl+2)'"
                 >
                     {{ $t('nav.projects') }}
-                </button>
-                <button
+                </Button>
+                <Button
                     :class="{ active: route.name === 'Tasks' }"
                     @click="go('/tasks')"
-                    :title="$t('nav.tasks') + ' (Ctrl+3)'"
+                    v-tooltip.bottom="$t('nav.tasks') + ' (Ctrl+3)'"
                 >
                     {{ $t('nav.tasks') }}
-                </button>
-                <button
+                </Button>
+                <Button
                     :class="{ active: route.name === 'Data' }"
                     @click="go('/data')"
-                    :title="$t('nav.data') + ' (Ctrl+4)'"
+                    v-tooltip.bottom="$t('nav.data') + ' (Ctrl+4)'"
                 >
                     {{ $t('nav.data') }}
-                </button>
-                <button
+                </Button>
+                <Button
                     :class="{ active: route.name === 'Members' }"
                     @click="go('/members')"
-                    :title="$t('nav.members') + ' (Ctrl+5)'"
+                    v-tooltip.bottom="$t('nav.members') + ' (Ctrl+5)'"
                 >
                     {{ $t('nav.members') }}
-                </button>
+                </Button>
             </nav>
             <div class="header-actions">
-                <button
+                <Button
                     type="button"
                     class="theme-toggle floating-entry"
-                    :title="$t('floating.open')"
+                    v-tooltip.bottom="$t('floating.open')"
                     :aria-label="$t('floating.open')"
                     @click="openTaskWindow"
                 >
                     <i class="pi pi-window-maximize" aria-hidden="true" />
                     <span class="floating-entry-label">{{ $t('floating.open') }}</span>
-                </button>
+                </Button>
                 <Select
                     class="lang-select"
                     :modelValue="locale"
@@ -63,20 +63,24 @@
                     :placeholder="$t('app.language')"
                     @update:modelValue="setLocale"
                 />
-                <button
+                <Button
                     class="theme-toggle"
+                    :aria-label="isDark ? $t('app.themeToLight') : $t('app.themeToDark')"
                     @click="toggleTheme"
-                    :title="(isDark ? $t('app.themeToLight') : $t('app.themeToDark')) + ' (Ctrl+D)'"
+                    v-tooltip.bottom="
+                        (isDark ? $t('app.themeToLight') : $t('app.themeToDark')) + ' (Ctrl+D)'
+                    "
                 >
                     <i :class="isDark ? 'pi pi-sun' : 'pi pi-moon'"></i>
-                </button>
-                <button
+                </Button>
+                <Button
                     class="help-toggle"
+                    :aria-label="$t('app.shortcutsTitle')"
                     @click="showHelp = !showHelp"
-                    :title="$t('app.shortcutsTitle') + ' (?)'"
+                    v-tooltip.bottom="$t('app.shortcutsTitle') + ' (?)'"
                 >
                     <i class="pi pi-question-circle"></i>
-                </button>
+                </Button>
             </div>
         </header>
 
@@ -100,13 +104,14 @@
                     <div class="help-panel">
                         <div class="help-header">
                             <h3>{{ $t('app.helpTitle') }}</h3>
-                            <button
+                            <Button
                                 class="help-close"
+                                :aria-label="$t('app.closeHelp')"
                                 @click="showHelp = false"
-                                :title="$t('app.closeHelp') + ' (?)'"
+                                v-tooltip.bottom="$t('app.closeHelp') + ' (?)'"
                             >
                                 <i class="pi pi-times"></i>
-                            </button>
+                            </Button>
                         </div>
                         <div class="help-list">
                             <div v-for="s in shortcutsHelp" :key="s.keys" class="help-item">
@@ -120,11 +125,14 @@
         </Teleport>
 
         <!-- 新手引导 -->
+        <ConfirmDialog />
         <OnboardingGuide ref="onboardingRef" />
     </main>
 </template>
 
 <script setup>
+import Button from 'primevue/button'
+import ConfirmDialog from 'primevue/confirmdialog'
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -606,7 +614,7 @@ nav {
     flex-shrink: 0;
 }
 
-nav button {
+nav button.p-button {
     border: 0;
     border-radius: 0.5rem;
     padding: 0.55rem 1.1rem;
@@ -622,12 +630,12 @@ nav button {
     position: relative;
 }
 
-nav button:hover {
+nav button.p-button:hover {
     color: var(--color-header-text);
     background: rgba(255, 255, 255, 0.08);
 }
 
-nav button.active {
+nav button.p-button.active {
     color: var(--color-nav-active-text);
     background: var(--color-nav-active-bg);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
@@ -646,8 +654,8 @@ nav button.active {
     font-size: 0.82rem;
 }
 
-.theme-toggle,
-.help-toggle {
+.header-actions .theme-toggle,
+.header-actions .help-toggle {
     border: 0;
     border-radius: 0.5rem;
     padding: 0.5rem;
@@ -663,8 +671,9 @@ nav button.active {
     height: 2.1rem;
 }
 
-.floating-entry {
+.header-actions .floating-entry {
     width: auto;
+    flex-shrink: 0;
     gap: 0.4rem;
     padding: 0 0.6rem;
 }
@@ -672,8 +681,8 @@ nav button.active {
     font-size: 0.8rem;
     white-space: nowrap;
 }
-.theme-toggle:hover,
-.help-toggle:hover {
+.header-actions .theme-toggle:hover,
+.header-actions .help-toggle:hover {
     color: var(--color-header-text);
     background: rgba(255, 255, 255, 0.15);
 }
@@ -821,7 +830,7 @@ nav button.active {
         gap: 0.5rem;
     }
     .header-left {
-        min-width: 9rem;
+        min-width: 8rem;
     }
     .header-left h1 {
         font-size: 1.4rem;
@@ -829,12 +838,12 @@ nav button.active {
     nav {
         gap: 0.1rem;
     }
-    nav button {
+    nav button.p-button {
         min-width: 0;
-        padding: 0.55rem 0.65rem;
-        font-size: 0.8rem;
+        padding: 0.55rem 0.25rem;
+        font-size: 0.75rem;
     }
-    .floating-entry {
+    .header-actions .floating-entry {
         padding: 0 0.3rem;
     }
 }
@@ -848,7 +857,7 @@ nav button.active {
         width: 100%;
         overflow-x: auto;
     }
-    nav button {
+    nav button.p-button {
         flex: 0 0 auto;
     }
     .header-actions {

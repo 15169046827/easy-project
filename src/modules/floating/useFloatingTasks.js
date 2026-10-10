@@ -7,6 +7,7 @@ export function useFloatingTasks() {
     const projects = ref([])
     const selectedId = ref('')
     const error = ref('')
+    const loading = ref(true)
     let generation = 0
     let disposed = false
     let timer
@@ -31,6 +32,7 @@ export function useFloatingTasks() {
     }
     async function refresh() {
         const request = ++generation
+        loading.value = true
         try {
             const [nextTasks, nextProjects] = await Promise.all([
                 fetchAll('task', request),
@@ -42,6 +44,8 @@ export function useFloatingTasks() {
             error.value = ''
         } catch (cause) {
             if (!disposed && request === generation) error.value = String(cause?.message || cause)
+        } finally {
+            if (!disposed && request === generation) loading.value = false
         }
     }
     function selectTask(id) {
@@ -65,5 +69,5 @@ export function useFloatingTasks() {
         clearInterval(timer)
         window.removeEventListener('focus', refresh)
     })
-    return { tasks, task, project, error, selectTask, refresh }
+    return { tasks, task, project, error, loading, selectTask, refresh }
 }

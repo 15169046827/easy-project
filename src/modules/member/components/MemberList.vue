@@ -55,15 +55,15 @@
         <div class="workspace-toolbar">
             <span class="search-box">
                 <i class="pi pi-search"></i>
-                <input v-model="searchQuery" :placeholder="$t('members.searchPlaceholder')" />
-                <button
+                <InputText v-model="searchQuery" :placeholder="$t('members.searchPlaceholder')" />
+                <Button
                     v-if="searchQuery"
                     class="search-clear"
                     :aria-label="$t('common.clear')"
                     @click="searchQuery = ''"
                 >
                     <i class="pi pi-times"></i>
-                </button>
+                </Button>
             </span>
         </div>
         <p v-if="errorMessage" class="error-banner">{{ errorMessage }}</p>
@@ -102,7 +102,7 @@
                     </template>
                     <template #body="{ data }">
                         <div class="member-name-cell">
-                            <button class="member-trigger" @click="openDetail(data)">
+                            <Button class="member-trigger" @click="openDetail(data)">
                                 <span
                                     class="avatar-circle"
                                     :style="{ background: avatarBg(data.name) }"
@@ -112,7 +112,7 @@
                                 <span class="member-name">{{
                                     data.name || $t('members.untitled')
                                 }}</span>
-                            </button>
+                            </Button>
                         </div>
                     </template>
                 </Column>
@@ -261,9 +261,15 @@
                             v-model="availabilityDraft.name"
                             :placeholder="$t('members.availabilityName')"
                         />
-                        <input v-model="availabilityDraft.start_date" type="date" />
-                        <span>—</span>
-                        <input v-model="availabilityDraft.end_date" type="date" />
+                        <DatePickerDateString
+                            v-model="availabilityDraft.start_date"
+                            aria-label="Start date"
+                        />
+                        <span class="availability-separator">—</span>
+                        <DatePickerDateString
+                            v-model="availabilityDraft.end_date"
+                            aria-label="End date"
+                        />
                         <Button
                             icon="pi pi-plus"
                             :label="$t('members.availabilityAdd')"
@@ -283,13 +289,13 @@
                                 }}</strong>
                                 {{ item.start_date }} → {{ item.end_date }}
                             </span>
-                            <button
+                            <Button
                                 type="button"
                                 :aria-label="$t('common.delete')"
                                 @click="removeAvailability(index)"
                             >
                                 <i class="pi pi-times"></i>
-                            </button>
+                            </Button>
                         </li>
                     </ul>
                     <p v-else class="detail-empty">{{ $t('members.availabilityEmpty') }}</p>
@@ -341,6 +347,8 @@ import { useDelayedBusy } from '../../../composables/useDelayedBusy.js'
 import { crudAction } from '../../../api'
 import { useMembers } from '../../../composables/useMembers'
 import Button from 'primevue/button'
+import { usePrimeConfirmation } from '../../../composables/usePrimeConfirmation'
+import DatePickerDateString from '../../../components/DatePickerDateString.vue'
 import Drawer from 'primevue/drawer'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -351,6 +359,7 @@ import { useI18n } from 'vue-i18n'
 import { parseAvailabilityExceptions } from '../../calendar/utils/memberAvailability.js'
 
 const { t } = useI18n()
+const confirmDeletion = usePrimeConfirmation()
 const { members, loadMembers } = useMembers()
 const loading = ref(false)
 const showLoading = useDelayedBusy(loading)
@@ -521,7 +530,7 @@ async function submitForm() {
 async function deleteMembers() {
     if (selectedMembers.value.length === 0) return
     const names = selectedMembers.value.map(m => m.name).join(', ')
-    if (!confirm(t('members.deleteConfirm', { names }))) return
+    if (!(await confirmDeletion(t('members.deleteConfirm', { names })))) return
     try {
         await crudAction('member', 'delete', { ids: selectedMembers.value.map(m => m.id) })
         selectedMembers.value = []
@@ -678,6 +687,8 @@ onMounted(load)
     font-size: 0.85rem;
 }
 .search-box input {
+    padding: 0;
+    box-shadow: none;
     border: 0;
     outline: none;
     background: transparent;
@@ -997,15 +1008,16 @@ onMounted(load)
     grid-column: 1 / -1;
     width: 100%;
 }
-.availability-form > input[type='date'] {
+.availability-form > :deep(.p-datepicker) {
+    grid-column: 1 / -1;
+    width: 100%;
     min-width: 0;
-    padding: 0.55rem 0.65rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    color: var(--color-text);
-    background: var(--color-surface-raised);
 }
-.availability-form > span {
+.availability-form :deep(.p-datepicker-input) {
+    min-width: 0;
+    width: 100%;
+}
+.availability-form > .availability-separator {
     display: none;
 }
 .availability-list {

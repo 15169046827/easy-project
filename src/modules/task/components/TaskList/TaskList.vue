@@ -121,7 +121,7 @@
                     />
                     <Button
                         icon="pi pi-refresh"
-                        :title="$t('tasks.resetColumns')"
+                        v-tooltip.bottom="$t('tasks.resetColumns')"
                         :aria-label="$t('tasks.resetColumns')"
                         text
                         @click="selectedColumns = [...defaultColumns]"
@@ -274,10 +274,10 @@
                             @drop.prevent="onDrop(data)"
                             @dragend="onDragEnd"
                         >
-                            <span class="drag-handle" :title="$t('tasks.dragToReorder')">
+                            <span class="drag-handle" v-tooltip.bottom="$t('tasks.dragToReorder')">
                                 <i class="pi pi-grip-horizontal"></i>
                             </span>
-                            <button
+                            <Button
                                 v-if="data._hasChildren"
                                 class="tree-toggle"
                                 :aria-label="
@@ -294,8 +294,10 @@
                                             : 'pi pi-chevron-right'
                                     "
                                 ></i>
-                            </button>
-                            <span class="task-name-text" :title="data.name">{{ data.name }}</span>
+                            </Button>
+                            <span class="task-name-text" v-tooltip.bottom="data.name">{{
+                                data.name
+                            }}</span>
                         </div>
                     </template>
                 </Column>
@@ -316,9 +318,11 @@
                         />
                     </template>
                     <template #body="{ data }">
-                        <span class="cell-ellipsis" :title="getProjectName(data.project_id)">{{
-                            getProjectName(data.project_id)
-                        }}</span>
+                        <span
+                            class="cell-ellipsis"
+                            v-tooltip.bottom="getProjectName(data.project_id)"
+                            >{{ getProjectName(data.project_id) }}</span
+                        >
                     </template>
                 </Column>
                 <Column
@@ -339,7 +343,7 @@
                         />
                     </template>
                     <template #body="{ data }">
-                        <span class="cell-ellipsis" :title="getTaskName(data.parent)">{{
+                        <span class="cell-ellipsis" v-tooltip.bottom="getTaskName(data.parent)">{{
                             getTaskName(data.parent) || '-'
                         }}</span>
                     </template>
@@ -368,7 +372,7 @@
                     <template #body="{ data }"
                         ><span
                             class="cell-ellipsis"
-                            :title="dependencyNames(data._predecessorIds)"
+                            v-tooltip.bottom="dependencyNames(data._predecessorIds)"
                             >{{ dependencyNames(data._predecessorIds) || '-' }}</span
                         ></template
                     >
@@ -387,7 +391,7 @@
                         />
                     </template>
                     <template #body="{ data }">
-                        <span class="cell-ellipsis" :title="data.start_time">{{
+                        <span class="cell-ellipsis" v-tooltip.bottom="data.start_time">{{
                             formatDisplayDate(data.start_time)
                         }}</span>
                     </template>
@@ -399,14 +403,16 @@
                     :style="columnStyle('effort_days')"
                 >
                     <template #editor="{ data, field }">
-                        <input
-                            v-model.number="data[field]"
-                            type="number"
-                            min="0"
-                            step="0.5"
+                        <InputNumber
+                            v-model="data[field]"
+                            :min="0"
+                            :step="0.5"
+                            :maxFractionDigits="2"
+                            :useGrouping="false"
+                            fluid
                             class="number-input"
-                            :title="$t('tasks.effortHint')"
-                            @input="recalculateEnd(data)"
+                            v-tooltip.bottom="$t('tasks.effortHint')"
+                            @update:modelValue="recalculateEnd(data)"
                         />
                     </template>
                     <template #body="{ data }">
@@ -447,7 +453,7 @@
                         />
                     </template>
                     <template #body="{ data }">
-                        <span class="cell-ellipsis" :title="data.end_time">{{
+                        <span class="cell-ellipsis" v-tooltip.bottom="data.end_time">{{
                             formatDisplayDate(data.end_time)
                         }}</span>
                     </template>
@@ -524,11 +530,12 @@
                     :style="columnStyle('progress')"
                 >
                     <template #editor="{ data, field }">
-                        <input
-                            v-model.number="data[field]"
-                            type="number"
-                            min="0"
-                            max="100"
+                        <InputNumber
+                            v-model="data[field]"
+                            :min="0"
+                            :max="100"
+                            :useGrouping="false"
+                            fluid
                             class="number-input"
                         />
                     </template>
@@ -551,7 +558,7 @@
                         <InputText v-model="data[field]" />
                     </template>
                     <template #body="{ data }"
-                        ><span class="cell-ellipsis" :title="data.comment">{{
+                        ><span class="cell-ellipsis" v-tooltip.bottom="data.comment">{{
                             data.comment || '-'
                         }}</span></template
                     >
@@ -576,9 +583,11 @@
                                 :style="{ background: avatarBg(memberMap[data.assignee].name) }"
                                 >{{ avatarInitial(memberMap[data.assignee].name) }}</span
                             >
-                            <span class="cell-ellipsis" :title="memberMap[data.assignee].name">{{
-                                memberMap[data.assignee].name
-                            }}</span>
+                            <span
+                                class="cell-ellipsis"
+                                v-tooltip.bottom="memberMap[data.assignee].name"
+                                >{{ memberMap[data.assignee].name }}</span
+                            >
                         </span>
                         <span v-else class="no-value">{{
                             data.assignee || $t('common.unassigned')
@@ -657,6 +666,7 @@ import Button from 'primevue/button'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
 import Select from 'primevue/select'
 import MultiSelect from 'primevue/multiselect'
 import Dialog from 'primevue/dialog'

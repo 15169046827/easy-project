@@ -37,6 +37,7 @@ function mountWorkspace(projectId = 'project-1') {
     return shallowMount(ProjectWorkspace, {
         props: { projectId },
         global: {
+            stubs: { Button: { template: '<button><slot /></button>' } },
             mocks: { $t: key => key }
         }
     })

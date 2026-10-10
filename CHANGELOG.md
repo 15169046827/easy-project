@@ -22,6 +22,8 @@ All notable changes to EasyProject are documented here.
 - Aligned route headings, 76px statistic cards, toolbars, and content borders across dashboard/project/task/member pages, with shared responsive spacing and the same outer grid for data/project workspaces.
 - Task tables now use fixed-width ellipsis cells, pinned left-aligned names, configurable remembered columns, and parent/predecessor names that remain available across filters and pagination. Predecessors use a clearable PrimeVue selector; delete confirmation is an in-app dialog and search has an inline clear button.
 - In-progress statistics are static; short loads no longer flash a gray mask, startup initializes the saved theme before paint, and the floating-window entry is visibly labeled.
+- Floating tasks open expanded with explicit loading/error states. Navigation, affected list/form controls, progress and hover details use real PrimeVue components; project/member deletion uses PrimeVue confirmation instead of the browser dialog. Added a component-contract regression check and date-only adapters.
+- PrimeVue dynamic theme styles reuse Tauri's per-response style nonce, preserving CSP enforcement and preventing unstyled desktop controls; covered by a strict-nonce production UI regression.
 - Completed tasks retain 100% when editing only progress; tasks with children, dependency edges, or plan baselines cannot move across projects and invalidate those relationships.
 - Windows now uses an EasyProject-styled title bar with native dragging and minimize, maximize/restore, and close controls while other desktop platforms retain their native window chrome.
 - Fixed outer-window scrolling so the custom title bar remains pinned at the top.

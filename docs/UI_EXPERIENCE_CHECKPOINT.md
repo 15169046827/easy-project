@@ -114,3 +114,10 @@
 - 未提交文件（准备提交的全部范围）：AGENTS.md、CHANGELOG.md、README.md、docs/PROJECT_PLAN.md、docs/UI_EXPERIENCE_CHECKPOINT.md、e2e/smoke.spec.js、e2e/ui-consistency.spec.js、src-tauri/src/floating_window.rs、src/App.vue、src/main.js、src/__tests__/components/FloatingTaskWindow.test.js、src/__tests__/project/ProjectWorkspace.test.js、src/modules/dashboard/components/DashboardView.vue、src/modules/data/components/DataView.vue、src/modules/floating/FloatingTaskWindow.vue、src/modules/floating/useFloatingTasks.js、src/modules/member/components/MemberList.vue、src/modules/project/components/ProjectWorkspace.vue、src/modules/task/components/ProjectList/ProjectList.vue、src/modules/task/components/TaskList/TaskList.vue；新增src/__tests__/components/PrimeVueControls.test.js、src/components/DatePickerDateString.vue、src/composables/usePrimeConfirmation.js、src/security/styleNonce.js。
 - 未解决/未验证：未做多显示器/DPI/平台外观全矩阵，当前任务不公开发布；仍为未签名内部测试版，正式发布原有限制与3项已批准P3例外/截止日期保持。跨窗口实时主题切换不属于本轮承诺，已验证打开时使用保存主题。未扩大MCP写权限，未修改业务数据。当前Windows已确认，其它设备未连接。
 - 准确下一步：提交以上已验收整改，非强制同步同SHA到当前GitHub分支，追加Wolai脱敏技术状态并读回；再保存同步结果。后续等待用户试用反馈，不自动开启新功能/重置额度/定时唤醒。此时本地README/CHANGELOG/计划/检查点已更新，Git/Wolai最终同步尚未完成。
+
+### 同步闭环
+
+- 已验收代码/文档提交1b1653ec2630fbe113fd051a81c5c0c303b142a6（24文件）已通过校验父提交、树和提交SHA的API方式非强制同步；远端和本地同SHA，无并发改动，提交后工作区干净。
+- Wolai页面h4VsMhyWaL9UHrYLEkfnLx的状态块28dPKMDkPpLCFu557s8exF已追加脱敏交付记录，报告版本43读回确认代码SHA与最终安装包SHA，未保存真实任务名称/内容。README/CHANGELOG/PROJECT_PLAN及本检查点与安装现状一致；之后只追加本同步闭环的文档提交号。
+- 当前基线切换为1b1653ec2630fbe113fd051a81c5c0c303b142a6，分支不变；本段保存时唯一未提交文件是本检查点。代码/配置/安装包不再修改。WACAS未定义/待确认，UPARS1.1.0，五小时49%、周31%（最后查询），未重置额度或建立唤醒。Windows最终浅色主程序与任务浮窗已打开，暗色验收后恢复原主题；其它设备未连接。
+- 本次整改与复验完成。准确下一步：提交并同步本闭环文档，确认工作区干净与远端同SHA，然后等待用户真实使用反馈；不自动开发后续功能。正式发布/多屏DPI/其它平台未验证风险仍按上节保留，内部测试交付不等同正式发布验收通过。

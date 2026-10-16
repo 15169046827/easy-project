@@ -58,7 +58,7 @@ const fixtures = {
             lag_days: 0
         }
     ],
-    member: [],
+    member: [{ id: 'm1', name: 'Example Member', email: '', role: 'Developer' }],
     project_member: [],
     plan_baseline: []
 }
@@ -103,9 +103,19 @@ test.beforeEach(async ({ page }) => {
                     Object.assign(data.task.find(task => task.id === args.data.id) || {}, args.data)
                     return { success: true }
                 }
-                const list = (data[args.model] || []).filter(
-                    row => !args.data.projectId || row.project_id === args.data.projectId
-                )
+                const list = (data[args.model] || [])
+                    .filter(row => !args.data.projectId || row.project_id === args.data.projectId)
+                    .filter(row => {
+                        if (args.model !== 'task' || !args.data.status) return true
+                        if (args.data.status === 'Pending')
+                            return ['Todo', 'Pending'].includes(row.status)
+                        if (args.data.status === 'Overdue')
+                            return (
+                                !['Done', 'Archived'].includes(row.status) &&
+                                new Date(row.end_time) < new Date()
+                            )
+                        return row.status === args.data.status
+                    })
                 return { success: true, data: { list, total: list.length } }
             }
         }
@@ -361,4 +371,211 @@ test('uses an application delete dialog with cancel and clears the search inline
             () => window.__EASY_PROJECT_CALLS__.filter(call => call.args.action === 'delete').length
         )
     ).toBe(1)
+})
+
+for (const dark of [false, true]) {
+    test(`stable dashboard and member pointer/keyboard states in ${dark ? 'dark' : 'light'}`, async ({
+        page
+    }) => {
+        await page.setViewportSize({ width: 960, height: 640 })
+        await page.addInitScript(
+            value => localStorage.setItem('easyproject-theme', value),
+            dark ? 'dark' : 'light'
+        )
+        await page.goto('/#/dashboard')
+        const cards = page.locator('.metric-card')
+        await expect(cards).toHaveCount(4)
+        const backgrounds = []
+        for (const card of await cards.all()) {
+            const box = await card.boundingBox()
+            await card.hover()
+            backgrounds.push(await card.evaluate(node => getComputedStyle(node).backgroundColor))
+            expect(await card.boundingBox()).toEqual(box)
+            await card.focus()
+            expect(await card.boundingBox()).toEqual(box)
+        }
+        expect(new Set(backgrounds).size).toBe(1)
+        const attention = page.locator('.attention-list button').first()
+        await expect(attention).toBeVisible()
+        await page.mouse.move(0, 0)
+        const border = await attention.evaluate(node => getComputedStyle(node).borderBottomColor)
+        await attention.hover()
+        const samples = await attention.evaluate(async node => {
+            const result = []
+            for (let i = 0; i < 15; i++) {
+                await new Promise(resolve => requestAnimationFrame(resolve))
+                const style = getComputedStyle(node)
+                result.push([style.borderBottomColor, style.outlineStyle, style.boxShadow])
+            }
+            return result
+        })
+        expect(
+            samples.every(
+                ([color, outline, shadow]) =>
+                    color === border && outline === 'none' && shadow === 'none'
+            )
+        ).toBe(true)
+        await attention.focus()
+        await expect(attention).toHaveCSS('outline-style', 'solid')
+        await page.goto('/#/members')
+        const trigger = page.locator('.member-trigger').first()
+        await expect(trigger).toBeVisible()
+        const row = trigger.locator('xpath=ancestor::tr')
+        const before = await row.boundingBox()
+        for (const action of ['hover', 'focus']) {
+            await trigger[action]()
+            expect(await row.boundingBox()).toEqual(before)
+            const avatar = await trigger.locator('.avatar-circle').boundingBox()
+            const name = await trigger.locator('.member-name').boundingBox()
+            expect(avatar.width).toBe(32)
+            expect(avatar.x + avatar.width).toBeLessThanOrEqual(name.x)
+        }
+        await trigger.press('Enter')
+        await expect(page.locator('.member-detail')).toBeVisible()
+    })
+}
+
+test('dashboard status and overdue cards navigate to an effective, clearable task filter', async ({
+    page
+}) => {
+    for (const status of ['Pending', 'InProgress', 'Done']) {
+        await page.goto('/#/dashboard')
+        const index = ['Pending', 'InProgress', 'Done'].indexOf(status)
+        await page.locator('.status-list button').nth(index).click()
+        await expect(page).toHaveURL(new RegExp(`status=${status}`))
+        await expect
+            .poll(() =>
+                page.evaluate(
+                    () =>
+                        window.__EASY_PROJECT_CALLS__
+                            .filter(
+                                call =>
+                                    call.args.model === 'task' &&
+                                    call.args.action === 'get_all' &&
+                                    Object.hasOwn(call.args.data, 'status')
+                            )
+                            .at(-1)?.args.data.status
+                )
+            )
+            .toBe(status)
+        await expect(page.locator('.filter-bar .p-select').first()).toContainText(
+            status === 'Pending' ? '待办' : status === 'Done' ? '完成' : '进行中'
+        )
+        if (status === 'Pending') {
+            await expect(
+                page.locator('.task-stats .tstat-card').last().locator('strong')
+            ).toHaveText('1')
+        }
+    }
+    await page.goto('/#/dashboard')
+    await page.locator('.metric-card').nth(3).click()
+    await expect(page).toHaveURL(/status=Overdue/)
+    await expect(page.locator('.filter-bar .p-select').first()).toContainText('逾期')
+    await page.getByRole('button', { name: '清除', exact: true }).click()
+    await expect
+        .poll(() =>
+            page.evaluate(
+                () =>
+                    window.__EASY_PROJECT_CALLS__
+                        .filter(
+                            call =>
+                                call.args.model === 'task' &&
+                                call.args.action === 'get_all' &&
+                                Object.hasOwn(call.args.data, 'status')
+                        )
+                        .at(-1)?.args.data.status
+            )
+        )
+        .toBe('')
+})
+
+test('task progress slider supports dragging, keyboard and a numeric percentage', async ({
+    page
+}) => {
+    await page.goto('/#/tasks')
+    await page.getByRole('button', { name: '编辑', exact: true }).first().click()
+    const dialog = page.getByRole('dialog')
+    const slider = dialog.getByRole('slider')
+    await expect(slider).toHaveAttribute('aria-valuenow', '30')
+    await slider.press('ArrowRight')
+    await expect(dialog.locator('#task-edit-progress')).toHaveValue('31%')
+    await dialog.locator('#task-edit-progress').fill('73')
+    await dialog.locator('#task-edit-name').click()
+    await expect(slider).toHaveAttribute('aria-valuenow', '73')
+    const track = dialog.locator('.p-slider')
+    const bounds = await track.boundingBox()
+    await page.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2)
+    await expect
+        .poll(async () => Number(await slider.getAttribute('aria-valuenow')))
+        .toBeGreaterThanOrEqual(49)
+    await expect
+        .poll(async () => Number(await slider.getAttribute('aria-valuenow')))
+        .toBeLessThanOrEqual(51)
+    await dialog.getByRole('button', { name: '保存', exact: true }).click()
+    await expect(page.locator('.success-banner')).toBeVisible()
+    const update = await page.evaluate(() =>
+        window.__EASY_PROJECT_CALLS__.find(
+            call => call.args.model === 'task' && call.args.action === 'update'
+        )
+    )
+    expect(update.args.data.progress).toBeGreaterThanOrEqual(49)
+    expect(update.args.data.progress).toBeLessThanOrEqual(51)
+})
+
+test('floating cards follow the resized viewport and collapse to a keyboard-accessible ball', async ({
+    page
+}) => {
+    for (const dark of [false, true]) {
+        await page.addInitScript(
+            value => localStorage.setItem('easyproject-theme', value),
+            dark ? 'dark' : 'light'
+        )
+        for (const size of [
+            { width: 340, height: 360 },
+            { width: 500, height: 600 }
+        ]) {
+            await page.setViewportSize(size)
+            await page.goto('/#/floating')
+            await expect(page.locator('.floating-task')).toHaveCount(2)
+            const bounds = await page.getByTestId('floating-window').boundingBox()
+            expect(bounds.width).toBe(size.width)
+            expect(bounds.height).toBe(size.height)
+            await expect(page.locator('footer')).toBeInViewport({ ratio: 1 })
+            await page.getByRole('button', { name: '收起', exact: true }).click()
+            const ball = page.locator('.floating-ball')
+            await expect(ball).toBeVisible()
+            expect((await page.getByTestId('floating-window').boundingBox()).width).toBe(64)
+            await ball.press('Enter')
+            await expect(page.locator('.floating-content')).toBeVisible()
+        }
+    }
+})
+
+test('percentage sliders and dialogs retain PrimeVue styling under strict nonce CSP', async ({
+    page
+}) => {
+    const violations = []
+    page.on('console', message => {
+        if (/Refused to apply.*style/i.test(message.text())) violations.push(message.text())
+    })
+    await page.route('http://127.0.0.1:4173/', async route => {
+        const response = await route.fetch()
+        await route.fulfill({
+            response,
+            body: (await response.text()).replace(/<style>/g, '<style nonce="ui-response-nonce">'),
+            headers: {
+                ...response.headers(),
+                'content-security-policy': "style-src 'self' 'nonce-ui-response-nonce'"
+            }
+        })
+    })
+    await page.goto('/#/tasks')
+    await page.getByRole('button', { name: '编辑', exact: true }).first().click()
+    await expect(page.getByRole('dialog').getByRole('slider')).toHaveCSS('position', 'absolute')
+    expect(
+        await page
+            .locator('style[data-primevue-style-id]')
+            .evaluateAll(styles => styles.every(style => style.nonce === 'ui-response-nonce'))
+    ).toBe(true)
+    expect(violations).toEqual([])
 })

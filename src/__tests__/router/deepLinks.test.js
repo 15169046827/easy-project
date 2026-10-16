@@ -24,7 +24,7 @@ describe('application deep links', () => {
         const props = resolvedProps(route)
 
         expect(route.name).toBe('Tasks')
-        expect(props).toEqual({ initialProjectId: 'project-42' })
+        expect(props).toEqual({ initialProjectId: 'project-42', initialStatus: '' })
     })
 
     it('leaves the all-tasks URL unfiltered when no project is supplied', () => {
@@ -32,7 +32,7 @@ describe('application deep links', () => {
         const route = router.resolve('/tasks')
         const props = resolvedProps(route)
 
-        expect(props).toEqual({ initialProjectId: '' })
+        expect(props).toEqual({ initialProjectId: '', initialStatus: '' })
     })
 
     it('registers a dashboard fallback for unknown paths', () => {
@@ -40,5 +40,14 @@ describe('application deep links', () => {
         const match = router.resolve('/does-not-exist').matched.at(-1)
 
         expect(match.redirect).toBe('/dashboard')
+    })
+    it('accepts supported status links and rejects unknown query values', () => {
+        const router = createAppRouter(createMemoryHistory())
+        for (const status of ['Pending', 'InProgress', 'Done', 'Overdue']) {
+            expect(resolvedProps(router.resolve('/tasks?status=' + status)).initialStatus).toBe(
+                status
+            )
+        }
+        expect(resolvedProps(router.resolve('/tasks?status=invalid')).initialStatus).toBe('')
     })
 })

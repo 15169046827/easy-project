@@ -84,26 +84,30 @@
             <span v-else class="baseline-ontrack">
                 <i class="pi pi-check-circle"></i> {{ $t('gantt.baselineOnTrack') }}
             </span>
-            <button class="baseline-clear" @click="clearBaseline">
+            <Button text severity="secondary" class="baseline-clear" @click="clearBaseline">
                 {{ $t('gantt.baselineClear') }}
-            </button>
+            </Button>
         </div>
 
         <div v-if="projectId && datedTasks.length" class="scroller-wrap">
-            <button
+            <Button
+                text
+                severity="secondary"
                 class="timeline-nav timeline-nav-left"
                 :title="$t('gantt.scrollLeft')"
                 @click="scrollDays(-14)"
             >
                 ◀
-            </button>
-            <button
+            </Button>
+            <Button
+                text
+                severity="secondary"
                 class="timeline-nav timeline-nav-right"
                 :title="$t('gantt.scrollRight')"
                 @click="scrollDays(14)"
             >
                 ▶
-            </button>
+            </Button>
             <div ref="scroller" class="gantt-scroller" @wheel.prevent="onWheel">
                 <div
                     class="gantt"
@@ -164,12 +168,22 @@
                                 {{ task.type === 'Milestone' ? '◆ ' : '' }}{{ task.name }}
                             </span>
                             <span class="date-actions">
-                                <button :title="$t('gantt.moveEarlier')" @click="shift(task, -1)">
+                                <Button
+                                    text
+                                    severity="secondary"
+                                    :title="$t('gantt.moveEarlier')"
+                                    @click="shift(task, -1)"
+                                >
                                     ‹
-                                </button>
-                                <button :title="$t('gantt.moveLater')" @click="shift(task, 1)">
+                                </Button>
+                                <Button
+                                    text
+                                    severity="secondary"
+                                    :title="$t('gantt.moveLater')"
+                                    @click="shift(task, 1)"
+                                >
                                     ›
-                                </button>
+                                </Button>
                             </span>
                         </div>
                         <div
@@ -202,14 +216,16 @@
                             :title="taskTip(task)"
                             @mousedown.left="onBarMouseDown(task, $event, 'move')"
                         >
-                            <button
+                            <Button
+                                text
+                                severity="secondary"
                                 v-if="task.type !== 'Milestone'"
                                 type="button"
                                 class="resize-handle resize-left"
                                 :title="$t('gantt.labelStart')"
                                 :aria-label="$t('gantt.labelStart')"
                                 @mousedown.stop="onBarMouseDown(task, $event, 'resize-left')"
-                            ></button>
+                            ></Button>
                             <span
                                 v-if="task.type !== 'Milestone'"
                                 :style="{ width: `${task.progress || 0}%` }"
@@ -218,14 +234,16 @@
                                 <small class="bar-dates">{{ fmtShortRange(task) }}</small>
                                 {{ task.progress || 0 }}%
                             </em>
-                            <button
+                            <Button
+                                text
+                                severity="secondary"
                                 v-if="task.type !== 'Milestone'"
                                 type="button"
                                 class="resize-handle resize-right"
                                 :title="$t('gantt.labelEnd')"
                                 :aria-label="$t('gantt.labelEnd')"
                                 @mousedown.stop="onBarMouseDown(task, $event, 'resize-right')"
-                            ></button>
+                            ></Button>
                             <span
                                 v-if="task.type !== 'Milestone'"
                                 class="link-handle"
@@ -294,197 +312,27 @@
             }}</span>
         </div>
 
-        <!-- 编辑任务面板 -->
-        <Teleport to="body">
-            <div v-if="creatingTask" class="gantt-overlay" @click.self="closeCreateEditor">
-                <form class="edit-panel create-panel" @submit.prevent="saveCreate">
-                    <div class="panel-heading">
-                        <div>
-                            <span class="panel-eyebrow">{{ $t('gantt.title') }}</span>
-                            <h3>{{ $t('tasks.newTask') }}</h3>
-                        </div>
-                        <button
-                            type="button"
-                            class="panel-close"
-                            :aria-label="$t('gantt.btnCancel')"
-                            @click="closeCreateEditor"
-                        >
-                            <i class="pi pi-times"></i>
-                        </button>
-                    </div>
-                    <p v-if="createError" class="create-error">{{ createError }}</p>
-                    <div class="edit-field">
-                        <label>{{ $t('gantt.labelName') }}</label>
-                        <input v-model="createForm.name" class="edit-input create-name" autofocus />
-                    </div>
-                    <div class="edit-row">
-                        <label>{{ $t('gantt.labelStart') }}</label>
-                        <input
-                            v-model="createForm.start_time"
-                            type="date"
-                            class="edit-input"
-                            @change="recalculateCreateEnd"
-                        />
-                        <label>{{ $t('tasks.columnEffort') }}</label>
-                        <input
-                            v-model.number="createForm.effort_days"
-                            type="number"
-                            min="0"
-                            step="0.5"
-                            class="edit-input"
-                            @input="recalculateCreateEnd"
-                        />
-                    </div>
-                    <div class="edit-row">
-                        <label>{{ $t('gantt.labelEnd') }}</label>
-                        <input
-                            v-model="createForm.end_time"
-                            type="date"
-                            class="edit-input"
-                            @change="recalculateCreateEffort"
-                        />
-                        <label>{{ $t('tasks.columnScheduleMode') }}</label>
-                        <select
-                            v-model="createForm.schedule_mode"
-                            class="edit-input"
-                            @change="recalculateCreateEnd"
-                        >
-                            <option value="fixed_effort">{{ $t('tasks.fixedEffort') }}</option>
-                            <option value="fixed_dates">{{ $t('tasks.fixedDates') }}</option>
-                        </select>
-                    </div>
-                    <div class="edit-row">
-                        <label>{{ $t('gantt.labelType') }}</label>
-                        <select v-model="createForm.type" class="edit-input">
-                            <option value="Task">{{ $t('gantt.optionTask') }}</option>
-                            <option value="Milestone">{{ $t('gantt.optionMilestone') }}</option>
-                        </select>
-                        <label>{{ $t('tasks.columnPriority') }}</label>
-                        <select v-model="createForm.priority" class="edit-input">
-                            <option value="5">{{ $t('tasks.p5') }}</option>
-                            <option value="4">{{ $t('tasks.p4') }}</option>
-                            <option value="3">{{ $t('tasks.p3') }}</option>
-                            <option value="2">{{ $t('tasks.p2') }}</option>
-                            <option value="1">{{ $t('tasks.p1') }}</option>
-                        </select>
-                    </div>
-                    <div class="edit-row">
-                        <label>{{ $t('gantt.labelStatus') }}</label>
-                        <select v-model="createForm.status" class="edit-input">
-                            <option value="Pending">{{ $t('gantt.optionPending') }}</option>
-                            <option value="InProgress">{{ $t('gantt.optionInProgress') }}</option>
-                            <option value="Done">{{ $t('gantt.optionDone') }}</option>
-                        </select>
-                    </div>
-                    <div class="edit-field">
-                        <label>{{ $t('tasks.columnAssignee') }}</label>
-                        <MemberSelect
-                            v-model="createForm.assignee"
-                            :allowed-member-ids="projectMemberIds"
-                            :placeholder="$t('tasks.selectAssignee')"
-                        />
-                    </div>
-                    <div class="edit-field">
-                        <label>{{ $t('tasks.columnComment') }}</label>
-                        <input v-model="createForm.comment" class="edit-input create-comment" />
-                    </div>
-                    <div class="edit-actions">
-                        <button type="button" class="btn-cancel" @click="closeCreateEditor">
-                            {{ $t('gantt.btnCancel') }}
-                        </button>
-                        <button type="submit" class="btn-save" :disabled="savingTask">
-                            {{ $t('tasks.newTask') }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </Teleport>
-
-        <Teleport to="body">
-            <div v-if="editingTask" class="gantt-overlay" @click.self="closeEditor">
-                <div class="edit-panel">
-                    <h3>{{ $t('gantt.editTitle') }}</h3>
-                    <label>{{ $t('gantt.labelName') }}</label>
-                    <input v-model="editForm.name" class="edit-input" @keydown.enter="saveEdit" />
-                    <div class="edit-row">
-                        <label>{{ $t('gantt.labelStart') }}</label>
-                        <input
-                            v-model="editForm.start_time"
-                            type="date"
-                            class="edit-input"
-                            @change="recalculateEditEnd"
-                        />
-                        <label>{{ $t('tasks.columnEffort') }}</label>
-                        <input
-                            v-model.number="editForm.effort_days"
-                            type="number"
-                            min="0"
-                            step="0.5"
-                            class="edit-input"
-                            @input="recalculateEditEnd"
-                        />
-                    </div>
-                    <div class="edit-row">
-                        <label>{{ $t('gantt.labelEnd') }}</label>
-                        <input
-                            v-model="editForm.end_time"
-                            type="date"
-                            class="edit-input"
-                            @change="recalculateEditEffort"
-                        />
-                        <label>{{ $t('tasks.columnScheduleMode') }}</label>
-                        <select
-                            v-model="editForm.schedule_mode"
-                            class="edit-input"
-                            @change="recalculateEditEnd"
-                        >
-                            <option value="fixed_effort">{{ $t('tasks.fixedEffort') }}</option>
-                            <option value="fixed_dates">{{ $t('tasks.fixedDates') }}</option>
-                        </select>
-                    </div>
-                    <div class="edit-row">
-                        <label>{{ $t('gantt.labelType') }}</label>
-                        <select v-model="editForm.type" class="edit-input">
-                            <option value="Task">{{ $t('gantt.optionTask') }}</option>
-                            <option value="Milestone">{{ $t('gantt.optionMilestone') }}</option>
-                        </select>
-                        <label>{{ $t('gantt.labelStatus') }}</label>
-                        <select v-model="editForm.status" class="edit-input">
-                            <option value="Pending">{{ $t('gantt.optionPending') }}</option>
-                            <option value="InProgress">{{ $t('gantt.optionInProgress') }}</option>
-                            <option value="Done">{{ $t('gantt.optionDone') }}</option>
-                        </select>
-                    </div>
-                    <div class="edit-field">
-                        <label>{{ $t('tasks.columnAssignee') }}</label>
-                        <MemberSelect
-                            v-model="editForm.assignee"
-                            :allowed-member-ids="projectMemberIds"
-                            :placeholder="$t('tasks.selectAssignee')"
-                        />
-                    </div>
-                    <div class="edit-row">
-                        <label>{{ $t('gantt.labelProgress') }}</label>
-                        <input
-                            v-model.number="editForm.progress"
-                            type="range"
-                            min="0"
-                            max="100"
-                            class="edit-range"
-                        />
-                        <span class="progress-val">{{ editForm.progress }}%</span>
-                    </div>
-                    <div class="edit-actions">
-                        <button class="btn-cancel" @click="closeEditor">
-                            {{ $t('gantt.btnCancel') }}
-                        </button>
-                        <button class="btn-save" @click="saveEdit">
-                            {{ $t('gantt.btnSave') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </Teleport>
+        <GanttTaskDialog
+            v-model="createForm"
+            :visible="creatingTask"
+            creating
+            :saving="savingTask"
+            :error="createError"
+            :memberIds="projectMemberIds"
+            @close="closeCreateEditor"
+            @save="saveCreate"
+            @recalculate-end="recalculateCreateEnd"
+            @recalculate-effort="recalculateCreateEffort"
+        />
+        <GanttTaskDialog
+            v-model="editForm"
+            :visible="Boolean(editingTask)"
+            :memberIds="projectMemberIds"
+            @close="closeEditor"
+            @save="saveEdit"
+            @recalculate-end="recalculateEditEnd"
+            @recalculate-effort="recalculateEditEffort"
+        />
     </section>
 </template>
 
@@ -492,6 +340,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import Button from 'primevue/button'
 import Select from 'primevue/select'
+import GanttTaskDialog from './GanttTaskDialog.vue'
 import { useI18n } from 'vue-i18n'
 import { crudAction } from '../../../api'
 import { useMembers } from '../../../composables/useMembers'

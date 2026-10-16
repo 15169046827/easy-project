@@ -1,4 +1,11 @@
 /* One outer grid for route pages; embedded project views keep their own toolbar. */
+.floating-document,
+.floating-document body,
+.floating-document #app {
+    background: transparent;
+    overflow: hidden;
+    min-width: 0;
+}
 :root {
     --workspace-padding: 1.5rem;
     --workspace-gap: 0.75rem;

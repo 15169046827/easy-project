@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import FloatingTaskWindow from '../../modules/floating/FloatingTaskWindow.vue'
 import { i18n } from '../../i18n'
 import PrimeVue from 'primevue/config'
+import Tooltip from 'primevue/tooltip'
 import {
     activeFloatingTasks,
     nearbyFloatingTasks,
@@ -16,7 +17,13 @@ vi.mock('../../modules/floating/windowActions', () => ({
     closeFloatingWindow: vi.fn(),
     resizeFloatingWindow: mocks.resize,
     returnToMain: mocks.main,
-    setFloatingOnTop: mocks.top
+    setFloatingOnTop: mocks.top,
+    beginBallMove: vi.fn().mockResolvedValue(null),
+    moveBall: vi.fn(),
+    keepFloatingVisible: vi.fn().mockResolvedValue(''),
+    nudgeBall: vi.fn().mockResolvedValue(''),
+    startFloatingResize: vi.fn(),
+    keyboardFloatingResize: vi.fn()
 }))
 vi.mock('../../composables/useTheme', () => ({ useTheme: vi.fn() }))
 
@@ -40,6 +47,37 @@ const tasks = [
     { id: 'done', name: 'Finished', status: 'Done' }
 ]
 describe('task floating window', () => {
+    it('drags and docks the collapsed ball without opening it, and supports keyboard movement', async () => {
+        const actions = await import('../../modules/floating/windowActions')
+        vi.mocked(actions.keepFloatingVisible).mockResolvedValueOnce('right')
+        const wrapper = mount(FloatingTaskWindow, {
+            global: { plugins: [i18n, PrimeVue], directives: { tooltip: Tooltip } }
+        })
+        await flushPromises()
+        await wrapper.get('button[aria-expanded]').trigger('click')
+        await flushPromises()
+        const ball = wrapper.get('.floating-ball')
+        Object.defineProperty(ball.element, 'setPointerCapture', { value: vi.fn() })
+        ball.element.dispatchEvent(
+            new MouseEvent('pointerdown', { bubbles: true, button: 0, screenX: 100, screenY: 100 })
+        )
+        ball.element.dispatchEvent(
+            new MouseEvent('pointermove', { bubbles: true, screenX: 200, screenY: 150 })
+        )
+        ball.element.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+        await flushPromises()
+        await ball.trigger('click')
+        expect(wrapper.classes()).toContain('collapsed')
+        expect(wrapper.attributes('data-dock-edge')).toBe('right')
+        expect(actions.moveBall).toHaveBeenCalled()
+        expect(actions.keepFloatingVisible).toHaveBeenCalledWith(true)
+        await ball.trigger('keydown', { key: 'ArrowRight' })
+        expect(actions.nudgeBall).toHaveBeenCalledWith(16, 0)
+        await ball.trigger('click')
+        await flushPromises()
+        expect(wrapper.classes()).toContain('expanded')
+        wrapper.unmount()
+    })
     beforeEach(() => {
         vi.stubGlobal(
             'matchMedia',

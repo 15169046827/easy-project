@@ -23,6 +23,9 @@ describe('PrimeVue UI contract', () => {
             'src/modules/task/components/ProjectList/ProjectList.vue',
             'src/modules/member/components/MemberList.vue',
             'src/modules/dashboard/components/DashboardView.vue',
+            'src/modules/gantt/components/GanttView.vue',
+            'src/modules/gantt/components/GanttTaskDialog.vue',
+            'src/components/ProgressEditor.vue',
             'src/modules/project/components/ProjectWorkspace.vue'
         ]
         for (const file of files) {

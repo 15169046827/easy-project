@@ -32,20 +32,26 @@
                     ><small>{{ $t('dashboard.totalTasks') }}</small></span
                 >
             </Button>
-            <div class="metric-card">
+            <Button class="metric-card" text severity="secondary" @click="openTasks('Done')">
                 <span class="metric-icon green"><i class="pi pi-check-circle"></i></span>
                 <span
                     ><strong>{{ metrics.completed }}</strong
                     ><small>{{ $t('dashboard.completedTasks') }}</small></span
                 >
-            </div>
-            <div class="metric-card" :class="{ warning: metrics.overdue > 0 }">
+            </Button>
+            <Button
+                class="metric-card"
+                text
+                severity="secondary"
+                :class="{ warning: metrics.overdue > 0 }"
+                @click="openTasks('Overdue')"
+            >
                 <span class="metric-icon red"><i class="pi pi-exclamation-circle"></i></span>
                 <span
                     ><strong>{{ metrics.overdue }}</strong
                     ><small>{{ $t('dashboard.overdueTasks') }}</small></span
                 >
-            </div>
+            </Button>
         </div>
 
         <div class="workspace-toolbar">
@@ -61,14 +67,23 @@
                     <h3>{{ $t('dashboard.taskStatus') }}</h3>
                     <span>{{ completionRate }}% {{ $t('dashboard.complete') }}</span>
                 </header>
-                <div class="progress-track">
-                    <span :style="{ width: `${completionRate}%` }"></span>
-                </div>
+                <ProgressBar
+                    class="progress-track"
+                    :value="completionRate"
+                    :showValue="false"
+                    :aria-label="$t('dashboard.complete')"
+                />
                 <div class="status-list">
-                    <div v-for="item in statusSummary" :key="item.label">
+                    <Button
+                        text
+                        severity="secondary"
+                        v-for="item in statusSummary"
+                        :key="item.status"
+                        @click="openTasks(item.status)"
+                    >
                         <span><i :class="item.className"></i>{{ item.label }}</span
                         ><strong>{{ item.value }}</strong>
-                    </div>
+                    </Button>
                 </div>
             </article>
 
@@ -137,18 +152,21 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import Button from 'primevue/button'
+import ProgressBar from 'primevue/progressbar'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { crudAction } from '../../../api'
 import { useMembers } from '../../../composables/useMembers'
 import { useStatusLabels } from '../../../composables/useStatusLabels'
-import { avatarBg, avatarInitial } from '../../../composables/useAvatar'
 import ResourceLoadPanel from '../../../components/ResourceLoadPanel.vue'
 
 const router = useRouter()
 const { t } = useI18n()
 function go(path) {
     router.push(path)
+}
+function openTasks(status) {
+    router.push({ path: '/tasks', query: { status } })
 }
 function openProject(id) {
     router.push('/project/' + id)
@@ -174,15 +192,22 @@ const completionRate = computed(() =>
 const statusSummary = computed(() => [
     {
         label: t('common.pending'),
-        value: tasks.value.filter(task => task.status === 'Pending').length,
+        status: 'Pending',
+        value: tasks.value.filter(task => ['Pending', 'Todo'].includes(task.status)).length,
         className: 'dot gray'
     },
     {
         label: t('common.active'),
+        status: 'InProgress',
         value: tasks.value.filter(task => task.status === 'InProgress').length,
         className: 'dot blue'
     },
-    { label: t('common.done'), value: metrics.value.completed, className: 'dot green' }
+    {
+        label: t('common.done'),
+        status: 'Done',
+        value: metrics.value.completed,
+        className: 'dot green'
+    }
 ])
 
 const attentionTasks = computed(() => {
@@ -192,7 +217,7 @@ const attentionTasks = computed(() => {
     return tasks.value
         .filter(task => {
             const end = parseDate(task.end_time)
-            return end && task.status !== 'Done' && end <= horizon
+            return end && !['Done', 'Archived'].includes(task.status) && end <= horizon
         })
         .sort(
             (left, right) =>
@@ -220,7 +245,7 @@ function parseDate(value) {
 
 function isOverdue(task) {
     const end = parseDate(task.end_time)
-    return Boolean(end && task.status !== 'Done' && end < new Date())
+    return Boolean(end && !['Done', 'Archived'].includes(task.status) && end < new Date())
 }
 
 function formatDate(value) {
@@ -312,7 +337,11 @@ onMounted(loadDashboard)
         box-shadow var(--transition-fast),
         border-color var(--transition-fast);
 }
-.metric-card:hover {
+.dashboard .metric-card.p-button:not(:disabled):hover,
+.dashboard .metric-card.p-button:not(:disabled):active {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+    color: var(--color-text);
     box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
 }
 button.metric-card {
@@ -392,7 +421,7 @@ button.metric-card {
     border-radius: 999px;
     background: var(--color-border);
 }
-.progress-track span {
+.progress-track :deep(.p-progressbar-value) {
     display: block;
     height: 100%;
     border-radius: inherit;
@@ -403,9 +432,13 @@ button.metric-card {
     gap: 0.8rem;
     margin-top: 1.2rem;
 }
-.status-list div {
+.status-list button {
     display: flex;
     justify-content: space-between;
+    padding: 0.5rem;
+    border: 0;
+    color: var(--color-text);
+    background: transparent;
 }
 .status-list span {
     display: flex;
@@ -447,6 +480,24 @@ button.metric-card {
 .attention-list button {
     grid-template-columns: 1fr 0.8fr auto;
     gap: 1rem;
+}
+.dashboard .attention-list button.p-button,
+.dashboard .recent-list button.p-button {
+    border: 0;
+    border-bottom: 1px solid var(--color-border-light);
+    box-shadow: none;
+    outline: none;
+    transition: background-color var(--transition-fast);
+}
+.dashboard .attention-list button.p-button:not(:disabled):hover,
+.dashboard .recent-list button.p-button:not(:disabled):hover {
+    border-color: var(--color-border-light);
+    background: var(--color-subtle-hover);
+    color: var(--color-text);
+}
+.dashboard button.p-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
 }
 .task-name {
     font-weight: 600;

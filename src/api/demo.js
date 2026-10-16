@@ -124,9 +124,18 @@ export async function demoAction(model, action, data = {}) {
         return { id, taskCount: data.tasks.length }
     }
     if (action === 'get_all') {
-        const list = data.projectId
-            ? items.filter(item => item.project_id === data.projectId)
-            : items
+        let list = data.projectId ? items.filter(item => item.project_id === data.projectId) : items
+        if (model === 'task' && data.status)
+            list = list.filter(item => {
+                if (data.status === 'Pending') return ['Pending', 'Todo'].includes(item.status)
+                if (data.status === 'Overdue')
+                    return (
+                        !['Done', 'Archived'].includes(item.status) &&
+                        Boolean(item.end_time) &&
+                        new Date(item.end_time) < new Date()
+                    )
+                return item.status === data.status
+            })
         return { list: structuredClone(list), total: list.length }
     }
     if (model === 'project_member' && action === 'get_by_project') {

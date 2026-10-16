@@ -19,6 +19,9 @@ All notable changes to EasyProject are documented here.
 
 ### Improved
 
+- Unified dashboard cards and list pointer/keyboard states, removed transient attention-row borders, and fixed member-avatar growth/row-height changes. Status totals (including legacy Todo) and overdue cards link to working task filters.
+- Task-list and Gantt editors share a PrimeVue slider plus numeric percentage input. Gantt forms now use PrimeVue dialogs and form controls with fixed action footers.
+- Floating task windows resize from their edges with a 340×360 minimum and remembered expanded size. Collapse creates a draggable 64px transparent window containing a floating ball; release near any work-area edge docks it, while other positions remain free. Keyboard movement/resize are supported.
 - Floating window now lists the five nearest dated unfinished tasks with project navigation, due dates and progress, without manual task selection. Background refresh retains keyed task cards and does not show a transient loading row or resize/focus a window.
 - Task editing now uses an independent-draft PrimeVue dialog instead of crowded row editors; hidden table columns stay hidden and cancellation discards unsaved changes. Navigation hover/focus keeps border dimensions stable.
 - Aligned route headings, 76px statistic cards, toolbars, and content borders across dashboard/project/task/member pages, with shared responsive spacing and the same outer grid for data/project workspaces.

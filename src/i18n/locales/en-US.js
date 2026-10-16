@@ -1,5 +1,8 @@
 export default {
     floating: {
+        resizeHint: 'Resize window (arrow keys adjust width and height)',
+        ballHint:
+            'Click to expand tasks; drag to dock at a screen edge or float freely; arrow keys to move',
         title: 'Upcoming tasks',
         open: 'Task floating window',
         close: 'Close floating window',

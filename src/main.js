@@ -17,6 +17,7 @@ import { getStyleNonce } from './security/styleNonce'
 const floating =
     window.__EASYPROJECT_FLOATING_WINDOW__ || window.location.hash.split('?')[0] === '#/floating'
 const app = createApp(floating ? FloatingTaskWindow : App)
+if (floating) document.documentElement.classList.add('floating-document')
 const EasyProjectPreset = definePreset(Aura, {
     semantic: {
         primary: {

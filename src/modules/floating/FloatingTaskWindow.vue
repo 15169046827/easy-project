@@ -1,6 +1,28 @@
 <template>
-    <section class="floating-root" :class="{ expanded }" data-testid="floating-window">
-        <header class="floating-header">
+    <section
+        class="floating-root"
+        :class="{ expanded, collapsed: !expanded }"
+        :data-dock-edge="dockEdge"
+        data-testid="floating-window"
+    >
+        <Button
+            v-if="!expanded"
+            class="floating-ball"
+            :disabled="resizing"
+            :aria-label="$t('floating.ballHint')"
+            :aria-expanded="false"
+            v-tooltip.bottom="error || actionError || $t('floating.ballHint')"
+            @pointerdown="pointerDown"
+            @pointermove="pointerMove"
+            @pointerup="pointerUp"
+            @pointercancel="pointerUp"
+            @click="ballClick"
+            @keydown="ballKeydown"
+        >
+            <i class="pi pi-sparkles" aria-hidden="true" />
+            <span v-if="error || actionError" class="ball-error" role="alert">!</span>
+        </Button>
+        <header v-if="expanded" class="floating-header">
             <div class="floating-drag" :data-tauri-drag-region="native ? '' : undefined">
                 <i
                     class="pi pi-sparkles"
@@ -15,6 +37,7 @@
                 type="button"
                 :aria-label="expanded ? $t('floating.collapse') : $t('floating.expand')"
                 :aria-expanded="expanded"
+                :disabled="resizing"
                 @click="toggleExpanded"
             >
                 <i
@@ -76,9 +99,16 @@
                 {{ $t('floating.openMain') }}
             </Button>
         </footer>
-        <p v-if="!expanded && (error || actionError)" class="collapsed-error" role="alert">
-            {{ $t('floating.loadFailed') }}
-        </p>
+        <div
+            v-for="edge in expanded && native ? resizeEdges : []"
+            :key="edge"
+            :class="['resize-edge', edge]"
+            :tabindex="edge === 'SouthEast' ? 0 : undefined"
+            :role="edge === 'SouthEast' ? 'separator' : undefined"
+            :aria-label="edge === 'SouthEast' ? $t('floating.resizeHint') : undefined"
+            @pointerdown.prevent="run(() => startFloatingResize(edge))"
+            @keydown="resizeKey"
+        />
     </section>
 </template>
 
@@ -90,20 +120,42 @@ import Message from 'primevue/message'
 import { useTheme } from '../../composables/useTheme'
 import { useFloatingTasks } from './useFloatingTasks'
 import { taskProgress } from './taskSelection'
+import { useFloatingBall } from './useFloatingBall'
 import {
     closeFloatingWindow,
     isFloatingNative,
     resizeFloatingWindow,
     returnToMain,
-    setFloatingOnTop
+    setFloatingOnTop,
+    startFloatingResize,
+    keyboardFloatingResize
 } from './windowActions'
 
 useTheme()
 const native = isFloatingNative()
 const expanded = ref(true)
+const resizing = ref(false)
 const onTop = ref(true)
 const actionError = ref('')
 const { tasks, projectNames, error, loading, initialLoading, refresh } = useFloatingTasks()
+const resizeEdges = [
+    'North',
+    'South',
+    'East',
+    'West',
+    'NorthEast',
+    'NorthWest',
+    'SouthEast',
+    'SouthWest'
+]
+const {
+    dockEdge,
+    pointerDown,
+    pointerMove,
+    pointerUp,
+    click: ballClick,
+    keydown: ballKeydown
+} = useFloatingBall(run, toggleExpanded)
 
 async function run(action) {
     try {
@@ -116,20 +168,32 @@ async function run(action) {
     }
 }
 async function toggleExpanded() {
+    if (resizing.value) return
+    resizing.value = true
     const next = !expanded.value
-    if (await run(() => resizeFloatingWindow(next))) expanded.value = next
+    expanded.value = next
+    try {
+        if (!(await run(() => resizeFloatingWindow(next)))) expanded.value = !next
+    } finally {
+        resizing.value = false
+    }
 }
 async function toggleOnTop() {
     const next = !onTop.value
     if (await run(() => setFloatingOnTop(next))) onTop.value = next
 }
+function resizeKey(event) {
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return
+    event.preventDefault()
+    run(() => keyboardFloatingResize(event.key))
+}
 </script>
 
 <style scoped>
 .floating-root {
+    position: relative;
     width: 100%;
-    max-width: 340px;
-    height: 72px;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     padding: 8px;
@@ -139,7 +203,108 @@ async function toggleOnTop() {
     border-radius: 12px;
 }
 .floating-root.expanded {
-    height: min(360px, 100vh);
+    min-width: 340px;
+    min-height: 360px;
+}
+.floating-root.collapsed {
+    width: 64px;
+    height: 64px;
+    padding: 4px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+}
+.floating-ball.p-button {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    touch-action: none;
+    cursor: grab;
+    user-select: none;
+    border: 2px solid var(--color-surface);
+    padding: 0;
+}
+.floating-ball.p-button:not(:disabled):hover {
+    background: var(--color-primary-dark, #1d4ed8);
+    color: white;
+}
+.floating-ball:active {
+    cursor: grabbing;
+}
+.floating-ball i {
+    font-size: 1.4rem;
+    pointer-events: none;
+}
+.ball-error {
+    position: absolute;
+    right: 6px;
+    top: 2px;
+    color: var(--color-error-text);
+}
+.resize-edge {
+    position: absolute;
+    z-index: 5;
+    touch-action: none;
+}
+.resize-edge:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+}
+.North,
+.South {
+    height: 5px;
+    left: 10px;
+    right: 10px;
+    cursor: ns-resize;
+}
+.North {
+    top: 0;
+}
+.South {
+    bottom: 0;
+}
+.East,
+.West {
+    width: 5px;
+    top: 10px;
+    bottom: 10px;
+    cursor: ew-resize;
+}
+.East {
+    right: 0;
+}
+.West {
+    left: 0;
+}
+.NorthEast,
+.NorthWest,
+.SouthEast,
+.SouthWest {
+    width: 12px;
+    height: 12px;
+}
+.NorthEast {
+    top: 0;
+    right: 0;
+    cursor: nesw-resize;
+}
+.NorthWest {
+    top: 0;
+    left: 0;
+    cursor: nwse-resize;
+}
+.SouthEast {
+    bottom: 0;
+    right: 0;
+    cursor: nwse-resize;
+}
+.SouthWest {
+    bottom: 0;
+    left: 0;
+    cursor: nesw-resize;
 }
 .floating-header {
     display: flex;

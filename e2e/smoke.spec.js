@@ -505,7 +505,7 @@ test('changes a task assignee from the Gantt editor', async ({ page }) => {
     await page.locator('.task-bar').click()
     await expect(page.locator('.edit-panel')).toBeVisible()
 
-    await page.locator('.edit-field .p-select').click()
+    await page.locator('#gantt-edit-assignee').click()
     await page.getByText('Bob', { exact: true }).click()
     await page.locator('.btn-save').click()
 
@@ -772,13 +772,15 @@ test('creates a complete task from the Gantt timeline form', async ({ page }) =>
 
     await expect(page.locator('.create-panel')).toBeVisible()
     await page.locator('.create-name').fill('Plan launch')
-    await page.locator('.create-panel input[type="date"]').first().fill('2026-07-17')
-    await page.locator('.create-panel input[type="number"]').fill('2')
-    await expect(page.locator('.create-panel input[type="date"]').nth(1)).toHaveValue('2026-07-20')
-    await page.locator('.create-panel .edit-field .p-select').click()
+    await page.locator('#gantt-create-start').fill('2026-07-17')
+    await page.locator('#gantt-create-start').press('Tab')
+    await page.locator('#gantt-create-effort').fill('2')
+    await page.locator('#gantt-create-effort').press('Tab')
+    await expect(page.locator('#gantt-create-end')).toHaveValue('2026-07-20')
+    await page.locator('#gantt-create-assignee').click()
     await page.getByText('Bob', { exact: true }).click()
-    await page.locator('.create-comment').fill('Coordinate release')
-    await page.locator('.create-panel .btn-save').click()
+    await page.locator('#gantt-create-comment').fill('Coordinate release')
+    await page.getByRole('dialog').locator('.btn-save').click()
 
     const addCalls = await page.evaluate(() =>
         window.__EASY_PROJECT_CALLS__.filter(

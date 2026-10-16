@@ -80,7 +80,7 @@
                     </div>
                     <Select
                         v-model="statusFilter"
-                        :options="taskStatus"
+                        :options="taskFilterStatus"
                         optionLabel="label"
                         optionValue="value"
                         :placeholder="$t('tasks.allStatuses')"
@@ -154,7 +154,7 @@
                     </div>
                     <Select
                         v-model="statusFilter"
-                        :options="taskStatus"
+                        :options="taskFilterStatus"
                         optionLabel="label"
                         optionValue="value"
                         :placeholder="$t('tasks.status')"
@@ -410,9 +410,12 @@
                 >
                     <template #body="{ data }">
                         <div class="mini-progress">
-                            <span class="mini-progress-bar">
-                                <span :style="{ width: `${data.progress || 0}%` }"></span>
-                            </span>
+                            <ProgressBar
+                                class="mini-progress-bar"
+                                :value="data.progress || 0"
+                                :showValue="false"
+                                :aria-label="$t('tasks.columnProgress')"
+                            />
                             <small>{{ data.progress || 0 }}%</small>
                         </div>
                     </template>
@@ -659,13 +662,10 @@
                 </div>
                 <div class="task-edit-field">
                     <label for="task-edit-progress">{{ $t('tasks.columnProgress') }}</label
-                    ><InputNumber
+                    ><ProgressEditor
                         inputId="task-edit-progress"
                         v-model="editDraft.progress"
-                        :min="0"
-                        :max="100"
-                        :useGrouping="false"
-                        fluid
+                        :label="$t('tasks.columnProgress')"
                     />
                 </div>
                 <div class="task-edit-field">
@@ -734,6 +734,8 @@ import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
+import ProgressEditor from '../../../../components/ProgressEditor.vue'
+import ProgressBar from 'primevue/progressbar'
 import Select from 'primevue/select'
 import MultiSelect from 'primevue/multiselect'
 import Dialog from 'primevue/dialog'
@@ -764,6 +766,7 @@ import { flattenTaskTree, getParentOptions } from '../../utils/taskTree.js'
 
 const props = defineProps({
     initialProjectId: { type: String, default: '' },
+    initialStatus: { type: String, default: '' },
     embedded: { type: Boolean, default: false }
 })
 
@@ -791,6 +794,7 @@ const {
     clearSearch,
     onPage
 } = useTaskListQuery(props.initialProjectId)
+statusFilter.value = props.initialStatus
 
 const showLoading = useDelayedBusy(loading)
 const columnStorageKey = props.embedded
@@ -915,6 +919,10 @@ const taskStatus = computed(() => [
     { label: t('tasks.statusInProgress'), value: 'InProgress' },
     { label: t('tasks.statusDone'), value: 'Done' }
 ])
+const taskFilterStatus = computed(() => [
+    ...taskStatus.value.filter(item => item.value !== 'Todo'),
+    { label: t('common.overdue'), value: 'Overdue' }
+])
 
 // 可编辑/远端请求
 const taskPriority = computed(() => [
@@ -947,7 +955,7 @@ const taskStats = computed(() => ({
     total: tasks.value.length,
     inProgress: tasks.value.filter(t => t.status === 'InProgress').length,
     done: tasks.value.filter(t => t.status === 'Done').length,
-    pending: tasks.value.filter(t => t.status === 'Pending').length
+    pending: tasks.value.filter(t => ['Pending', 'Todo'].includes(t.status)).length
 }))
 
 function statusPillClass(status) {
@@ -1155,6 +1163,12 @@ async function confirmDeleteTask() {
 }
 
 watch(selectedProjectId, resetPageAndLoad)
+watch(
+    () => props.initialStatus,
+    value => {
+        statusFilter.value = value
+    }
+)
 watch(
     () => props.initialProjectId,
     value => {
@@ -1555,7 +1569,7 @@ onMounted(async () => {
     background: var(--color-border);
     overflow: hidden;
 }
-.mini-progress-bar span {
+.mini-progress-bar :deep(.p-progressbar-value) {
     display: block;
     height: 100%;
     border-radius: inherit;

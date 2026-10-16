@@ -23,7 +23,14 @@ export const routes = [
         path: '/tasks',
         name: 'Tasks',
         component: () => import('../modules/task/components/TaskList/TaskList.vue'),
-        props: route => ({ initialProjectId: route.query.project || '' })
+        props: route => ({
+            initialProjectId: route.query.project || '',
+            initialStatus: ['Todo', 'Pending', 'InProgress', 'Done', 'Overdue'].includes(
+                String(route.query.status)
+            )
+                ? String(route.query.status)
+                : ''
+        })
     },
     {
         path: '/members',

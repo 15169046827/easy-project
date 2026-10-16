@@ -32,6 +32,7 @@ EasyProject is an open-source, local-first desktop project planning application.
 - Validate editable fields in the Rust service layer.
 - Restrict remote calendar targets, backup restore paths, WebView content sources, and production log verbosity.
 - Use the top-right **任务悬浮窗 / Task floating window** button to open an independent read-only task window for progress and project navigation (requires the updated desktop build).
+- Drag floating-window edges to resize (minimum 340×360; task cards scroll without hiding controls). Collapse to a floating ball: click to reopen, drag near any screen work-area edge to dock, or leave it in the middle to float freely. Arrow keys move the focused ball; the bottom-right resize grip supports arrow keys. Expanded size is retained while the window stays open.
 - The task window opens expanded and lists the five nearest dated unfinished tasks (including overdue and Todo tasks), with project, due date and progress. Background refresh preserves existing content; no current-task selection is required.
 - Task creation/editing uses a responsive PrimeVue dialog with a separate draft and reachable Save/Cancel actions; editing does not alter visible table columns.
 - View consistently aligned page borders and statistic cards. Task names stay pinned while optional columns scroll; choose visible columns, hover truncated values for full text, and clear parent/predecessor selections.

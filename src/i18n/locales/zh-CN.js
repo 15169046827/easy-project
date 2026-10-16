@@ -1,5 +1,7 @@
 export default {
     floating: {
+        resizeHint: '调整窗口大小（方向键调整宽高）',
+        ballHint: '点击展开任务；拖动可吸附屏幕边缘或悬空；方向键移动',
         title: '临近任务',
         open: '任务悬浮窗',
         close: '关闭悬浮窗',

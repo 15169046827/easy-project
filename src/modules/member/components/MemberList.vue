@@ -102,7 +102,12 @@
                     </template>
                     <template #body="{ data }">
                         <div class="member-name-cell">
-                            <Button class="member-trigger" @click="openDetail(data)">
+                            <Button
+                                text
+                                severity="secondary"
+                                class="member-trigger"
+                                @click="openDetail(data)"
+                            >
                                 <span
                                     class="avatar-circle"
                                     :style="{ background: avatarBg(data.name) }"
@@ -886,7 +891,7 @@ onMounted(load)
 }
 
 /* 成员名称可点击 */
-.member-trigger {
+.member-trigger.p-button {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -896,6 +901,35 @@ onMounted(load)
     color: inherit;
     font: inherit;
     cursor: pointer;
+    justify-content: flex-start;
+    height: 36px;
+    min-height: 36px;
+    max-width: 100%;
+    box-shadow: none;
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast);
+}
+.member-trigger.p-button:not(:disabled):hover,
+.member-trigger.p-button:not(:disabled):active {
+    border: 0;
+    background: var(--color-subtle-hover);
+    color: inherit;
+}
+.member-trigger.p-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+.member-trigger .avatar-circle {
+    flex: 0 0 32px;
+    min-width: 32px;
+    max-width: 32px;
+}
+.member-trigger .member-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .member-trigger:hover .member-name {
     color: var(--color-primary);

@@ -186,8 +186,14 @@ pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec
         values.push(pattern);
     }
     if let Some(status) = query.status.filter(|value| !value.is_empty()) {
-        conditions.push("status = ?".to_string());
-        values.push(status.to_string());
+        match status {
+            "Pending" => conditions.push("status IN ('Pending', 'Todo')".to_string()),
+            "Overdue" => conditions.push("status NOT IN ('Done', 'Archived') AND datetime(end_time) < datetime('now', 'localtime')".to_string()),
+            _ => {
+                conditions.push("status = ?".to_string());
+                values.push(status.to_string());
+            }
+        }
     }
     if let Some(priority) = query.priority.filter(|value| !value.is_empty()) {
         conditions.push("priority = ?".to_string());
@@ -446,5 +452,62 @@ mod reorder_tests {
             conn.is_autocommit(),
             "failed transaction must release its resources"
         );
+    }
+}
+
+#[cfg(test)]
+mod status_query_tests {
+    use super::*;
+    use std::{path::PathBuf, sync::Mutex};
+
+    #[test]
+    fn pending_includes_legacy_todo_and_overdue_excludes_finished_or_invalid_dates() {
+        let conn = Connection::open_in_memory().unwrap();
+        conn.execute_batch(
+            "CREATE TABLE task (
+            id TEXT, project_id TEXT, sort_order INTEGER, name TEXT, parent TEXT, dependence TEXT,
+            start_time TEXT, end_time TEXT, type TEXT DEFAULT 'Task', priority TEXT DEFAULT '3',
+            status TEXT, progress INTEGER, effort_days REAL, schedule_mode TEXT, comment TEXT,
+            assignee TEXT, creator TEXT, create_time TEXT DEFAULT '', update_time TEXT DEFAULT '',
+            stateflag TEXT DEFAULT '0');
+            INSERT INTO task (id,name,status,end_time) VALUES
+            ('pending','Pending','Pending','2000-01-01'),
+            ('todo','Todo','Todo','2000-01-01'),
+            ('done','Done','Done','2000-01-01'),
+            ('archived','Archived','Archived','2000-01-01'),
+            ('future','Future','InProgress','2999-01-01'),
+            ('invalid','Invalid','InProgress','invalid'),
+            ('empty','Empty','InProgress','');",
+        )
+        .unwrap();
+        let db = DbState(Mutex::new(conn), PathBuf::new());
+        let mut query = TaskQuery {
+            page_index: 1,
+            page_size: 100,
+            project_id: None,
+            keyword: None,
+            status: Some("Pending"),
+            priority: None,
+            assignee: None,
+            sort_by: "name",
+            sort_direction: "asc",
+        };
+        let (tasks, total) = query_tasks(&db, &query).unwrap();
+        assert_eq!(total, 2);
+        assert_eq!(
+            tasks
+                .iter()
+                .map(|task| task.id.as_str())
+                .collect::<Vec<_>>(),
+            vec!["pending", "todo"]
+        );
+        query.status = Some("Overdue");
+        assert_eq!(query_tasks(&db, &query).unwrap().1, 2);
+        query.status = Some("Done");
+        assert_eq!(query_tasks(&db, &query).unwrap().1, 1);
+        query.status = Some("Done' OR 1=1 --");
+        assert_eq!(query_tasks(&db, &query).unwrap().1, 0);
+        query.status = None;
+        assert_eq!(query_tasks(&db, &query).unwrap().1, 7);
     }
 }

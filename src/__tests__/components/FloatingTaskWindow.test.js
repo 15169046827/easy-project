@@ -47,6 +47,21 @@ const tasks = [
     { id: 'done', name: 'Finished', status: 'Done' }
 ]
 describe('task floating window', () => {
+    it('retains the docking edge returned when the expanded window collapses', async () => {
+        mocks.resize.mockResolvedValueOnce('left')
+        const wrapper = mount(FloatingTaskWindow, {
+            global: { plugins: [i18n, PrimeVue], directives: { tooltip: Tooltip } }
+        })
+        await flushPromises()
+        await wrapper.get('button[aria-expanded]').trigger('click')
+        await flushPromises()
+        expect(wrapper.attributes('data-dock-edge')).toBe('left')
+        expect(wrapper.classes()).toContain('collapsed')
+        await wrapper.get('.floating-ball').trigger('click')
+        await flushPromises()
+        expect(wrapper.attributes('data-dock-edge')).toBe('')
+        wrapper.unmount()
+    })
     it('drags and docks the collapsed ball without opening it, and supports keyboard movement', async () => {
         const actions = await import('../../modules/floating/windowActions')
         vi.mocked(actions.keepFloatingVisible).mockResolvedValueOnce('right')

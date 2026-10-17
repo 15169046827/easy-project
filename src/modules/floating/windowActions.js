@@ -64,8 +64,9 @@ export async function resizeFloatingWindow(expanded) {
             )
         )
         await nativeWindow.setResizable(expanded)
-        await keepFloatingVisible(!expanded)
+        return keepFloatingVisible(!expanded)
     }
+    return ''
 }
 
 export async function keepFloatingVisible(snap = false) {

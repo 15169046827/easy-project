@@ -301,6 +301,7 @@ test('edits in a modal without expanding hidden columns and cancels its draft at
     await page.setViewportSize({ width: 960, height: 640 })
     await page.goto('/#/tasks')
     const table = page.locator('.workspace-table')
+    await expect(table.getByRole('columnheader', { name: '名称', exact: true })).toBeVisible()
     const count = await table.getByRole('columnheader').count()
     await table.getByRole('button', { name: '编辑', exact: true }).first().click()
     const dialog = page.getByRole('dialog')

@@ -64,7 +64,8 @@ describe('native floating controls', () => {
         })
     })
     it('uses a 64px ball and restores the user-expanded size, with independent minimums', async () => {
-        await resizeFloatingWindow(false)
+        native.position = { x: 8, y: 100 }
+        expect(await resizeFloatingWindow(false)).toBe('left')
         expect(native.setMinSize).toHaveBeenLastCalledWith({ width: 64, height: 64 })
         expect(native.setResizable).toHaveBeenLastCalledWith(false)
         expect(native.size).toEqual({ width: 64, height: 64 })

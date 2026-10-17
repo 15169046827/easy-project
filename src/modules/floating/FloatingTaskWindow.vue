@@ -173,7 +173,13 @@ async function toggleExpanded() {
     const next = !expanded.value
     expanded.value = next
     try {
-        if (!(await run(() => resizeFloatingWindow(next)))) expanded.value = !next
+        if (
+            !(await run(async () => {
+                const edge = await resizeFloatingWindow(next)
+                dockEdge.value = next ? '' : edge || ''
+            }))
+        )
+            expanded.value = !next
     } finally {
         resizing.value = false
     }
@@ -213,6 +219,7 @@ function resizeKey(event) {
     border: 0;
     border-radius: 50%;
     background: transparent;
+    overflow: hidden;
 }
 .floating-ball.p-button {
     width: 56px;
@@ -226,6 +233,34 @@ function resizeKey(event) {
     user-select: none;
     border: 2px solid var(--color-surface);
     padding: 0;
+    flex-shrink: 0;
+    transition:
+        transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        background-color 150ms ease;
+}
+.floating-root.collapsed[data-dock-edge='left'] .floating-ball {
+    transform: translateX(-32px);
+}
+.floating-root.collapsed[data-dock-edge='right'] .floating-ball {
+    transform: translateX(32px);
+}
+.floating-root.collapsed[data-dock-edge='top'] .floating-ball {
+    transform: translateY(-32px);
+}
+.floating-root.collapsed[data-dock-edge='bottom'] .floating-ball {
+    transform: translateY(32px);
+}
+.floating-root.collapsed[data-dock-edge]:not([data-dock-edge='']) {
+    border-radius: 0;
+}
+.floating-root.collapsed[data-dock-edge]:hover .floating-ball,
+.floating-root.collapsed[data-dock-edge]:has(.floating-ball:focus-visible) .floating-ball {
+    transform: translate(0, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+    .floating-ball.p-button {
+        transition: none;
+    }
 }
 .floating-ball.p-button:not(:disabled):hover {
     background: var(--color-primary-dark, #1d4ed8);

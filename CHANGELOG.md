@@ -19,6 +19,7 @@ All notable changes to EasyProject are documented here.
 
 ### Improved
 
+- Docked floating balls now peek out as a half-circle on all four edges, reveal the full circle on hover or keyboard focus, and retract on leave. Free-floating, drag and click-to-expand behavior remain available; reduced-motion preferences are respected.
 - Unified dashboard cards and list pointer/keyboard states, removed transient attention-row borders, and fixed member-avatar growth/row-height changes. Status totals (including legacy Todo) and overdue cards link to working task filters.
 - Task-list and Gantt editors share a PrimeVue slider plus numeric percentage input. Gantt forms now use PrimeVue dialogs and form controls with fixed action footers.
 - Floating task windows resize from their edges with a 340×360 minimum and remembered expanded size. Collapse creates a draggable 64px transparent window containing a floating ball; release near any work-area edge docks it, while other positions remain free. Keyboard movement/resize are supported.

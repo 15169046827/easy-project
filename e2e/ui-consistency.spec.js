@@ -379,6 +379,20 @@ for (const dark of [false, true]) {
         page
     }) => {
         await page.setViewportSize({ width: 960, height: 640 })
+        await page.route('http://127.0.0.1:4173/', async route => {
+            const response = await route.fetch()
+            await route.fulfill({
+                response,
+                body: (await response.text()).replace(
+                    /<style>/g,
+                    '<style nonce="status-response-nonce">'
+                ),
+                headers: {
+                    ...response.headers(),
+                    'content-security-policy': "style-src 'self' 'nonce-status-response-nonce'"
+                }
+            })
+        })
         await page.addInitScript(
             value => localStorage.setItem('easyproject-theme', value),
             dark ? 'dark' : 'light'
@@ -396,6 +410,37 @@ for (const dark of [false, true]) {
             expect(await card.boundingBox()).toEqual(box)
         }
         expect(new Set(backgrounds).size).toBe(1)
+        const statuses = page.locator('.status-list button')
+        await expect(statuses).toHaveCount(3)
+        expect(
+            await page
+                .locator('style[data-primevue-style-id]')
+                .evaluateAll(styles =>
+                    styles.every(style => style.nonce === 'status-response-nonce')
+                )
+        ).toBe(true)
+        await page.mouse.move(0, 0)
+        for (const status of await statuses.all()) {
+            const before = await status.boundingBox()
+            for (const action of ['hover', 'focus']) {
+                await status[action]()
+                const frames = await status.evaluate(async node => {
+                    const result = []
+                    for (let i = 0; i < 20; i++) {
+                        await new Promise(resolve => requestAnimationFrame(resolve))
+                        const rect = node.getBoundingClientRect()
+                        result.push({
+                            x: rect.x,
+                            y: rect.y,
+                            width: rect.width,
+                            height: rect.height
+                        })
+                    }
+                    return result
+                })
+                expect(frames).toEqual(Array.from({ length: 20 }, () => before))
+            }
+        }
         const attention = page.locator('.attention-list button').first()
         await expect(attention).toBeVisible()
         await page.mouse.move(0, 0)

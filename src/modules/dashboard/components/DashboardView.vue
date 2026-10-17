@@ -432,13 +432,22 @@ button.metric-card {
     gap: 0.8rem;
     margin-top: 1.2rem;
 }
-.status-list button {
+.dashboard .status-list button.p-button {
     display: flex;
     justify-content: space-between;
     padding: 0.5rem;
     border: 0;
     color: var(--color-text);
     background: transparent;
+    box-shadow: none;
+    outline: none;
+    transition: background-color var(--transition-fast);
+}
+.dashboard .status-list button.p-button:not(:disabled):hover,
+.dashboard .status-list button.p-button:not(:disabled):active {
+    border: 0;
+    background: var(--color-subtle-hover);
+    color: var(--color-text);
 }
 .status-list span {
     display: flex;

@@ -62,3 +62,29 @@
 - 当前未提交本检查点、docs/RELEASING.md和docs/PROJECT_PLAN.md（纠正已完成的独立编号仍写待办）；源码候选不变，安装/用户数据/MCP权限未改。里程碑五小时87%、周84%；下一步继续同run，六资产齐备后再核验与安装，正式发布限制不变。
 
 - 旧Draft406330701及六资产ID/大小/digest再次与本文件基线逐项匹配，未变；当前已安装exe SHA仍CA484D91A665D2967C456EF4F4FF1BDD42A43462D99E8F9BE7D5EF53134993F8。新运行Rust格式/严格Clippy也成功，Test Rust进行中，不能提前认定全部门禁通过。
+
+## 新草稿预留成功
+
+- 阶段文档提交f2a7bdc99e114ea025112f048d583aec23e5eab3已精确非强制同步，源码候选仍0c38194。39105705643的validate/rust-security/prepare现全部success，Windows2022、Mac ARM26、Mac Intel26三打包进行中。
+- 新Draft416293740，tag v0.1.0-internal.2，draft=true/prerelease=true，target_commitish精确0c38194bff24730427cf263f34277b2b3f2cf1d8；最近0资产，尚未完成。未发布或覆盖旧Release。
+- 里程碑五小时剩余75%、周82%，下一步继续等待同run三构建；六资产齐全后核验下载。当前仅检查点未提交，Wolai待同步本里程碑，安装/业务数据/设备连接/例外期限保持。WACAS未定义，UPARS1.1.0及项目规则不变。
+
+- 三平台构建/产物检查已执行成功，六资产齐全；Windows/ARM job终态success，Intel仅剩Post Cache Rust build收尾，整体success仍待最终确认。新draft实际地址https://github.com/15169046827/easy-project/releases/tag/untagged-418e1d25d78621174692 。进入独立下载核验阶段，目录固定E盘release-39105705643，禁止覆盖已存在文件。新增验收记录docs/INTERNAL_RELEASE_2_ACCEPTANCE.md（未提交），和本检查点为当前全部未提交；安装与真实数据未变。
+
+- 现确认39105705643整体及六job全部success；六资产ID/大小/官方SHA已写验收记录。下载阶段前额度五小时61%、周80%。直接Release下载运行中（执行会话55433），速度慢且文件未齐/未达官方大小，绝不当作已验证；检查同run备份通道，任何替代来源也须与官方digest逐字节匹配。当前安装/数据仍未改。
+
+- 下载续接：原慢速gh release进程已按精确命令/目录确认后停止，部分文件保留release-39105705643。独立工作流备份NSIS位于workflow-backup-39105705643，SHA49fa4d...与新Release匹配，版本0.1.0/NotSigned。另一只限此候选的Node下载器在release-39105705643-node，执行会话37061（只在GitHub API使用凭据，不向资产域转发），六文件约32MB，NSIS已完整摘要匹配，其它仍待；workflow-all-39105705643备份下载会话48696也在运行，已取回ARM DMG，未宣称其余完成。校验脚本仅增加可选下载目录参数，现位于ignored audit-tools；最终核验须指定实际目录，不能用部分文件。
+- 当前HEAD f2a7bdc，全部未提交仅本检查点和新增INTERNAL_RELEASE_2_ACCEPTANCE.md。尚未安装/执行任何新包；原数据/配置不变。下一步等待下载完成并验证六资产，若传输失败只记录失败并续接安全下载，不盲目执行或改摘要。
+
+## 内部版2验收完成
+
+- 保护性NSIS覆盖退出0，原E盘目录不变；全新internal-2-20261018/safety-copy保留11文件并逐一验证安装前后SHA不变。安装exe SHA390CAF9560292F95935A9E4B8CCD257213F3FF9A0C659FD113D7C75A6A884167，Windows GUI子系统已验。
+- 当前Windows真实窗口已验仪表盘/状态跳转Pending5项/编辑旧值与取消/深浅任务页/深色浮窗5条关系信息/刷新同一窗口340×360/收起64px球/展开恢复/关闭浮窗，原浅色主题恢复。工具缓存索引与几何错误经重新观察/定位后恢复，不冒充产品bug。未保存业务编辑；验收后库完整性ok/外键0/六表1/5/4/0/0/5保持。跨版本/MSI/Mac设备/签名/混合DPI未验，正式发布未通过。
+- 已精确停止本任务冗余备份下载，保留所有部分文件；正式六资产仍release-39105705643-node。独立MCP程序/配置/只读权限均未替换。仅本Windows确认，其它设备未连接。WACAS未定义，UPARS1.1.0及既有例外/期限不变。
+- 本里程碑五小时14%、周72%，不再开启新长阶段，仅完成文档/Git/Wolai闭环。当前全部未提交：本检查点、INTERNAL_RELEASE_2_ACCEPTANCE.md、RELEASING.md、PROJECT_PLAN.md；HEAD f2a7bdc，分支不变，源码/产物候选仍0c38194。准确下一步核对diff并提交四文档、同SHA非强制同步、Wolai追加读回，结束内部版2任务；后续正式发布需另按矩阵安排，不自动公开/重置/唤醒。
+
+## 六资产核验完成，进入保护性安装
+
+- Node下载会话37061退出0，六文件全部官方大小/digest匹配，完整独立校验退出0；Mac版本0.1.0及两架构/安全路径、DMG容器、WindowsPE/MSI通过。NSIS/MSI均NotSigned、版本0.1.0，详见验收记录。首次静态校验在Intel DMG未下载完时按预期拒绝，不当作包缺陷；完成后完整复验通过。
+- 正式文件目录release-39105705643-node；旧release-39105705643部分文件不交付。备份workflow-all会话48696若仍运行可精确停止，保留已下载文件。安装阶段前五小时32%、周75%，允许进入长阶段，不重置/唤醒。
+- 安装辅助脚本已限定为此次已核验NSIS SHA49FA4D662AEA7ED342E765554C2DA6058D9C8CA2C787035F6ABBF2EC50AE7097及全新E盘internal-2-20261018/safety-copy；仅当前程序未运行才执行，原目录runtime-current-user/app，检查数据与WebView/注册表，不安装共享组件。Git未提交仍两文档（辅助脚本在ignored target内）。Wolai待同步最终资产/安装结果；设备/权限/例外边界不变。

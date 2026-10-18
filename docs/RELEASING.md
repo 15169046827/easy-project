@@ -6,7 +6,7 @@ Manual internal runs now take `internal_test=true` and a new `internal_number` (
 
 Validation and RustSec must pass before a new draft is reserved. The reservation checks both existing tags and all draft/release pages, then creates one private draft bound to that exact SHA. Each platform uploads only to the returned release ID. All release runs are serialized. Existing tags/drafts cause failure, including reruns of a partly created internal candidate; inspect and choose a fresh number rather than deleting or overwriting old assets. Formal/tag-triggered runs retain their prior behavior.
 
-Internal Test 2 is being prepared; neither new remote artifacts nor installation are accepted until the checkpoint records their actual results. Historical Internal Test 1 stays unchanged. See [checkpoint](INTERNAL_RELEASE_2_CHECKPOINT.md).
+Internal Test 2 has passed all six workflow jobs, independent six-asset static verification, and current Windows NSIS same-version replacement/data-preservation/basic runtime smoke. Source `0c38194bff24730427cf263f34277b2b3f2cf1d8`, run `39105705643`, Draft `416293740` remain unpublished; historical Internal Test 1 stays unchanged. Windows packages are NotSigned, Mac DMGs only container-checked, and formal release acceptance remains incomplete. See [acceptance and hashes](INTERNAL_RELEASE_2_ACCEPTANCE.md) and [checkpoint](INTERNAL_RELEASE_2_CHECKPOINT.md).
 
 > 2026-10-18限定复审：当前源码已定向修复rustls/quinn-proto的9条新增公告，严格扫描0漏洞/0撤包，5信息告警保留。原3例外加新EP-SEC-019均限当前Windows/macOS内部测试，最迟10-22或变更先到者复审，详见[复审报告](audit/EXCEPTION_REVIEW_2026-10-18.md)。下文六资产与旧草稿是历史源集，不能代表最新MCP/UI或本次安全补丁；工作流已改为独立编号及防覆盖预留，最新构建见上方检查点，不得直接重跑覆盖旧草稿。正式发布仍未通过。
 

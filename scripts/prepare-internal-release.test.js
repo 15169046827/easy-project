@@ -11,9 +11,18 @@ const response = (status, value) => ({
 })
 
 describe('independent internal candidates', () => {
-    it('keeps TypeScript declarations LF on Windows checkouts', () => {
-        expect(readFileSync('.gitattributes', 'utf8')).toContain('*.ts text eol=lf')
-        expect(readFileSync('e2e/test-globals.d.ts', 'utf8')).not.toContain('\r')
+    it('keeps TypeScript declarations and CommonJS scripts LF on Windows checkouts', () => {
+        const attributes = readFileSync('.gitattributes', 'utf8')
+        for (const extension of ['ts', 'cjs']) {
+            expect(attributes).toContain(`*.${extension} text eol=lf`)
+        }
+        for (const file of [
+            'e2e/test-globals.d.ts',
+            'src/window.d.ts',
+            'scripts/check-runtime-database.cjs'
+        ]) {
+            expect(readFileSync(file, 'utf8')).not.toContain('\r')
+        }
     })
     it('uses internal.2 with exact source and a private draft', () => {
         expect(plan).toMatchObject({

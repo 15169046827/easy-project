@@ -40,3 +40,18 @@
 - Windows core.autocrlf=true独立检出至E盘lf-proof-20261018，确认TypeScript声明无CR；完整214单测/43文件通过（18.83秒），lint/typecheck/release:check/diff全部通过。未放宽格式规则或修改业务代码。
 - 旧运行39091301348终态failure，rust-security成功，prepare/build跳过；不得把该运行当交付证据。准备提交上述三文件并精确同步，重新确认internal.2未占用后用新SHA启动一次构建。
 - 本阶段开始五小时剩余14%、周87%；下一长阶段前再查，低于10%则只保存暂停。WACAS仍未定义，UPARS1.1.0及既有规则不变。Wolai待同步此失败及修复结果；当前安装、用户数据、MCP权限及设备状态未改变。
+
+## 新候选运行已启动
+
+- 修复提交f758ec7bcfe7b5e927129ee5761fb088fcca7d9e，树2e7dd2577cab7c92a4f1d545075e7cc13895dead，已精确非强制同步，提交后Git干净。确认internal.2标签404且无同名草稿后，仅dispatch一次新运行39091923826：https://github.com/15169046827/easy-project/actions/runs/39091923826 。headSha与该提交一致，最近validate/rust-security运行中，尚无六资产完成证据。
+- 启动前五小时剩余11%、周86%；Wolai状态块28dPKMDkPpLCFu557s8exF已追加失败/修复/新运行并读回version59。本段保存后唯一未提交为本检查点。
+- 准确下一步：只读检查同一run的validate/security/prepare/三平台构建；不要重新dispatch。若失败按日志定位；若成功先记录新draft ID、精确源和六资产，下载到E盘release-39091923826后调用已读verify-draft-assets.cjs指定f758ec7、实际draft ID、39091923826，核验SHA/大小/容器/架构，再比较旧六资产基线。安装前另查额度并保存，低于10%不开始下载验收或安装长阶段；改安装辅助脚本时必须换新E盘安全副本目录及实际已核验NSIS，保留所有当前数据，不复用已有安全副本目录。
+- 其它设备仍未连接确认，仅本Windows；安装与真实数据未变。正式发布未通过、未签名内部版及例外期限保持，不重置/自动唤醒。
+
+- 额度门禁暂停：最新五小时剩余9%、周86%，不开始新下载/修复/安装长阶段。当前基线f758ec7、同分支，唯一未提交本检查点；新运行39091923826继续在GitHub执行，不取消也不重发，最终结论尚未验。恢复后先读本检查点、核对Git，再从同一run终态与资产状态继续；已通过214单测等不重复整改。Wolai追加本暂停记录，除此无外部文档/权限/设备变化。
+
+## 额度恢复后精确诊断（2026-10-18）
+
+- 恢复五小时100%、周86%；核对HEAD f758ec7和唯一未提交检查点后查询39091923826，validate再次失败、security成功、prepare/build跳过、无internal.2草稿。读取首条错误前完整文件名确认实际报错是scripts/check-runtime-database.cjs（33行），不是此前推断的TypeScript声明；上轮.ts规则有效但未解决真正阻断，明确更正此前根因描述。
+- 追加*.cjs text eol=lf，回归同时检查两声明和该CommonJS文件。E盘独立core.autocrlf=true检出三文件全部无CR；214测试/43文件通过（17.83秒），lint/typecheck/release:check/diff通过后再提交。未放宽门禁或改业务/依赖。
+- 全部未提交为.gitattributes、scripts/prepare-internal-release.test.js、本检查点；下一步精确提交同步、确认编号仍空后新SHA单次dispatch。安装、真实数据、MCP权限和其它设备状态不变；Wolai待同步本次精确更正。WACAS未定义，UPARS1.1.0及项目规则继续适用。

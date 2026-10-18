@@ -1,5 +1,13 @@
 # EasyProject release process
 
+## Independent internal candidates (2026-10-18)
+
+Manual internal runs now take `internal_test=true` and a new `internal_number` (default `2`, allowed 2–9999). The app version remains 0.1.0; candidate tags are `v0.1.0-internal.N`. Before dispatch, verify the intended source is synced and the number is unused. After dispatch, verify the run's full source SHA.
+
+Validation and RustSec must pass before a new draft is reserved. The reservation checks both existing tags and all draft/release pages, then creates one private draft bound to that exact SHA. Each platform uploads only to the returned release ID. All release runs are serialized. Existing tags/drafts cause failure, including reruns of a partly created internal candidate; inspect and choose a fresh number rather than deleting or overwriting old assets. Formal/tag-triggered runs retain their prior behavior.
+
+Internal Test 2 is being prepared; neither new remote artifacts nor installation are accepted until the checkpoint records their actual results. Historical Internal Test 1 stays unchanged. See [checkpoint](INTERNAL_RELEASE_2_CHECKPOINT.md).
+
 > 2026-10-18限定复审：当前源码已定向修复rustls/quinn-proto的9条新增公告，严格扫描0漏洞/0撤包，5信息告警保留。原3例外加新EP-SEC-019均限当前Windows/macOS内部测试，最迟10-22或变更先到者复审，详见[复审报告](audit/EXCEPTION_REVIEW_2026-10-18.md)。下文六资产与旧草稿是历史源集，不能代表最新MCP/UI或本次安全补丁；当前工作流固定internal.1，不得直接重跑覆盖旧草稿。正式发布仍未通过。
 
 > 2026-10-08内部测试版完成：用户批准3项限定例外并选择未签名内部测试版。37项=34fixed+3accepted/open0（P0=0/P1=2/P2=25/P3=10，P0/P1/P2未关闭0）；责任Ym_Li，复审2026-10-22或依赖/资源增长/平台变化，以先发生为准。源码3d62039c4761efa70c34a5b57a19557521da922d/tree76bb5e22531a8676a27658e74f958ebceb512e0e；Actions37715193321五job成功：validate3m46s、安全2m4s、Windows3m10s、Mac ARM3m12s、Intel4m30s。新远程174单测35文件/9专项/23生产E2E/28Rust、lint/类型/fmt/严格Clippy/构建/元数据/UPARS通过；官方npm安装/生产安全扫描0，RustSec525依赖仅2既有已批准信息性告警。独立Draft406330701/v0.1.0-internal.1/draft+prerelease/target完整同SHA，六资产官方大小/digest/独立SHA、结构/0.1.0/Mac架构验证通过。Windows NSIS/MSI明确NotSigned；Mac app归档路径与Mach-O CPU通过，DMG只验容器未挂载；未安装或运行新包。内部测试版打包及静态产物验收通过，代码层通过含例外，正式签名/公证/真实干净设备安装升级数据保留回滚仍未验，正式发布未通过。历史草稿不变、不公开。本轮不新增UPARS条款。以下较早状态保留为历史，不作为当前结论。

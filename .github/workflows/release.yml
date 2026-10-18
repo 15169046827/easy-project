@@ -9,12 +9,16 @@ on:
                 description: Build a separate unsigned internal-test draft
                 type: boolean
                 default: false
+            internal_number:
+                description: New internal candidate number (2 or higher; existing drafts are protected)
+                type: string
+                default: '2'
 
 permissions:
     contents: write
 
 concurrency:
-    group: release-${{ github.ref }}
+    group: release-desktop
     cancel-in-progress: false
 
 jobs:
@@ -103,8 +107,28 @@ jobs:
             - name: Audit Rust dependencies
               run: cargo audit --file src-tauri/Cargo.lock --deny yanked
 
-    build:
+    prepare:
         needs: [validate, rust-security]
+        runs-on: windows-latest
+        outputs:
+            release_id: ${{ steps.plan.outputs.release_id }}
+            release_tag: ${{ steps.plan.outputs.release_tag }}
+            release_name: ${{ steps.plan.outputs.release_name }}
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 22
+            - name: Reserve an independent internal draft
+              id: plan
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  INTERNAL_TEST: ${{ inputs.internal_test }}
+                  INTERNAL_NUMBER: ${{ inputs.internal_number }}
+              run: node scripts/prepare-internal-release.js
+
+    build:
+        needs: [prepare]
         strategy:
             fail-fast: false
             matrix:
@@ -153,8 +177,10 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
-                  tagName: ${{ inputs.internal_test && 'v__VERSION__-internal.1' || 'v__VERSION__' }}
-                  releaseName: ${{ inputs.internal_test && 'EasyProject v__VERSION__ — Internal Test 1 (unsigned)' || 'EasyProject v__VERSION__' }}
+                  releaseId: ${{ needs.prepare.outputs.release_id }}
+                  tagName: ${{ needs.prepare.outputs.release_tag }}
+                  releaseName: ${{ needs.prepare.outputs.release_name }}
+                  releaseCommitish: ${{ github.sha }}
                   releaseBody: ${{ inputs.internal_test && 'Unsigned internal test only. Formal release acceptance is NOT complete. Windows signing, macOS notarization, clean-device install/upgrade/data-retention/rollback checks remain pending. Do not treat this draft as a public release.' || 'Download the installer for your operating system from the assets below.' }}
                   releaseDraft: true
                   prerelease: ${{ inputs.internal_test == true }}

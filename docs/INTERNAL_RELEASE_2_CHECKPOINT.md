@@ -19,3 +19,24 @@
   - Intel dmg：620414600 / 7200310 / a053d322b0d8a93c66aeadd650fc91a5d4fdaa25aa4fee46ac85b9344d4d7987
   - NSIS：620410377 / 5149435 / fa56b80ec8b95b5c66a69d3032cf82c103c8ab8f84b716d64a3249141b5f394e
   - MSI：620410309 / 6868992 / 43655fb29e8bd7cc34ff642b92d04a40e092941ff52e71b0b64e7751429f246e
+
+## 远程构建启动准备
+
+- 完整213单测/43文件、lint/typecheck/元数据/diff、Prettier及js-yaml结构/门禁依赖检查通过；源码提交453104e9e0b9367121077dcd5bbb6b26be57be22已校验同树/同SHA非强制同步，提交后工作区干净。
+- dispatch前五小时剩余30%、周89%，允许启动长阶段；不重置/定时唤醒。工作流准确源为上述SHA，原产品安全源e3b0f4d；仅新发布工具/文档，不改业务/依赖。
+- 正在发起一次internal_test=true/internal_number=2；运行ID与远程结论未取回前不称启动成功或完成。追加本记录后仅本检查点未提交。下一步核对run.headSha、保存运行ID，等待同一运行的验证/安全/prepare/三构建；创建新草稿后记录ID，六资产不齐不得交付。
+
+- 已确认一次dispatch成功：Actions运行39091301348，headSha精确453104e9e0b9367121077dcd5bbb6b26be57be22，当前validate/rust-security运行中；prepare/三构建尚未开始，新草稿尚未创建。不是旧run37715193321，不能用旧五job成功替代本次结果。
+- 当前唯一未提交仍本检查点；本机进程检查EasyProject未运行，当前安装和数据未改。安装辅助脚本已读，仅在六资产及远程NSIS通过后才改用新的E盘安全副本和已核验安装文件。下一步继续等待同一run，不重dispatch。
+
+## 首次远程门禁失败与修复
+
+- 39091301348的validate在前端lint失败，33个prettier换行CR错误；prepare受门禁阻断，未创建internal.2草稿或资产。当地本地lint通过不代替Windows干净检出。发现.gitattributes缺*.ts LF规则，新增声明文件在Windows自动检出CRLF；不放宽Prettier/ESLint。
+- 修复仅加*.ts text eol=lf及声明文件换行回归测试；下一步用core.autocrlf=true独立检出验证，然后本地门禁/新提交同步，确认旧run终态且internal.2仍未占用再新dispatch。不得重跑旧SHA或覆盖旧草稿。
+- 当前全部未提交：.gitattributes、scripts/prepare-internal-release.test.js、本检查点。五小时最近剩余21%、周88%，进入新长阶段前再次检查；低于10%先保存暂停。本机/其它设备/安装/业务数据/权限边界不变。
+
+## 换行修复复验完成
+
+- Windows core.autocrlf=true独立检出至E盘lf-proof-20261018，确认TypeScript声明无CR；完整214单测/43文件通过（18.83秒），lint/typecheck/release:check/diff全部通过。未放宽格式规则或修改业务代码。
+- 旧运行39091301348终态failure，rust-security成功，prepare/build跳过；不得把该运行当交付证据。准备提交上述三文件并精确同步，重新确认internal.2未占用后用新SHA启动一次构建。
+- 本阶段开始五小时剩余14%、周87%；下一长阶段前再查，低于10%则只保存暂停。WACAS仍未定义，UPARS1.1.0及既有规则不变。Wolai待同步此失败及修复结果；当前安装、用户数据、MCP权限及设备状态未改变。

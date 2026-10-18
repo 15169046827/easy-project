@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
 import { releasePlan, reserveInternalRelease } from './prepare-internal-release.js'
 
 const sha = 'a'.repeat(40)
@@ -10,6 +11,10 @@ const response = (status, value) => ({
 })
 
 describe('independent internal candidates', () => {
+    it('keeps TypeScript declarations LF on Windows checkouts', () => {
+        expect(readFileSync('.gitattributes', 'utf8')).toContain('*.ts text eol=lf')
+        expect(readFileSync('e2e/test-globals.d.ts', 'utf8')).not.toContain('\r')
+    })
     it('uses internal.2 with exact source and a private draft', () => {
         expect(plan).toMatchObject({
             tag_name: 'v0.1.0-internal.2',

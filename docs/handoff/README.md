@@ -61,5 +61,6 @@ git remote -v
 
 - 产品范围/路线图：[PROJECT_PLAN.md](../PROJECT_PLAN.md)；协作页面：[Wolai 项目定义与路线图](https://www.wolai.com/h4VsMhyWaL9UHrYLEkfnLx)。
 - 本交接任务的基线、验证和同步状态：[CHECKPOINT.md](CHECKPOINT.md)。
+- Wolai完整可读副本：[新伙伴完整交接](https://www.wolai.com/uPQxFUeyxqQsGTMJSbXLN8)，正文快照对应仓库提交 `382e015f82d9a7c080ee22ca48fa6cae336e40d6`；此后入口/同步记录的文档性更新不改变已交付桌面源码。
 - 后续每个里程碑更新当前状态和必要源文档；长期规则只有在用户明确变更或确有经过批准的规范升级时调整。
 - 不需要为阅读交接重跑全部业务测试；真正修改业务、依赖、UI或发布配置时，按风险和发布阶段执行规定门禁。

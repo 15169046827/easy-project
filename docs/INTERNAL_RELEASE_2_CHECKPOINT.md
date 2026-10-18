@@ -55,3 +55,10 @@
 - 恢复五小时100%、周86%；核对HEAD f758ec7和唯一未提交检查点后查询39091923826，validate再次失败、security成功、prepare/build跳过、无internal.2草稿。读取首条错误前完整文件名确认实际报错是scripts/check-runtime-database.cjs（33行），不是此前推断的TypeScript声明；上轮.ts规则有效但未解决真正阻断，明确更正此前根因描述。
 - 追加*.cjs text eol=lf，回归同时检查两声明和该CommonJS文件。E盘独立core.autocrlf=true检出三文件全部无CR；214测试/43文件通过（17.83秒），lint/typecheck/release:check/diff通过后再提交。未放宽门禁或改业务/依赖。
 - 全部未提交为.gitattributes、scripts/prepare-internal-release.test.js、本检查点；下一步精确提交同步、确认编号仍空后新SHA单次dispatch。安装、真实数据、MCP权限和其它设备状态不变；Wolai待同步本次精确更正。WACAS未定义，UPARS1.1.0及项目规则继续适用。
+
+- 修复提交0c38194bff24730427cf263f34277b2b3f2cf1d8已同树/同SHA非强制同步；确认internal.2仍未占用后单次启动39105705643（https://github.com/15169046827/easy-project/actions/runs/39105705643）。dispatch已返回该URL，须直接读取该run验证headSha，列表短暂仍显示旧run不能当新运行证据。保存本段后仅检查点未提交。
+
+- 已直接核对39105705643 headSha=0c38194bff24730427cf263f34277b2b3f2cf1d8；新远程前端lint/类型/npm生产扫描/单测/性能/build成功，浏览器回归进行中；rust-security完整成功（3分1秒），并非跳过扫描。Wolai已同步精确更正并读回version61。只读当前库完整性ok/外键0，六表计数1/5/4/0/0/5，应用未运行；仅Windows连接确认，原生工具初始化及列窗成功，但尚未验证新包窗口。
+- 当前未提交本检查点、docs/RELEASING.md和docs/PROJECT_PLAN.md（纠正已完成的独立编号仍写待办）；源码候选不变，安装/用户数据/MCP权限未改。里程碑五小时87%、周84%；下一步继续同run，六资产齐备后再核验与安装，正式发布限制不变。
+
+- 旧Draft406330701及六资产ID/大小/digest再次与本文件基线逐项匹配，未变；当前已安装exe SHA仍CA484D91A665D2967C456EF4F4FF1BDD42A43462D99E8F9BE7D5EF53134993F8。新运行Rust格式/严格Clippy也成功，Test Rust进行中，不能提前认定全部门禁通过。

@@ -9,7 +9,11 @@
 - 只有当前任务得到明确的额度重置授权，且工具确认有可用重置次数时，才能使用重置。重置或关机授权均不跨任务继承。
 - 只有用户要求时才建立定时唤醒；定时任务不能当作精确的 5% 额度阈值监控。
 
-当前未完成的 UPARS 审计检查点：`docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md`。
+## 新伙伴接手入口
+
+- 接手EasyProject时先读 `docs/handoff/README.md`，再读其中的长期规则、当前状态和架构地图；交接资料不依赖旧聊天，也不自动授权新功能、真实库操作或公开发布。
+- 2026-10-18内部版2已完成当前Windows基础验收；最新证据见 `docs/INTERNAL_RELEASE_2_ACCEPTANCE.md` 与 `docs/INTERNAL_RELEASE_2_CHECKPOINT.md`，正式发布仍未通过。独立MCP程序/当前客户端只读权限未随桌面安装包更新。
+- 历史UPARS审计续接记录为 `docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md`；最新限定风险复审为 `docs/audit/EXCEPTION_REVIEW_2026-10-18.md`。先核对最新状态，不把历史“未完成”段落当作今天的新任务。
 
 ## UI 组件约束
 

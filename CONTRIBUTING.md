@@ -2,6 +2,8 @@
 
 Thank you for improving EasyProject. Keep changes local-first, reversible, and compatible with existing user data.
 
+New maintainers and AI collaborators should first read the [handoff entry](docs/handoff/README.md), then its rules, current-state and architecture documents. Historical permissions, test counts and release records must not be treated as current authority without checking the stated source and scope.
+
 ## Before opening a pull request
 
 1. Install dependencies with `npm install` and the Tauri platform prerequisites.

@@ -71,6 +71,7 @@ cargo test --locked
 
 ## Project documentation
 
+- New maintainer/AI handoff (rules, architecture, current state, onboarding): [`docs/handoff/README.md`](docs/handoff/README.md)
 - Local MCP setup, permissions, contracts, and limits: [`docs/MCP.md`](docs/MCP.md)
 - Product and implementation plan: [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md)
 - v0.1 release audit and remaining risks: [`docs/AUDIT_2026-08-08.md`](docs/AUDIT_2026-08-08.md)

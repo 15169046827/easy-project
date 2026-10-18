@@ -1,6 +1,6 @@
 # EasyProject 新伙伴接手入口
 
-交接版本：1.0，2026-10-18（Asia/Shanghai）。仅适用于 EasyProject；不涉及 Watch App。本包面向人类开发者和新的 AI 助手，不要求读取旧聊天。
+交接版本：1.1，2026-10-18（Asia/Shanghai，新增持续同步要求）。仅适用于 EasyProject；不涉及 Watch App。本包面向人类开发者和新的 AI 助手，不要求读取旧聊天。
 
 ## 先记住这六件事
 
@@ -61,6 +61,6 @@ git remote -v
 
 - 产品范围/路线图：[PROJECT_PLAN.md](../PROJECT_PLAN.md)；协作页面：[Wolai 项目定义与路线图](https://www.wolai.com/h4VsMhyWaL9UHrYLEkfnLx)。
 - 本交接任务的基线、验证和同步状态：[CHECKPOINT.md](CHECKPOINT.md)。
-- Wolai完整可读副本：[新伙伴完整交接](https://www.wolai.com/uPQxFUeyxqQsGTMJSbXLN8)，正文快照对应仓库提交 `382e015f82d9a7c080ee22ca48fa6cae336e40d6`；此后入口/同步记录的文档性更新不改变已交付桌面源码。
-- 后续每个里程碑更新当前状态和必要源文档；长期规则只有在用户明确变更或确有经过批准的规范升级时调整。
+- Wolai完整可读副本：[新伙伴完整交接](https://www.wolai.com/uPQxFUeyxqQsGTMJSbXLN8)，初始正文快照对应仓库提交 `382e015f82d9a7c080ee22ca48fa6cae336e40d6`，后续变更按相关章节/日期化增补继续同步，1.1新增DOC-05；不得把初始快照误当成永远最新。
+- 交接资料必须随每次改动持续维护：重要里程碑及完成/暂停前核对Git、Wolai、交接资料三者；按影响更新规则/架构/当前状态/待办/验证/检查点，无影响部分记录复核即可。同步失败必须保留缺口与下一步，不能声称全部完成。此要求长期有效，详见DOC-05。
 - 不需要为阅读交接重跑全部业务测试；真正修改业务、依赖、UI或发布配置时，按风险和发布阶段执行规定门禁。

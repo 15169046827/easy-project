@@ -19,6 +19,10 @@ The npm lifecycle policy approves only the reviewed `esbuild@0.25.10` setup scri
 
 UI changes should support both Chinese and English, light and dark themes, keyboard use, and the existing compact desktop layout.
 
+## Always-ready handoff
+
+Every change must include an impact check and the corresponding update to `docs/handoff/`, alongside Git and Wolai documentation. Keep rules, architecture, current state, pending work, verification and checkpoints accurate at milestones and before completion or pause. Update affected Wolai handoff content with a date and source commit; do not silently leave the handoff as an obsolete snapshot. Unaffected sections need review, not gratuitous rewrites. If quota, permissions or service failure prevents synchronization, save the exact gap and next step and do not claim all three destinations are synchronized. This is a permanent delivery requirement, not a one-time handoff task.
+
 ## Long-task checkpoints and quota gate
 
 The project permanently follows the continuation rules in [AGENTS.md](AGENTS.md). Before a long stage and after each milestone, save a resumable checkpoint and check the five-hour quota when the account tool is available. Below 10% remaining, do not begin another long stage: save progress and pause until the user asks to resume after recovery. Any applicable window at or below 5% also stops new modifications except the minimum checkpoint write. Never use quota resets or scheduled wake-ups without authorization for the current task.

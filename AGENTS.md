@@ -11,6 +11,7 @@
 
 ## 新伙伴接手入口
 
+- 交接资料属于长期交付物：今后每次改动除更新Git和Wolai外，必须同步维护 `docs/handoff/` 对应内容（规则、架构、当前状态、待办、验证、检查点及入口），无需用户再次提醒。在重要里程碑及任务完成/暂停前核对三者一致；无影响的部分记录已复核，不机械重写。Wolai交接副本需同步相关增补并标明日期/来源提交；若额度、权限或服务阻断同步，先保存准确缺口与下一步，不声称全部同步。此要求长期有效，不仅用于本次交接。
 - 接手EasyProject时先读 `docs/handoff/README.md`，再读其中的长期规则、当前状态和架构地图；交接资料不依赖旧聊天，也不自动授权新功能、真实库操作或公开发布。
 - 2026-10-18内部版2已完成当前Windows基础验收；最新证据见 `docs/INTERNAL_RELEASE_2_ACCEPTANCE.md` 与 `docs/INTERNAL_RELEASE_2_CHECKPOINT.md`，正式发布仍未通过。独立MCP程序/当前客户端只读权限未随桌面安装包更新。
 - 历史UPARS审计续接记录为 `docs/audit/EASYPROJECT_AUDIT_CHECKPOINT.md`；最新限定风险复审为 `docs/audit/EXCEPTION_REVIEW_2026-10-18.md`。先核对最新状态，不把历史“未完成”段落当作今天的新任务。

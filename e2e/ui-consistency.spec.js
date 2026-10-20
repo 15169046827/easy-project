@@ -1,5 +1,35 @@
 import { expect, test } from '@playwright/test'
 
+for (const width of [1280, 960]) {
+    for (const dark of [false, true]) {
+        test(`keeps opt-in remote entry compact at ${width}px dark=${dark}`, async ({ page }) => {
+            await page.setViewportSize({ width, height: 800 })
+            await page.addInitScript(dark => {
+                window.isTauri = true
+                // Exercise the real entry without native window IPC in this
+                // browser-only layout test; actual Windows gets separate QA.
+                Object.defineProperty(navigator, 'userAgent', {
+                    get: () => 'EasyProject layout test'
+                })
+                localStorage.setItem('easyproject-theme', dark ? 'dark' : 'light')
+            }, dark)
+            await page.goto('/?windowChrome=1#/dashboard')
+            const entry = page.locator('.remote-connect-entry')
+            await expect(entry).toBeVisible()
+            await expect(entry).toHaveText('')
+            const box = await entry.boundingBox()
+            expect(box.height).toBeLessThanOrEqual(36)
+            expect(box.x + box.width).toBeLessThanOrEqual(width)
+            await entry.focus()
+            await page.keyboard.press('Enter')
+            await expect(page.getByRole('dialog')).toBeVisible()
+            await expect(page.locator('#server-url')).toBeVisible()
+            await page.keyboard.press('Escape')
+            await expect(page.getByRole('dialog')).toHaveCount(0)
+        })
+    }
+}
+
 const projectName =
     'A very long project name for checking fixed column truncation and full hover text'
 const taskName = 'A very long parent task name for checking fixed columns and pinned task names'

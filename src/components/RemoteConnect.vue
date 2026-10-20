@@ -1,12 +1,15 @@
 <template>
     <Button
         v-if="!remoteActive && native"
+        class="theme-toggle remote-connect-entry"
         icon="pi pi-cloud"
         text
-        :label="$t('remote.connect')"
+        :aria-label="$t('remote.connect')"
+        v-tooltip.bottom="$t('remote.connect')"
         @click="visible = true"
     />
     <Dialog
+        class="remote-connection-dialog"
         v-model:visible="visible"
         modal
         :header="$t('remote.connect')"
@@ -51,5 +54,17 @@ function connect() {
 .remote-connect {
     display: grid;
     gap: 0.8rem;
+}
+.remote-connect-entry {
+    flex: 0 0 2.5rem;
+    width: 2.5rem;
+    min-width: 2.5rem;
+    color: inherit;
+}
+</style>
+
+<style>
+.remote-connection-dialog {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 }
 </style>

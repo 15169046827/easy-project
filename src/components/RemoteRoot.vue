@@ -282,6 +282,11 @@ onUnmounted(() => clearInterval(timer))
 </script>
 
 <style scoped>
+.remote-auth,
+.remote-status,
+.remote-form {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
 .remote-auth {
     min-height: 100vh;
     display: grid;

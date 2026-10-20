@@ -10,6 +10,7 @@ Environment=EASYPROJECT_DATA_DIR=%h/easyproject/data
 Environment=EASYPROJECT_ASSETS_DIR=%h/easyproject/current/web
 Environment=EASYPROJECT_ORIGIN=https://home-host.tail2956dd.ts.net
 Environment=EASYPROJECT_LISTEN=127.0.0.1:8080
+Environment=TZ=Asia/Shanghai
 Restart=on-failure
 RestartSec=5
 TimeoutStopSec=40

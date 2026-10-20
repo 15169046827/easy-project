@@ -2,6 +2,7 @@ export {}
 
 declare global {
     interface Window {
+        isTauri?: boolean
         __webStyleViolation?: boolean
         __EASYPROJECT_FLOATING_WINDOW__?: boolean
         __EASYPROJECT_STORAGE_INFO__?: {

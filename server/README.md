@@ -15,6 +15,8 @@
 
 环境变量必须显式指定：`EASYPROJECT_DATA_DIR`（绝对目录）、`EASYPROJECT_ASSETS_DIR`（Vite dist）、`EASYPROJECT_ORIGIN`（精确HTTPS源）。`EASYPROJECT_LISTEN`默认`127.0.0.1:8080`，拒绝非loopback。
 
+当前用户服务设置进程级`TZ=Asia/Shanghai`以匹配既有无时区本地业务时间字符串；不修改Ubuntu系统时区，审计/会话仍用UTC。跨时区用户的完整时间模型迁移尚未承诺。
+
 ```powershell
 cargo test --manifest-path server/Cargo.toml --locked
 cargo clippy --manifest-path server/Cargo.toml --all-targets --locked -- -D warnings

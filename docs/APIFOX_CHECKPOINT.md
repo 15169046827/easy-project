@@ -22,3 +22,10 @@
 - Codex get apifox读回官方URL、ApiFox_MCP_TOKEN环境变量引用、版本头2025-09-01；配置段新增默认prompt审批。明文令牌未写配置或仓库。当前会话尚无原生Apifox工具目录，直接官方MCP已完成维护；用户下次重连/重启可加载，不需要为完成本轮文档再次重启。
 - 长期新增API-03：涉及接口/模型/权限/响应变化同步实际契约与Apifox，并同Git/Wolai/交接读回；不相关UI改动不机械重传。手册1.4/79条，AGENTS、README入口及交接规则/架构/状态/检查点同步。应用版本、安装/MCP独立exe、安全例外和正式发布未通过结论复核无变。
 - 当前全部未提交19文件：AGENTS.md、README.md、docs/handoff/{ARCHITECTURE,CHECKPOINT,CURRENT_STATE,README,RULES}.md；新docs/APIFOX_CHECKPOINT.md、docs/api/{README,OVERVIEW,DESKTOP_IPC,MODELS}.md、docs/api/{catalog,apifox-documents,apifox-manifest}.json、scripts/{apifox-mcp,sync-apifox-api}.ps1、scripts/{build-api-catalog,apifox-contract.test}.js。全局Codex仅apifox段为本任务外部配置变更，不提交账户配置。下一步最终链接/敏感值扫描与Git提交推送，Wolai主状态/交接新增API-03和对应来源读回，再保存闭环。最近额度五小时47%、周20%，不重置/唤醒，仅本Windows确认。
+
+## 交付闭环
+
+- 19文件提交b6c40ac336f02f1c1130e6b454e1e794eb30b056/tree36c485631747cc203383f59d14ebe21b46304e8f已校验同树同SHA非强制同步；常规push errno10054失败后使用既有GitHub传输，无TLS绕过。106本地链接有效，79条规则ID唯一，暂存内容内存扫描未含令牌。PS1换行提示是既定Windows检出CRLF，不是关闭格式检查或脚本失败。
+- Wolai主状态28dPKMDkPpLCFu557s8exF version70、完整交接首部oLvsZ6M65HtTfFsJmg8ptD version7、API-02/03规则块967sNbmUTn3mFmaQPeruVn version3，均读回包含源b6c40ac/API-03/79条和真实未验边界。API正文仍精确绑定既有接口基线bd37fdd及独立exe旧源e534644，不把文档/传输提交冒称程序重建。
+- Apifox26文档及本地manifest的ID/SHA、当前协议/权限、Git/Wolai/交接已一致；本段及交接检查点闭环记录另提交保存。准确后续：用户可直接在Apifox EasyProject查看26篇文档；若要在当前Codex聊天用原生Apifox工具，重连/必要时重启加载，现阶段已完成的直接MCP维护无需重做。后续API变化按API-03同步，遇人工修改摘要冲突先审阅。
+- 剩余限制不隐藏：通用协议实体创建参数422，未配置原生自定义协议条目；当前为完整可读Markdown API契约，不是HTTP调试或可执行MCP测试用例。无其它平台验收、无独立exe刷新、无真实业务CRUD、无公开发布或新增通用标准。任务无需新增业务开发；仅本Windows确认，无定时任务或额度重置。

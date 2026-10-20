@@ -1,6 +1,6 @@
 # EasyProject 架构、代码地图与验证工作流
 
-核对日期：2026-10-18。此处描述真实目录和调用关系；规划中的理想模块名称不能用来假定文件已存在。规则见 [RULES.md](RULES.md)。
+核对日期：2026-10-20（本轮更新存储/启动入口，其它架构复核无变）。此处描述真实目录和调用关系；规划中的理想模块名称不能用来假定文件已存在。规则见 [RULES.md](RULES.md)。
 
 ## 1. 实际技术栈与入口
 
@@ -8,7 +8,7 @@
 - Tauri2 / Rust2021 edition，Cargo声明最低Rust1.90，CI采用stable；SQLite由rusqlite bundled提供。依赖准确解析以package-lock.json/Cargo.lock为准，不因文档版本表而升级。
 - CI使用Node22；本机工具版本可能不同，先查再选，不把环境差异误报产品问题。已有Tauri前置环境及WebView2，不应在交接时重装。
 - 前端入口 [src/main.js](../../src/main.js)；根据浮窗初始化标记选择主App或独立FloatingTaskWindow。主入口 [src/App.vue](../../src/App.vue)负责导航、主题/历史操作及全局设计变量；[路由](../../src/router/index.js)懒加载页面。
-- Rust [main.rs](../../src-tauri/src/main.rs)只调用库入口，release声明Windows GUI子系统；[lib.rs](../../src-tauri/src/lib.rs)初始化日志/应用数据目录/数据库/启动备份，注册命令与主窗口销毁回调。
+- Rust [main.rs](../../src-tauri/src/main.rs)只调用库入口，release声明Windows GUI子系统；[lib.rs](../../src-tauri/src/lib.rs)通过[storage.rs](../../src-tauri/src/storage.rs)解析安装侧配置、准备/迁移数据、初始化数据库和启动备份，再手动创建主窗口并指定Windows WebView目录。启动失败只进入DesktopRoot/StorageSettings设置界面，不装载业务App或创建空替代库。目录命令仅主窗口可用，备份打开改为Rust受控路径，前端不再获得任意AppData opener权限。
 
 ## 2. 两条入口共享一套业务规则
 

@@ -19,6 +19,8 @@ All notable changes to EasyProject are documented here.
 
 ### Improved
 
+- Installation-local storage replaces the Windows AppData default: database/backups/MCP audit in `data`, WebView profiles in `webview`, and an installation-side location config. The Data page accepts a new/empty non-C local directory for verified next-launch migration; unsafe destinations and silent empty fallbacks are rejected. Legacy production data is copied without deleting the source; debug builds remain isolated.
+
 - Dashboard task-status rows keep identical geometry on pointer hover and keyboard focus, avoiding a two-pixel border-induced jump.
 - Docked floating balls now peek out as a half-circle on all four edges, reveal the full circle on hover or keyboard focus, and retract on leave. Free-floating, drag and click-to-expand behavior remain available; reduced-motion preferences are respected.
 - Unified dashboard cards and list pointer/keyboard states, removed transient attention-row borders, and fixed member-avatar growth/row-height changes. Status totals (including legacy Todo) and overdue cards link to working task filters.

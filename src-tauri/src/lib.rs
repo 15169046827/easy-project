@@ -9,6 +9,7 @@ pub mod floating_window;
 pub mod mcp;
 pub mod models;
 pub mod services;
+pub mod storage;
 
 use env_logger::Env;
 use log::info;
@@ -28,22 +29,44 @@ pub fn run() {
 
     tauri::Builder::default()
         .setup(|app| {
-            let data_dir = app.path().app_data_dir()?;
-            std::fs::create_dir_all(&data_dir)?;
-            let database_path = data_dir.join("project_manager.db");
-            let legacy_path = std::path::Path::new("../db/project_manager.db");
-
-            if !database_path.exists() && legacy_path.exists() {
-                std::fs::copy(legacy_path, &database_path)?;
-            }
-
-            let db_state =
-                common::db_state::init_db(&database_path).map_err(std::io::Error::other)?;
-            if let Err(error) = services::data_service::create_backup(&db_state, "auto") {
-                log::warn!("Automatic startup backup failed: {error}");
-            }
-            app.manage(db_state);
-            info!("Database ready at {}", database_path.display());
+            let root = storage::installation_directory(&std::env::current_exe()?)?;
+            storage::validate_directory(&root)?;
+            let legacy = if cfg!(debug_assertions) {
+                None
+            } else {
+                Some(app.path().app_data_dir()?)
+            };
+            let prepared = storage::prepare(&root, legacy.as_deref()).and_then(|info| {
+                let db = common::db_state::init_db(&info.database_path)?;
+                storage::confirm(&info)?;
+                if let Err(error) = services::data_service::create_backup(&db, "auto") {
+                    log::warn!("Automatic startup backup failed: {error}");
+                }
+                info!("Database ready at {}", info.database_path.display());
+                app.manage(db);
+                Ok(info)
+            });
+            let info = prepared.unwrap_or_else(|error| storage::failed_info(&root, error));
+            let profile = info.profile_dir.clone();
+            let bootstrap = format!(
+                "window.__EASYPROJECT_STORAGE_INFO__ = {};",
+                serde_json::to_string(&info)?
+            );
+            app.manage(storage::StorageState {
+                info: std::sync::Mutex::new(info),
+            });
+            std::fs::create_dir_all(&profile)?;
+            let config = app
+                .config()
+                .app
+                .windows
+                .first()
+                .ok_or("Missing main window configuration")?;
+            let builder = tauri::WebviewWindowBuilder::from_config(app, config)?
+                .initialization_script(&bootstrap);
+            #[cfg(windows)]
+            let builder = builder.data_directory(profile);
+            builder.build()?;
             Ok(())
         })
         .on_window_event(|window, event| {
@@ -59,7 +82,10 @@ pub fn run() {
         .invoke_handler(generate_handler![
             cmds::crud_action::crud_action,
             floating_window::open_task_window,
-            floating_window::show_main_window
+            floating_window::show_main_window,
+            storage::storage_info,
+            storage::set_data_directory,
+            storage::reveal_backup_directory
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,4 +1,21 @@
 export default {
+    storage: {
+        title: '数据存储位置',
+        description: '默认使用安装目录下的 data 文件夹；不会回退到 C 盘。数据库与备份一起管理。',
+        currentDatabase: '当前数据库（也供本机 MCP 使用）',
+        profile: '窗口缓存与界面偏好目录',
+        destination: '新的数据目录',
+        pathHint:
+            '填写非 C 盘的本地绝对路径，目标必须是新目录或空目录。不要选择当前目录的上级或下级。',
+        pending: '已记录待切换目录：{path}。关闭并重新打开程序后才迁移最新数据；当前仍使用原库。',
+        useDefault: '使用安装目录默认位置',
+        configure: '设置数据目录',
+        confirmTitle: '确认下次启动切换目录',
+        confirmHint:
+            '本次只保存目录设置；重启时复制并验证最新数据库、备份和 MCP 审计，再切换。不会覆盖目标已有文件，也不会删除旧源。迁移前请关闭旧版程序和 MCP 写入会话；切换后须更新 MCP 数据库路径。',
+        closeForRestart: '关闭程序，稍后重新打开',
+        desktopOnly: '请在已安装的桌面程序中查看或设置实际数据位置。'
+    },
     floating: {
         resizeHint: '调整窗口大小（方向键调整宽高）',
         ballHint: '点击展开任务；拖动可吸附屏幕边缘或悬空；方向键移动',

@@ -17,19 +17,23 @@ pub async fn open_task_window(app: AppHandle, window: WebviewWindow) -> Result<(
         existing.show().map_err(|error| error.to_string())?;
         return existing.set_focus().map_err(|error| error.to_string());
     }
-    WebviewWindowBuilder::new(&app, FLOATING_LABEL, WebviewUrl::App("index.html".into()))
-        .title("EasyProject — Tasks")
-        .initialization_script("window.__EASYPROJECT_FLOATING_WINDOW__ = true;")
-        .inner_size(340.0, 360.0)
-        .min_inner_size(340.0, 360.0)
-        .decorations(false)
-        .resizable(true)
-        .transparent(true)
-        .shadow(false)
-        .always_on_top(true)
-        .skip_taskbar(true)
-        .focused(false)
-        .center()
+    let builder =
+        WebviewWindowBuilder::new(&app, FLOATING_LABEL, WebviewUrl::App("index.html".into()))
+            .title("EasyProject — Tasks")
+            .initialization_script("window.__EASYPROJECT_FLOATING_WINDOW__ = true;")
+            .inner_size(340.0, 360.0)
+            .min_inner_size(340.0, 360.0)
+            .decorations(false)
+            .resizable(true)
+            .transparent(true)
+            .shadow(false)
+            .always_on_top(true)
+            .skip_taskbar(true)
+            .focused(false)
+            .center();
+    #[cfg(windows)]
+    let builder = builder.data_directory(crate::storage::profile_directory(&app)?);
+    builder
         .build()
         .map(|_| ())
         .map_err(|error| error.to_string())

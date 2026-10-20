@@ -1,4 +1,23 @@
 export default {
+    storage: {
+        title: 'Data storage location',
+        description:
+            'Defaults to the data folder beside the installation. Never falls back to drive C. Database and backups stay together.',
+        currentDatabase: 'Current database (also used by local MCP)',
+        profile: 'Window cache and interface preferences',
+        destination: 'New data directory',
+        pathHint:
+            'Use an absolute local path outside drive C. Choose a new or empty folder, not a parent or child of the current directory.',
+        pending:
+            'Pending directory: {path}. Close and reopen the app to migrate the latest data. The current database remains active until then.',
+        useDefault: 'Use the installation default',
+        configure: 'Set data directory',
+        confirmTitle: 'Confirm storage change on next launch',
+        confirmHint:
+            'Only the setting is saved now. On restart the latest database, backups and MCP audit are copied and verified before switching. Existing destination files are never overwritten and the source is retained. Close old app versions and MCP writing sessions first; update the MCP database path after switching.',
+        closeForRestart: 'Close app and reopen later',
+        desktopOnly: 'Use the installed desktop app to view or configure actual storage.'
+    },
     floating: {
         resizeHint: 'Resize window (arrow keys adjust width and height)',
         ballHint:

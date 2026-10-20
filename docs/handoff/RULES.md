@@ -1,6 +1,6 @@
 # EasyProject 长期规则与授权边界
 
-版本1.1，2026-10-18（新增长期持续交接要求）。本文整理既定要求，不替代系统安全限制或扩大当前任务授权。准确现状见 [CURRENT_STATE.md](CURRENT_STATE.md)，实现定位见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+版本1.2，2026-10-20（修订ENV-01/DATA-01非C盘存储规则，仍78条）。本文整理既定要求，不替代系统安全限制或扩大当前任务授权。准确现状见 [CURRENT_STATE.md](CURRENT_STATE.md)，实现定位见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
 ## 1. 事实来源、范围与协作
 
@@ -15,7 +15,7 @@
 
 ## 2. 工作区、工具、Git和本机环境
 
-- **ENV-01**：本机仓库固定 `E:\Project\Project\easy-project`。新安装、构建工具、依赖缓存、下载、临时文件、安全副本放在 E 盘明确目录；不能默认安装到 C 盘。应用已有的操作系统数据目录是另一回事，不因此迁移、删改其 C 盘数据。
+- **ENV-01**：本机仓库固定 `E:\Project\Project\easy-project`。新安装、构建工具、依赖缓存、下载、临时文件、安全副本放在 E 盘明确目录；不能默认安装到 C 盘。2026-10-20用户明确：项目数据库、备份、MCP审计、WebView缓存/偏好也不能以C盘AppData为默认或长期例外。旧数据仅作为受保护的迁移源；不得未核验就删除。Windows系统管理的快捷方式/注册表不等于项目数据库存储目录。
 - **ENV-02**：使用 PowerShell 语法，不套用 Bash 花括号/命令替换；搜索优先 `rg`。源文件手工编辑使用 `apply_patch`；不要用 shell 重定向或临时脚本覆盖用户文件。格式化和锁文件由相应工具生成，差异仍须审查。
 - **ENV-03**：个人/global技能只在 `E:\Project\Codex\skills` 读取、维护、安装；C盘发现路径若为兼容链接不得替换。仓库局部技能属于 `.agents/skills`，但不要提交含令牌的 `.agents`/`.codex` 配置。
 - **ENV-04**：先查 Git 状态。现有修改归用户所有，保留无关差异；禁止未经明确许可的 `reset --hard`、覆盖检出、强推、递归清理和丢弃未跟踪文件。不要仅为交接切回 main。新分支默认 `codex/` 前缀；沿用既有任务分支需核对用途。
@@ -56,7 +56,7 @@ $env:npm_config_cache = 'E:\Project\Project\easy-project\src-tauri\target\audit-
 
 ## 5. 数据、导入、备份与恢复
 
-- **DATA-01**：数据库来自Tauri应用数据目录，文件名 `project_manager.db`，不依赖启动工作目录；当前schema `PRAGMA user_version=5`，拒绝高于支持版本的数据库。不得把源码目录中的旧db当当前真实库。
+- **DATA-01**：数据库文件名 `project_manager.db`，Windows默认`<安装目录>/data`，安装侧`easyproject-storage.json`记录activeDir/pendingDir；数据页允许非C盘本地新/空目录，保存后重启复制校验最新库/备份/审计再切换，不依赖启动工作目录。WebView主/浮窗使用安装侧`webview`。禁止C盘、链接、网络、父子重叠目录、静默回退和迁移失败建空库；旧AppData仅首次生产迁移发现，debug隔离。schema仍5，拒绝未来版本。安装处需可写；Mac使用App包外同级EasyProject-storage，不修改签名包。独立MCP参数必须与数据页实际路径一致。见[目录整改检查点](../STORAGE_LOCATION_CHECKPOINT.md)。
 - **DATA-02**：数据库变更版本化、可验证，新增优先或提供明确迁移与恢复路径。当前迁移主要在 `common/db_state.rs`，独立可回滚迁移脚本尚是工程候选，不要宣称已存在完整迁移框架。迁移前数据保护、外键及索引不可省略。
 - **DATA-03**：JSON原生交换当前v5，兼容导入v1–v5，六模型/关系/计划基线必须保留；SQLite备份恢复只接受受管备份目录内、完整性/必需表/schema-v5有效的 `.db`。JSON兼容旧版不等于可以恢复任意旧数据库。
 - **DATA-04**：导入先解析/映射/预览/关系校验，再确认和事务替换；失败回滚，保持当前工作区。恢复先创建安全快照，失败保留/使用恢复路径。拒绝路径越界和不可信链接，不能为方便开放任意数据库文件替换。

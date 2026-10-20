@@ -27,8 +27,9 @@ EasyProject is an open-source, local-first desktop project planning application.
 - Subscribe to private published Google Calendar, Outlook, or other ICS URLs for on-demand busy-time sync.
 - Undo and redo the last 30 data-changing actions with `Ctrl+Z` and `Ctrl+Y`.
 - Create and inspect local SQLite backups. Startup and periodic automatic snapshots retain the latest 10 copies; imports and restores create safety backups.
-- Store data locally in SQLite under the operating system application-data directory.
-- Preserve the legacy development database on first upgrade by copying it into the application-data directory.
+- Store SQLite and backups in `<installation>/data` by default. On Windows, C-drive storage is rejected; no silent AppData fallback is used.
+- Choose a new/empty non-C local data directory in the Data page. Changes take effect on restart, copying and verifying the latest database, backups and MCP audit while retaining the source. Window profiles use `<installation>/webview`; settings use `<installation>/easyproject-storage.json`. Install into a writable non-C location; uninstalling must preserve these user files.
+- Automatically discover the old production AppData database only for the initial migration. Debug builds do not import production data. Update independent MCP clients to the database path displayed in the Data page after a move.
 - Validate editable fields in the Rust service layer.
 - Restrict remote calendar targets, backup restore paths, WebView content sources, and production log verbosity.
 - Use the top-right **任务悬浮窗 / Task floating window** button to open an independent read-only task window for progress and project navigation (requires the updated desktop build).

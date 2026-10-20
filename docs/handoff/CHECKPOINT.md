@@ -1,5 +1,7 @@
 # EasyProject 交接任务检查点
 
+2026-10-20后续整改正在进行：C盘默认数据位置规则由用户明确覆盖，RULES/ARCHITECTURE/CURRENT_STATE/README已按实现更新，当前任务以[STORAGE_LOCATION_CHECKPOINT](../STORAGE_LOCATION_CHECKPOINT.md)为准。Git/Wolai及本机部署尚待本轮收尾，不沿用历史“已全部同步”结论。
+
 - 日期：2026-10-18（Asia/Shanghai）。目标：只交接EasyProject，整理可独立理解并延续规划/设计/开发的仓库文档；Watch App已由用户确认是笔误，不涉及其它项目。
 - 范围：既定规则、架构与业务不变量、当前源码/安装/发布/MCP证据、未决事项、日常工作流和接手验收；仅文档，不改代码、安装、真实数据、权限、系统设置或发布资产。不创建新聊天，不向未指定伙伴发送消息。
 - 标准：WACAS未定义/待确认；实际UPARS1.1.0、AGENTS、token-saver和easyproject-maintenance。交接不是重新全库审计，不修改通用标准或全局技能。

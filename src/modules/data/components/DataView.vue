@@ -15,6 +15,7 @@
         </header>
         <p v-if="message" :class="['message-toast', messageType]">{{ message }}</p>
         <div class="cards">
+            <StorageSettings class="wide" />
             <article class="data-card">
                 <div class="card-icon blue"><i class="pi pi-download"></i></div>
                 <h3>{{ $t('data.exportTitle') }}</h3>
@@ -190,7 +191,8 @@ import { onMounted, ref } from 'vue'
 import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
 import { useI18n } from 'vue-i18n'
-import { revealItemInDir } from '@tauri-apps/plugin-opener'
+import StorageSettings from '../../../components/StorageSettings.vue'
+import { revealBackupDirectory } from '../../../api/storage'
 import { crudAction } from '../../../api'
 import { snapshotToXlsx, xlsxToSnapshot } from '../utils/xlsx.js'
 const backups = ref([]),
@@ -415,7 +417,7 @@ async function loadBackups() {
 }
 async function openBackupFolder() {
     try {
-        await revealItemInDir(backups.value[0]?.path || backupDirectory.value)
+        await revealBackupDirectory()
     } catch (e) {
         show(e.message, 'error')
     }

@@ -9,7 +9,13 @@ interface Window {
         metadata?: { currentWindow: { label: string } }
         invoke: (
             command: string,
-            args: { model: string; action: string; data: Record<string, any>; value?: unknown }
+            args: {
+                model: string
+                action: string
+                data: Record<string, any>
+                value?: unknown
+                directory?: string
+            }
         ) => Promise<unknown>
     }
 }

@@ -1,6 +1,8 @@
 # EasyProject 新伙伴接手入口
 
-交接版本：1.1，2026-10-18（Asia/Shanghai，新增持续同步要求）。仅适用于 EasyProject；不涉及 Watch App。本包面向人类开发者和新的 AI 助手，不要求读取旧聊天。
+当前活动任务（2026-10-20）：[数据存储目录整改](../STORAGE_LOCATION_CHECKPOINT.md)。用户已撤销旧C盘AppData例外，接续先读此检查点；旧内部2安装说明不代表新存储行为已经部署。
+
+交接版本：1.2，2026-10-20（Asia/Shanghai，存储目录规则与本机迁移更新；仍78条规则）。仅适用于 EasyProject；不涉及 Watch App。本包面向人类开发者和新的 AI 助手，不要求读取旧聊天。
 
 ## 先记住这六件事
 

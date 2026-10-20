@@ -6,25 +6,25 @@
 
 MCP客户端需支持本地stdio并允许配置可执行文件与参数。默认只读，仅发现7个查询工具；`--allow-write`增加创建/修改/加入团队，`--allow-delete`同时要求写入开关，增加删除/退出工具。开关是对该客户端整个会话的权限授权，不是每次操作的人工确认；应在客户端保留工具调用审批，尤其是删除。只接入可信客户端：查询结果包含项目内容、人员邮箱/电话，客户端可能将这些发送给模型服务。
 
-客户端配置示例（模板，替换两条绝对路径；不要直接复制YOUR_USER）：
+客户端配置示例（模板，替换两条绝对路径；数据库以桌面数据页显示为准）：
 
 ```json
 {
-  "mcpServers": {
-    "easyproject": {
-      "command": "E:/Project/Project/easy-project/artifacts/mcp/easyproject-mcp.exe",
-      "args": [
-        "--database",
-        "C:/Users/YOUR_USER/AppData/Roaming/com.easyproject.desktop/project_manager.db",
-        "--allow-write",
-        "--allow-delete"
-      ]
+    "mcpServers": {
+        "easyproject": {
+            "command": "E:/Project/Project/easy-project/artifacts/mcp/easyproject-mcp.exe",
+            "args": [
+                "--database",
+                "E:/EasyProject/data/project_manager.db",
+                "--allow-write",
+                "--allow-delete"
+            ]
+        }
     }
-  }
 }
 ```
 
-要只读，删除两个allow参数。数据库是现有应用数据，不是程序安装目录；程序构建/交付在E盘，既有Windows应用数据目录没有迁移。服务拒绝相对路径、不存在的库、非`.db`、不是schema-v5的库，不创建空库或自动迁移，不猜测数据库路径。启动前先用桌面程序初始化一次。
+要只读，删除两个allow参数。2026-10-20起新桌面源码默认安装侧`data/project_manager.db`，支持数据页设置非C盘新/空目录并于重启迁移；旧AppData说明只适用于历史版本。本机是否已部署/迁移见[目录整改检查点](STORAGE_LOCATION_CHECKPOINT.md)，不要只看模板猜真实路径。独立MCP不会随桌面设置自动改参数，也不负责迁移。服务拒绝相对路径、不存在的库、非`.db`、不是schema-v5的库，不创建空库或自动迁移，不猜测数据库路径。启动前先用桌面程序初始化一次。
 
 本轮不会修改本机任何MCP客户端配置；已安装旧桌面版也不会自动更新。第一版建议写入会话期间关闭桌面程序，结束会话后重新打开查看结果。新代码的实体写入共用SQLite `BEGIN IMMEDIATE`和服务校验，跨进程写锁等待最多5秒；不要同时导入/恢复或用旧版桌面编辑。页面不是实时订阅，读取到旧列表时重新进入页面或重启。没有网络鉴权令牌，保护边界是本机账户权限、显式启动和客户端审批，并不防御拥有同账户文件访问权的其它程序。
 
@@ -37,7 +37,7 @@ MCP客户端需支持本地stdio并允许配置可执行文件与参数。默认
 其它设备可使用下列模板（替换数据库路径）：
 
 ```powershell
-codex mcp add easyproject -- E:/Project/Project/easy-project/artifacts/mcp/easyproject-mcp.exe --database C:/Users/YOUR_USER/AppData/Roaming/com.easyproject.desktop/project_manager.db
+codex mcp add easyproject -- E:/Project/Project/easy-project/artifacts/mcp/easyproject-mcp.exe --database E:/EasyProject/data/project_manager.db
 codex mcp get easyproject --json
 ```
 
@@ -45,16 +45,16 @@ codex mcp get easyproject --json
 
 `entity`为`project`、`task`、`member`；完整字段以`tools/list`的严格`inputSchema`为准，不接受未知字段、空白名称、错误类型或越界进度。列表只返回活跃记录，分页最多100条，默认沿用实体服务的页大小。
 
-| 工具 | 参数 |
-| --- | --- |
-| `easyproject_<entity>_list` | 可选pageIndex/pageSize；任务可按projectId过滤 |
-| `easyproject_<entity>_get` | id |
-| `easyproject_<entity>_create` | data；name必填，任务另需project_id |
-| `easyproject_<entity>_update` | id、非空changes；可选expected_update_time |
-| `easyproject_<entity>_delete` | id、与当前名称完全一致的confirm_name |
-| `easyproject_project_member_list` | projectId，返回包含关系id的团队列表 |
-| `easyproject_project_member_create` | data含project_id、member_id，可选role |
-| `easyproject_project_member_delete` | 关系id、confirm_member_name |
+| 工具                                | 参数                                          |
+| ----------------------------------- | --------------------------------------------- |
+| `easyproject_<entity>_list`         | 可选pageIndex/pageSize；任务可按projectId过滤 |
+| `easyproject_<entity>_get`          | id                                            |
+| `easyproject_<entity>_create`       | data；name必填，任务另需project_id            |
+| `easyproject_<entity>_update`       | id、非空changes；可选expected_update_time     |
+| `easyproject_<entity>_delete`       | id、与当前名称完全一致的confirm_name          |
+| `easyproject_project_member_list`   | projectId，返回包含关系id的团队列表           |
+| `easyproject_project_member_create` | data含project_id、member_id，可选role         |
+| `easyproject_project_member_delete` | 关系id、confirm_member_name                   |
 
 创建示例：
 

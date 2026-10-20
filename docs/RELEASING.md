@@ -1,5 +1,9 @@
 # EasyProject release process
 
+## Installation-local storage patch (2026-10-20)
+
+The local Windows NSIS patch now uses installation-side `data` and `webview`, with a Data-page next-launch location setting; C-drive data storage is rejected and old production AppData is migration-only. Install into a writable non-C directory, preserve `data`, `webview` and `easyproject-storage.json` through replacement/uninstall, and update independent MCP paths separately. Current-device migration and complete automated gates passed; the new storage UI's native interaction, MSI/macOS and true cross-version rollback remain unverified. This local patch did not overwrite Internal Test 2's remote assets or grant public-release approval. Exact installer/executable hashes and data-protection evidence: [storage checkpoint](STORAGE_LOCATION_CHECKPOINT.md).
+
 ## Independent internal candidates (2026-10-18)
 
 Manual internal runs now take `internal_test=true` and a new `internal_number` (default `2`, allowed 2–9999). The app version remains 0.1.0; candidate tags are `v0.1.0-internal.N`. Before dispatch, verify the intended source is synced and the number is unused. After dispatch, verify the run's full source SHA.

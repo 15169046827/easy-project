@@ -32,7 +32,9 @@ pub async fn open_task_window(app: AppHandle, window: WebviewWindow) -> Result<(
             .focused(false)
             .center();
     #[cfg(windows)]
-    let builder = builder.data_directory(crate::storage::profile_directory(&app)?);
+    let builder = builder
+        .data_directory(crate::storage::profile_directory(&app)?)
+        .additional_browser_args("--no-proxy-server");
     builder
         .build()
         .map(|_| ())

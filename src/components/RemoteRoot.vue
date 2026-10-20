@@ -296,6 +296,7 @@ onUnmounted(() => clearInterval(timer))
     box-sizing: border-box;
 }
 .remote-auth-card {
+    box-sizing: border-box;
     width: min(25rem, 100%);
     display: grid;
     gap: 0.8rem;

@@ -30,3 +30,11 @@ cargo build --manifest-path server/Cargo.toml --release --locked
 本机当前连接地址为`https://home-host.tail2956dd.ts.net`；设备需要加入同一Tailnet。更换服务器时必须同步桌面精确CSP allowlist，不放宽为任意HTTPS。公网IP、域名、可信反代/独立限流、MFA/账号禁用恢复、运维告警/异地备份与完整生产审计另行安排。当前服务不替代本地MCP，不自动把本地MCP改为远端。
 
 当前进度/验证/一次性关机授权状态见[检查点](../docs/WEB_SERVER_CHECKPOINT.md)。
+
+## 当前私有部署（2026-10-21）
+
+home-host已部署到`/home/ym_li/easyproject/releases/`，`current`指向逐文件摘要验证的版本。持久数据独立位于`/home/ym_li/easyproject/data`（700），用户systemd服务easyproject已启用，linger=yes；仅监听127.0.0.1:8080，Tailscale Serve代理私有HTTPS。已验证正常证书链、登录/退出、首次改密业务限制和恶意Origin拒绝；未创建真实业务项目或上传桌面数据。开机服务已配置，但未进行物理重启验收。
+
+应用管理员为`ym_li`，随机初始密码只在服务器`data/initial-admin-password`（600）中；从自己的SSH终端查看并首次登录改密，不要复制进Git/Wolai/API文档。该凭据不是SSH密码。
+
+Windows WebView仅在EasyProject自身主窗/浮窗进程使用`--no-proxy-server`，确保Tailscale直连，不更改系统或其它应用代理、不禁用证书验证。普通浏览器如使用代理，需要自行允许此私有域名直连；宿主机默认代理请求曾超时，而无代理的正常TLS请求200。最终产物与未验边界见检查点。

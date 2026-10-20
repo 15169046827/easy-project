@@ -20,7 +20,7 @@ async function login(page, username = 'test_admin', password = 'Synthetic-change
     if (await skip.isVisible()) await skip.click()
 }
 
-for (const width of [1280, 960]) {
+for (const width of [1280, 960, 375]) {
     for (const dark of [false, true]) {
         test(`real HTTP login and nonce styling at ${width}px ${dark ? 'dark' : 'light'}`, async ({
             page
@@ -64,6 +64,9 @@ for (const width of [1280, 960]) {
             ).toHaveLength(0)
             await page.getByRole('button', { name: /退出登录|Sign out/, exact: true }).click()
             await expect(page.locator('#remote-username')).toBeVisible()
+            expect(
+                await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)
+            ).toBe(true)
             await page.locator('#remote-username').focus()
             await page.keyboard.press('Tab')
             await expect(page.locator('#remote-password')).toBeFocused()
@@ -126,8 +129,10 @@ test('two browser sessions share writes, reject stale edits and preserve data af
         { revision, create }
     )
     expect(conflict).toBe(409)
-    await b.goto(origin + '/#/projects')
-    await expect(b.getByRole('button', { name: /刷新（放弃|Refresh \(discard/ })).toBeVisible()
+    await b.getByRole('button', { name: /项目管理|Projects/, exact: true }).click()
+    await expect(b.getByRole('button', { name: /刷新（放弃|Refresh \(discard/ })).toBeVisible({
+        timeout: 20000
+    })
     await b.getByRole('button', { name: /刷新（放弃|Refresh \(discard/ }).click()
     await expect(b.getByText(name, { exact: true })).toBeVisible()
     await b.reload()

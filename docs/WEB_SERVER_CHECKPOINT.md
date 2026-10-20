@@ -1,5 +1,14 @@
 # EasyProject 网页版与多端工作区检查点
 
+## 2026-10-21 最终部署阶段（覆盖下方历史“未部署”）
+
+- 目标/范围不变：网页登录、同账号多端服务端工作区、每账号隔离；桌面默认本地免登录，不上传真实库，不公开公网。WACAS未定义/待确认，适用UPARS1.1.0/AGENTS/PrimeVue/CSP/非C盘/额度与持续交接规范。分支codex/audit-release-20261006-api，开工eada26f，当前已推送a32eaffc8ddcfb38cdff1c6223168f0ef8981b88。
+- 已部署home-host：Linux程序源63e70d1cd64a41ec838c307e210d241ade91b30c、CI39449520194两job成功、SHA1775bb4921f45c7639461b66593bb70125f09466eeb32608f196cf8043ab5a85；前端/交付a32eaff，49文件包SHA c8f5694c5afec742ab1a2d604cb0a3582bbeb1288aa31f03d677b0ec2ae89e5e。服务器独立releases/a32eaffc8ddc逐文件核验通过，current指向该版本，持久data独立700，账号库600/schema1/integrity ok；管理员ym_li随机初始密码只在data/initial-admin-password（600），未输出/上传。systemd用户服务active/enabled、linger=yes；仅127.0.0.1:8080，TZ只限进程Asia/Shanghai。
+- 真实HTTPS https://home-host.tail2956dd.ts.net 验证：正常证书、health/HTML200、nonce及web标记、未登录401、初始管理员登录/会话200、Secure/HttpOnly/Strict cookie、首次改密业务403、退出200/撤销401、恶意Origin403、Tauri精确预检通过。测试后会话0、业务workspaces0；没有真实业务CRUD。已确认Windows Colin及Ubuntu home-host身份、SSH/Tailscale可达；开机自启配置不是物理重启验证。
+- 宿主机默认代理请求曾超时/EOF，-NoProxy正常TLS200。新增仅应用WebView --no-proxy-server（主/浮同设置），不更改系统/其它应用代理或关闭证书；普通浏览器须私有域名直连。补375px登录卡片border-box与深浅窄屏测试。
+- 本轮230单测/46文件、lint/typecheck、Rust fmt/严格Clippy、NSIS构建通过；真实HTTP8项最终通过（1280/960/375深浅6项+双会话/冲突/持久化+账号隔离/首次改密）。一次测试因hash导航/默认5秒短于15秒轮询失败，改实际导航并限定20秒断言后8/8通过，未关闭检查/重试掩盖。原生a32隔离E盘空业务库主窗紧凑图标及PrimeVue连接Dialog真实CSP浅色观察通过，无真实库改动。
+- 当前未提交：e2e/web-server.spec.js、src/components/RemoteRoot.vue、src-tauri/src/lib.rs、src-tauri/src/floating_window.rs、server/README.md、docs/handoff/{README,CURRENT_STATE,ARCHITECTURE,CHECKPOINT}.md、本检查点。准确下一步：提交源补丁、最新dist与同一已验Linux程序打包升级（不重复bootstrap），复验服务重启/数据保留与最终桌面参数；Git/Wolai/交接闭环后按一次性授权关机。Apifox9HTTP/55原生接口及25目录已逐条读回，无契约变化无需重传；Wolai本阶段待同步。额度最新五小时34%、周74%，无重置/唤醒。一次性关机尚未执行，不能被后续任务继承。正式公网发布仍未通过；物理重启、Mac/MSI/真实多设备登录、跨时区完整模型及原桌面限定例外仍按各自边界记录。
+
 ## 2026-10-20 开工
 
 ### 第二阶段：真实HTTP验证与交付准备

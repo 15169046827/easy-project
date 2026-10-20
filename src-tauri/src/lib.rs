@@ -65,7 +65,9 @@ pub fn run() {
             let builder = tauri::WebviewWindowBuilder::from_config(app, config)?
                 .initialization_script(&bootstrap);
             #[cfg(windows)]
-            let builder = builder.data_directory(profile);
+            let builder = builder
+                .data_directory(profile)
+                .additional_browser_args("--no-proxy-server");
             builder.build()?;
             Ok(())
         })

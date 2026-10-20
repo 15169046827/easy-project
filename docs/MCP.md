@@ -4,6 +4,8 @@
 
 ## 连接与权限
 
+2026-10-20当前本机选择：用户明确要求完整增删改查，Codex同名easyproject配置已加入`--allow-write --allow-delete`，数据库为当前E盘安装侧data。18工具发现与实际交付exe的E盘隔离CRUD/default-denial复验通过，未调用真实库增删改，客户端审批策略未变；当前聊天旧工具目录需重连/必要时重启后重新发现。此前只读是接入时的权限选择，不是功能缺失。准确证据见[CRUD启用检查点](MCP_CRUD_ENABLEMENT_CHECKPOINT.md)。
+
 MCP客户端需支持本地stdio并允许配置可执行文件与参数。默认只读，仅发现7个查询工具；`--allow-write`增加创建/修改/加入团队，`--allow-delete`同时要求写入开关，增加删除/退出工具。开关是对该客户端整个会话的权限授权，不是每次操作的人工确认；应在客户端保留工具调用审批，尤其是删除。只接入可信客户端：查询结果包含项目内容、人员邮箱/电话，客户端可能将这些发送给模型服务。
 
 客户端配置示例（模板，替换两条绝对路径；数据库以桌面数据页显示为准）：
@@ -26,7 +28,7 @@ MCP客户端需支持本地stdio并允许配置可执行文件与参数。默认
 
 要只读，删除两个allow参数。2026-10-20起新桌面源码默认安装侧`data/project_manager.db`，支持数据页设置非C盘新/空目录并于重启迁移；旧AppData说明只适用于历史版本。本机是否已部署/迁移见[目录整改检查点](STORAGE_LOCATION_CHECKPOINT.md)，不要只看模板猜真实路径。独立MCP不会随桌面设置自动改参数，也不负责迁移。服务拒绝相对路径、不存在的库、非`.db`、不是schema-v5的库，不创建空库或自动迁移，不猜测数据库路径。启动前先用桌面程序初始化一次。
 
-本轮不会修改本机任何MCP客户端配置；已安装旧桌面版也不会自动更新。第一版建议写入会话期间关闭桌面程序，结束会话后重新打开查看结果。新代码的实体写入共用SQLite `BEGIN IMMEDIATE`和服务校验，跨进程写锁等待最多5秒；不要同时导入/恢复或用旧版桌面编辑。页面不是实时订阅，读取到旧列表时重新进入页面或重启。没有网络鉴权令牌，保护边界是本机账户权限、显式启动和客户端审批，并不防御拥有同账户文件访问权的其它程序。
+初次开发交付不改客户端的限制是历史阶段；10-20用户已明确授权本机当前连接启用CRUD，不因此自动更新独立exe或其它客户端。第一版建议写入会话期间关闭桌面程序，结束会话后重新打开查看结果。新代码的实体写入共用SQLite `BEGIN IMMEDIATE`和服务校验，跨进程写锁等待最多5秒；不要同时导入/恢复或用旧版桌面编辑。页面不是实时订阅，读取到旧列表时重新进入页面或重启。没有网络鉴权令牌，保护边界是本机账户权限、显式启动和客户端审批，并不防御拥有同账户文件访问权的其它程序。
 
 ## 工具契约
 
@@ -37,11 +39,11 @@ MCP客户端需支持本地stdio并允许配置可执行文件与参数。默认
 其它设备可使用下列模板（替换数据库路径）：
 
 ```powershell
-codex mcp add easyproject -- E:/Project/Project/easy-project/artifacts/mcp/easyproject-mcp.exe --database E:/EasyProject/data/project_manager.db
+codex mcp add easyproject -- E:/Project/Project/easy-project/artifacts/mcp/easyproject-mcp.exe --database E:/EasyProject/data/project_manager.db --allow-write --allow-delete
 codex mcp get easyproject --json
 ```
 
-配置成功不等于已有聊天已加载；重新加载MCP连接，必要时重启客户端，再调用查询工具验证。不要为接入测试添加allow-write/allow-delete。客户端配置格式不同不影响通用MCP业务契约。[Codex官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)。
+上例为用户明确授权后的完整CRUD；只读连接去掉两个allow开关。配置成功不等于已有聊天已加载；重新加载MCP连接，必要时重启客户端，再发现工具并仅查询验证，不拿真实库做CRUD演练。不要仅为测试或替其它未授权客户端自动添加权限。客户端配置格式不同不影响通用MCP业务契约。[Codex官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)。
 
 `entity`为`project`、`task`、`member`；完整字段以`tools/list`的严格`inputSchema`为准，不接受未知字段、空白名称、错误类型或越界进度。列表只返回活跃记录，分页最多100条，默认沿用实体服务的页大小。
 

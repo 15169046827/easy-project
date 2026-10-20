@@ -2,6 +2,8 @@
 
 ## 2026-10-20 当前任务覆盖说明
 
+最新MCP授权覆盖此前只读口径：用户明确要求正常增删改查，同名Codex连接已配置`--allow-write --allow-delete`，仍用E盘新库和原独立exe；实际18工具发现、交付exe隔离CRUD/default-denial通过，真实库仅握手发现且文件SHA未变。客户端审批策略未改，当前聊天仍7个旧查询入口，需重连/必要时重启后验收新工具加载，不等于当前已能写。后续按用户具体任务操作，不以权限开启作自动CRUD真实验收授权。详见[启用检查点](../MCP_CRUD_ENABLEMENT_CHECKPOINT.md)。下文“只读”均为对应历史阶段，不覆盖这次明确新选择。
+
 用户要求整改C盘数据默认位置，准确证据见[存储整改检查点](../STORAGE_LOCATION_CHECKPOINT.md)。已覆盖原E盘安装，NSIS SHA EF5CBD847B030C76EA554E6E8C096F1DB8B051C8680AAC271C6BD89A330A79F3、安装exe SHA498BD72B5CBBF37A28C4F1AA4C20DDB80F19C08653DDBAB8D1489BD9B1A12D38。当前库为原安装目录下`data/project_manager.db`，全部业务行摘要与迁移前一致、完整性ok/外键0；主WebView实际使用同侧webview。旧C盘例外撤销，旧库/缓存已分别保留E盘safety-copy/legacy-archive/legacy-residual，核验后旧C路径文件数为0（目录存在不等于仍有数据）。独立MCP配置已只改新E盘库路径，原exe和只读权限不变；旧进程已停止，已有客户端会话需重新连接/必要时重启。217前端单测、59生产E2E、47Rust+1stdio、lint/类型/fmt/clippy/构建/元数据/UPARS通过。原生UI工具1909隔离账户锁定，重置重试仍失败；仅进程响应和真实存储核验通过，新设置界面原生外观/点击及本机手动重启待用户确认，不冒充已验。以下10-18安装/证据保留历史身份，正式发布结论未改变。
 
 快照日期：2026-10-18（Asia/Shanghai）。新伙伴开始执行前必须核对Git、当前文件、额度与具体任务；本文不是自动运行清单。

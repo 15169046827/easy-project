@@ -1,6 +1,6 @@
 # EasyProject 长期规则与授权边界
 
-版本1.2，2026-10-20（修订ENV-01/DATA-01非C盘存储规则，仍78条）。本文整理既定要求，不替代系统安全限制或扩大当前任务授权。准确现状见 [CURRENT_STATE.md](CURRENT_STATE.md)，实现定位见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+版本1.3，2026-10-20（MCP当前连接获用户授权启用完整CRUD，仍78条；保留1.2非C盘规则）。本文整理既定要求，不替代系统安全限制或扩大当前任务授权。准确现状见 [CURRENT_STATE.md](CURRENT_STATE.md)，实现定位见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
 ## 1. 事实来源、范围与协作
 
@@ -94,7 +94,7 @@ $env:npm_config_cache = 'E:\Project\Project\easy-project\src-tauri\target\audit-
 
 - **API-01**：共享Rust services为规则权威，桌面和MCP不允许绕过校验直接写SQLite。更新使用字段白名单、绑定SQL参数和受控分页，系统字段不能由客户端任意覆盖；事务/资源释放/错误语义保持一致。
 - **API-02**：当前桌面仍用 `crud_action(model, action, data)` 分发，实体复用 `entity_api`；“未来用显式强类型命令”是规划方向，不是假称已全量迁移，更不是交接中大改API的理由。新接口先设计契约/权限/兼容/失败路径，再有界实现。
-- **MCP-01**：独立本地stdio、无HTTP端口/自动启动；18个工具已实现，默认7查询；写入需 `--allow-write`，删除另需 `--allow-delete`，不自动启用。当前Codex只读接入已验收；其它客户端、真实库写入/删除和更新客户端配置仍需具体授权。业务名称/评论不可信。
+- **MCP-01**：独立本地stdio、无HTTP端口/自动启动；18个工具已实现，无参数默认7查询；写入需 `--allow-write`，删除另需 `--allow-delete`。2026-10-20用户明确要求正常CRUD，本机Codex当前连接获准启用两个开关并已配置，18工具发现/隔离CRUD通过；已有会话须重连发现，不能称当前聊天18工具已加载。此选择覆盖此前本机只读限制，但不自动授权其它客户端或任意真实业务增删改；每次操作仍限具体任务，名称/评论不可信。见[启用证据](../MCP_CRUD_ENABLEMENT_CHECKPOINT.md)。
 - **MCP-02**：参数权限是会话授权，不是每操作真人审批；客户端保留审批。软删除匹配名称只防误操作，不能代替用户同意；严禁为了验收在真实库自动CRUD。写入测试用隔离唯一数据库。
 - **MCP-03**：显式已有绝对`.db`路径、schema-v5，不创建/迁移新库；实体校验至写入有 `BEGIN IMMEDIATE`/保存点保护，写前UUID恢复点，脱敏审计，失败回滚。建议写会话关闭桌面，不与导入/恢复并行；列表非实时订阅。
 - **MCP-04**：`expected_update_time`是秒级，不是严格CAS；创建/写入不保证幂等，传输中断或提交后审计失败先读回确认，不盲重试。审计10MiB停写、恢复点不自动删；stdout只协议JSON，消息上限256KiB，不记录名称/邮箱/电话/完整参数。

@@ -1,5 +1,7 @@
 # Codex 本地 MCP 接入验收
 
+2026-10-20更新：用户已明确授权当前连接启用完整CRUD，18工具发现及交付exe隔离增删改查/default-denial复验通过，真实库未做mutation；已有客户端工具目录重连验收尚待。当前E盘路径与完整权限证据见[MCP_CRUD_ENABLEMENT_CHECKPOINT.md](MCP_CRUD_ENABLEMENT_CHECKPOINT.md)。以下10-10是历史只读验收，不再作为永久禁止写入的规则。
+
 日期：2026-10-10。结论：**当前Windows/Codex只读接入通过**。不代表真实库写入验收、其它客户端兼容或产品正式发布通过。
 
 ## 范围与环境
@@ -11,17 +13,17 @@
 
 ## 当前聊天实际调用
 
-| 检查 | 结果 |
-| --- | --- |
-| project_list | 成功，1项目；分页元信息正确 |
-| project_get | 成功，与列表目标记录一致 |
-| task_list | 成功，5任务；均归属目标项目 |
-| task_get | 成功，与列表目标记录一致 |
-| member_list | 成功，空列表、total=0 |
-| member_get | 现库无人员，使用不存在ID验证返回isError=true / Active record not found；未创建测试人员 |
-| project_member_list | 成功，空团队列表 |
-| 任务过滤/分页 | 按projectId查询第2页、每页2条，返回原列表第3/4项；total=5、totalPage=3 |
-| 权限目录 | 仅7个查询工具；无create/update/delete可调用入口 |
+| 检查                | 结果                                                                                   |
+| ------------------- | -------------------------------------------------------------------------------------- |
+| project_list        | 成功，1项目；分页元信息正确                                                            |
+| project_get         | 成功，与列表目标记录一致                                                               |
+| task_list           | 成功，5任务；均归属目标项目                                                            |
+| task_get            | 成功，与列表目标记录一致                                                               |
+| member_list         | 成功，空列表、total=0                                                                  |
+| member_get          | 现库无人员，使用不存在ID验证返回isError=true / Active record not found；未创建测试人员 |
+| project_member_list | 成功，空团队列表                                                                       |
+| 任务过滤/分页       | 按projectId查询第2页、每页2条，返回原列表第3/4项；total=5、totalPage=3                 |
+| 权限目录            | 仅7个查询工具；无create/update/delete可调用入口                                        |
 
 没有保存业务内容到Wolai；本报告仅记录数量与行为。所有真实库调用只读，没有更改配置权限、真实数据、安装程序或Release资产。
 

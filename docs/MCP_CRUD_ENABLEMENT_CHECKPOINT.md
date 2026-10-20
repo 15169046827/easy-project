@@ -14,3 +14,8 @@
 - 对实际E盘库仅initialize/notifications/initialized/tools/list：18工具完整（3实体各5项CRUD+团队3项），无tools/call mutation；握手前后实际库文件SHA相同。当前聊天7旧查询工具已在用户重启后验证可读E库，但本次更改权限后尚未重连，因此“18工具客户端加载”仍待；不强杀现有客户端/其它会话。
 - 文档更新AGENTS、MCP指南、Codex验收顶部覆盖、PROJECT_PLAN及交接README/RULES/CURRENT_STATE/CHECKPOINT；手册1.3仍78条。架构、应用源码/数据库schema/安装包/独立exe/正式发布状态均复核无变，未重跑无关前端/打包门禁，不冒称本轮全量业务回归。
 - 当前全部未提交9文件：AGENTS.md、docs/MCP.md、docs/MCP_CODEX_ACCEPTANCE.md、docs/PROJECT_PLAN.md、docs/handoff/{README,RULES,CURRENT_STATE,CHECKPOINT}.md、新docs/MCP_CRUD_ENABLEMENT_CHECKPOINT.md。文档格式、79本地链接/78规则ID唯一性、发布元数据和diff通过。下一步提交；同步Wolai主状态和交接MCP-01/首部，读回核对源SHA，再保存闭环。用户侧重连后发现18工具即可，不要求在真实库造测试数据。
+
+## 同步完成
+
+- 9文件ae0dd75b9f8faaeb4ea6a307e5cbd5d1be5317b8已正常非强制推送，应用/独立exe未变。Wolai主状态28dPKMDkPpLCFu557s8exF version69，交接首部oLvsZ6M65HtTfFsJmg8ptD version6，权限入口9JP29fqCdX3o2ZhjjQL2kV、MCP-01 dVyhv84urubgY6Kew5t2Ya、当前权限5MP2VPCiAvCbHqC641Wodb均version3；5块逐个读回源SHA匹配、18工具与待重连边界一致。Git/Wolai/交接完成同步，本段闭环记录另提交保存。
+- 准确下一步：用户重连MCP或重启Codex后，只读发现18工具确认新会话已加载；随后按具体业务指令正常增删改查，不额外创建测试项目，不自动批量删除。当前启用任务完成，现有工具目录加载验收待重连；可复制Agent接入指令须含两个allow开关，不再写“本机连接只能只读”。架构/安装/数据/公开发布/设备边界无变。

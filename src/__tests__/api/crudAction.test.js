@@ -10,6 +10,7 @@ import {
 } from '../../api'
 
 vi.mock('@tauri-apps/api/core', () => ({
+    isTauri: () => false,
     invoke: vi.fn()
 }))
 

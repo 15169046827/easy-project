@@ -1,4 +1,29 @@
 export default {
+    remote: {
+        loading: '正在检查登录状态…',
+        online: '远端工作区',
+        login: '登录',
+        username: '用户名',
+        password: '密码',
+        currentPassword: '当前密码',
+        newPassword: '新密码',
+        changePassword: '修改密码',
+        passwordHint: '密码为12—128个字符；修改后所有设备需要重新登录。',
+        isolation: '同一账号可跨设备访问；不同账号工作区相互隔离。',
+        returnLocal: '返回本地（无需登录）',
+        stale: '其他设备已修改数据。请先刷新，再重新编辑。',
+        reload: '刷新（放弃未保存编辑）',
+        accounts: '账号管理',
+        admin: '管理员',
+        logout: '退出登录',
+        initialPassword: '初始密码',
+        createAccount: '创建账号',
+        failed: '操作失败，请稍后重试',
+        connect: '远端工作区',
+        serverUrl: '服务器 HTTPS 地址',
+        localPreserved:
+            '本地模式始终无需登录或联网。切换仅连接远端独立工作区，不上传或覆盖本地数据。'
+    },
     storage: {
         title: '数据存储位置',
         description: '默认使用安装目录下的 data 文件夹；不会回退到 C 盘。数据库与备份一起管理。',

@@ -1,4 +1,31 @@
 export default {
+    remote: {
+        loading: 'Checking your session…',
+        online: 'Remote workspace',
+        login: 'Sign in',
+        username: 'Username',
+        password: 'Password',
+        currentPassword: 'Current password',
+        newPassword: 'New password',
+        changePassword: 'Change password',
+        passwordHint:
+            'Use 12–128 characters. All devices must sign in again after a password change.',
+        isolation:
+            'Access the same account across devices. Each account has an isolated workspace.',
+        returnLocal: 'Return to local (no login)',
+        stale: 'Another device changed this workspace. Refresh before editing again.',
+        reload: 'Refresh (discard unsaved edits)',
+        accounts: 'Accounts',
+        admin: 'Administrator',
+        logout: 'Sign out',
+        initialPassword: 'Initial password',
+        createAccount: 'Create account',
+        failed: 'Operation failed. Please try again later.',
+        connect: 'Remote workspace',
+        serverUrl: 'Server HTTPS origin',
+        localPreserved:
+            'Local mode never requires login or a network. Connecting opens a separate remote workspace without uploading or replacing local data.'
+    },
     storage: {
         title: 'Data storage location',
         description:

@@ -44,7 +44,9 @@
                 </Button>
             </nav>
             <div class="header-actions">
+                <RemoteConnect />
                 <Button
+                    v-if="!remoteActive"
                     type="button"
                     class="theme-toggle floating-entry"
                     v-tooltip.bottom="$t('floating.open')"
@@ -147,6 +149,8 @@ import { getWindowChromeMode } from './utils/windowChrome'
 import { openFloatingWindow } from './modules/floating/windowActions'
 import { listen } from '@tauri-apps/api/event'
 import { isTauri } from '@tauri-apps/api/core'
+import RemoteConnect from './components/RemoteConnect.vue'
+import { remoteActive } from './api/remote'
 
 const route = useRoute()
 const router = useRouter()
@@ -234,13 +238,14 @@ onMounted(() => {
     connectFloatingNavigation()
     enableHistory()
     window.addEventListener('easyproject:data-changed', refreshAfterHistory)
-    backupTimer = setInterval(
-        () =>
-            crudAction('data', 'backup', { reason: 'auto' }).catch(() =>
-                showHistoryMessage(t('history.backupFailed'), true)
-            ),
-        30 * 60 * 1000
-    )
+    if (!remoteActive.value)
+        backupTimer = setInterval(
+            () =>
+                crudAction('data', 'backup', { reason: 'auto' }).catch(() =>
+                    showHistoryMessage(t('history.backupFailed'), true)
+                ),
+            30 * 60 * 1000
+        )
 })
 onUnmounted(() => {
     disposed = true

@@ -12,6 +12,8 @@
 
 ## 2. 两条入口共享一套业务规则
 
+新增第三入口（2026-10-20实施中）：`server/`是独立Cargo headless工程，通过源码模块复用common/db/models/services，没有Tauri/GTK运行依赖；HTTP认证、每账号工作区和revision在server/src，账号与人员模型独立。`src/api/remote.js`是显式远端适配，Web同源cookie、桌面精确HTTPS源+内存Bearer，`RemoteRoot`处理登录/初始改密/账号管理；本地依旧走原Tauri invoke，不登录/不联网，不自动上传。HTTP接口不改旧MCP或IPC契约；见[服务说明](../../server/README.md)与[检查点](../WEB_SERVER_CHECKPOINT.md)。
+
 API维护地图（2026-10-20）：[docs/api](../api/README.md)记录实际18MCP工具inputSchema、6注册Tauri命令和31分发动作；build-api-catalog.js从交付程序/源码提取，build-apifox-layout.js生成20目录/55接口布局，group-apifox-api.ps1维护原生通用协议接口及参考分组，sync-apifox-api.ps1维护26篇参考正文且保留folderId；逐份读回字段/摘要，不是运行期依赖、HTTP网关或新增业务服务。令牌环境变量读取且不落盘，远端手改SHA不符停止覆盖。
 
 ```text

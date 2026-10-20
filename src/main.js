@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
-import App from './App.vue'
-import DesktopRoot from './components/DesktopRoot.vue'
+import RemoteRoot from './components/RemoteRoot.vue'
 import FloatingTaskWindow from './modules/floating/FloatingTaskWindow.vue'
 
 // PrimeVue
@@ -17,9 +16,7 @@ import { getStyleNonce } from './security/styleNonce'
 
 const floating =
     window.__EASYPROJECT_FLOATING_WINDOW__ || window.location.hash.split('?')[0] === '#/floating'
-const app = createApp(
-    floating ? FloatingTaskWindow : window.__EASYPROJECT_STORAGE_INFO__ ? DesktopRoot : App
-)
+const app = createApp(floating ? FloatingTaskWindow : RemoteRoot)
 if (floating) document.documentElement.classList.add('floating-document')
 const EasyProjectPreset = definePreset(Aura, {
     semantic: {

@@ -2,6 +2,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { ref } from 'vue'
 import { i18n } from '../i18n'
 import { demoAction } from './demo.js'
+import { remoteActive, remoteAction } from './remote.js'
 
 const undoStack = []
 const redoStack = []
@@ -28,6 +29,7 @@ function syncHistoryState() {
 }
 
 async function invokeAction(model, action, data = {}) {
+    if (remoteActive.value) return remoteAction(model, action, data)
     if (
         import.meta.env.DEV &&
         typeof window !== 'undefined' &&
@@ -55,7 +57,8 @@ export function enableHistory() {
 }
 
 export async function crudAction(model, action, data = {}) {
-    const shouldCapture = historyEnabled && !historyBusy && mutationActions.has(action)
+    const shouldCapture =
+        historyEnabled && !remoteActive.value && !historyBusy && mutationActions.has(action)
     let snapshot = null
     if (shouldCapture) {
         try {

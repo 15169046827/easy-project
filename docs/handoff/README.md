@@ -1,5 +1,7 @@
 # EasyProject 新伙伴接手入口
 
+当前新增任务：网页版/账号/远端多端工作区正在实施，准确范围、验证与下一步见[WEB_SERVER_CHECKPOINT](../WEB_SERVER_CHECKPOINT.md)；桌面默认免登录离线使用不变，不能将本地数据自动上传。
+
 最新状态（2026-10-20）：[数据存储整改](../STORAGE_LOCATION_CHECKPOINT.md)已部署本机E盘，原生新设置UI仍待补验；[MCP完整CRUD启用](../MCP_CRUD_ENABLEMENT_CHECKPOINT.md)获用户明确授权并配置，已有客户端需重连发现18工具。
 
 交接版本：1.5，2026-10-20（Asia/Shanghai，Apifox接口分组与API-03修订；仍79条）。仅适用于 EasyProject；不涉及 Watch App。本包面向人类开发者和新的 AI 助手，不要求读取旧聊天。

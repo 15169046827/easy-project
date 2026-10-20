@@ -2,6 +2,8 @@
 
 ## 2026-10-20 当前任务覆盖说明
 
+最新任务（实施中）：用户授权网页版、登录和多端统一远端数据，指定Ubuntu home-host/Tailscale部署；同时明确保留桌面默认免登录离线使用，不自动上传/合并本地库。新增headless Rust复用领域服务、每账号独立库、登录/改密/账号管理与跨端revision保护；229前端/59生产E2E和服务端29共享+7鉴权专项及严格Clippy已通过，尚待Linux构建部署和真实HTTP界面复验。准确续接/一次性操作状态见[网页检查点](../WEB_SERVER_CHECKPOINT.md)；不把实现中写成已交付。
+
 最新Apifox接入与展示整改：私有EasyProject8948094/main8751742已建立20个目录、55个原生通用协议接口（18MCP/6Tauri注册命令/31分发动作），按MCP、桌面IPC与业务模块分组；26篇旧正文保留为2篇接入规范/模型和24篇历史快照，不再平铺代替接口。422已确认真实folderId要求并解决，使用MCP stdio/Tauri IPC协议，不伪造HTTP服务/调试能力。全部内容写后读回SHA和位置/协议/path；未写真实业务库或其它项目。Codex配置仅环境变量引用与版本头/prompt审批，当前聊天需重连才发现原生Apifox工具；直接正式MCP维护不依赖重启才上传。手册1.5/79规则，入口[api/README](../api/README.md)，证据[APIFOX_CHECKPOINT](../APIFOX_CHECKPOINT.md)。
 
 最新MCP授权覆盖此前只读口径：用户明确要求正常增删改查，同名Codex连接已配置`--allow-write --allow-delete`，仍用E盘新库和原独立exe；实际18工具发现、交付exe隔离CRUD/default-denial通过，真实库仅握手发现且文件SHA未变。客户端审批策略未改，当前聊天仍7个旧查询入口，需重连/必要时重启后验收新工具加载，不等于当前已能写。后续按用户具体任务操作，不以权限开启作自动CRUD真实验收授权。详见[启用检查点](../MCP_CRUD_ENABLEMENT_CHECKPOINT.md)。下文“只读”均为对应历史阶段，不覆盖这次明确新选择。

@@ -11,7 +11,7 @@
 
 ## 新伙伴接手入口
 
-- 本项目API契约同步维护到私有Apifox EasyProject（projectId=8948094，main branchId=8751742），入口`docs/api/README.md`。MCP工具/桌面命令/模型/权限或响应变化时同步实际契约、Apifox、Git/Wolai/交接并读回；不得虚构HTTP接口或上传真实数据/凭据，不操作其它项目、不自动公开。现26篇Markdown覆盖18工具/6命令/31动作；通用协议实体创建422仍如实记录，不能把文档当HTTP调试或客户端已加载证明。
+- 本项目API契约同步维护到私有Apifox EasyProject（projectId=8948094，main branchId=8751742），入口`docs/api/README.md`。MCP工具/桌面命令/模型/权限或响应变化时同步实际契约、Apifox、Git/Wolai/交接并读回；不得虚构HTTP接口或上传真实数据/凭据，不操作其它项目、不自动公开。55个通用协议接口按MCP/IPC及业务模块分组，26篇旧正文归入规范/历史参考，保留分组与已管理ID；不能把非HTTP协议条目当HTTP调试或客户端已加载证明。
 
 - 2026-10-20用户明确要求MCP正常增删改查，当前本机Codex配置已获授权启用`--allow-write --allow-delete`共18工具，覆盖此前只读选择；新会话以实际发现工具为准。默认无参数连接仍只读，不能自动扩大其它客户端权限。能力开启不等于授权任意真实数据操作；按用户具体任务执行，保留审批、软删除名称匹配、关联约束、写前恢复点/审计，不在真实库做自动CRUD验收。详见`docs/MCP_CRUD_ENABLEMENT_CHECKPOINT.md`。
 

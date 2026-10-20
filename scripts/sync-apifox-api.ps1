@@ -1,4 +1,4 @@
-param([switch]$Apply)
+param([switch]$Apply, [switch]$Library)
 $ErrorActionPreference = 'Stop'
 $repository = Split-Path $PSScriptRoot -Parent
 $manifestPath = Join-Path $repository 'docs/api/apifox-manifest.json'
@@ -19,9 +19,12 @@ function Content-Hash([string]$Content) {
 }
 function Save-Manifest {
     # Generated synchronization state, never credentials or API response bodies.
-    [IO.File]::WriteAllText($manifestPath, ($manifest | ConvertTo-Json -Depth 100) + "`n", [Text.UTF8Encoding]::new($false))
+    $pendingPath = "$manifestPath.pending"
+    [IO.File]::WriteAllText($pendingPath, ($manifest | ConvertTo-Json -Depth 100) + "`n", [Text.UTF8Encoding]::new($false))
+    [IO.File]::Move($pendingPath, $manifestPath, $true)
 }
 if ($manifest.projectId -ne 8948094 -or $manifest.branchId -ne 8751742) { throw 'Unexpected project binding.' }
+if ($Library) { return }
 $current = Call-Apifox 'getStructureInfo' @{ projectId = 8948094; branchId = 8751742; entityType = 'markdown' }
 foreach ($document in $documents) {
     $state = $manifest.documents[$document.key]
@@ -48,11 +51,11 @@ foreach ($document in $documents) {
     $result = Call-Apifox 'executeOpenApi' @{
         id = $operation; pathParams = $path; queryParams = @{}
         headers = @{ 'X-Project-Id' = '8948094' }
-        body = @{ name = $document.name; content = $document.content; folderId = 0 }
+        body = @{ name = $document.name; content = $document.content; folderId = $(if ($state.folderId) { $state.folderId } else { 0 }) }
     } $true
     $id = if ($state) { $state.id } else { $result.data.id }
     if (-not $id) { throw 'Write outcome has no ID; inspect remote state before retrying.' }
-    $manifest.documents[$document.key] = @{ id = $id; name = $document.name; sha256 = $null }
+    $manifest.documents[$document.key] = @{ id = $id; name = $document.name; sha256 = $null; folderId = $(if ($state.folderId) { $state.folderId } else { 0 }) }
     Save-Manifest
     $readback = (Call-Apifox 'readEntityDetails' @{ projectId = 8948094; branchId = 8751742; entityType = 'markdown'; entityId = $id }).data
     if ((Content-Hash $readback.definition) -ne $hash) { throw "Readback mismatch: $($document.key)" }

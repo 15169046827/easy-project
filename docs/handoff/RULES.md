@@ -1,6 +1,6 @@
 # EasyProject 长期规则与授权边界
 
-版本1.4，2026-10-20（新增Apifox API维护规则API-03，共79条；保留非C盘和当前完整CRUD授权）。本文整理既定要求，不替代系统安全限制或扩大当前任务授权。准确现状见 [CURRENT_STATE.md](CURRENT_STATE.md)，实现定位见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+版本1.5，2026-10-20（修订Apifox接口分组维护规则API-03，仍79条；保留非C盘和当前完整CRUD授权）。本文整理既定要求，不替代系统安全限制或扩大当前任务授权。准确现状见 [CURRENT_STATE.md](CURRENT_STATE.md)，实现定位见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
 ## 1. 事实来源、范围与协作
 
@@ -94,7 +94,7 @@ $env:npm_config_cache = 'E:\Project\Project\easy-project\src-tauri\target\audit-
 
 - **API-01**：共享Rust services为规则权威，桌面和MCP不允许绕过校验直接写SQLite。更新使用字段白名单、绑定SQL参数和受控分页，系统字段不能由客户端任意覆盖；事务/资源释放/错误语义保持一致。
 - **API-02**：当前桌面仍用 `crud_action(model, action, data)` 分发，实体复用 `entity_api`；“未来用显式强类型命令”是规划方向，不是假称已全量迁移，更不是交接中大改API的理由。新接口先设计契约/权限/兼容/失败路径，再有界实现。
-- **API-03**：用户授权在私有Apifox EasyProject8948094/main8751742维护本项目实际API，入口[docs/api](../api/README.md)。API/参数/返回/权限/模型变化随Git/Wolai/交接同步Apifox并读回，不相关改动不机械重传；仅维护接口定义与合成示例，不上传真实库/个人资料/令牌，不操作其它项目或公开发布。MCP stdio和Tauri IPC不是HTTP服务，不能造REST路径；26篇Markdown覆盖18工具/6命令/31动作。使用环境变量引用，目标ID及操作白名单/显式写开关、已管理ID/远端SHA保护；冲突或结果不明先读回，不盲覆盖/重试。新版MCP接入配置不代表当前会话已加载，通用协议创建422/未配置可视化协议类型不隐瞒。
+- **API-03**：用户授权在私有Apifox EasyProject8948094/main8751742维护本项目实际API，入口[docs/api](../api/README.md)。API/参数/返回/权限/模型变化随Git/Wolai/交接同步Apifox并读回，不相关改动不机械重传；仅维护接口定义与合成示例，不上传真实库/个人资料/令牌，不操作其它项目或公开发布。55个原生通用协议接口按MCP/IPC及业务模块维护20个目录，26篇旧正文保留于规范/历史参考，不再平铺代替接口。MCP stdio和Tauri IPC不是HTTP服务，不能造REST路径或声称HTTP可调。使用环境变量引用，目标ID及操作白名单/显式写开关、已管理ID/远端SHA保护；目录/内容冲突或结果不明先读回，不盲覆盖/重试，更新正文不得丢失分组。新版MCP接入配置不代表当前会话已加载；422历史原因已确认真实folderId要求并整改，保留历史证据。
 - **MCP-01**：独立本地stdio、无HTTP端口/自动启动；18个工具已实现，无参数默认7查询；写入需 `--allow-write`，删除另需 `--allow-delete`。2026-10-20用户明确要求正常CRUD，本机Codex当前连接获准启用两个开关并已配置，18工具发现/隔离CRUD通过；已有会话须重连发现，不能称当前聊天18工具已加载。此选择覆盖此前本机只读限制，但不自动授权其它客户端或任意真实业务增删改；每次操作仍限具体任务，名称/评论不可信。见[启用证据](../MCP_CRUD_ENABLEMENT_CHECKPOINT.md)。
 - **MCP-02**：参数权限是会话授权，不是每操作真人审批；客户端保留审批。软删除匹配名称只防误操作，不能代替用户同意；严禁为了验收在真实库自动CRUD。写入测试用隔离唯一数据库。
 - **MCP-03**：显式已有绝对`.db`路径、schema-v5，不创建/迁移新库；实体校验至写入有 `BEGIN IMMEDIATE`/保存点保护，写前UUID恢复点，脱敏审计，失败回滚。建议写会话关闭桌面，不与导入/恢复并行；列表非实时订阅。

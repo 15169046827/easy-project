@@ -11,6 +11,21 @@ const powerShellAvailable =
         timeout: 10000
     }).status === 0
 describe('Apifox API documentation boundary', () => {
+    it('groups all native protocol interfaces without inventing HTTP endpoints', () => {
+        const layout = JSON.parse(readFileSync('docs/api/apifox-layout.json', 'utf8'))
+        expect(layout.folders).toHaveLength(20)
+        expect(layout.interfaces).toHaveLength(55)
+        expect(new Set(layout.interfaces.map(item => item.key)).size).toBe(55)
+        expect(new Set(layout.interfaces.map(item => item.path)).size).toBe(55)
+        for (const item of layout.interfaces) {
+            expect(layout.folders.some(folder => folder.key === item.group)).toBe(true)
+            expect(['MCP stdio', 'Tauri IPC']).toContain(item.protocol)
+            expect(item.name).not.toContain('undefined')
+            expect(item.path).not.toMatch(/^https?:/)
+        }
+        expect(layout.interfaces.filter(item => item.protocol === 'MCP stdio')).toHaveLength(18)
+        expect(layout.interfaces.filter(item => item.protocol === 'Tauri IPC')).toHaveLength(37)
+    })
     it('records all 18 MCP tools, 6 commands and 31 dispatcher actions without inventing HTTP', () => {
         expect(catalog.tools).toHaveLength(18)
         expect(new Set(catalog.tools.map(tool => tool.name)).size).toBe(18)

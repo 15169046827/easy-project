@@ -2,7 +2,7 @@
 
 ## 2026-10-20 当前任务覆盖说明
 
-最新Apifox接入：已通过官方新版Streamable HTTP连接私有EasyProject8948094/main8751742，26篇Markdown全部写后读回SHA一致，覆盖18MCP工具/6Tauri命令/31分发动作/模型；未创建HTTP服务、未写真实业务库或其它项目。Codex配置仅环境变量引用与版本头/prompt审批，当前聊天需重连才发现原生Apifox工具；直接正式MCP维护已完成，不依赖重启才上传。通用协议文档POST422、未配置可视化协议类型如实保留，Markdown可读完整契约不等于HTTP可调。手册1.4/79规则，入口[api/README](../api/README.md)，证据[APIFOX_CHECKPOINT](../APIFOX_CHECKPOINT.md)。
+最新Apifox接入与展示整改：私有EasyProject8948094/main8751742已建立20个目录、55个原生通用协议接口（18MCP/6Tauri注册命令/31分发动作），按MCP、桌面IPC与业务模块分组；26篇旧正文保留为2篇接入规范/模型和24篇历史快照，不再平铺代替接口。422已确认真实folderId要求并解决，使用MCP stdio/Tauri IPC协议，不伪造HTTP服务/调试能力。全部内容写后读回SHA和位置/协议/path；未写真实业务库或其它项目。Codex配置仅环境变量引用与版本头/prompt审批，当前聊天需重连才发现原生Apifox工具；直接正式MCP维护不依赖重启才上传。手册1.5/79规则，入口[api/README](../api/README.md)，证据[APIFOX_CHECKPOINT](../APIFOX_CHECKPOINT.md)。
 
 最新MCP授权覆盖此前只读口径：用户明确要求正常增删改查，同名Codex连接已配置`--allow-write --allow-delete`，仍用E盘新库和原独立exe；实际18工具发现、交付exe隔离CRUD/default-denial通过，真实库仅握手发现且文件SHA未变。客户端审批策略未改，当前聊天仍7个旧查询入口，需重连/必要时重启后验收新工具加载，不等于当前已能写。后续按用户具体任务操作，不以权限开启作自动CRUD真实验收授权。详见[启用检查点](../MCP_CRUD_ENABLEMENT_CHECKPOINT.md)。下文“只读”均为对应历史阶段，不覆盖这次明确新选择。
 

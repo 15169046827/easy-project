@@ -1,5 +1,16 @@
 # Apifox接口文档维护检查点
 
+## 2026-10-20用户反馈整改：分组和真实接口条目
+
+- 云端完成：20个目录，55原生custom-endpoints接口（18MCP stdio、37Tauri IPC=6命令+31动作），根目录仅01/02/03/99四组，根接口/文档数量均0。26参考原文全部保留，2篇规范模型/24篇归档；每项移动后内容SHA、name和folderId读回匹配。55接口每项内容SHA/name/path/protocol/folderId读回匹配，第二次只读计划全部UNCHANGED；20目录父级/名称、总数55/26正式GET核对通过。manifest保存全部ID与摘要，无重复创建或删除。
+- 验证完成：224单测/45文件（新增布局覆盖，总7项Apifox测试）、lint/typecheck/发布元数据、3个PowerShell语法和diff通过。格式化生成器/布局；没有应用运行代码/依赖变更，不重建安装包，也不冒称重跑E2E/Rust/原生UI。README/AGENTS、交接1.5/79条规则与架构/现状/检查点同步；原正式发布未通过、原生存储UI待验及独立exe旧源风险不变。当前15文件未提交（git status精确列表）；下一步提交推送并把准确来源及四组/55接口结论同步Wolai主状态和交接/API-03读回，然后保存闭环。仅本Windows确认；WACAS未定义/UPARS1.1.0，无重置/唤醒。
+
+- 续接里程碑：已确认422因通用接口不接受folderId=0；真实根97870489有效。20个分组已创建并逐项读回父级，接口迁移执行中，ID/摘要逐项保存manifest。第一次保存记录遇到Windows文件映射占用；停止后GET核实已创建任务删除427204，与预期内容/目录/path完全一致才绑定续接，未重复创建。manifest改为同目录pending原子替换；无业务库操作/依赖安装。额度五小时33%、周18%。当前未提交文件以git status为准：本检查点、docs/api/{README,apifox-manifest,apifox-layout}.json/md、scripts/{apifox-contract.test,build-apifox-layout}.js、scripts/{apifox-mcp,sync-apifox-api,group-apifox-api}.ps1及AGENTS/交接对应增补。下一步完成55接口和26参考移动全量读回、重复只读复验，再验证/提交并同步Wolai；本轮Git/Wolai尚待同步。
+
+- 用户指出26篇平铺不可用，要求分组、以接口而非纯文档呈现；当前目标调整为Apifox目录分组与MCP/Tauri通用协议接口条目，保留非HTTP边界，不新增业务服务。基线cd62561c3b6d1292feca395e92e5c0745a57dcdc、原分支，开工Git干净；WACAS未定义，UPARS1.1.0及项目持续同步/额度/非C盘规则不变。
+- 先核对已管理26篇和远端目录；查官方项目设置里的协议注册与目录type以定位422，不继续把失败替代方案当完整交付。避免删除资料：成功建立新条目并读回前不移除旧正文；可将旧资料移到参考归档分组，而非重复占据根目录。只修改EasyProject8948094，令牌仍内存读取，真实库不写。
+- 开工额度五小时41%、周19%；不重置/唤醒。当前仅此检查点未提交。下一步读取正式GET项目设置/目录与对应维护契约，再针对有证据参数创建分组/协议条目并全量读回；失败则保留已完成分组和明确接口阻断，不捏造HTTP。Git/Wolai/交接待本轮同步，仅本Windows确认。
+
 - 2026-10-20 Asia/Shanghai。用户授权用账户环境变量中的Apifox MCP token对接并维护EasyProject项目API；不操作其它项目、不公开发布、不修改本地业务库、不新增HTTP服务。
 - 基线bd37fdd（codex/audit-release-20261006-api），开工Git干净。WACAS未定义/待确认，实际UPARS1.1.0与项目数据/非C盘/额度/三方交接规则。开始五小时65%、周23%，无重置/唤醒；仅本Windows确认。
 - 已读Apifox官方文档：旧stdio仅文档读取，新版Streamable HTTP支持18工具CRUD，Codex官方地址https://api.apifox.com/mcp，X-Apifox-Api-Version=2025-09-01。使用账户级ApiFox_MCP_TOKEN，仅在内存读取并发送官方同源，不打印/落盘/提交值。

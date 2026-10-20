@@ -13,8 +13,8 @@ if ($Tool -and $Tool -ne 'listAccessibleProjects') {
     if ($projects | Where-Object { [string]$_ -ne '8948094' }) { throw 'Only EasyProject 8948094 is in scope.' }
     $project = $projects | Select-Object -First 1
     if ($Tool -eq 'executeOpenApi') {
-        $readIds = @('aa85350f4c6df684', 'd2430159b28e4551', '9738c601d6498b0a', '2c83ef72f52ed483')
-        $writeIds = @('1cbdd18b600ccea1', '0a1b56c981b3e8fc', '12efa5c42b296c7c', 'fa8695f8e5037106')
+        $readIds = @('aa85350f4c6df684', 'd2430159b28e4551', '9738c601d6498b0a', '2c83ef72f52ed483', '0ae93caed7189edb', '00a468815ec90da0')
+        $writeIds = @('1cbdd18b600ccea1', '0a1b56c981b3e8fc', '12efa5c42b296c7c', 'fa8695f8e5037106', 'a669aaa8a7136b83')
         if ($arguments.id -notin ($readIds + $writeIds)) { throw 'OpenAPI operation has not been reviewed.' }
         if ([string]$project -ne '8948094') { throw 'An explicit EasyProject binding is required.' }
         if ($arguments.id -in $writeIds -and -not $AllowWrite) { throw 'Document writes require -AllowWrite.' }

@@ -2,6 +2,8 @@
 
 EasyProject is an open-source, local-first desktop project planning application. It combines structured task planning, dependency-aware scheduling, execution views, portable data exchange, and local recovery without requiring an account.
 
+An optional [authenticated web workspace](server/README.md) now reuses the same Rust domain services. Desktop local mode remains the default: no login or network is required. Remote workspaces are explicitly selected, account-isolated, and never automatically upload or merge the local database. Deployment and acceptance status: [web checkpoint](docs/WEB_SERVER_CHECKPOINT.md).
+
 ![EasyProject project board](docs/screenshots/project-board.png)
 
 <details>
@@ -25,7 +27,7 @@ EasyProject is an open-source, local-first desktop project planning application.
 - Export and import schema-v5 JSON, CSV, or formatted XLSX workbooks with mapping previews, including plan baselines and model relationships.
 - Export project tasks as ICS and import external busy events into member availability.
 - Subscribe to private published Google Calendar, Outlook, or other ICS URLs for on-demand busy-time sync.
-- Undo and redo the last 30 data-changing actions with `Ctrl+Z` and `Ctrl+Y`.
+- Undo and redo the last 30 data-changing actions in local desktop mode with `Ctrl+Z` and `Ctrl+Y`; remote whole-workspace undo is disabled to protect changes from other devices.
 - Create and inspect local SQLite backups. Startup and periodic automatic snapshots retain the latest 10 copies; imports and restores create safety backups.
 - Store SQLite and backups in `<installation>/data` by default. On Windows, C-drive storage is rejected; no silent AppData fallback is used.
 - Choose a new/empty non-C local data directory in the Data page. Changes take effect on restart, copying and verifying the latest database, backups and MCP audit while retaining the source. Window profiles use `<installation>/webview`; settings use `<installation>/easyproject-storage.json`. Install into a writable non-C location; uninstalling must preserve these user files.

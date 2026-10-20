@@ -406,6 +406,12 @@ fn workspace_persists_and_restart_invalidates_old_revision() {
         )
         .unwrap();
     let last = workspace.revision().unwrap();
+    let first_backup =
+        easyproject_server::services::data_service::create_backup(&workspace.db, "web").unwrap();
+    let second_backup =
+        easyproject_server::services::data_service::create_backup(&workspace.db, "web").unwrap();
+    assert_ne!(first_backup["path"], second_backup["path"]);
+    assert_eq!(first_backup["reason"], "web");
     drop(workspace);
     let workspace = Workspace::open(&root, &id).unwrap();
     assert_ne!(workspace.revision().unwrap(), last);

@@ -6,7 +6,7 @@
                 <div v-if="step === 0" class="onboard-card">
                     <div class="onboard-icon">🚀</div>
                     <h2>{{ $t('onboarding.welcome') }}</h2>
-                    <p>{{ $t('onboarding.intro') }}</p>
+                    <p>{{ $t(remoteActive ? 'remote.isolation' : 'onboarding.intro') }}</p>
                     <div class="onboard-features">
                         <div>
                             <i class="pi pi-folder"></i><span>{{ $t('onboarding.feature1') }}</span>
@@ -28,12 +28,12 @@
                             ><span class="active"></span><span></span><span></span
                         ></span>
                         <div>
-                            <button class="onboard-skip" @click="close">
+                            <Button class="onboard-skip" @click="close">
                                 {{ $t('onboarding.skipTour') }}
-                            </button>
-                            <button class="onboard-next" @click="next">
+                            </Button>
+                            <Button class="onboard-next" @click="next">
                                 {{ $t('onboarding.next') }} <i class="pi pi-arrow-right"></i>
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -61,12 +61,12 @@
                                 ><span></span><span class="active"></span><span></span
                             ></span>
                             <div>
-                                <button class="onboard-skip" @click="close">
+                                <Button class="onboard-skip" @click="close">
                                     {{ $t('onboarding.skipTour') }}
-                                </button>
-                                <button class="onboard-next" @click="next">
+                                </Button>
+                                <Button class="onboard-next" @click="next">
                                     {{ $t('onboarding.next') }} <i class="pi pi-arrow-right"></i>
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </div>
@@ -85,12 +85,12 @@
                             ><span></span><span></span><span class="active"></span
                         ></span>
                         <div>
-                            <button class="onboard-skip" @click="close">
+                            <Button class="onboard-skip" @click="close">
                                 {{ $t('onboarding.skipTour') }}
-                            </button>
-                            <button class="onboard-next" @click="next">
+                            </Button>
+                            <Button class="onboard-next" @click="next">
                                 {{ $t('onboarding.next') }} <i class="pi pi-arrow-right"></i>
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -101,9 +101,9 @@
                     <h2>{{ $t('onboarding.stepDone') }}</h2>
                     <p>{{ $t('onboarding.stepDoneDesc') }}</p>
                     <p class="hint">{{ $t('onboarding.stepDoneHint') }}</p>
-                    <button class="onboard-done" @click="close">
+                    <Button class="onboard-done" @click="close">
                         {{ $t('onboarding.getStarted') }}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </Transition>
@@ -112,6 +112,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import Button from 'primevue/button'
+import { remoteActive } from '../api/remote'
 import { useI18n } from 'vue-i18n'
 
 const STORAGE_KEY = 'easyproject-onboarding-done'

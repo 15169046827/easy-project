@@ -1,6 +1,6 @@
 # EasyProject API：协议、权限与错误
 
-本项目为本地优先桌面应用，当前没有HTTP/REST监听服务。对外提供MCP JSON-RPC over stdio；Tauri invoke是受控桌面内部IPC，两者共享Rust服务端业务校验。
+本页描述本地桌面/MCP协议：MCP JSON-RPC over stdio与受控Tauri invoke内部IPC共享Rust业务校验，两者自身不监听HTTP。另新增显式选择的账号式网页版/headless HTTP服务，真实契约见[web-openapi.json](web-openapi.json)与[服务说明](../../server/README.md)；它不改变桌面默认免登录离线使用，也不自动把本地MCP接到远端。
 
 ## 接入与能力
 

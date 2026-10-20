@@ -3,7 +3,9 @@
         <WindowTitleBar v-if="windowChrome.visible" :native="windowChrome.native" />
         <header class="app-header" :class="{ 'app-header--window-chrome': windowChrome.visible }">
             <div v-if="!windowChrome.visible" class="header-left">
-                <span class="eyebrow">{{ $t('app.subtitle') }}</span>
+                <span class="eyebrow">{{
+                    $t(remoteActive ? 'remote.online' : 'app.subtitle')
+                }}</span>
                 <h1>EasyProject</h1>
             </div>
             <nav aria-label="Workspace views">

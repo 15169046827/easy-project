@@ -602,7 +602,14 @@ export default {
         noBackups: '还没有备份，创建一个以保护你的数据。',
         backupPolicy:
             '应用启动时自动创建快照，并循环保留最近 10 份自动备份；手动与安全备份不会被自动清理。',
-        backupReason: { auto: '自动', manual: '手动', import: '导入前', restore: '还原前' },
+        backupReason: {
+            auto: '自动',
+            manual: '手动',
+            import: '导入前',
+            restore: '还原前',
+            web: '远端写入前',
+            mcp: 'MCP写入前'
+        },
         backupCounts: '{projects} 个项目 · {tasks} 个任务 · {members} 名成员 · {baselines} 条基线',
         baselines: '计划基线',
         unknownDate: '未知时间',

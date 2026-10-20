@@ -2,6 +2,7 @@ export {}
 
 declare global {
     interface Window {
+        __webStyleViolation?: boolean
         __EASYPROJECT_FLOATING_WINDOW__?: boolean
         __EASYPROJECT_STORAGE_INFO__?: {
             ready: boolean

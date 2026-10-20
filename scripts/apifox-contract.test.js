@@ -11,6 +11,22 @@ const powerShellAvailable =
         timeout: 10000
     }).status === 0
 describe('Apifox API documentation boundary', () => {
+    it('documents the real authenticated HTTP server separately from native protocols', () => {
+        const api = JSON.parse(readFileSync('docs/api/web-openapi.json', 'utf8'))
+        expect(Object.keys(api.paths)).toHaveLength(8)
+        expect(Object.values(api.paths).flatMap(methods => Object.values(methods))).toHaveLength(9)
+        expect(api.paths['/api/auth/login'].post.security).toEqual([])
+        expect(
+            api.paths['/api/workspace/action'].post.parameters.some(
+                parameter => parameter.name === 'X-Workspace-Revision'
+            )
+        ).toBe(true)
+        expect(api.components.securitySchemes.browserSession.in).toBe('cookie')
+        expect(
+            api.paths['/api/admin/users'].post.requestBody.content['application/json'].schema
+                .additionalProperties
+        ).toBe(false)
+    })
     it('groups all native protocol interfaces without inventing HTTP endpoints', () => {
         const layout = JSON.parse(readFileSync('docs/api/apifox-layout.json', 'utf8'))
         expect(layout.folders).toHaveLength(20)

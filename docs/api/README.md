@@ -4,13 +4,16 @@
 
 ## 当前覆盖
 
-- 55个原生通用协议接口条目：18项MCP工具、6项Tauri注册命令和31个model/action。按以下目录分组，不再用平铺Markdown代替接口。HTTP接口数为0仍是正确现状，本地stdio/IPC不是HTTP服务。
+- 新增真实HTTP服务：`04 Web HTTP 接口`按认证与会话/账号管理/工作区/运行状态组织9个操作（8路径），契约[web-openapi.json](web-openapi.json)、远端ID与读回摘要[web-apifox-manifest.json](web-apifox-manifest.json)。与下列55个非HTTP原生接口分开维护，合计64接口。HTTP账号、cookie/Bearer、Origin/CSRF、revision冲突边界不能套用本地MCP权限。`verify-web-apifox.ps1`验证远端HTTP定义；首次导入须先读项目结构、忽略同名覆盖，不能用批量导入覆盖旧条目。导入器可能按tags额外建同名目录，应核对并归回既定模块，勿遗留重复层级。
+
+- 55个原生通用协议接口条目：18项MCP工具、6项Tauri注册命令和31个model/action。按以下目录分组，不再用平铺Markdown代替接口；本地stdio/IPC仍不是HTTP服务，新增HTTP操作只属于独立远端服务。
 
     ```text
     01 MCP 对外接口：项目 / 任务 / 人员 / 项目团队
     02 桌面 IPC 内部接口：项目 / 任务 / 人员 / 项目团队 / 任务依赖 /
                          计划基线 / 数据与备份 / 工作日历 / 窗口与悬浮窗 / 存储位置
     03 接入规范与模型：总览 / 模型
+    04 Web HTTP 接口：认证与会话 / 账号管理 / 工作区 / 运行状态
     99 历史文档快照：MCP 原文快照 / IPC 原文快照
     ```
 - [catalog.json](catalog.json)：从实际交付MCP的tools/list及Rust分发器生成，包含严格inputSchema、权限注解、二进制源SHA/摘要和接口基线。不会因为生成文档就替换旧独立exe。

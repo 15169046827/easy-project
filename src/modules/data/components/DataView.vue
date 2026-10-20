@@ -15,7 +15,7 @@
         </header>
         <p v-if="message" :class="['message-toast', messageType]">{{ message }}</p>
         <div class="cards">
-            <StorageSettings class="wide" />
+            <StorageSettings v-if="!remoteActive" class="wide" />
             <article class="data-card">
                 <div class="card-icon blue"><i class="pi pi-download"></i></div>
                 <h3>{{ $t('data.exportTitle') }}</h3>
@@ -109,7 +109,7 @@
                         @click="createBackup"
                     />
                     <Button
-                        v-if="backupDirectory"
+                        v-if="backupDirectory && !remoteActive"
                         :label="$t('data.openBackupFolder')"
                         icon="pi pi-folder-open"
                         outlined
@@ -193,6 +193,7 @@ import Checkbox from 'primevue/checkbox'
 import { useI18n } from 'vue-i18n'
 import StorageSettings from '../../../components/StorageSettings.vue'
 import { revealBackupDirectory } from '../../../api/storage'
+import { remoteActive } from '../../../api/remote'
 import { crudAction } from '../../../api'
 import { snapshotToXlsx, xlsxToSnapshot } from '../utils/xlsx.js'
 const backups = ref([]),

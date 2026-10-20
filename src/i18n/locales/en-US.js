@@ -620,7 +620,9 @@ export default {
             auto: 'Auto',
             manual: 'Manual',
             import: 'Pre-import',
-            restore: 'Pre-restore'
+            restore: 'Pre-restore',
+            web: 'Before remote write',
+            mcp: 'Before MCP write'
         },
         backupCounts:
             '{projects} projects · {tasks} tasks · {members} members · {baselines} baselines',

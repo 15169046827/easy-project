@@ -289,7 +289,7 @@ fn backup_info(path: &Path) -> Value {
         .and_then(|value| value.split('-').next())
         .unwrap_or("manual");
     let reason = match parsed_reason {
-        "auto" | "import" | "restore" | "manual" | "mcp" => parsed_reason,
+        "auto" | "import" | "restore" | "manual" | "mcp" | "web" => parsed_reason,
         _ => "manual",
     };
     let metadata = fs::metadata(path).ok();
@@ -334,10 +334,10 @@ pub fn create_backup(db: &DbState, reason: &str) -> Result<Value, String> {
     let dir = backup_directory(db);
     fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
     let safe_reason = match reason {
-        "auto" | "import" | "restore" | "manual" | "mcp" => reason,
+        "auto" | "import" | "restore" | "manual" | "mcp" | "web" => reason,
         _ => "manual",
     };
-    let unique_suffix = if safe_reason == "mcp" {
+    let unique_suffix = if matches!(safe_reason, "mcp" | "web") {
         format!("-{}", uuid::Uuid::new_v4().simple())
     } else {
         String::new()

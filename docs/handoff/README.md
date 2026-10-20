@@ -4,9 +4,9 @@
 
 最新状态（2026-10-20）：[数据存储整改](../STORAGE_LOCATION_CHECKPOINT.md)已部署本机E盘，原生新设置UI仍待补验；[MCP完整CRUD启用](../MCP_CRUD_ENABLEMENT_CHECKPOINT.md)获用户明确授权并配置，已有客户端需重连发现18工具。
 
-交接版本：1.5，2026-10-20（Asia/Shanghai，Apifox接口分组与API-03修订；仍79条）。仅适用于 EasyProject；不涉及 Watch App。本包面向人类开发者和新的 AI 助手，不要求读取旧聊天。
+交接版本：1.6，2026-10-20（Asia/Shanghai，免登录本地兼容与可选Web远端工作区；仍79条）。仅适用于 EasyProject；不涉及 Watch App。本包面向人类开发者和新的 AI 助手，不要求读取旧聊天。
 
-最新接口维护：[Apifox入口](../api/README.md)，私有项目8948094，20个目录下55个通用协议接口覆盖18个MCP工具、6个Tauri命令及31个分发动作，26篇旧正文归入规范/历史参考；不虚构HTTP服务。维护规则API-03与[检查点](../APIFOX_CHECKPOINT.md)须一并读取。
+最新接口维护：[Apifox入口](../api/README.md)，私有项目8948094，25目录下55个原生通用协议接口和9个真实Web HTTP操作分组维护，26篇旧正文归入规范/历史参考。HTTP与MCP/IPC的认证、返回和并发边界不同；API-03和各任务检查点须一并读取。
 
 ## 先记住这六件事
 

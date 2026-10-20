@@ -12,6 +12,7 @@ Environment=EASYPROJECT_ORIGIN=https://home-host.tail2956dd.ts.net
 Environment=EASYPROJECT_LISTEN=127.0.0.1:8080
 Restart=on-failure
 RestartSec=5
+TimeoutStopSec=40
 UMask=0077
 NoNewPrivileges=yes
 PrivateTmp=yes

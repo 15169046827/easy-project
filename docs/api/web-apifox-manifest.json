@@ -1,0 +1,97 @@
+{
+    "projectId": 8948094,
+    "branchId": 8751742,
+    "rootFolderId": 97929320,
+    "folders": {
+        "auth": {
+            "id": 97929349,
+            "name": "认证与会话"
+        },
+        "admin": {
+            "id": 97929350,
+            "name": "账号管理"
+        },
+        "workspace": {
+            "id": 97929351,
+            "name": "工作区"
+        },
+        "operations": {
+            "id": 97929355,
+            "name": "运行状态"
+        }
+    },
+    "interfaces": {
+        "post__api_auth_login": {
+            "id": 526827472,
+            "path": "/api/auth/login",
+            "method": "post",
+            "folderId": 97929349,
+            "name": "登录",
+            "sha256": "c6489419bd78e7e94bc47a307c284e7782bd7ca17c83408c8e2d02a109a9c2da"
+        },
+        "get__api_admin_users": {
+            "id": 526827483,
+            "path": "/api/admin/users",
+            "method": "get",
+            "folderId": 97929350,
+            "name": "管理员查询账号",
+            "sha256": "edd10fa5551bf7f1872a77a8b63ee5830dd840ca5abd86a53c1a65e131018c6a"
+        },
+        "get__api_workspace_revision": {
+            "id": 526827487,
+            "path": "/api/workspace/revision",
+            "method": "get",
+            "folderId": 97929351,
+            "name": "读取账号工作区版本",
+            "sha256": "ee44640a391c13db141cba0dda7377ac47be90e2aa512423da616f03f98180cc"
+        },
+        "get__api_health": {
+            "id": 526827490,
+            "path": "/api/health",
+            "method": "get",
+            "folderId": 97929355,
+            "name": "健康检查",
+            "sha256": "d5a0f907b9a55c68f7866222dad4e88f29220db337b05d5fde051081328cf8a2"
+        },
+        "get__api_auth_session": {
+            "id": 526827473,
+            "path": "/api/auth/session",
+            "method": "get",
+            "folderId": 97929349,
+            "name": "当前登录账号",
+            "sha256": "5c8562da8cfffaf44171f6e3dba40907f7979be3d97e90ad05855ac4e6603b02"
+        },
+        "post__api_admin_users": {
+            "id": 526827484,
+            "path": "/api/admin/users",
+            "method": "post",
+            "folderId": 97929350,
+            "name": "管理员创建普通账号",
+            "sha256": "97e2a64fcffb528c741c1546d9285e5ab96e488ae1e46a86382fb54362503226"
+        },
+        "post__api_workspace_action": {
+            "id": 526827488,
+            "path": "/api/workspace/action",
+            "method": "post",
+            "folderId": 97929351,
+            "name": "执行账号工作区业务动作",
+            "sha256": "7505a2accde796fde933353d7d1510f2c23609dcb39a235352bdfb4b8b3c52a8"
+        },
+        "post__api_auth_logout": {
+            "id": 526827474,
+            "path": "/api/auth/logout",
+            "method": "post",
+            "folderId": 97929349,
+            "name": "退出并撤销当前会话",
+            "sha256": "e1cc1630c594500c060256b2a30367c218e76f9d8e49ca9a6e71a9a4ca95d58d"
+        },
+        "post__api_auth_password": {
+            "id": 526827475,
+            "path": "/api/auth/password",
+            "method": "post",
+            "folderId": 97929349,
+            "name": "修改密码并撤销全部会话",
+            "sha256": "4da7b242f9ab8f963d171b4f2ae1fcdf020a2883c41bfd76f516b12ea01eac06"
+        }
+    }
+}

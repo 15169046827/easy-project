@@ -12,6 +12,8 @@
 
 ## 2. 两条入口共享一套业务规则
 
+API维护地图（2026-10-20）：[docs/api](../api/README.md)记录实际18MCP工具inputSchema、6注册Tauri命令和31分发动作；build-api-catalog.js从交付程序/源码提取，sync-apifox-api.ps1仅在指定私有项目维护26篇Markdown并逐份校验，不是运行期依赖、HTTP网关或新增业务服务。令牌环境变量读取且不落盘，远端手改SHA不符停止覆盖。
+
 ```text
 Vue页面/组件 -> composable -> src/api/index.js -> Tauri crud_action
                                                     |

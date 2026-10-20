@@ -1,5 +1,7 @@
 # EasyProject 交接任务检查点
 
+2026-10-20 Apifox维护更新：已接通官方新版MCP，私有EasyProject8948094/main8751742，26篇文档写后逐份SHA读回，18MCP工具/6桌面命令/31动作齐备，保持非HTTP实际协议、无真实数据上传/业务修改。手册1.4新增API-03共79规则，准确源/ID/脚本/失败/未验及三方同步见[当前检查点](../APIFOX_CHECKPOINT.md)；不沿用历史1.3/78作为最新总数。
+
 2026-10-20 MCP权限最新覆盖：当前连接获用户明确授权启用增删改查，非C盘存储规则不变；手册1.3/78条，准确进度与本轮验证见[MCP CRUD启用检查点](../MCP_CRUD_ENABLEMENT_CHECKPOINT.md)。历史只读记录不删除，但不再覆盖最新授权；配置已启用并发现18工具，当前聊天尚需重连，不以配置完成冒称18工具已加载或真实写入已验。
 
 2026-10-20后续整改正在进行：C盘默认数据位置规则由用户明确覆盖，RULES/ARCHITECTURE/CURRENT_STATE/README已按实现更新，当前任务以[STORAGE_LOCATION_CHECKPOINT](../STORAGE_LOCATION_CHECKPOINT.md)为准。Git/Wolai及本机部署尚待本轮收尾，不沿用历史“已全部同步”结论。

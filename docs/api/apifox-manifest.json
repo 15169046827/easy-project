@@ -1,0 +1,139 @@
+{
+    "projectId": 8948094,
+    "projectName": "EasyProject",
+    "branchId": 8751742,
+    "moduleId": 8741707,
+    "transport": "Streamable HTTP https://api.apifox.com/mcp",
+    "documents": {
+        "overview": {
+            "name": "EasyProject API / 协议与权限总览",
+            "sha256": "637d67eee3fe282437bf4dec5ffac807b5f8aec631637ccf95b7950349ece42a",
+            "id": 9567481
+        },
+        "models": {
+            "name": "EasyProject API / 模型与原生请求类型",
+            "sha256": "74d1e4369bc49acc1208c5082fb766a1527fae17a335b06872fa67b73ac02f12",
+            "id": 9567484
+        },
+        "easyproject_project_list": {
+            "name": "MCP / easyproject_project_list",
+            "sha256": "28d9b7044086d42ebcbbd2a6d8e74c80026ecb8ad9b8c06791d71ce14a6da402",
+            "id": 9567485
+        },
+        "easyproject_project_get": {
+            "name": "MCP / easyproject_project_get",
+            "sha256": "9ff5ea3abb38954e0e1629f85cf1a589933b6e1e3218de7b588eb4b5061ae997",
+            "id": 9567486
+        },
+        "easyproject_project_create": {
+            "name": "MCP / easyproject_project_create",
+            "sha256": "61044b5f9bb364f82b25d3d7e8162689b1dd98b5c14f4eed5c39e593be51c6d9",
+            "id": 9567487
+        },
+        "easyproject_project_update": {
+            "name": "MCP / easyproject_project_update",
+            "sha256": "abd6099205216cd1ff1e8ab3cb3f6499dd0d43fd2d4a62d9b7266beb2b26df0e",
+            "id": 9567488
+        },
+        "easyproject_project_delete": {
+            "name": "MCP / easyproject_project_delete",
+            "sha256": "42d9fb0d72e4e4f9decd5518048b78a13f9bf5fd507c3468fad64d81229f2832",
+            "id": 9567489
+        },
+        "easyproject_task_list": {
+            "name": "MCP / easyproject_task_list",
+            "sha256": "11ad013fa5ebbac1b26ad56bb37da8aecf9a63c3ad77621eb65da2314599ecba",
+            "id": 9567490
+        },
+        "easyproject_task_get": {
+            "name": "MCP / easyproject_task_get",
+            "sha256": "3bce77a21765f0faa6ab09b5aeccad96770fd2ef9b804bd2df6f474ae1db80fc",
+            "id": 9567491
+        },
+        "easyproject_task_create": {
+            "name": "MCP / easyproject_task_create",
+            "sha256": "2a2af72348fb8f4a1ab0a6427740bc35173fb264a84a5fe0ba9a0ec78a804b36",
+            "id": 9567492
+        },
+        "easyproject_task_update": {
+            "name": "MCP / easyproject_task_update",
+            "sha256": "cf47cd977afcd5f921e1097a65265f05f8f650fcb853c9d73fee968c0856b6f0",
+            "id": 9567493
+        },
+        "easyproject_task_delete": {
+            "name": "MCP / easyproject_task_delete",
+            "sha256": "bba29ebf49b8c4d9fdb8695985fe37f0ea0b01bdab4e38d2a13228790a1080dd",
+            "id": 9567494
+        },
+        "easyproject_member_list": {
+            "name": "MCP / easyproject_member_list",
+            "sha256": "ef9e174f6db59c5d2365eaa53d47d6e194f64a1fb551bef9456d032e7470c8e5",
+            "id": 9567495
+        },
+        "easyproject_member_get": {
+            "name": "MCP / easyproject_member_get",
+            "sha256": "ae6f66a1985bb1919bedc22951c5819609f1381ed8c785eb6e4ec86202b4300a",
+            "id": 9567496
+        },
+        "easyproject_member_create": {
+            "name": "MCP / easyproject_member_create",
+            "sha256": "c17d96275b64d1ba36c037431e9f75941c3658a97b43678b2bcbcd993beabc1e",
+            "id": 9567497
+        },
+        "easyproject_member_update": {
+            "name": "MCP / easyproject_member_update",
+            "sha256": "096687abfd3dfdb8afc51372e98426ab4859dc8858a6602aae7213279a67e8be",
+            "id": 9567498
+        },
+        "easyproject_member_delete": {
+            "name": "MCP / easyproject_member_delete",
+            "sha256": "0cd36bfcd6b84245a7dc2173167cee8ccfb1eb9af2a8aec6bd5eee67e26b0837",
+            "id": 9567499
+        },
+        "easyproject_project_member_list": {
+            "name": "MCP / easyproject_project_member_list",
+            "sha256": "adac20ec062b9d904de231cd7d928c7f3aaa1c85f0fccd898b919cebd4fe426a",
+            "id": 9567500
+        },
+        "easyproject_project_member_create": {
+            "name": "MCP / easyproject_project_member_create",
+            "sha256": "422bf4923200703d0a3319ae8db0c303a6bb18210efe9c39e1341a58a7a5659c",
+            "id": 9567501
+        },
+        "easyproject_project_member_delete": {
+            "name": "MCP / easyproject_project_member_delete",
+            "sha256": "a6ed6a7cd29749a1f8f57e9a7f4584b0a0094eaeece91cb35ec09315dd457a6c",
+            "id": 9567502
+        },
+        "tauri_crud_action": {
+            "name": "Tauri IPC / crud_action",
+            "sha256": "bf1331a4fed15b1a517d3315b46cbea082ec0d532cd23aeee03972157ba5dd5e",
+            "id": 9567503
+        },
+        "tauri_open_task_window": {
+            "name": "Tauri IPC / open_task_window",
+            "sha256": "6124fa1b90cd240968fb03f42bad17c03e25394c60c7509107613b678d61b293",
+            "id": 9567504
+        },
+        "tauri_show_main_window": {
+            "name": "Tauri IPC / show_main_window",
+            "sha256": "4fd46b874327c10aee93b79453f1cd0e58445d017bf5288bcc0d5ec0147856d8",
+            "id": 9567505
+        },
+        "tauri_storage_info": {
+            "name": "Tauri IPC / storage_info",
+            "sha256": "fc9819bbd865bd9832c2bc700760a1bfbb13a634e9e809e033c37d73623daafa",
+            "id": 9567506
+        },
+        "tauri_set_data_directory": {
+            "name": "Tauri IPC / set_data_directory",
+            "sha256": "846452eb90ef62d3d689b3d6868da7802cfc3bca22acf5d07bac65edd97092b6",
+            "id": 9567507
+        },
+        "tauri_reveal_backup_directory": {
+            "name": "Tauri IPC / reveal_backup_directory",
+            "sha256": "3a75dce6696b7855f3c54c6bc007dce8428d7f82e7a12ee066c1800d2da4b292",
+            "id": 9567508
+        }
+    }
+}

@@ -72,6 +72,8 @@ cargo test --locked
 
 ## Project documentation
 
+- API contracts and private Apifox maintenance: [`docs/api/README.md`](docs/api/README.md) (MCP stdio and desktop IPC, not an HTTP service).
+
 - New maintainer/AI handoff (rules, architecture, current state, onboarding): [`docs/handoff/README.md`](docs/handoff/README.md)
 - Local MCP setup, permissions, contracts, and limits: [`docs/MCP.md`](docs/MCP.md)
 - Product and implementation plan: [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md)

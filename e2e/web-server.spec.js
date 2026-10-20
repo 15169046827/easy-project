@@ -26,6 +26,10 @@ for (const width of [1280, 960]) {
             page
         }) => {
             await page.setViewportSize({ width, height: 800 })
+            await page.addInitScript(
+                dark => localStorage.setItem('easyproject-theme', dark ? 'dark' : 'light'),
+                dark
+            )
             const violations = []
             await page.addInitScript(() => {
                 window.addEventListener('securitypolicyviolation', event => {
@@ -38,7 +42,10 @@ for (const width of [1280, 960]) {
             })
             await login(page)
             await expect(page.locator('.remote-status')).toContainText('test_admin')
-            if (dark) await page.getByRole('button', { name: /切换到暗色|Switch to dark/i }).click()
+            await expect(page.locator('html')).toHaveClass(dark ? /app-dark/ : /^(?!.*app-dark)/)
+            await page.getByRole('button', { name: /账号管理|Accounts/, exact: true }).click()
+            await expect(page.getByRole('dialog')).toBeVisible()
+            await page.keyboard.press('Escape')
             await expect(page.locator('.dashboard')).toBeVisible()
             expect(
                 await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)
@@ -57,6 +64,12 @@ for (const width of [1280, 960]) {
             ).toHaveLength(0)
             await page.getByRole('button', { name: /退出登录|Sign out/, exact: true }).click()
             await expect(page.locator('#remote-username')).toBeVisible()
+            await page.locator('#remote-username').focus()
+            await page.keyboard.press('Tab')
+            await expect(page.locator('#remote-password')).toBeFocused()
+            await page.screenshot({
+                path: `test-results/web-login-${width}-${dark ? 'dark' : 'light'}.png`
+            })
         })
     }
 }

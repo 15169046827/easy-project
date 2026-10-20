@@ -20,8 +20,15 @@ pub struct User {
 
 pub fn open(path: &Path) -> Result<Connection, String> {
     let db = Connection::open(path).map_err(|e| e.to_string())?;
+    let version: i64 = db
+        .query_row("PRAGMA user_version", [], |row| row.get(0))
+        .map_err(|e| e.to_string())?;
+    if version > 1 {
+        return Err("Account schema is newer than this server supports".into());
+    }
     db.execute_batch(
         "PRAGMA foreign_keys=ON;
+         BEGIN IMMEDIATE;
          CREATE TABLE IF NOT EXISTS account(
            id TEXT PRIMARY KEY, username TEXT NOT NULL UNIQUE,
            password_hash TEXT NOT NULL, admin INTEGER NOT NULL DEFAULT 0,
@@ -29,7 +36,9 @@ pub fn open(path: &Path) -> Result<Connection, String> {
          CREATE TABLE IF NOT EXISTS session(
            token_hash TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES account(id),
            expires INTEGER NOT NULL);
-         CREATE INDEX IF NOT EXISTS session_expiry ON session(expires);",
+         CREATE INDEX IF NOT EXISTS session_expiry ON session(expires);
+         PRAGMA user_version=1;
+         COMMIT;",
     )
     .map_err(|e| e.to_string())?;
     Ok(db)

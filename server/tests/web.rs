@@ -120,6 +120,47 @@ fn passwords_are_salted_and_weak_passwords_rejected() {
     assert!(!auth::verify("wrong", &first));
 }
 
+#[test]
+fn account_schema_and_write_audit_fail_closed_without_logging_business_values() {
+    let (server, root) = setup();
+    server
+        .auth
+        .lock()
+        .unwrap()
+        .execute_batch("PRAGMA user_version=2")
+        .unwrap();
+    assert!(auth::open(&root.join("data/accounts.db")).is_err());
+    let id = uuid::Uuid::new_v4().simple().to_string();
+    let mut workspace = Workspace::open(&root, &id).unwrap();
+    let payload = json!({"model":"project","action":"add","data":{"name":"Never-log-this-name","version":"v1.0","type":"private","status":"InProgress","owner":""}});
+    workspace
+        .run(
+            serde_json::from_value(payload.clone()).unwrap(),
+            Some(workspace.revision().unwrap()),
+        )
+        .unwrap();
+    let audit_path = root.join("workspaces").join(id).join("web-audit.jsonl");
+    let audit = std::fs::read_to_string(&audit_path).unwrap();
+    assert!(audit.contains("committed"));
+    assert!(!audit.contains("Never-log-this-name"));
+    let file = std::fs::OpenOptions::new()
+        .write(true)
+        .open(audit_path)
+        .unwrap();
+    file.set_len(10 * 1024 * 1024).unwrap();
+    drop(file);
+    assert_eq!(
+        workspace
+            .run(
+                serde_json::from_value(payload).unwrap(),
+                Some(workspace.revision().unwrap())
+            )
+            .unwrap_err()
+            .0,
+        500
+    );
+}
+
 #[tokio::test]
 async fn auth_required_origin_checked_and_initial_password_enforced() {
     let (server, _root) = setup();
@@ -394,7 +435,7 @@ fn workspace_persists_and_restart_invalidates_old_revision() {
         uuid::Uuid::new_v4().simple()
     ));
     let id = uuid::Uuid::new_v4().simple().to_string();
-    let workspace = Workspace::open(&root, &id).unwrap();
+    let mut workspace = Workspace::open(&root, &id).unwrap();
     let previous = workspace.revision().unwrap();
     workspace
         .run(
@@ -413,7 +454,7 @@ fn workspace_persists_and_restart_invalidates_old_revision() {
     assert_ne!(first_backup["path"], second_backup["path"]);
     assert_eq!(first_backup["reason"], "web");
     drop(workspace);
-    let workspace = Workspace::open(&root, &id).unwrap();
+    let mut workspace = Workspace::open(&root, &id).unwrap();
     assert_ne!(workspace.revision().unwrap(), last);
     let value = workspace
         .run(

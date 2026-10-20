@@ -4,6 +4,7 @@ use crate::services::{
 };
 use serde::Deserialize;
 use serde_json::{json, Value};
+use std::io::Write;
 use std::path::Path;
 
 #[derive(Deserialize)]
@@ -21,6 +22,7 @@ fn empty_data() -> Value {
 
 pub struct Workspace {
     pub db: DbState,
+    current_revision: i64,
 }
 
 impl Workspace {
@@ -35,27 +37,22 @@ impl Workspace {
             "CREATE TABLE IF NOT EXISTS web_revision(id INTEGER PRIMARY KEY CHECK(id=1), value INTEGER NOT NULL);
              INSERT OR IGNORE INTO web_revision VALUES(1,0);"
         ).map_err(|e| e.to_string())?;
+        let revision = new_revision();
         db.lock_connection()
             .map_err(|e| e.to_string())?
-            .execute(
-                "UPDATE web_revision SET value=?1 WHERE id=1",
-                [new_revision()],
-            )
+            .execute("UPDATE web_revision SET value=?1 WHERE id=1", [revision])
             .map_err(|e| e.to_string())?;
-        Ok(Self { db })
+        Ok(Self {
+            db,
+            current_revision: revision,
+        })
     }
 
     pub fn revision(&self) -> Result<i64, String> {
-        self.db
-            .lock_connection()
-            .map_err(|e| e.to_string())?
-            .query_row("SELECT value FROM web_revision WHERE id=1", [], |row| {
-                row.get(0)
-            })
-            .map_err(|e| e.to_string())
+        Ok(self.current_revision)
     }
 
-    pub fn run(&self, request: Action, expected: Option<i64>) -> Result<Value, (u16, String)> {
+    pub fn run(&mut self, request: Action, expected: Option<i64>) -> Result<Value, (u16, String)> {
         let mutation = is_mutation(&request.model, &request.action)
             .ok_or((400, "Unsupported action".into()))?;
         let revision = self.revision().map_err(|e| (500, e))?;
@@ -66,7 +63,10 @@ impl Workspace {
             ));
         }
         let next = if mutation { new_revision() } else { revision };
+        let operation_id = uuid::Uuid::new_v4().simple().to_string();
         if mutation {
+            self.audit(&request, &operation_id, "attempt", true)
+                .map_err(|e| (500, e))?;
             data_service::create_backup(&self.db, "web").map_err(|e| (500, e))?;
             // Invalidate stale writers durably before a business commit. A process
             // failure may cause a conservative conflict, never an old-token overwrite.
@@ -75,22 +75,53 @@ impl Workspace {
                 .map_err(|e| (500, e.to_string()))?
                 .execute("UPDATE web_revision SET value=?1 WHERE id=1", [next])
                 .map_err(|e| (500, e.to_string()))?;
+            // Keep the process epoch independently of SQLite restore contents.
+            // If post-restore bookkeeping fails, old backup revisions stay invalid.
+            self.current_revision = next;
         }
         let result = match request.model.as_str() {
-            "project" | "task" | "member" | "project_member" => {
-                entity_api::dispatch(&self.db, &request.model, &request.action, request.data)
+            "project" | "task" | "member" | "project_member" => entity_api::dispatch(
+                &self.db,
+                &request.model,
+                &request.action,
+                request.data.clone(),
+            ),
+            "task_dependency" => task_dependency_service::handle_action(
+                &self.db,
+                request.action.clone(),
+                request.data.clone(),
+            ),
+            "plan_baseline" => plan_baseline_service::handle_action(
+                &self.db,
+                request.action.clone(),
+                request.data.clone(),
+            ),
+            "calendar" => calendar_service::handle_action(
+                &self.db,
+                request.action.clone(),
+                request.data.clone(),
+            ),
+            "data" => {
+                data_service::handle_action(&self.db, request.action.clone(), request.data.clone())
             }
-            "task_dependency" => {
-                task_dependency_service::handle_action(&self.db, request.action, request.data)
-            }
-            "plan_baseline" => {
-                plan_baseline_service::handle_action(&self.db, request.action, request.data)
-            }
-            "calendar" => calendar_service::handle_action(&self.db, request.action, request.data),
-            "data" => data_service::handle_action(&self.db, request.action, request.data),
             _ => return Err((400, "Unsupported model".into())),
+        };
+        if mutation {
+            let phase = if result.as_ref().is_ok_and(|response| response.success) {
+                "committed"
+            } else {
+                "rejected"
+            };
+            self.audit(&request, &operation_id, phase, false)
+                .map_err(|_| {
+                    (
+                        500,
+                        "Operation may have completed but audit failed; refresh before retrying"
+                            .into(),
+                    )
+                })?;
         }
-        .map_err(|_| {
+        let result = result.map_err(|_| {
             (
                 400,
                 "Operation failed; verify fields and relationships".into(),
@@ -107,6 +138,37 @@ impl Workspace {
                 .execute("INSERT INTO web_revision VALUES(1,?1) ON CONFLICT(id) DO UPDATE SET value=excluded.value", [next]).map_err(|e| (500,e.to_string()))?;
         }
         Ok(json!({"data":result.data,"revision":next}))
+    }
+
+    fn audit(
+        &self,
+        request: &Action,
+        operation_id: &str,
+        phase: &str,
+        reserve: bool,
+    ) -> Result<(), String> {
+        let directory = self
+            .db
+            .1
+            .parent()
+            .ok_or("Workspace directory unavailable")?;
+        let path = directory.join("web-audit.jsonl");
+        let mut file = std::fs::OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open(path)
+            .map_err(|_| "Audit unavailable")?;
+        if reserve
+            && file.metadata().map_err(|_| "Audit unavailable")?.len() > 10 * 1024 * 1024 - 4096
+        {
+            return Err(
+                "Audit capacity reached; operator archival required before more writes".into(),
+            );
+        }
+        let record = json!({"operation":operation_id,"time":chrono::Utc::now().to_rfc3339(),"model":request.model,"action":request.action,"phase":phase});
+        writeln!(file, "{record}")
+            .and_then(|_| file.sync_data())
+            .map_err(|_| "Audit unavailable".into())
     }
 }
 

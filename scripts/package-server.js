@@ -15,6 +15,8 @@ mkdirSync(join(stage, 'bin'))
 cpSync('server/target/linux-deploy/easyproject-server', join(stage, 'bin/easyproject-server'))
 cpSync('dist', join(stage, 'web'), { recursive: true })
 cpSync('server/deploy', join(stage, 'deploy'), { recursive: true })
+cpSync('LICENSE', join(stage, 'LICENSE'))
+cpSync('server/README.md', join(stage, 'SERVER_README.md'))
 const files = {}
 function collect(directory, prefix = '') {
     for (const entry of readdirSync(directory, { withFileTypes: true })) {

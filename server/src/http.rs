@@ -40,6 +40,7 @@ pub struct Server {
     pub workspaces: Mutex<HashMap<String, Arc<Mutex<Workspace>>>>,
     attempts: Mutex<HashMap<String, (Instant, u32)>>,
     auth_slots: tokio::sync::Semaphore,
+    work_slots: tokio::sync::Semaphore,
     dummy_hash: String,
 }
 
@@ -68,6 +69,7 @@ impl Server {
             workspaces: Mutex::new(HashMap::new()),
             attempts: Mutex::new(HashMap::new()),
             auth_slots: tokio::sync::Semaphore::new(2),
+            work_slots: tokio::sync::Semaphore::new(8),
             dummy_hash,
         }))
     }
@@ -397,6 +399,10 @@ async fn action(
 ) -> Result<Json<Value>, ApiError> {
     let (user, _) = server.user(&headers)?;
     ready(&user)?;
+    let _permit = server
+        .work_slots
+        .try_acquire()
+        .map_err(|_| error(StatusCode::TOO_MANY_REQUESTS, "Workspace server is busy"))?;
     let expected = headers
         .get("x-workspace-revision")
         .and_then(|h| h.to_str().ok())

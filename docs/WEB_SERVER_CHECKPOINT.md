@@ -2,6 +2,16 @@
 
 ## 2026-10-21 最终部署阶段（覆盖下方历史“未部署”）
 
+### 收尾结论
+
+- 私有内测功能验收通过；正式公网发布条件仍未通过。本次不是全库新UPARS审计，不改变历史限定例外。新增Windows候选未覆盖用户原安装，独立MCP未替换；用户需自行首次登录改密，不提供明文初始密码到聊天。
+- 当前服务前端/交付源1e0e4434cb7286169309992d234756e0389a9618，Linux运行源仍63e70d1；Git常规push连接重置后安全传输精确同树335442ae3c86d161b92ad781aa97b94224767b79/同提交SHA、非强制成功。最新49文件包SHA c348424030a329d47ab022cf19a7d51c8b85faef400b3104dba01268b13d8d1a，远端tar摘要及逐文件验证通过；current已原子切换releases/1e0e4434cb72，stop/start后账号行摘要一致、完整性ok。一次核验误写users表/一次错误把全部懒加载index块当HTML入口导致检查失败，均未修改数据；改实际account表/HTML真实script入口核对后通过，不冒充首次全通过。
+- 升级后正常TLS健康/HTML200、HTML入口与交付manifest匹配、nonce CSP通过；账号1/会话0/工作区0。systemd active/enabled、linger=yes、仅127.0.0.1:8080复核。无需再次bootstrap，也没有重置初始密码。
+- 最终Windows NSIS6272953字节，SHA E1C6ADF933BA103748E2E7F3AC3E39444FE71389FAD882E876EF5C2BC8971EF0；exe SHA4E89766A3CD022F0733E510B532C11772F4384E38D1D6DB11FAA26808385AAFE。两者源码1e0e443（文档闭环提交不改变二进制身份）。隔离E盘desktop-smoke-1e0e443从本轮空业务fixture启动，默认免登录、云图标、深色PrimeVue连接弹窗真实CSP观察通过；其WebView主进程实参含--no-proxy-server，profile在E盘，不改变全局代理。原生一次元素几何不可用后重新绑定/截图坐标操作恢复；未自动化输入真实登录密码，不声称真实多设备/原生账号全链路人工验收。
+- 最终门禁：230前端单测/46文件、HTTP8/8、桌面Rust47+真实stdio1、ESLint/类型/fmt/严格Clippy/NSIS/发布元数据/UPARS1.1.0/diff通过。生产界面两次8并发分别Gantt日期/存储确认失败，1工作进程且retries=0全量63通过+8专用Web明确跳过（专用8另跑已通过）。没有修改这两个既有用例或删除检查；高并发测试稳定性保留为后续风险，不能描述为所有运行零失败。原大资源警告保留。
+- Wolai主状态v72、交接首部v9、API-03/DOMAIN-01增补v5读回均匹配1e0e443/手册1.6/9HTTP。私有Apifox25目录/55原生+9HTTP及26参考的先前读回有效；本轮只UI/进程代理/部署资料，无契约改变。交接README/CURRENT_STATE/ARCHITECTURE/CHECKPOINT及规则已复核，规则仍79条，未机械重写无影响内容。
+- 最新额度五小时25%、周73%；没有重置/唤醒。剩余：物理重启自启、真实多设备使用、跨时区完整模型、Mac/MSI/签名、公网部署运维及10-22桌面限定例外复查，均不能以本次私有部署代替。准确下一步：关闭本次两个隔离测试窗口、保存本闭环文档并同步Git；按一次性授权核对身份关home-host后Colin，记录实际请求结果，不跨任务继承。当前未提交仅本检查点和handoff/CHECKPOINT闭环说明，运行源不再改；关机状态此刻仍未执行，最后状态以下方日期化补记为准。
+
 - 目标/范围不变：网页登录、同账号多端服务端工作区、每账号隔离；桌面默认本地免登录，不上传真实库，不公开公网。WACAS未定义/待确认，适用UPARS1.1.0/AGENTS/PrimeVue/CSP/非C盘/额度与持续交接规范。分支codex/audit-release-20261006-api，开工eada26f，当前已推送a32eaffc8ddcfb38cdff1c6223168f0ef8981b88。
 - 已部署home-host：Linux程序源63e70d1cd64a41ec838c307e210d241ade91b30c、CI39449520194两job成功、SHA1775bb4921f45c7639461b66593bb70125f09466eeb32608f196cf8043ab5a85；前端/交付a32eaff，49文件包SHA c8f5694c5afec742ab1a2d604cb0a3582bbeb1288aa31f03d677b0ec2ae89e5e。服务器独立releases/a32eaffc8ddc逐文件核验通过，current指向该版本，持久data独立700，账号库600/schema1/integrity ok；管理员ym_li随机初始密码只在data/initial-admin-password（600），未输出/上传。systemd用户服务active/enabled、linger=yes；仅127.0.0.1:8080，TZ只限进程Asia/Shanghai。
 - 真实HTTPS https://home-host.tail2956dd.ts.net 验证：正常证书、health/HTML200、nonce及web标记、未登录401、初始管理员登录/会话200、Secure/HttpOnly/Strict cookie、首次改密业务403、退出200/撤销401、恶意Origin403、Tauri精确预检通过。测试后会话0、业务workspaces0；没有真实业务CRUD。已确认Windows Colin及Ubuntu home-host身份、SSH/Tailscale可达；开机自启配置不是物理重启验证。

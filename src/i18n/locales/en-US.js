@@ -13,6 +13,7 @@ export default {
         isolation:
             'Access the same account across devices. Each account has an isolated workspace.',
         returnLocal: 'Return to local (no login)',
+        useLocal: 'Use locally without signing in',
         stale: 'Another device changed this workspace. Refresh before editing again.',
         reload: 'Refresh (discard unsaved edits)',
         accounts: 'Accounts',

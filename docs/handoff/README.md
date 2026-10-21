@@ -1,10 +1,10 @@
 # EasyProject 新伙伴接手入口
 
-当前新增能力（2026-10-21）：网页版/账号/远端多端工作区已部署home-host私有HTTPS，最终验证与产物来源见[WEB_SERVER_CHECKPOINT](../WEB_SERVER_CHECKPOINT.md)；桌面默认免登录离线使用不变，不能将本地数据自动上传。新桌面候选不等于原安装已覆盖；正式公开发布仍未通过。
+当前新增调整（2026-10-21）：桌面新启动默认登录，同时提供“不登录，本地使用”，保留独立离线数据；服务器采用独立受限easyproject身份和独立应用管理员/系统级自启。最新实现/部署/验证见[登录与服务检查点](../DESKTOP_LOGIN_SERVICE_CHECKPOINT.md)，前期部署见[WEB_SERVER_CHECKPOINT](../WEB_SERVER_CHECKPOINT.md)。新候选不等于原安装已覆盖；正式公开发布仍未通过。
 
 最新状态（2026-10-20）：[数据存储整改](../STORAGE_LOCATION_CHECKPOINT.md)已部署本机E盘，原生新设置UI仍待补验；[MCP完整CRUD启用](../MCP_CRUD_ENABLEMENT_CHECKPOINT.md)获用户明确授权并配置，已有客户端需重连发现18工具。
 
-交接版本：1.6，2026-10-20（Asia/Shanghai，免登录本地兼容与可选Web远端工作区；仍79条）。仅适用于 EasyProject；不涉及 Watch App。本包面向人类开发者和新的 AI 助手，不要求读取旧聊天。
+交接版本：1.7，2026-10-21（Asia/Shanghai，默认登录/显式离线与独立服务身份；仍79条）。仅适用于 EasyProject；不涉及 Watch App。本包面向人类开发者和新的 AI 助手，不要求读取旧聊天。
 
 最新接口维护：[Apifox入口](../api/README.md)，私有项目8948094，25目录下55个原生通用协议接口和9个真实Web HTTP操作分组维护，26篇旧正文归入规范/历史参考。HTTP与MCP/IPC的认证、返回和并发边界不同；API-03和各任务检查点须一并读取。
 

@@ -7,62 +7,76 @@
         <section v-if="loading" class="remote-auth" role="status">
             {{ $t('remote.loading') }}
         </section>
-        <main v-else-if="!remoteUser || remoteUser.mustChangePassword" class="remote-auth">
-            <form class="remote-auth-card" @submit.prevent="submit">
-                <span class="eyebrow">EasyProject · {{ $t('remote.online') }}</span>
-                <h1>{{ $t(remoteUser ? 'remote.changePassword' : 'remote.login') }}</h1>
-                <p>{{ $t('remote.isolation') }}</p>
-                <template v-if="!remoteUser">
-                    <label for="remote-username">{{ $t('remote.username') }}</label>
-                    <InputText
-                        id="remote-username"
-                        v-model="username"
-                        autocomplete="username"
-                        required
-                        maxlength="48"
-                    />
-                </template>
-                <label for="remote-password">{{
-                    $t(remoteUser ? 'remote.currentPassword' : 'remote.password')
-                }}</label>
-                <Password
-                    input-id="remote-password"
-                    v-model="password"
-                    :feedback="false"
-                    toggle-mask
-                    autocomplete="current-password"
-                    required
-                    :input-props="{ maxlength: 128 }"
-                    fluid
-                />
-                <template v-if="remoteUser">
-                    <label for="remote-new-password">{{ $t('remote.newPassword') }}</label>
+        <main v-else-if="!remoteUser || remoteUser.mustChangePassword" class="remote-auth-shell">
+            <WindowTitleBar v-if="windowChrome.visible" :native="windowChrome.native" />
+            <div class="remote-auth">
+                <form class="remote-auth-card" @submit.prevent="submit">
+                    <span class="eyebrow">EasyProject · {{ $t('remote.online') }}</span>
+                    <h1>{{ $t(remoteUser ? 'remote.changePassword' : 'remote.login') }}</h1>
+                    <p>{{ $t('remote.isolation') }}</p>
+                    <template v-if="!remoteUser">
+                        <template v-if="!isWebServer">
+                            <label for="login-server-url">{{ $t('remote.serverUrl') }}</label>
+                            <InputText
+                                id="login-server-url"
+                                v-model="serverUrl"
+                                type="url"
+                                required
+                            />
+                        </template>
+                        <label for="remote-username">{{ $t('remote.username') }}</label>
+                        <InputText
+                            id="remote-username"
+                            v-model="username"
+                            autocomplete="username"
+                            required
+                            maxlength="48"
+                        />
+                    </template>
+                    <label for="remote-password">{{
+                        $t(remoteUser ? 'remote.currentPassword' : 'remote.password')
+                    }}</label>
                     <Password
-                        input-id="remote-new-password"
-                        v-model="newPassword"
+                        input-id="remote-password"
+                        v-model="password"
                         :feedback="false"
                         toggle-mask
-                        autocomplete="new-password"
+                        autocomplete="current-password"
                         required
-                        :input-props="{ minlength: 12, maxlength: 128 }"
+                        :input-props="{ maxlength: 128 }"
                         fluid
                     />
-                    <p>{{ $t('remote.passwordHint') }}</p>
-                </template>
-                <Message v-if="message" severity="error" :closable="false">{{ message }}</Message>
-                <Button
-                    type="submit"
-                    :loading="busy"
-                    :label="$t(remoteUser ? 'remote.changePassword' : 'remote.login')"
-                />
-                <Button
-                    v-if="!isWebServer"
-                    type="button"
-                    text
-                    :label="$t('remote.returnLocal')"
-                    @click="leaveRemote"
-                />
-            </form>
+                    <template v-if="remoteUser">
+                        <label for="remote-new-password">{{ $t('remote.newPassword') }}</label>
+                        <Password
+                            input-id="remote-new-password"
+                            v-model="newPassword"
+                            :feedback="false"
+                            toggle-mask
+                            autocomplete="new-password"
+                            required
+                            :input-props="{ minlength: 12, maxlength: 128 }"
+                            fluid
+                        />
+                        <p>{{ $t('remote.passwordHint') }}</p>
+                    </template>
+                    <Message v-if="message" severity="error" :closable="false">{{
+                        message
+                    }}</Message>
+                    <Button
+                        type="submit"
+                        :loading="busy"
+                        :label="$t(remoteUser ? 'remote.changePassword' : 'remote.login')"
+                    />
+                    <Button
+                        v-if="!isWebServer"
+                        type="button"
+                        text
+                        :label="$t('remote.useLocal')"
+                        @click="leaveRemote"
+                    />
+                </form>
+            </div>
         </main>
         <section v-else class="remote-session">
             <div class="remote-status" role="status">
@@ -179,12 +193,16 @@ import Message from 'primevue/message'
 import Dialog from 'primevue/dialog'
 import App from '../App.vue'
 import DesktopRoot from './DesktopRoot.vue'
+import WindowTitleBar from './WindowTitleBar.vue'
+import { getWindowChromeMode } from '../utils/windowChrome'
 import { hasDesktopStorage } from '../api/storage'
 import {
     isWebServer,
     remoteActive,
     remoteUser,
     remoteStale,
+    remoteEndpoint,
+    validateEndpoint,
     loginRemote,
     logoutRemote,
     resumeRemote,
@@ -194,6 +212,8 @@ import {
 } from '../api/remote'
 
 const { t } = useI18n()
+const windowChrome = getWindowChromeMode()
+const serverUrl = ref(remoteEndpoint.value)
 const loading = ref(remoteActive.value && isWebServer)
 const username = ref('')
 const password = ref('')
@@ -222,6 +242,10 @@ async function perform(operation) {
 async function submit() {
     if (remoteUser.value) return changePassword()
     await perform(async () => {
+        if (!isWebServer) {
+            remoteEndpoint.value = validateEndpoint(serverUrl.value)
+            localStorage.setItem('easyproject.server', remoteEndpoint.value)
+        }
         await loginRemote(username.value, password.value)
         password.value = ''
     })
@@ -287,8 +311,19 @@ onUnmounted(() => clearInterval(timer))
 .remote-form {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 }
+.remote-auth-shell {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.remote-auth-shell .window-titlebar {
+    flex-shrink: 0;
+}
 .remote-auth {
-    min-height: 100vh;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
     display: grid;
     place-items: center;
     background: var(--color-bg, #f4f7fb);

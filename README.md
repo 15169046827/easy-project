@@ -2,7 +2,7 @@
 
 EasyProject is an open-source, local-first desktop project planning application. It combines structured task planning, dependency-aware scheduling, execution views, portable data exchange, and local recovery without requiring an account.
 
-An optional [authenticated web workspace](server/README.md) now reuses the same Rust domain services. Desktop local mode remains the default: no login or network is required. Remote workspaces are explicitly selected, account-isolated, and never automatically upload or merge the local database. Deployment and acceptance status: [web checkpoint](docs/WEB_SERVER_CHECKPOINT.md).
+The [authenticated web workspace](server/README.md) reuses the same Rust domain services. Desktop launches at sign-in, with an explicit **Use locally without signing in** option that works offline. Local and remote workspaces remain separate: no automatic upload, merge, or error fallback. Deployment, dedicated service account and startup commands: [current checkpoint](docs/DESKTOP_LOGIN_SERVICE_CHECKPOINT.md).
 
 ![EasyProject project board](docs/screenshots/project-board.png)
 

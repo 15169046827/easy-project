@@ -2,11 +2,20 @@ import { ref } from 'vue'
 import { isTauri } from '@tauri-apps/api/core'
 
 export const isWebServer = Boolean(document.querySelector('meta[name="easyproject-web"]'))
-export const remoteActive = ref(isWebServer)
+const floating = Boolean(
+    window.__EASYPROJECT_FLOATING_WINDOW__ || window.location.hash.split('?')[0] === '#/floating'
+)
+const launchId = window.__EASYPROJECT_LAUNCH_ID__ || 'desktop-preview'
+export const remoteActive = ref(
+    isWebServer ||
+        (isTauri() && !floating && sessionStorage.getItem('easyproject.local-launch') !== launchId)
+)
 export const remoteUser = ref(null)
 export const remoteStale = ref(false)
 export const remoteEndpoint = ref(
-    isWebServer ? window.location.origin : localStorage.getItem('easyproject.server') || ''
+    isWebServer
+        ? window.location.origin
+        : localStorage.getItem('easyproject.server') || 'https://home-host.tail2956dd.ts.net'
 )
 let accessToken = ''
 let revision = null
@@ -33,6 +42,7 @@ export function leaveRemote() {
     revision = null
     remoteStale.value = false
     remoteActive.value = isWebServer
+    if (!isWebServer) sessionStorage.setItem('easyproject.local-launch', launchId)
     sessionStorage.removeItem('easyproject.remote')
     window.location.reload()
 }
@@ -41,13 +51,10 @@ export function selectRemote(value) {
     if (!isTauri()) throw new Error('Use the server website in this browser')
     remoteEndpoint.value = validateEndpoint(value)
     localStorage.setItem('easyproject.server', remoteEndpoint.value)
+    sessionStorage.removeItem('easyproject.local-launch')
     sessionStorage.setItem('easyproject.remote', '1')
     remoteActive.value = true
     window.location.reload()
-}
-
-if (!isWebServer && isTauri() && sessionStorage.getItem('easyproject.remote') === '1') {
-    remoteActive.value = true
 }
 
 export async function remoteRequest(path, body, expected = null) {

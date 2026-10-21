@@ -6,6 +6,7 @@ for (const width of [1280, 960]) {
             await page.setViewportSize({ width, height: 800 })
             await page.addInitScript(dark => {
                 window.isTauri = true
+                sessionStorage.setItem('easyproject.local-launch', 'desktop-preview')
                 // Exercise the real entry without native window IPC in this
                 // browser-only layout test; actual Windows gets separate QA.
                 Object.defineProperty(navigator, 'userAgent', {

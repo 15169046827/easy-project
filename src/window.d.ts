@@ -5,6 +5,7 @@ declare global {
         isTauri?: boolean
         __webStyleViolation?: boolean
         __EASYPROJECT_FLOATING_WINDOW__?: boolean
+        __EASYPROJECT_LAUNCH_ID__?: string
         __EASYPROJECT_STORAGE_INFO__?: {
             ready: boolean
             activeDir: string

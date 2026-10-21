@@ -11,13 +11,27 @@ describe('optional remote workspace transport', () => {
     })
     afterEach(() => vi.unstubAllGlobals())
 
-    it('does not require login or perform network requests in default local mode', async () => {
+    it('defaults desktop to sign-in without automatic requests or reading local data', async () => {
         const network = vi.fn()
         vi.stubGlobal('fetch', network)
         const remote = await import('../../api/remote')
-        expect(remote.remoteActive.value).toBe(false)
+        expect(remote.remoteActive.value).toBe(true)
         expect(remote.remoteUser.value).toBeNull()
         expect(network).not.toHaveBeenCalled()
+    })
+    it('honors explicit local choice only for the same desktop launch', async () => {
+        window.__EASYPROJECT_LAUNCH_ID__ = 'launch-one'
+        sessionStorage.setItem('easyproject.local-launch', 'launch-one')
+        expect((await import('../../api/remote')).remoteActive.value).toBe(false)
+        vi.resetModules()
+        window.__EASYPROJECT_LAUNCH_ID__ = 'launch-two'
+        expect((await import('../../api/remote')).remoteActive.value).toBe(true)
+        delete window.__EASYPROJECT_LAUNCH_ID__
+    })
+    it('keeps the task floating window local without a login gate', async () => {
+        window.__EASYPROJECT_FLOATING_WINDOW__ = true
+        expect((await import('../../api/remote')).remoteActive.value).toBe(false)
+        delete window.__EASYPROJECT_FLOATING_WINDOW__
     })
     it('rejects insecure origins, embedded credentials and URL paths', async () => {
         const { validateEndpoint } = await import('../../api/remote')

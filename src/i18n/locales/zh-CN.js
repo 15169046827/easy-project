@@ -11,6 +11,7 @@ export default {
         passwordHint: '密码为12—128个字符；修改后所有设备需要重新登录。',
         isolation: '同一账号可跨设备访问；不同账号工作区相互隔离。',
         returnLocal: '返回本地（无需登录）',
+        useLocal: '不登录，本地使用',
         stale: '其他设备已修改数据。请先刷新，再重新编辑。',
         reload: '刷新（放弃未保存编辑）',
         accounts: '账号管理',

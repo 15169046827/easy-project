@@ -1,6 +1,6 @@
 # EasyProject API：协议、权限与错误
 
-本页描述本地桌面/MCP协议：MCP JSON-RPC over stdio与受控Tauri invoke内部IPC共享Rust业务校验，两者自身不监听HTTP。另新增显式选择的账号式网页版/headless HTTP服务，真实契约见[web-openapi.json](web-openapi.json)与[服务说明](../../server/README.md)；它不改变桌面默认免登录离线使用，也不自动把本地MCP接到远端。
+本页描述本地桌面/MCP协议：MCP JSON-RPC over stdio与受控Tauri invoke内部IPC共享Rust业务校验，两者自身不监听HTTP。另有账号式网页版/headless HTTP服务，真实契约见[web-openapi.json](web-openapi.json)与[服务说明](../../server/README.md)。桌面默认登录并提供显式“不登录，本地使用”，本地能力仍离线可用、不自动上传/混库，也不自动把本地MCP接到远端；启动入口变化不改变协议认证或权限契约。
 
 ## 接入与能力
 

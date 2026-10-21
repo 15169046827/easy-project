@@ -11,7 +11,7 @@
 
 ## 新伙伴接手入口
 
-- 2026-10-20新增网页版/账号/远端工作区获授权，但桌面本地离线模式必须始终默认可用、无需登录/联网；远端是显式选择、独立账号工作区，不自动上传/合并/替换本地库，网络或鉴权失败不得静默切换数据源。服务器部署仅Tailscale私有HTTPS，不自动公开公网。当前进度见`docs/WEB_SERVER_CHECKPOINT.md`。
+- 2026-10-21用户更新：桌面新启动默认展示登录，必须同时提供“不登录，本地使用”入口；显式本地使用仍无需登录/联网，不自动上传/合并/替换本地库，网络或鉴权失败不得静默切换数据源。本地选择仅在同次启动有效，重启回到登录；浮窗保持本地。服务器仅Tailscale私有HTTPS，使用受限easyproject系统账户和独立应用管理员，不复用服务器管理员身份/密码，不自动公开公网。最新进度见`docs/DESKTOP_LOGIN_SERVICE_CHECKPOINT.md`，前期部署见`docs/WEB_SERVER_CHECKPOINT.md`。
 
 - 新增Web HTTP契约单独保存在`docs/api/web-openapi.json`，Apifox `04 Web HTTP 接口`按认证/账号/工作区/运行状态维护9操作，与55个MCP/IPC通用协议条目分开；不得混用账号会话、cookie/Bearer、Origin/CSRF、revision冲突或本地备份/撤销权限。远端模式不能展示或操作本地存储配置。
 

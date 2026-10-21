@@ -49,7 +49,8 @@ pub fn run() {
             let info = prepared.unwrap_or_else(|error| storage::failed_info(&root, error));
             let profile = info.profile_dir.clone();
             let bootstrap = format!(
-                "window.__EASYPROJECT_STORAGE_INFO__ = {};",
+                "window.__EASYPROJECT_LAUNCH_ID__ = '{}'; window.__EASYPROJECT_STORAGE_INFO__ = {};",
+                uuid::Uuid::new_v4().simple(),
                 serde_json::to_string(&info)?
             );
             app.manage(storage::StorageState {

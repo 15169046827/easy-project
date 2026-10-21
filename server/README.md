@@ -1,6 +1,6 @@
 # EasyProject headless server
 
-新增账号式在线工作区，复用`src-tauri/src/{common,models,db,services}`；服务器不依赖Tauri/GTK，不适用旧Linux桌面链风险例外。桌面仍默认本地离线、无需登录；显式选择远端后才认证，不自动上传/合并本地库。
+新增账号式在线工作区，复用`src-tauri/src/{common,models,db,services}`；服务器不依赖Tauri/GTK，不适用旧Linux桌面链风险例外。桌面默认展示登录，同时提供“不登录，本地使用”，离线本地能力保留，不自动上传/合并/错误切换本地库。最新部署状态见[登录与服务检查点](../docs/DESKTOP_LOGIN_SERVICE_CHECKPOINT.md)，下方初期用户服务说明仅历史迁移参考。
 
 ## 模式与安全边界
 
@@ -31,10 +31,26 @@ cargo build --manifest-path server/Cargo.toml --release --locked
 
 当前进度/验证/一次性关机授权状态见[检查点](../docs/WEB_SERVER_CHECKPOINT.md)。
 
-## 当前私有部署（2026-10-21）
+## 初期私有部署（2026-10-21，独立账户整改前）
 
 home-host已部署到`/home/ym_li/easyproject/releases/`，`current`指向逐文件摘要验证的版本。持久数据独立位于`/home/ym_li/easyproject/data`（700），用户systemd服务easyproject已启用，linger=yes；仅监听127.0.0.1:8080，Tailscale Serve代理私有HTTPS。已验证正常证书链、登录/退出、首次改密业务限制和恶意Origin拒绝；未创建真实业务项目或上传桌面数据。开机服务已配置，但未进行物理重启验收。
 
 应用管理员为`ym_li`，随机初始密码只在服务器`data/initial-admin-password`（600）中；从自己的SSH终端查看并首次登录改密，不要复制进Git/Wolai/API文档。该凭据不是SSH密码。
 
 Windows WebView仅在EasyProject自身主窗/浮窗进程使用`--no-proxy-server`，确保Tailscale直连，不更改系统或其它应用代理、不禁用证书验证。普通浏览器如使用代理，需要自行允许此私有域名直连；宿主机默认代理请求曾超时，而无代理的正常TLS请求200。最终产物与未验边界见检查点。
+
+## 独立服务身份与启动命令
+
+目标系统服务`easyproject.service`以锁定密码、nologin、无sudo权限的`easyproject`系统账户运行，不再使用`ym_li`用户会话。只读版本`/opt/easyproject/releases/<源码>`和`current`由root管理；持久数据`/var/lib/easyproject`归服务账户所有且700。系统unit为`deploy/easyproject-system.service`，启用ProtectSystem=strict/ProtectHome/NoNewPrivileges，仅数据目录可写；既有用户unit必须停用，不能同时监听8080。
+
+应用管理员`easyproject_admin`与Linux服务账户/SSH管理员均不同；新初始密码随机生成，只留root可读`/etc/easyproject/initial-admin-password`（600），首登强制改密。仅空账号库可用`deploy/bootstrap-system-admin.py`，旧账号/数据不得盲目覆盖。实际完成状态以检查点为准。
+
+在服务器终端启动、查看状态和重启：
+
+```bash
+sudo systemctl start easyproject
+sudo systemctl status easyproject --no-pager
+sudo systemctl restart easyproject
+```
+
+部署时一次性配置开机自启：`sudo systemctl enable --now easyproject`。查看日志：`sudo journalctl -u easyproject -n 50 --no-pager`。初始密码仅在自己的SSH终端使用`sudo cat /etc/easyproject/initial-admin-password`查看，不复制到代码或云文档。登录地址仍是`https://home-host.tail2956dd.ts.net`，只在Tailnet可用。

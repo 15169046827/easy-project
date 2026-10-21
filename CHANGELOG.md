@@ -6,7 +6,7 @@ All notable changes to EasyProject are documented here.
 
 ### Added
 
-- Opt-in authenticated web/desktop remote workspaces, with a headless Rust server sharing existing domain validation, per-account storage, Argon2id passwords, revocable sessions, first-login password change, administrator account creation, CSRF/origin checks, conflict revisions and pre-write snapshots. Local desktop use remains offline and login-free by default; no automatic migration or merge. Private Tailscale HTTPS deployment is separate from public release.
+- Authenticated web/desktop remote workspaces, with a headless Rust server sharing existing domain validation, per-account storage, Argon2id passwords, revocable sessions, first-login password change, administrator account creation, CSRF/origin checks, conflict revisions and pre-write snapshots. Desktop launches at sign-in with an explicit login-free local/offline entry; no automatic migration, merge or error fallback. A dedicated restricted Ubuntu service account and system-level startup unit separate the application from the host administrator. Private Tailscale HTTPS deployment is separate from public release.
 
 - Opt-in local stdio MCP companion: project/task/member CRUD plus project-team membership tools, default read-only permissions, explicit deletion confirmation, write recovery points and privacy-reduced operation audit. Desktop and MCP entity writes share business validation and an atomic SQLite boundary.
 - Independent read-only task floating window with nearby task cards, collapse/expand, due dates and progress, optional always-on-top, refresh, and return-to-project navigation. It closes with the main window; Windows behavior has been checked on the current device.

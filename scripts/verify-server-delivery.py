@@ -6,8 +6,9 @@ import sys
 
 directory = Path(sys.argv[1]).resolve(strict=True)
 source = sys.argv[2]
-releases = (Path.home() / "easyproject/releases").resolve(strict=True)
-if directory.parent != releases or not directory.is_dir():
+release_roots = [Path.home() / "easyproject/releases", Path("/opt/easyproject/releases")]
+allowed = [root.resolve(strict=True) for root in release_roots if root.is_dir()]
+if directory.parent not in allowed or not directory.is_dir():
     raise SystemExit("Unexpected release directory")
 manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
 if manifest["serverSource"] != source:

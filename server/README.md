@@ -39,11 +39,11 @@ home-host已部署到`/home/ym_li/easyproject/releases/`，`current`指向逐文
 
 Windows WebView仅在EasyProject自身主窗/浮窗进程使用`--no-proxy-server`，确保Tailscale直连，不更改系统或其它应用代理、不禁用证书验证。普通浏览器如使用代理，需要自行允许此私有域名直连；宿主机默认代理请求曾超时，而无代理的正常TLS请求200。最终产物与未验边界见检查点。
 
-## 独立服务身份与启动命令
-
-### 私有域名与浏览器代理
+## 私有域名与浏览器代理
 
 2026-10-21本机浏览器连接故障已定位为Clash规则与其内置DNS：Tailscale/服务器正常，直连200，Clash DNS对私有域名NXDOMAIN。当前配置仅新增该域名DIRECT和精确hosts→100.65.59.38后，普通代理路径网页/健康200；未改系统DNS/代理模式或TLS验证。切换配置/更新订阅可能覆盖本地两行，Tailscale地址变化也须重新核对。完整证据及私有备份边界见[连接检查点](../docs/PRIVATE_HTTPS_CONNECTIVITY_CHECKPOINT.md)，不要把代理凭据/备份上传。
+
+## 独立服务身份与启动命令
 
 普通用户不输入服务器地址，桌面内置`DESKTOP_SERVER_ORIGIN`并与精确CSP绑定；本地模式点击“登录账号”直接回登录页。旧用户缓存地址不作为凭据目标。更换域名由维护者改应用受控配置/CSP/systemd环境并重新验证。
 

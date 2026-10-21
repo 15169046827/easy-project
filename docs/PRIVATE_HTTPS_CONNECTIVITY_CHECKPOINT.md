@@ -2,6 +2,8 @@
 
 ## 2026-10-21 完成状态
 
+同步闭环：记录源fe25f932b5711b216ac5651feb4c9caf8d483c71已精确非强制同步；Wolai主状态v77/交接首部v14均读回匹配来源与两项精确域名配置、3852旧规则不变和普通代理HTTPS200证据。源码/接口/全局规则无变。本补记及服务说明标题分组仅文档收尾，保存同步后等待用户刷新试用，不自动扩展全局代理设置。
+
 - 目标：用户允许检查Clash并仅为EasyProject私有域名添加直连，恢复浏览器访问；不切换全局代理模式、不修改系统DNS/证书/Tailscale或其它项目。WACAS未定义/待确认，适用UPARS1.1.0、AGENTS、数据保护与持续交接规则。基线c6a479967727a381aac9b0bed42d07273ae77522，分支codex/audit-release-20261006-api，开工Git干净。
 - 诊断证据：Colin及home-host Tailscale在线，Windows将域名解析为100.65.59.38；正常TLS无代理访问网页/主脚本/健康均200。系统代理实际为本机Clash 127.0.0.1:7890，代理路径SSL失败；Clash内置DNS对此私有域名返回Status=3/NXDOMAIN、无A记录。不是服务器停机或证书过期，未关闭证书验证。
 - 唯一外部配置修改：现有Clash配置C:/Users/Canace/.config/clash/profiles/1770951119417.yml新增两行：hosts中home-host.tail2956dd.ts.net→100.65.59.38，以及规则首项DOMAIN,home-host.tail2956dd.ts.net,DIRECT。移除这两行后文本（仅归一CRLF）与原配置完全相同；CFW settings/root core config、系统代理/DNS均未修改。此C盘第三方原有配置的用户授权编辑不等于允许EasyProject数据/工具转存C盘。

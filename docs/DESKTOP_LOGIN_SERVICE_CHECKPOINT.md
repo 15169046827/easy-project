@@ -1,5 +1,16 @@
 # 桌面默认登录与独立服务账户检查点
 
+## 最终完成状态（2026-10-21，覆盖下方阶段记录）
+
+- 目标已实现：新启动默认登录，普通用户仅输入用户名/密码，应用内置受控服务地址；本地入口和本地转登录均无地址配置。同次启动显式本地选择可重载保持，下一次启动UUID不同返回登录；浮窗仍本地。网络失败不自动切本地，未上传/合并真实桌面库。
+- 最终产品/前端/部署源4b4128769b6a2d3653beae31210643fb4801195b，已同树38cca9ce79d21fd3b84cc57af88be204d0d9ce48/同SHA非强制同步（正常push重置后使用既有核验传输，不关闭TLS）。基线13806ce、分支codex/audit-release-20261006-api；WACAS未定义，适用UPARS1.1.0/既定规则。手册1.7/79规则，地址透明补充不增加规则ID。
+- 最终服务器current=/opt/easyproject/releases/4b4128769b6a，51文件包SHA e23e97e26068b8342e92b261efe10fdb227a428e5a1555f6178ba0ce7d3443a2，上传tar及新旧两侧逐文件核验通过；Linux程序沿用已验63e70d1/SHA1775bb4921f45c7639461b66593bb70125f09466eeb32608f196cf8043ab5a85。root切版本前后账号行摘要一致/完整性ok/会话0，正常TLS健康200。系统服务active/enabled，User/Group=easyproject，密码L/nologin/无sudo，仅127.0.0.1:8080；原用户服务disabled且原目录/初始库保留。未公开公网，未修改SSH密码或整机安全策略。
+- 独立应用管理员easyproject_admin；随机初始密码仅/etc/easyproject/initial-admin-password(root600)，服务用户不能读；data700/accounts600属easyproject。初始登录/会话200、业务改密前403、退出200/撤销401，测试后会话0/业务库0；不复用Ubuntu身份，不在真实库做CRUD验收。bootstrap未来创建设置umask077，未重复运行或重置新密码。
+- 最终门禁：233单测/46文件、ESLint/typecheck、67生产E2E（单工作进程、零重试，含4默认登录/离线选择/重载/重启/nonce深浅尺寸及4本地转登录无地址检查）+专用HTTP8/8、桌面Rust47+真实stdio1、fmt/严格Clippy、NSIS、发布元数据、UPARS1.1.0、diff通过；普通E2E的8HTTP明确跳过，由专用真实隔离服务另跑，未删除/放宽检查。旧大资源警告仍保留。
+- 最终NSIS 6271425字节/SHA2FDBB3051680364C95CF0A5A4DCFA87DB400EACA9E6C330A67CD845378EF3C50，路径src-tauri/target/release/bundle/nsis/EasyProject_0.1.0_x64-setup.exe；exe SHAE20A6B34A0ECA6758D282494195D58B76B2062B914DC41CBC4B07DC2FDAAA9FD。未覆盖原安装或独立MCP。原生E盘desktop-login-service-final独立空业务库启动观察：真实CSP/PrimeVue、窗口栏、只有用户名密码/本地入口、没有地址框；未自动化输入真实密码。两隔离窗口已请求正常关闭并确认进程退出。
+- 同步：API总览9567481已读回新SHA，其余25参考UNCHANGED、55原生+9HTTP契约无变；apifox-manifest已随4b41287提交。Git/handoff本阶段完成，Wolai最终同步正在收尾，读回版本另记。本次尚未提交仅handoff/{README,CURRENT_STATE,ARCHITECTURE,CHECKPOINT}.md和本闭环检查点，无产品源码变化。
+- 剩余/下一步：新系统unit开机enabled已配置，服务restart/start实际成功，但未重启整机验新unit；原生完整账号人工流程/真实多设备、签名/MSI/Mac及正式公网生产条件仍未通过，不冒称完成新全库审计。用户可安装新候选并首次改密后试用；只在新具体授权下执行覆盖安装/数据操作。当前额度五小时80%、周70%；仅Colin/home-host设备确认，无重置/唤醒/关机，旧一次性授权已失效。完成文档同步后等待用户下一步。
+
 ## 2026-10-21 开工
 
 - 目标：桌面每次新启动默认登录，保留显式“不登录，本地使用”；建立独立受限Ubuntu服务账户easyproject、独立应用管理员easyproject_admin；系统级开机自启并提供启动/状态指令。用户最新选择覆盖此前“默认进入本地”，离线能力和禁止自动上传/混库不变。仅EasyProject/Tailscale内网，不公开，不修改SSH管理员密码，不复用操作系统凭据。

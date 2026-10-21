@@ -14,6 +14,8 @@
 
 2026-10-21入口变更：Rust每次新启动注入随机`__EASYPROJECT_LAUNCH_ID__`；主窗默认RemoteRoot登录，显式本地选择只对同次启动ID有效，刷新保持本地、重启回登录。浮窗不受登录入口门禁影响，远端失败不切本地。远端登录前不发业务命令；登录页带既有窗口栏/PrimeVue表单/nonce。服务器目标为受限easyproject系统账户、/opt/easyproject只读版本与/var/lib/easyproject数据、系统级unit，应用管理员与SSH身份分开。最新实际部署结果见[检查点](../DESKTOP_LOGIN_SERVICE_CHECKPOINT.md)；旧%h用户服务仅历史迁移参考。
 
+地址透明补充：src/api/remote.js的DESKTOP_SERVER_ORIGIN与Tauri精确CSP绑定；登录页无地址输入、RemoteConnect直接回登录，忽略历史localStorage服务器地址，避免把密码发到旧用户配置目标。Web仍使用同源，未改变9HTTP接口或独立MCP。systemd当前已使用easyproject专用系统账户，旧用户unit已禁用，数据库与root私有初始密码分权。
+
 新增第三入口（2026-10-21已私有部署）：`server/`是独立Cargo headless工程，通过源码模块复用common/db/models/services，没有Tauri/GTK运行依赖；HTTP认证、每账号工作区和revision在server/src，账号与人员模型独立。`src/api/remote.js`是显式远端适配，Web同源cookie、桌面精确HTTPS源+内存Bearer，`RemoteRoot`处理登录/初始改密/账号管理；本地依旧走原Tauri invoke，不登录/不联网，不自动上传。Windows主窗/浮窗同侧profile、仅本应用禁用代理以直连Tailscale，不变更系统代理或TLS校验。HTTP接口不改旧MCP或IPC契约；见[服务说明](../../server/README.md)与[检查点](../WEB_SERVER_CHECKPOINT.md)。
 
 API维护地图（2026-10-20）：[docs/api](../api/README.md)记录实际18MCP工具inputSchema、6注册Tauri命令和31分发动作；build-api-catalog.js从交付程序/源码提取，build-apifox-layout.js生成20目录/55接口布局，group-apifox-api.ps1维护原生通用协议接口及参考分组，sync-apifox-api.ps1维护26篇参考正文且保留folderId；逐份读回字段/摘要，不是运行期依赖、HTTP网关或新增业务服务。令牌环境变量读取且不落盘，远端手改SHA不符停止覆盖。

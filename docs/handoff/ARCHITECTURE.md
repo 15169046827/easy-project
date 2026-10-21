@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-21账户UI入口调整：RemoteRoot提供菜单回调，RemoteConnect现在渲染PrimeVue头像菜单于App header-actions中（沿用文件名，不再独立云按钮）；用户设置/MCP/管理员账号管理/退出均由该菜单进入。App notice插槽将冲突/错误放在工具栏下，不再挤动标题栏。RemoteMcpTokens的Secret仅内存，上层Dialog正文/code+显式复制，关闭/管理页关闭即清理，viewEpoch拒绝旧响应重新显示。API、鉴权及Token生命周期后端规则不变；最新验证/部署见专项检查点。
+
 2026-10-21新增入口：`server/src/auth.rs`账号schema2管理个人MCP Token摘要，注册仅普通角色；`http.rs`分离交互会话与专用PAT，`mcp.rs`通过源码路径复用原`mcp/tools.rs`，不复制业务逻辑。`Workspace::mcp_call`与Web共用账号互斥/epoch，原MCP工具负责写前快照和审计。`RemoteRoot`提供注册，`RemoteMcpTokens`使用PrimeVue管理一次性Secret，不持久保存Token。`/mcp`为新远端无状态HTTP入口，不影响stdio。CI监视共享tools.rs变更。部署/验证见[检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)。
 
 核对日期：2026-10-20（本轮更新存储/启动入口，其它架构复核无变）。此处描述真实目录和调用关系；规划中的理想模块名称不能用来假定文件已存在。规则见 [RULES.md](RULES.md)。

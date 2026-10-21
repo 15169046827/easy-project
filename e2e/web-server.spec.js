@@ -8,6 +8,7 @@ test.beforeAll(() => {
 })
 
 async function login(page, username = 'test_admin', password = 'Synthetic-changed-456!') {
+    await page.addInitScript(() => localStorage.setItem('easyproject-onboarding-done', 'true'))
     await page.goto(origin)
     await page.locator('#remote-username').fill(username)
     await page.locator('#remote-password').fill(password)
@@ -15,9 +16,14 @@ async function login(page, username = 'test_admin', password = 'Synthetic-change
         .locator('form')
         .getByRole('button', { name: /登录|Sign in/, exact: true })
         .click()
-    await expect(page.locator('.remote-status')).toBeVisible()
+    await expect(page.locator('.account-menu-entry')).toBeVisible()
     const skip = page.locator('.onboard-skip').first()
     if (await skip.isVisible()) await skip.click()
+}
+
+async function accountAction(page, name) {
+    await page.getByRole('button', { name: /^(用户菜单|User menu)$/ }).click()
+    await page.getByRole('menuitem', { name, exact: true }).click()
 }
 
 for (const width of [1280, 960, 375]) {
@@ -57,12 +63,33 @@ for (const width of [1280, 960, 375]) {
             await expect(page.locator('#remote-confirm-password')).toHaveCount(0)
             await expect(page.locator('#remote-password')).toHaveValue('')
             await login(page)
-            await expect(page.locator('.remote-status')).toContainText('test_admin')
+            await expect(page.locator('.remote-status')).toHaveCount(0)
+            const account = page.locator('.account-menu-entry')
+            const help = page.locator('.help-toggle')
+            const accountBox = await account.boundingBox()
+            const helpBox = await help.boundingBox()
+            expect(
+                Math.abs(accountBox.y + accountBox.height / 2 - helpBox.y - helpBox.height / 2)
+            ).toBeLessThan(2)
+            await account.focus()
+            await page.keyboard.press('Enter')
+            await expect(page.getByRole('menu')).toBeVisible()
+            await expect(page.getByRole('menu')).toContainText('test_admin')
+            await page.screenshot({
+                animations: 'disabled',
+                path: `test-results/account-menu-${width}-${dark ? 'dark' : 'light'}.png`
+            })
+            await page.keyboard.press('Escape')
+            await expect(account).toBeFocused()
+            await accountAction(page, /用户设置|User settings/)
+            await expect(page.getByRole('dialog')).toContainText('test_admin')
+            await expect(page.locator('#current-password')).toBeVisible()
+            await page.keyboard.press('Escape')
             await expect(page.locator('html')).toHaveClass(dark ? /app-dark/ : /^(?!.*app-dark)/)
-            await page.getByRole('button', { name: /账号管理|Accounts/, exact: true }).click()
+            await accountAction(page, /账号管理|Accounts/)
             await expect(page.getByRole('dialog')).toBeVisible()
             await page.keyboard.press('Escape')
-            await page.getByRole('button', { name: /^(MCP 接入|MCP access)$/ }).click()
+            await accountAction(page, /MCP 接入|MCP access/)
             const tokenDialog = page.getByRole('dialog', { name: /^(MCP 接入|MCP access)$/ })
             await expect(tokenDialog).toContainText(/独立|independently/)
             await expect(tokenDialog).toBeVisible()
@@ -72,9 +99,50 @@ for (const width of [1280, 960, 375]) {
             })
             await page.locator('#mcp-token-name').fill(`Agent ${width} ${dark}`)
             await tokenDialog.getByRole('button', { name: /生成 Token|Generate token/ }).click()
-            await expect(page.locator('#mcp-secret')).toHaveValue(/^epmcp_[a-f0-9]{64}$/)
+            const secretDialog = page.getByRole('dialog', { name: /新 Token|New token/ })
+            await expect(secretDialog).toBeVisible()
+            await expect(secretDialog.locator('#mcp-secret')).toHaveText(/^epmcp_[a-f0-9]{64}$/)
+            await expect(
+                secretDialog.locator('input, textarea, [contenteditable="true"]')
+            ).toHaveCount(0)
+            const isAboveManager = await secretDialog.evaluate(element => {
+                const manager = [...document.querySelectorAll('[role="dialog"]')].find(
+                    node => node !== element
+                )
+                const mask = element.closest('.p-dialog-mask')
+                const managerMask = manager.closest('.p-dialog-mask')
+                const box = element.getBoundingClientRect()
+                const hit = document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2)
+                return (
+                    Number(getComputedStyle(mask).zIndex) >
+                        Number(getComputedStyle(managerMask).zIndex) && element.contains(hit)
+                )
+            })
+            expect(isAboveManager).toBe(true)
+            await page.evaluate(() => {
+                window.__tokenCopyCount = 0
+                Object.defineProperty(navigator, 'clipboard', {
+                    configurable: true,
+                    value: {
+                        writeText: async () => {
+                            window.__tokenCopyCount += 1
+                        }
+                    }
+                })
+            })
+            await secretDialog.getByRole('button', { name: /复制 Token|Copy token/ }).click()
+            await expect(secretDialog).toContainText(/已复制|copied/)
+            expect(await page.evaluate(() => window.__tokenCopyCount)).toBe(1)
+            await secretDialog.screenshot({
+                animations: 'disabled',
+                path: `test-results/secret-dialog-${width}-${dark ? 'dark' : 'light'}.png`,
+                mask: [page.locator('#mcp-secret')]
+            })
             await page.keyboard.press('Escape')
-            await page.getByRole('button', { name: /^(MCP 接入|MCP access)$/ }).click()
+            await expect(page.locator('#mcp-secret')).toHaveCount(0)
+            await expect(tokenDialog).toBeVisible()
+            await page.keyboard.press('Escape')
+            await accountAction(page, /MCP 接入|MCP access/)
             await expect(page.locator('#mcp-secret')).toHaveCount(0)
             await tokenDialog
                 .getByRole('button', { name: /^(撤销|Revoke)$/ })
@@ -113,7 +181,7 @@ for (const width of [1280, 960, 375]) {
             expect(
                 violations.filter(message => /Content Security Policy/i.test(message))
             ).toHaveLength(0)
-            await page.getByRole('button', { name: /退出登录|Sign out/, exact: true }).click()
+            await accountAction(page, /退出登录|Sign out/)
             await expect(page.locator('#remote-username')).toBeVisible()
             expect(
                 await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)
@@ -137,8 +205,8 @@ test('two browser sessions share writes, reject stale edits and preserve data af
     const b = await second.newPage()
     await login(a)
     await login(b)
-    await expect(a.locator('.remote-status')).toContainText('test_admin')
-    await expect(b.locator('.remote-status')).toContainText('test_admin')
+    await expect(a.locator('.account-menu-entry')).toBeVisible()
+    await expect(b.locator('.account-menu-entry')).toBeVisible()
     const revision = await a.evaluate(
         async () => (await (await fetch('/api/workspace/revision')).json()).revision
     )
@@ -196,14 +264,14 @@ test('administrator creates an isolated account and first login requires passwor
     page
 }) => {
     await login(page)
-    await page.getByRole('button', { name: /账号管理|Accounts/, exact: true }).click()
+    await accountAction(page, /账号管理|Accounts/)
     const username = `user_${Date.now()}`
     await page.locator('#account-name').fill(username)
     await page.locator('#account-password').fill('Synthetic-initial-789!')
     await page.getByRole('button', { name: /创建账号|Create account/, exact: true }).click()
     await expect(page.getByRole('dialog').getByText(username, { exact: true })).toBeVisible()
     await page.keyboard.press('Escape')
-    await page.getByRole('button', { name: /退出登录|Sign out/, exact: true }).click()
+    await accountAction(page, /退出登录|Sign out/)
     await page.locator('#remote-username').fill(username)
     await page.locator('#remote-password').fill('Synthetic-initial-789!')
     await page
@@ -219,9 +287,11 @@ test('administrator creates an isolated account and first login requires passwor
         .click()
     await expect(page.locator('#remote-username')).toBeVisible()
     await login(page, username, 'Synthetic-account-changed-789!')
-    await expect(page.getByRole('button', { name: /账号管理|Accounts/, exact: true })).toHaveCount(
-        0
-    )
+    await page.locator('.account-menu-entry').click()
+    await expect(
+        page.getByRole('menuitem', { name: /账号管理|Accounts/, exact: true })
+    ).toHaveCount(0)
+    await page.keyboard.press('Escape')
     await page.goto(origin + '/#/projects')
     await expect(page.getByText(/Shared browser project/)).toHaveCount(0)
     await page.goto(origin + '/#/data')

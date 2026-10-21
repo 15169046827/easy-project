@@ -5,7 +5,7 @@
         :header="$t('remote.mcpTokens')"
         :style="{ width: '40rem', maxWidth: '95vw' }"
         @show="load"
-        @hide="clearSecret"
+        @hide="resetPanels"
     >
         <div class="token-panel">
             <p>{{ $t('remote.tokenHint') }}</p>
@@ -13,20 +13,6 @@
                 <span>{{ $t('remote.mcpEndpoint') }}: </span><code>{{ endpoint }}</code>
             </p>
             <Message v-if="message" severity="error" :closable="false">{{ message }}</Message>
-            <Message v-if="secret" severity="warn" :closable="false">{{
-                $t('remote.tokenOnce')
-            }}</Message>
-            <template v-if="secret">
-                <label for="mcp-secret">{{ $t('remote.tokenSecret') }}</label>
-                <InputText
-                    id="mcp-secret"
-                    :model-value="secret"
-                    readonly
-                    autocomplete="off"
-                    spellcheck="false"
-                    @focus="$event.target.select()"
-                />
-            </template>
             <form class="token-panel" @submit.prevent="create">
                 <label for="mcp-token-name">{{ $t('remote.tokenName') }}</label>
                 <InputText
@@ -73,6 +59,40 @@
             <p v-if="!tokens.length && !busy">{{ $t('remote.noTokens') }}</p>
         </div>
         <Dialog
+            :visible="Boolean(secret)"
+            modal
+            :header="$t('remote.tokenSecret')"
+            :style="{ width: '34rem', maxWidth: '95vw' }"
+            @update:visible="
+                value => {
+                    if (!value) clearSecret()
+                }
+            "
+            @hide="clearSecret"
+        >
+            <div class="token-panel">
+                <Message severity="warn" :closable="false">{{ $t('remote.tokenOnce') }}</Message>
+                <pre
+                    class="token-secret"
+                ><code id="mcp-secret" tabindex="0" :aria-label="$t('remote.tokenSecret')">{{ secret }}</code></pre>
+                <Message
+                    v-if="copyMessage"
+                    :severity="copyFailed ? 'error' : 'success'"
+                    :closable="false"
+                    >{{ copyMessage }}</Message
+                >
+            </div>
+            <template #footer>
+                <Button :label="$t('remote.closeToken')" text @click="clearSecret" />
+                <Button
+                    :label="$t('remote.copyToken')"
+                    icon="pi pi-copy"
+                    :disabled="copying"
+                    @click="copySecret"
+                />
+            </template>
+        </Dialog>
+        <Dialog
             :visible="Boolean(revoking)"
             modal
             :header="$t('remote.tokenRevoke')"
@@ -103,7 +123,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
@@ -117,6 +137,10 @@ const { t, locale } = useI18n()
 const tokens = ref([])
 const endpoint = ref('')
 const secret = ref('')
+const copyMessage = ref('')
+const copyFailed = ref(false)
+const copying = ref(false)
+let viewEpoch = 0
 const name = ref('')
 const scope = ref('read')
 const days = ref(30)
@@ -131,7 +155,38 @@ const lifetimes = computed(() =>
 )
 function clearSecret() {
     secret.value = ''
+    copyMessage.value = ''
+    copyFailed.value = false
+}
+function resetPanels() {
+    clearSecret()
     revoking.value = null
+}
+watch(visible, value => {
+    if (!value) {
+        viewEpoch += 1
+        resetPanels()
+    }
+})
+async function copySecret() {
+    if (!secret.value || copying.value) return
+    const current = secret.value
+    copying.value = true
+    copyMessage.value = ''
+    try {
+        await navigator.clipboard.writeText(current)
+        if (secret.value === current) {
+            copyFailed.value = false
+            copyMessage.value = t('remote.tokenCopied')
+        }
+    } catch {
+        if (secret.value === current) {
+            copyFailed.value = true
+            copyMessage.value = t('remote.tokenCopyFailed')
+        }
+    } finally {
+        copying.value = false
+    }
 }
 function formatDate(value) {
     return new Intl.DateTimeFormat(locale.value).format(new Date(value * 1000))
@@ -154,19 +209,20 @@ async function perform(operation) {
     }
 }
 async function load() {
-    clearSecret()
+    resetPanels()
     await perform(refresh)
 }
 async function create() {
+    const epoch = viewEpoch
     await perform(async () => {
         // Never persist this plaintext secret or include it in URL/config/logs.
-        secret.value = ''
+        clearSecret()
         const result = await remoteRequest('/api/account/mcp-tokens', {
             name: name.value,
             scope: scope.value,
             days: days.value
         })
-        if (visible.value) secret.value = result.secret
+        if (visible.value && epoch === viewEpoch) secret.value = result.secret
         name.value = ''
         await refresh()
     })
@@ -176,7 +232,7 @@ async function revoke() {
     if (!target) return
     await perform(async () => {
         await remoteRequest('/api/account/mcp-tokens/revoke', { id: target.id })
-        clearSecret()
+        resetPanels()
         await refresh()
     })
 }
@@ -207,5 +263,20 @@ async function revoke() {
 .token-list span {
     min-width: 0;
     overflow-wrap: anywhere;
+}
+.token-secret {
+    margin: 0;
+    padding: 1rem;
+    border: 1px solid var(--color-border, #dbe4f0);
+    border-radius: 0.5rem;
+    background: var(--color-bg, #f4f7fb);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    user-select: text;
+    line-height: 1.7;
+}
+.token-secret code:focus-visible {
+    outline: 2px solid var(--color-primary, #3b82f6);
+    outline-offset: 3px;
 }
 </style>

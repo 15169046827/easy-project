@@ -88,6 +88,7 @@
             </div>
         </header>
 
+        <slot name="notice" />
         <router-view :key="viewRevision" />
 
         <Transition name="history-fade">

@@ -26,6 +26,8 @@ for (const width of [1280, 960]) {
             expect(box.x + box.width).toBeLessThanOrEqual(width)
             await entry.focus()
             await page.keyboard.press('Enter')
+            await expect(page.getByRole('menu')).toContainText(/本地模式|Local mode/)
+            await page.getByRole('menuitem', { name: /登录账号|Sign in to your account/ }).click()
             await expect(page.locator('#remote-username')).toBeVisible()
             await expect(page.locator('input[type="url"]')).toHaveCount(0)
         })

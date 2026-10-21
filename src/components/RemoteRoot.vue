@@ -117,45 +117,19 @@
             </div>
         </main>
         <section v-else class="remote-session">
-            <div class="remote-status" role="status">
-                <span>{{ $t('remote.online') }} · {{ remoteUser.username }}</span>
-                <span v-if="remoteStale">{{ $t('remote.stale') }}</span>
-                <Button
-                    v-if="remoteStale"
-                    size="small"
-                    :label="$t('remote.reload')"
-                    @click="reload"
-                />
-                <Button
-                    v-if="remoteUser.admin"
-                    size="small"
-                    text
-                    :label="$t('remote.accounts')"
-                    @click="loadAccounts"
-                />
-                <Button
-                    size="small"
-                    text
-                    :label="$t('remote.mcpTokens')"
-                    @click="showTokens = true"
-                />
-                <Button
-                    size="small"
-                    text
-                    :label="$t('remote.changePassword')"
-                    @click="changingPassword = true"
-                />
-                <Button size="small" text :label="$t('remote.logout')" @click="logout" />
-                <Button
-                    v-if="!isWebServer"
-                    size="small"
-                    text
-                    :label="$t('remote.returnLocal')"
-                    @click="leaveRemote"
-                />
+            <div class="remote-workspace">
+                <App>
+                    <template #notice>
+                        <div v-if="remoteStale" class="remote-status" role="status">
+                            <span>{{ $t('remote.stale') }}</span>
+                            <Button size="small" :label="$t('remote.reload')" @click="reload" />
+                        </div>
+                        <Message v-if="message" severity="error" :closable="false">{{
+                            message
+                        }}</Message>
+                    </template>
+                </App>
             </div>
-            <Message v-if="message" severity="error" :closable="false">{{ message }}</Message>
-            <div class="remote-workspace"><App /></div>
             <RemoteMcpTokens v-model:visible="showTokens" />
             <Dialog
                 v-model:visible="showAccounts"
@@ -195,9 +169,10 @@
             <Dialog
                 v-model:visible="changingPassword"
                 modal
-                :header="$t('remote.changePassword')"
+                :header="$t('remote.userSettings')"
                 :style="{ width: '30rem', maxWidth: '95vw' }"
             >
+                <p>{{ $t('remote.username') }}：{{ remoteUser.username }}</p>
                 <form class="remote-form" @submit.prevent="changePassword">
                     <label for="current-password">{{ $t('remote.currentPassword') }}</label>
                     <Password
@@ -229,7 +204,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
@@ -272,6 +247,16 @@ const accountName = ref('')
 const accountPassword = ref('')
 const showAccounts = ref(false)
 const changingPassword = ref(false)
+provide('easyproject-account-actions', {
+    settings: () => {
+        changingPassword.value = true
+    },
+    accounts: loadAccounts,
+    mcp: () => {
+        showTokens.value = true
+    },
+    logout
+})
 let timer
 
 async function perform(operation) {

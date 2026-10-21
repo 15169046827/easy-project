@@ -1,5 +1,13 @@
 export default {
     remote: {
+        accountMenu: '用户菜单',
+        copyToken: '复制 Token',
+        closeToken: '我已保存，关闭',
+        tokenCopied: 'Token 已复制到剪贴板',
+        tokenCopyFailed: '无法访问剪贴板，请选中上方文本后手动复制。',
+        userSettings: '用户设置',
+        localAccount: '本地模式（未登录）',
+        localSettings: '本地设置',
         register: '注册',
         registerEntry: '还没有账号？立即注册',
         backToLogin: '已有账号，返回登录',

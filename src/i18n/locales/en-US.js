@@ -1,5 +1,13 @@
 export default {
     remote: {
+        accountMenu: 'User menu',
+        copyToken: 'Copy token',
+        closeToken: 'Saved, close',
+        tokenCopied: 'Token copied to clipboard',
+        tokenCopyFailed: 'Clipboard unavailable. Select the text above and copy it manually.',
+        userSettings: 'User settings',
+        localAccount: 'Local mode (not signed in)',
+        localSettings: 'Local settings',
         register: 'Register',
         registerEntry: 'No account? Register now',
         backToLogin: 'Back to sign in',

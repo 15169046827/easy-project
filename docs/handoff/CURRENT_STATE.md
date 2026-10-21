@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-10-21头像菜单任务已恢复，原类型错误已修，用户头像同工具栏和独立上层Token只读/复制弹窗实现完成；236单测、真实HTTP8、规范/类型/构建及Rust47+stdio1通过。当前正在末轮回归、构建、网页更新与用户已批准的安全覆盖安装；尚未部署，不将后面的暂停历史当当前阻断。准确入口[ACCOUNT_TOOLBAR_CHECKPOINT](../ACCOUNT_TOOLBAR_CHECKPOINT.md)。API/权限不变，未操作真实业务数据。
+
 2026-10-21最新UI任务因五小时仅7%按10%门禁暂停：头像菜单同工具栏已开始，4源码文件未提交，lint通过但inject动作类型4处TS2339待修；未构建/部署。用户新增Token独立上层只读正文+复制弹窗要求已记录未开发。桌面缺注册是旧包未覆盖，不能重做已上线注册。恢复先读[用户工具栏检查点](../ACCOUNT_TOOLBAR_CHECKPOINT.md)，核对Git后续接；线上2cbe3f1e6920/原安装均未变。
 
 2026-10-21开放注册/MCP已私有部署：功能源48b0d6d、交付源2cbe3f1；普通注册、独立工作区，个人Token7/14/18工具权限/到期撤销改密失效。home-host current=2cbe3f1e6920，easyproject服务active/enabled；升级前root私有新副本，账号schema1→2且原行摘要完全一致，仍1账号/0会话/0Token/0工作区，未做生产注册或CRUD。233单测、67生产UI+真实HTTP8、桌面Rust47+stdio1、服务端42及严格质量/构建/Linux安全检查通过；15HTTP分组/Schema/摘要权威读回，27目录/70接口、26参考保留。桌面NSIS新候选已构建，未覆盖现安装/独立MCP；原生新UI、真实多设备/新用户人工使用未验，不提供邮箱找回/OAuth发现，不公开公网/不等于正式发布。交接1.8/79条；见[检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)。

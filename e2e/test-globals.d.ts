@@ -1,4 +1,5 @@
 interface Window {
+    __tokenCopyCount: number
     isTauri?: boolean
     __EASY_PROJECT_FAIL_BACKUP__?: boolean
     __EASY_PROJECT_CALLS__: Array<{

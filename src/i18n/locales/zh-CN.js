@@ -20,7 +20,7 @@ export default {
         initialPassword: '初始密码',
         createAccount: '创建账号',
         failed: '操作失败，请稍后重试',
-        connect: '远端工作区',
+        connect: '登录账号',
         serverUrl: '服务器 HTTPS 地址',
         localPreserved:
             '本地模式始终无需登录或联网。切换仅连接远端独立工作区，不上传或覆盖本地数据。'

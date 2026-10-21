@@ -33,6 +33,11 @@ describe('optional remote workspace transport', () => {
         expect((await import('../../api/remote')).remoteActive.value).toBe(false)
         delete window.__EASYPROJECT_FLOATING_WINDOW__
     })
+    it('ignores a stored server address and uses the application service origin', async () => {
+        localStorage.setItem('easyproject.server', 'https://untrusted.example')
+        const remote = await import('../../api/remote')
+        expect(remote.remoteEndpoint.value).toBe(remote.DESKTOP_SERVER_ORIGIN)
+    })
     it('rejects insecure origins, embedded credentials and URL paths', async () => {
         const { validateEndpoint } = await import('../../api/remote')
         for (const url of [

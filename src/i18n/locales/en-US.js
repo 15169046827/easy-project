@@ -22,7 +22,7 @@ export default {
         initialPassword: 'Initial password',
         createAccount: 'Create account',
         failed: 'Operation failed. Please try again later.',
-        connect: 'Remote workspace',
+        connect: 'Sign in to your account',
         serverUrl: 'Server HTTPS origin',
         localPreserved:
             'Local mode never requires login or a network. Connecting opens a separate remote workspace without uploading or replacing local data.'

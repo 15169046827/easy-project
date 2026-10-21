@@ -54,6 +54,8 @@ $env:npm_config_cache = 'E:\Project\Project\easy-project\src-tauri\target\audit-
 
 来源：[维护架构](ARCHITECTURE.md)、[产品计划](../PROJECT_PLAN.md)、Rust services和对应测试。规划中的示例字段/目录不一定等于当前实现。
 
+DOMAIN-01补充（2026-10-21）：服务地址对普通用户透明，内置受控配置维护；登录/本地转登录只要求用户名密码，不展示地址输入，不信任旧localStorage地址为登录目标。维护者换域名须同步配置/精确CSP/部署，不开放任意源。规则数不变。
+
 ## 5. 数据、导入、备份与恢复
 
 - **DATA-01**：数据库文件名 `project_manager.db`，Windows默认`<安装目录>/data`，安装侧`easyproject-storage.json`记录activeDir/pendingDir；数据页允许非C盘本地新/空目录，保存后重启复制校验最新库/备份/审计再切换，不依赖启动工作目录。WebView主/浮窗使用安装侧`webview`。禁止C盘、链接、网络、父子重叠目录、静默回退和迁移失败建空库；旧AppData仅首次生产迁移发现，debug隔离。schema仍5，拒绝未来版本。安装处需可写；Mac使用App包外同级EasyProject-storage，不修改签名包。独立MCP参数必须与数据页实际路径一致。见[目录整改检查点](../STORAGE_LOCATION_CHECKPOINT.md)。

@@ -15,15 +15,6 @@
                     <h1>{{ $t(remoteUser ? 'remote.changePassword' : 'remote.login') }}</h1>
                     <p>{{ $t('remote.isolation') }}</p>
                     <template v-if="!remoteUser">
-                        <template v-if="!isWebServer">
-                            <label for="login-server-url">{{ $t('remote.serverUrl') }}</label>
-                            <InputText
-                                id="login-server-url"
-                                v-model="serverUrl"
-                                type="url"
-                                required
-                            />
-                        </template>
                         <label for="remote-username">{{ $t('remote.username') }}</label>
                         <InputText
                             id="remote-username"
@@ -201,8 +192,6 @@ import {
     remoteActive,
     remoteUser,
     remoteStale,
-    remoteEndpoint,
-    validateEndpoint,
     loginRemote,
     logoutRemote,
     resumeRemote,
@@ -213,7 +202,6 @@ import {
 
 const { t } = useI18n()
 const windowChrome = getWindowChromeMode()
-const serverUrl = ref(remoteEndpoint.value)
 const loading = ref(remoteActive.value && isWebServer)
 const username = ref('')
 const password = ref('')
@@ -242,10 +230,6 @@ async function perform(operation) {
 async function submit() {
     if (remoteUser.value) return changePassword()
     await perform(async () => {
-        if (!isWebServer) {
-            remoteEndpoint.value = validateEndpoint(serverUrl.value)
-            localStorage.setItem('easyproject.server', remoteEndpoint.value)
-        }
         await loginRemote(username.value, password.value)
         password.value = ''
     })

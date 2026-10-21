@@ -41,9 +41,8 @@ for (const width of [1280, 960]) {
             }, dark)
             await page.goto('/?windowChrome=1#/dashboard')
             await expect(page.locator('#remote-username')).toBeVisible()
-            await expect(page.locator('#login-server-url')).toHaveValue(
-                'https://home-host.tail2956dd.ts.net'
-            )
+            await expect(page.locator('#login-server-url')).toHaveCount(0)
+            await expect(page.locator('input[type="url"]')).toHaveCount(0)
             expect(await page.evaluate(() => window.__EASY_PROJECT_CALLS__.length)).toBe(0)
             expect(
                 await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight)

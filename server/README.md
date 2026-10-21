@@ -41,6 +41,8 @@ Windows WebView仅在EasyProject自身主窗/浮窗进程使用`--no-proxy-serve
 
 ## 独立服务身份与启动命令
 
+普通用户不输入服务器地址，桌面内置`DESKTOP_SERVER_ORIGIN`并与精确CSP绑定；本地模式点击“登录账号”直接回登录页。旧用户缓存地址不作为凭据目标。更换域名由维护者改应用受控配置/CSP/systemd环境并重新验证。
+
 目标系统服务`easyproject.service`以锁定密码、nologin、无sudo权限的`easyproject`系统账户运行，不再使用`ym_li`用户会话。只读版本`/opt/easyproject/releases/<源码>`和`current`由root管理；持久数据`/var/lib/easyproject`归服务账户所有且700。系统unit为`deploy/easyproject-system.service`，启用ProtectSystem=strict/ProtectHome/NoNewPrivileges，仅数据目录可写；既有用户unit必须停用，不能同时监听8080。
 
 应用管理员`easyproject_admin`与Linux服务账户/SSH管理员均不同；新初始密码随机生成，只留root可读`/etc/easyproject/initial-admin-password`（600），首登强制改密。仅空账号库可用`deploy/bootstrap-system-admin.py`，旧账号/数据不得盲目覆盖。实际完成状态以检查点为准。

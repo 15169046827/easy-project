@@ -6,7 +6,10 @@ for (const width of [1280, 960]) {
             await page.setViewportSize({ width, height: 800 })
             await page.addInitScript(dark => {
                 window.isTauri = true
-                sessionStorage.setItem('easyproject.local-launch', 'desktop-preview')
+                if (!sessionStorage.getItem('compact-entry-initialized')) {
+                    sessionStorage.setItem('easyproject.local-launch', 'desktop-preview')
+                    sessionStorage.setItem('compact-entry-initialized', '1')
+                }
                 // Exercise the real entry without native window IPC in this
                 // browser-only layout test; actual Windows gets separate QA.
                 Object.defineProperty(navigator, 'userAgent', {
@@ -23,10 +26,8 @@ for (const width of [1280, 960]) {
             expect(box.x + box.width).toBeLessThanOrEqual(width)
             await entry.focus()
             await page.keyboard.press('Enter')
-            await expect(page.getByRole('dialog')).toBeVisible()
-            await expect(page.locator('#server-url')).toBeVisible()
-            await page.keyboard.press('Escape')
-            await expect(page.getByRole('dialog')).toHaveCount(0)
+            await expect(page.locator('#remote-username')).toBeVisible()
+            await expect(page.locator('input[type="url"]')).toHaveCount(0)
         })
     }
 }

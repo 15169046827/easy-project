@@ -6,6 +6,7 @@ import subprocess
 
 if os.geteuid() != 0:
     raise SystemExit("Run as root only after creating the dedicated easyproject service account")
+os.umask(0o077)
 data = Path("/var/lib/easyproject")
 binary = Path("/opt/easyproject/current/bin/easyproject-server")
 secret_path = Path("/etc/easyproject/initial-admin-password")

@@ -2,6 +2,8 @@
 
 ## 2026-10-21 当前账户覆盖安装完成
 
+安装闭环同步：e05cad7e8ce3fe3bb928566cefbe3db7b3679861已正常非强制推送；Wolai主状态v76/交接首部v13均读回匹配该源、安装exe32544...及319文件保留说明。规则/架构/API无新变更，不重传Apifox契约。当前只保存本同步回执，应用仍留登录入口，Windows锁屏不继续UI；下一步等待用户解锁试用，无新开发/安装/真实数据操作授权。
+
 - 用户明确允许覆盖当前安装；本轮基线1e6cc8130a792badd101b7ee7a3b7e76d1f243f2、同分支，开工Git干净。WACAS未定义/待确认、UPARS1.1.0及既有规则；额度五小时75%、周69%。旧关机授权已失效，本轮未关机、不重置/唤醒。
 - 已核对注册位置为E盘runtime-current-user/app、原主程序未运行，现用data配置无pending。NSIS SHA仍2FDBB3051680364C95CF0A5A4DCFA87DB400EACA9E6C330A67CD845378EF3C50。两个独立MCP进程占用库导致最初Get-FileHash默认共享方式失败，安装前安全停止；未关停MCP，改为只读共享哈希和SQLite官方在线backup，源/备份全表摘要、完整性/外键核对通过。不是生拷贝打开的SQLite。
 - 全部322旧安装文件（程序/配置/数据/备份/WebView）保留到E盘src-tauri/target/audit-tools/login-service-overwrite-20261021/app，非DB逐文件SHA匹配，DB在线副本逐表行摘要一致；before-files.json/before-database.json/install-result.json保留。备份目录独立新建，未覆盖历史副本。

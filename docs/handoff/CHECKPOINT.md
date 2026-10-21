@@ -1,5 +1,7 @@
 # EasyProject 交接任务检查点
 
+2026-10-21本轮已交付：产品13e6ab7，桌面安全覆盖/启动、私有网页版本13e6ab766a45健康及资源核验、所有账号/Token/业务行保留通过；238/67/9及规范/类型/构建通过，当前待最终Wolai回执和文档Git收尾。准确完整摘要、设备/未验/后续见[账户UI检查点](../ACCOUNT_TOOLBAR_CHECKPOINT.md)顶部；不重放历史暂停、安装或关机。
+
 当前续接入口（2026-10-21）：[ACCOUNT_TOOLBAR_CHECKPOINT](../ACCOUNT_TOOLBAR_CHECKPOINT.md)顶部。4d00界面候选已安全覆盖；新冲突刷新修复已通过238单测/9真实HTTP，生产UI回归与新包交付进行中。下方7%暂停为历史，不是当前状态。服务器仍2cbe3f1，Wolai待更新；无关机授权，不能重复旧关机/生产注册或CRUD。
 
 最新暂停入口：[ACCOUNT_TOOLBAR_CHECKPOINT.md](../ACCOUNT_TOOLBAR_CHECKPOINT.md)。2026-10-21五小时余7%触发长期10%门禁；用户头像同排菜单、桌面注册包交付、Token独立上层只读复制弹窗三项一并保留。4源文件WIP未提交，类型检查4错明确记录；禁止将当前WIP构建发布。不重置/唤醒/关机，待用户恢复后提醒。

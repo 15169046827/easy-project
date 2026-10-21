@@ -18,7 +18,7 @@ if ($Tool -and $Tool -ne 'listAccessibleProjects') {
         if ($arguments.id -notin ($readIds + $writeIds)) { throw 'OpenAPI operation has not been reviewed.' }
         if ([string]$project -ne '8948094') { throw 'An explicit EasyProject binding is required.' }
         if ($arguments.id -in $writeIds -and -not $AllowWrite) { throw 'Document writes require -AllowWrite.' }
-    } elseif ($Tool -notin @('getProjectSummary', 'getStructureInfo', 'readEntityDetails', 'listOpenApiEndpoints', 'getOpenApiDetails')) {
+    } elseif ($Tool -notin @('getProjectSummary', 'getStructureInfo', 'readEntityDetails', 'getHttpEndpoint', 'listOpenApiEndpoints', 'getOpenApiDetails')) {
         throw 'This helper only supports reviewed API-document maintenance tools.'
     }
 }

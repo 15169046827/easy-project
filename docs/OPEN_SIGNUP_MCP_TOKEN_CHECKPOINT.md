@@ -26,3 +26,13 @@
 下一步准确顺序：提交并非强制同步此候选以触发Linux CI；同步15HTTP操作（新建两个分组，保留55原生条目/26参考和远端SHA保护）；完成全量生产UI/桌面Rust回归及新界面图像复核；验证CI产物后，SSH核对真实数据、停服务并作schema1安全备份，再部署schema2，检查身份/账号/业务行摘要、HTTPS/恶意Origin/Token门禁，不在生产创建测试账号/业务。旧二进制不兼容schema2，禁止无授权恢复旧库丢新数据。
 
 交接已更新1.8/79条；Git/Wolai/Apifox本轮尚待闭环；旧服务器/原安装未改。最后有效额度五小时剩余35%、周剩余63%；设备状态仍为上段（未原生操作/未重新SSH）。
+
+## 里程碑2：全量回归与交付候选
+
+- 功能源提交`48b0d6d447b7aedf91c75f012b53826c28297c86`已同树同SHA非强制同步（普通push SSL reset，既有受控GitHub API通道成功）；Linux CI `39542084645`两个job通过，包含新鲜RustSec/撤包检查、fmt/严格Clippy、42项共享/鉴权测试及release构建。
+- 已下载官方artifact12320465159，ZIP SHA`0e50a5a70a462678e2d2f2f5321e0eb8f24f11000dc6dfdcdf846e02f51da575`；ELF x64 10130680字节，SHA`0b6445595583a1bdd9927d1018ce8fd676f739de0bdbf604966d262be8f55876`。
+- 全量生产Playwright67通过/8明确Web专用跳过，单worker零重试；另真实HTTP8通过。桌面Rust47+stdio1、fmt、发布元数据、UPARS1.1.0通过；233前端单测/规范/类型再次通过。NSIS构建成功，SHA`AC61043E649E79901B612072313CB593D433FA0C03561169A7526E1408DB2D09`；未覆盖旧安装，独立MCP未改。
+- Apifox新增两个目录97961216/97961217，HTTP15操作/6分组（总27目录/70接口，原55原生协议和26参考保留），9原接口写前SHA检查均通过；六次分组导入无额外目录。导入默认状态为released，已逐一改回testing；结构搜索缓存仍显示旧值，权威getHttpEndpoint已确认新状态，验证脚本改以权威详情核对并保留分组/Schema/摘要保护。OVERVIEW参考已更新，其余25篇UNCHANGED。完整最终读回回执随后补记。
+- 新增`server/deploy/schema2-safety.py`，仅root、固定目录、服务停机后新建根私有安全副本，逐库完整性/外键/所有旧表行摘要核验；升级后只核对、不自动恢复旧库。账号schema迁移回滚风险明确，禁止直接用旧程序读schema2。
+- home-host SSH已连接，sudo已授权；只读确认当前4b4128769b6a、active，schema1/1账号/0会话/0工作区。尚未停服务或部署。Windows未原生操作，未覆盖安装；本轮不关机。
+- 下一步：保存当前脚本/API绑定提交；打包已验证Linux源48b0和当前前端/部署资料，上传SSH，停服务→新备份→核验交付→切换→启动→旧行摘要/schema2/HTTPS/鉴权/Origin复验。真实服务不注册测试用户或CRUD；最后同步Wolai/交接并记录上线/未验边界。

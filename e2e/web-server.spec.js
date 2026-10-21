@@ -65,7 +65,9 @@ for (const width of [1280, 960, 375]) {
             await page.getByRole('button', { name: /^(MCP 接入|MCP access)$/ }).click()
             const tokenDialog = page.getByRole('dialog', { name: /^(MCP 接入|MCP access)$/ })
             await expect(tokenDialog).toContainText(/独立|independently/)
-            await page.screenshot({
+            await expect(tokenDialog).toBeVisible()
+            await tokenDialog.screenshot({
+                animations: 'disabled',
                 path: `test-results/tokens-${width}-${dark ? 'dark' : 'light'}.png`
             })
             await page.locator('#mcp-token-name').fill(`Agent ${width} ${dark}`)

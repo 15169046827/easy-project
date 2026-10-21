@@ -12,7 +12,17 @@
             <div class="remote-auth">
                 <form class="remote-auth-card" @submit.prevent="submit">
                     <span class="eyebrow">EasyProject · {{ $t('remote.online') }}</span>
-                    <h1>{{ $t(remoteUser ? 'remote.changePassword' : 'remote.login') }}</h1>
+                    <h1>
+                        {{
+                            $t(
+                                remoteUser
+                                    ? 'remote.changePassword'
+                                    : registering
+                                      ? 'remote.register'
+                                      : 'remote.login'
+                            )
+                        }}
+                    </h1>
                     <p>{{ $t('remote.isolation') }}</p>
                     <template v-if="!remoteUser">
                         <label for="remote-username">{{ $t('remote.username') }}</label>
@@ -21,7 +31,9 @@
                             v-model="username"
                             autocomplete="username"
                             required
+                            minlength="3"
                             maxlength="48"
+                            pattern="[A-Za-z0-9_-]{3,48}"
                         />
                     </template>
                     <label for="remote-password">{{
@@ -32,11 +44,27 @@
                         v-model="password"
                         :feedback="false"
                         toggle-mask
-                        autocomplete="current-password"
+                        :autocomplete="registering ? 'new-password' : 'current-password'"
                         required
-                        :input-props="{ maxlength: 128 }"
+                        :input-props="{ minlength: registering ? 12 : undefined, maxlength: 128 }"
                         fluid
                     />
+                    <template v-if="registering && !remoteUser">
+                        <p>{{ $t('remote.registerHint') }}</p>
+                        <label for="remote-confirm-password">{{
+                            $t('remote.confirmPassword')
+                        }}</label>
+                        <Password
+                            input-id="remote-confirm-password"
+                            v-model="confirmPassword"
+                            :feedback="false"
+                            toggle-mask
+                            autocomplete="new-password"
+                            required
+                            fluid
+                            :input-props="{ minlength: 12, maxlength: 128 }"
+                        />
+                    </template>
                     <template v-if="remoteUser">
                         <label for="remote-new-password">{{ $t('remote.newPassword') }}</label>
                         <Password
@@ -51,13 +79,32 @@
                         />
                         <p>{{ $t('remote.passwordHint') }}</p>
                     </template>
-                    <Message v-if="message" severity="error" :closable="false">{{
-                        message
-                    }}</Message>
+                    <Message
+                        v-if="message"
+                        :severity="registered ? 'success' : 'error'"
+                        :closable="false"
+                        >{{ message }}</Message
+                    >
                     <Button
                         type="submit"
                         :loading="busy"
-                        :label="$t(remoteUser ? 'remote.changePassword' : 'remote.login')"
+                        :label="
+                            $t(
+                                remoteUser
+                                    ? 'remote.changePassword'
+                                    : registering
+                                      ? 'remote.register'
+                                      : 'remote.login'
+                            )
+                        "
+                    />
+                    <Button
+                        v-if="!remoteUser"
+                        type="button"
+                        text
+                        :disabled="busy"
+                        :label="$t(registering ? 'remote.backToLogin' : 'remote.registerEntry')"
+                        @click="toggleRegistration"
                     />
                     <Button
                         v-if="!isWebServer"
@@ -89,6 +136,12 @@
                 <Button
                     size="small"
                     text
+                    :label="$t('remote.mcpTokens')"
+                    @click="showTokens = true"
+                />
+                <Button
+                    size="small"
+                    text
                     :label="$t('remote.changePassword')"
                     @click="changingPassword = true"
                 />
@@ -103,6 +156,7 @@
             </div>
             <Message v-if="message" severity="error" :closable="false">{{ message }}</Message>
             <div class="remote-workspace"><App /></div>
+            <RemoteMcpTokens v-model:visible="showTokens" />
             <Dialog
                 v-model:visible="showAccounts"
                 modal
@@ -185,6 +239,7 @@ import Dialog from 'primevue/dialog'
 import App from '../App.vue'
 import DesktopRoot from './DesktopRoot.vue'
 import WindowTitleBar from './WindowTitleBar.vue'
+import RemoteMcpTokens from './RemoteMcpTokens.vue'
 import { getWindowChromeMode } from '../utils/windowChrome'
 import { hasDesktopStorage } from '../api/storage'
 import {
@@ -206,6 +261,10 @@ const loading = ref(remoteActive.value && isWebServer)
 const username = ref('')
 const password = ref('')
 const newPassword = ref('')
+const registering = ref(false)
+const registered = ref(false)
+const confirmPassword = ref('')
+const showTokens = ref(false)
 const message = ref('')
 const busy = ref(false)
 const accounts = ref([])
@@ -229,10 +288,32 @@ async function perform(operation) {
 }
 async function submit() {
     if (remoteUser.value) return changePassword()
+    registered.value = false
     await perform(async () => {
+        if (registering.value) {
+            if (password.value !== confirmPassword.value)
+                throw new Error(t('remote.passwordMismatch'))
+            await remoteRequest('/api/auth/register', {
+                username: username.value,
+                password: password.value
+            })
+            registering.value = false
+            registered.value = true
+            password.value = ''
+            confirmPassword.value = ''
+            message.value = t('remote.registered')
+            return
+        }
         await loginRemote(username.value, password.value)
         password.value = ''
     })
+}
+function toggleRegistration() {
+    registering.value = !registering.value
+    registered.value = false
+    password.value = ''
+    confirmPassword.value = ''
+    message.value = ''
 }
 async function logout() {
     await perform(logoutRemote)

@@ -1,5 +1,33 @@
 export default {
     remote: {
+        register: '注册',
+        registerEntry: '还没有账号？立即注册',
+        backToLogin: '已有账号，返回登录',
+        confirmPassword: '确认密码',
+        passwordMismatch: '两次输入的密码不一致',
+        registerHint:
+            '用户名为3—48位英文字母、数字、下划线或短横线；密码12—128个字符。注册普通账号后拥有独立工作区。',
+        registered: '注册成功，请使用刚设置的密码登录。',
+        mcpTokens: 'MCP 接入',
+        tokenHint:
+            'Token 仅能访问自己的远端工作区，与本地 MCP 和网页登录会话独立。按需授权；修改密码会撤销全部 Token。',
+        mcpEndpoint: 'MCP 接入地址',
+        tokenOnce:
+            '完整 Token 仅显示这一次，请安全保存；关闭后无法找回。不要把 Token 发到聊天或公共仓库。',
+        tokenSecret: '新 Token（仅本次显示）',
+        tokenName: 'Token 名称',
+        tokenScope: '权限范围',
+        tokenLifetime: '有效期',
+        tokenDays: '{days} 天',
+        scope_read: '只读',
+        scope_write: '查询、新建和修改',
+        scope_delete: '完整增删改查（包括删除）',
+        tokenCreate: '生成 Token',
+        tokenRevoke: '撤销',
+        tokenRevokeConfirm: '撤销“{name}”后，使用它的客户端将立即失去访问权限。是否继续？',
+        tokenExpires: '到期',
+        noTokens: '暂无有效 Token',
+        cancel: '取消',
         loading: '正在检查登录状态…',
         online: '远端工作区',
         login: '登录',

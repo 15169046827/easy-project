@@ -10,6 +10,7 @@ on:
                 'src-tauri/src/db/**',
                 'src-tauri/src/models/**',
                 'src-tauri/src/services/**',
+                'src-tauri/src/mcp/tools.rs',
                 '.github/workflows/server.yml'
             ]
     pull_request:
@@ -20,6 +21,7 @@ on:
                 'src-tauri/src/db/**',
                 'src-tauri/src/models/**',
                 'src-tauri/src/services/**',
+                'src-tauri/src/mcp/tools.rs',
                 '.github/workflows/server.yml'
             ]
 

@@ -1,6 +1,6 @@
 # EasyProject 长期规则与授权边界
 
-版本1.7，2026-10-21（修订DOMAIN-01默认登录/显式本地与独立服务身份，仍79条；保留非C盘和完整CRUD授权）。本文整理既定要求，不替代系统安全限制或扩大当前任务授权。准确现状见 [CURRENT_STATE.md](CURRENT_STATE.md)，实现定位见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+版本1.8，2026-10-21（普通账号自助注册与独立用户远端MCP Token，仍79条；保留默认登录/显式本地、非C盘和本地CRUD授权）。本文整理既定要求，不替代系统安全限制或扩大当前任务授权。准确现状见 [CURRENT_STATE.md](CURRENT_STATE.md)，实现定位见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
 ## 1. 事实来源、范围与协作
 
@@ -55,6 +55,8 @@ $env:npm_config_cache = 'E:\Project\Project\easy-project\src-tauri\target\audit-
 来源：[维护架构](ARCHITECTURE.md)、[产品计划](../PROJECT_PLAN.md)、Rust services和对应测试。规划中的示例字段/目录不一定等于当前实现。
 
 DOMAIN-01补充（2026-10-21）：服务地址对普通用户透明，内置受控配置维护；登录/本地转登录只要求用户名密码，不展示地址输入，不信任旧localStorage地址为登录目标。维护者换域名须同步配置/精确CSP/部署，不开放任意源。规则数不变。
+
+DOMAIN-01与API-03/MCP-01补充（2026-10-21）：用户明确直接开放普通账号注册，拥有本人独立工作区，无邮箱验证/自助找回、无管理员自助提升；仍仅Tailnet私有服务。个人MCP Token独立于网页登录cookie/Bearer及本地stdio；只存摘要、一次显示、7/30/90天、最多20个有效Token，UI默认只读，可明确选择可写/完整CRUD。改密撤销全部会话和Token；撤销不回滚已完成/已进入执行的操作。`/mcp`仅个人Bearer、账号隔离、Origin存在时同源、256KiB单JSON-RPC、无状态JSON/通知202/GET405，支持既有3个协议版本，无OAuth自动发现或SSE。工具复用领域服务/恢复点/脱敏审计，与Web共享账号锁且失效旧revision。客户端仍须审批，不在真实库自动CRUD验收；不改现有本机连接权限。HTTP契约扩至15操作/12路径，实际同步状态见专项检查点。
 
 ## 5. 数据、导入、备份与恢复
 

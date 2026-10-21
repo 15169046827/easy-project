@@ -1,5 +1,34 @@
 export default {
     remote: {
+        register: 'Register',
+        registerEntry: 'No account? Register now',
+        backToLogin: 'Back to sign in',
+        confirmPassword: 'Confirm password',
+        passwordMismatch: 'Passwords do not match',
+        registerHint:
+            'Username: 3–48 ASCII letters, digits, underscores or hyphens. Password: 12–128 characters. Each ordinary account has a separate workspace.',
+        registered: 'Registration complete. Sign in with your new password.',
+        mcpTokens: 'MCP access',
+        tokenHint:
+            'Tokens access only your remote workspace, independently of local MCP and web sessions. Grant only needed permissions. Changing your password revokes all tokens.',
+        mcpEndpoint: 'MCP endpoint',
+        tokenOnce:
+            'This token is shown only once. Store it securely before closing. Do not share it in chats or public repositories.',
+        tokenSecret: 'New token (shown once)',
+        tokenName: 'Token name',
+        tokenScope: 'Permissions',
+        tokenLifetime: 'Lifetime',
+        tokenDays: '{days} days',
+        scope_read: 'Read only',
+        scope_write: 'Read, create and update',
+        scope_delete: 'Full CRUD (including delete)',
+        tokenCreate: 'Generate token',
+        tokenRevoke: 'Revoke',
+        tokenRevokeConfirm:
+            'Revoking “{name}” immediately removes access for clients using it. Continue?',
+        tokenExpires: 'Expires',
+        noTokens: 'No active tokens',
+        cancel: 'Cancel',
         loading: 'Checking your session…',
         online: 'Remote workspace',
         login: 'Sign in',

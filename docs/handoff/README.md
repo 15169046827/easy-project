@@ -1,5 +1,7 @@
 # EasyProject 新伙伴接手入口
 
+2026-10-21新增授权：直接开放普通账号注册、用户级MCP Token和本人远端CRUD；最新边界见[开放注册检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)。交接版本1.8，仍79条；下方1.7等为阶段历史。不开放公网、不替换本地离线或独立stdio MCP。
+
 当前新增调整（2026-10-21）：桌面新启动默认登录，同时提供“不登录，本地使用”，保留独立离线数据；服务器采用独立受限easyproject身份和独立应用管理员/系统级自启。最新实现/部署/验证见[登录与服务检查点](../DESKTOP_LOGIN_SERVICE_CHECKPOINT.md)，前期部署见[WEB_SERVER_CHECKPOINT](../WEB_SERVER_CHECKPOINT.md)。新候选不等于原安装已覆盖；正式公开发布仍未通过。
 
 普通用户只输入用户名/密码，服务器地址由应用内置配置透明处理，不展示地址框或要求自行配置。维护部署见server/README；HTTP/MCP/IPC权限契约不因默认入口变化混用。

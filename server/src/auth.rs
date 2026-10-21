@@ -23,7 +23,7 @@ pub fn open(path: &Path) -> Result<Connection, String> {
     let version: i64 = db
         .query_row("PRAGMA user_version", [], |row| row.get(0))
         .map_err(|e| e.to_string())?;
-    if version > 1 {
+    if version > 2 {
         return Err("Account schema is newer than this server supports".into());
     }
     db.execute_batch(
@@ -37,7 +37,13 @@ pub fn open(path: &Path) -> Result<Connection, String> {
            token_hash TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES account(id),
            expires INTEGER NOT NULL);
          CREATE INDEX IF NOT EXISTS session_expiry ON session(expires);
-         PRAGMA user_version=1;
+         CREATE TABLE IF NOT EXISTS mcp_token(
+           id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES account(id),
+           name TEXT NOT NULL, token_hash TEXT NOT NULL UNIQUE,
+           scope TEXT NOT NULL CHECK(scope IN ('read','write','delete')),
+           created INTEGER NOT NULL, expires INTEGER NOT NULL);
+         CREATE INDEX IF NOT EXISTS mcp_token_account ON mcp_token(account_id);
+         PRAGMA user_version=2;
          COMMIT;",
     )
     .map_err(|e| e.to_string())?;
@@ -80,6 +86,26 @@ pub fn create(
     password: &str,
     admin: bool,
 ) -> Result<User, String> {
+    create_account(db, username, password, admin, true)
+}
+
+pub fn register(db: &Connection, username: &str, password: &str) -> Result<User, String> {
+    let count: i64 = db
+        .query_row("SELECT COUNT(*) FROM account", [], |r| r.get(0))
+        .map_err(|_| "Account unavailable")?;
+    if count >= 1000 {
+        return Err("Registration capacity reached; contact the administrator".into());
+    }
+    create_account(db, username, password, false, false)
+}
+
+fn create_account(
+    db: &Connection,
+    username: &str,
+    password: &str,
+    admin: bool,
+    must_change: bool,
+) -> Result<User, String> {
     if !(3..=48).contains(&username.len())
         || !username
             .bytes()
@@ -92,11 +118,11 @@ pub fn create(
         id: uuid::Uuid::new_v4().simple().to_string(),
         username: username.to_owned(),
         admin,
-        must_change_password: true,
+        must_change_password: must_change,
     };
     db.execute(
-        "INSERT INTO account(id,username,password_hash,admin) VALUES(?1,?2,?3,?4)",
-        params![user.id, user.username, hash, admin],
+        "INSERT INTO account(id,username,password_hash,admin,must_change) VALUES(?1,?2,?3,?4,?5)",
+        params![user.id, user.username, hash, admin, must_change],
     )
     .map_err(|_| "Account creation failed (possibly duplicate username)")?;
     Ok(user)
@@ -182,7 +208,110 @@ pub fn change_password(
     .map_err(|_| "Password update failed")?;
     tx.execute("DELETE FROM session WHERE account_id=?1", [&user.id])
         .map_err(|_| "Session invalidation failed")?;
+    tx.execute("DELETE FROM mcp_token WHERE account_id=?1", [&user.id])
+        .map_err(|_| "Token invalidation failed")?;
     tx.commit().map_err(|_| "Password update failed".into())
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct McpToken {
+    pub id: String,
+    pub name: String,
+    pub scope: String,
+    pub created: i64,
+    pub expires: i64,
+}
+
+pub fn create_mcp_token(
+    db: &Connection,
+    user: &User,
+    name: &str,
+    scope: &str,
+    days: i64,
+) -> Result<(McpToken, String), String> {
+    if user.must_change_password
+        || name.trim().is_empty()
+        || name.chars().count() > 64
+        || !["read", "write", "delete"].contains(&scope)
+        || ![7, 30, 90].contains(&days)
+    {
+        return Err("Invalid token name, scope or lifetime".into());
+    }
+    let now = chrono::Utc::now().timestamp();
+    db.execute("DELETE FROM mcp_token WHERE expires<=?1", [now])
+        .map_err(|_| "Token unavailable")?;
+    let count: i64 = db
+        .query_row(
+            "SELECT COUNT(*) FROM mcp_token WHERE account_id=?1",
+            [&user.id],
+            |r| r.get(0),
+        )
+        .map_err(|_| "Token unavailable")?;
+    if count >= 20 {
+        return Err("Maximum 20 active tokens per account".into());
+    }
+    let record = McpToken {
+        id: uuid::Uuid::new_v4().simple().to_string(),
+        name: name.trim().to_owned(),
+        scope: scope.to_owned(),
+        created: now,
+        expires: now + days * 86400,
+    };
+    let secret = format!("epmcp_{}", random_token());
+    db.execute(
+        "INSERT INTO mcp_token VALUES(?1,?2,?3,?4,?5,?6,?7)",
+        params![
+            record.id,
+            user.id,
+            record.name,
+            digest(&secret),
+            record.scope,
+            record.created,
+            record.expires
+        ],
+    )
+    .map_err(|_| "Token unavailable")?;
+    Ok((record, secret))
+}
+
+pub fn list_mcp_tokens(db: &Connection, user: &User) -> Result<Vec<McpToken>, String> {
+    let mut stmt = db.prepare("SELECT id,name,scope,created,expires FROM mcp_token WHERE account_id=?1 AND expires>?2 ORDER BY created DESC,id").map_err(|_| "Token unavailable")?;
+    let records = stmt
+        .query_map(params![user.id, chrono::Utc::now().timestamp()], |r| {
+            Ok(McpToken {
+                id: r.get(0)?,
+                name: r.get(1)?,
+                scope: r.get(2)?,
+                created: r.get(3)?,
+                expires: r.get(4)?,
+            })
+        })
+        .map_err(|_| "Token unavailable")?
+        .collect::<rusqlite::Result<Vec<_>>>()
+        .map_err(|_| "Token unavailable".to_owned())?;
+    Ok(records)
+}
+
+pub fn revoke_mcp_token(db: &Connection, user: &User, id: &str) -> Result<(), String> {
+    if db
+        .execute(
+            "DELETE FROM mcp_token WHERE account_id=?1 AND id=?2",
+            params![user.id, id],
+        )
+        .map_err(|_| "Token unavailable")?
+        != 1
+    {
+        return Err("Token not found".into());
+    }
+    Ok(())
+}
+
+pub fn authenticate_mcp(db: &Connection, secret: &str) -> Result<(User, String), String> {
+    if secret.len() != 70 || !secret.starts_with("epmcp_") {
+        return Err("MCP token required".into());
+    }
+    db.query_row("SELECT a.id,a.username,a.admin,a.must_change,t.scope FROM account a JOIN mcp_token t ON t.account_id=a.id WHERE t.token_hash=?1 AND t.expires>?2 AND a.disabled=0 AND a.must_change=0", params![digest(secret),chrono::Utc::now().timestamp()], |r| Ok((read_user(r)?,r.get(4)?))).map_err(|_| "MCP token required".into())
 }
 
 pub fn list(db: &Connection) -> Result<Vec<User>, String> {

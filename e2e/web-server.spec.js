@@ -40,11 +40,60 @@ for (const width of [1280, 960, 375]) {
             page.on('console', message => {
                 if (message.type() === 'error') violations.push(message.text())
             })
+            await page.goto(origin)
+            await page.getByRole('button', { name: /立即注册|Register now/ }).click()
+            await page.screenshot({
+                path: `test-results/signup-${width}-${dark ? 'dark' : 'light'}.png`
+            })
+            const signupName = `signup_${width}_${dark ? 'd' : 'l'}_${Date.now()}`
+            await page.locator('#remote-username').fill(signupName)
+            await page.locator('#remote-password').fill('Synthetic-signup-123!')
+            await page.locator('#remote-confirm-password').fill('Synthetic-mismatch-123!')
+            await page.getByRole('button', { name: /^(注册|Register)$/ }).click()
+            await expect(page.getByRole('alert')).toContainText(/不一致|do not match/)
+            await page.locator('#remote-confirm-password').fill('Synthetic-signup-123!')
+            await page.getByRole('button', { name: /^(注册|Register)$/ }).click()
+            await expect(page.getByRole('alert')).toContainText(/注册成功|Registration complete/)
+            await expect(page.locator('#remote-confirm-password')).toHaveCount(0)
+            await expect(page.locator('#remote-password')).toHaveValue('')
             await login(page)
             await expect(page.locator('.remote-status')).toContainText('test_admin')
             await expect(page.locator('html')).toHaveClass(dark ? /app-dark/ : /^(?!.*app-dark)/)
             await page.getByRole('button', { name: /账号管理|Accounts/, exact: true }).click()
             await expect(page.getByRole('dialog')).toBeVisible()
+            await page.keyboard.press('Escape')
+            await page.getByRole('button', { name: /^(MCP 接入|MCP access)$/ }).click()
+            const tokenDialog = page.getByRole('dialog', { name: /^(MCP 接入|MCP access)$/ })
+            await expect(tokenDialog).toContainText(/独立|independently/)
+            await page.screenshot({
+                path: `test-results/tokens-${width}-${dark ? 'dark' : 'light'}.png`
+            })
+            await page.locator('#mcp-token-name').fill(`Agent ${width} ${dark}`)
+            await tokenDialog.getByRole('button', { name: /生成 Token|Generate token/ }).click()
+            await expect(page.locator('#mcp-secret')).toHaveValue(/^epmcp_[a-f0-9]{64}$/)
+            await page.keyboard.press('Escape')
+            await page.getByRole('button', { name: /^(MCP 接入|MCP access)$/ }).click()
+            await expect(page.locator('#mcp-secret')).toHaveCount(0)
+            await tokenDialog
+                .getByRole('button', { name: /^(撤销|Revoke)$/ })
+                .first()
+                .click()
+            await page
+                .getByRole('dialog')
+                .last()
+                .getByRole('button', { name: /^(取消|Cancel)$/ })
+                .click()
+            await tokenDialog
+                .getByRole('button', { name: /^(撤销|Revoke)$/ })
+                .first()
+                .click()
+            await page
+                .getByRole('dialog')
+                .last()
+                .getByRole('button', { name: /^(撤销|Revoke)$/ })
+                .click()
+            await expect(page.getByRole('dialog', { name: /^(撤销|Revoke)$/ })).toHaveCount(0)
+            await expect(tokenDialog).toContainText(/暂无有效|No active/)
             await page.keyboard.press('Escape')
             await expect(page.locator('.dashboard')).toBeVisible()
             expect(

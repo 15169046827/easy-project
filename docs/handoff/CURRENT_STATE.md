@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-10-21开放注册/MCP进行中：用户明确直接开放注册；普通账号自设密码、独立工作区。个人Token具备7/14/18工具权限、摘要存储/到期/撤销/改密失效，账号库事务升级v2，旧身份/会话迁移测试通过。服务端29共享+13专项、前端233单测、8真实HTTP界面（含注册/令牌3尺寸深浅/nonce）通过，严格Clippy/lint/typecheck/build通过；完整回归、API远端同步、Linux构建和真实部署待完成，旧服务器/安装尚未变化。交接1.8/79条；见[当前检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)。
+
 2026-10-21私有浏览器连接修复：用户批准后，只在当前Clash配置为home-host.tail2956dd.ts.net添加精确DIRECT与hosts→100.65.59.38；原3852规则/general设置/手动节点选择未变，普通代理路径网页/健康200。服务器与Tailscale正常，根因是代理路由及Clash私有域名DNS NXDOMAIN；不是关闭TLS或修改系统DNS。切换/更新订阅可能覆盖本地规则，精确证据和禁止上传凭据的备份边界见[检查点](../PRIVATE_HTTPS_CONNECTIVITY_CHECKPOINT.md)。应用/API/服务器配置未变。
 
 ## 2026-10-21 默认登录与服务身份调整

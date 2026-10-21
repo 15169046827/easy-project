@@ -39,6 +39,7 @@ pub struct Server {
     pub secure: bool,
     pub workspaces: Mutex<HashMap<String, Arc<Mutex<Workspace>>>>,
     attempts: Mutex<HashMap<String, (Instant, u32)>>,
+    registrations: Mutex<HashMap<String, (Instant, u32)>>,
     auth_slots: tokio::sync::Semaphore,
     work_slots: tokio::sync::Semaphore,
     dummy_hash: String,
@@ -68,6 +69,7 @@ impl Server {
             origin: origin.trim_end_matches('/').to_owned(),
             workspaces: Mutex::new(HashMap::new()),
             attempts: Mutex::new(HashMap::new()),
+            registrations: Mutex::new(HashMap::new()),
             auth_slots: tokio::sync::Semaphore::new(2),
             work_slots: tokio::sync::Semaphore::new(8),
             dummy_hash,
@@ -140,6 +142,18 @@ pub fn router(server: Arc<Server>) -> Router {
             get(|| async { Json(json!({"status":"ok"})) }),
         )
         .route("/api/auth/login", post(login))
+        .route("/api/auth/register", post(register))
+        .route(
+            "/api/account/mcp-tokens",
+            get(mcp_tokens).post(create_mcp_token),
+        )
+        .route("/api/account/mcp-tokens/revoke", post(revoke_mcp_token))
+        .route(
+            "/mcp",
+            get(mcp_get)
+                .post(mcp_post)
+                .layer(DefaultBodyLimit::max(262144)),
+        )
         .route("/api/auth/session", get(session))
         .route("/api/auth/logout", post(logout))
         .route("/api/auth/password", post(password))
@@ -152,12 +166,20 @@ pub fn router(server: Arc<Server>) -> Router {
             ServeDir::new(server.assets.clone()).append_index_html_on_directories(false),
         )
         .layer(DefaultBodyLimit::max(2 * 1024 * 1024))
-        .layer(middleware::from_fn_with_state(server.clone(), security))
         .layer(cors)
+        .layer(middleware::from_fn_with_state(server.clone(), security))
         .with_state(server)
 }
 
 async fn security(State(server): State<Arc<Server>>, request: Request, next: Next) -> Response {
+    if request.uri().path() == "/mcp"
+        && request
+            .headers()
+            .get(header::ORIGIN)
+            .is_some_and(|origin| origin.to_str().ok() != Some(server.origin.as_str()))
+    {
+        return error(StatusCode::FORBIDDEN, "Origin rejected").into_response();
+    }
     if request.uri().path().starts_with("/api/")
         && request.method() != Method::GET
         && request.method() != Method::OPTIONS
@@ -267,6 +289,191 @@ async fn login(
         );
     }
     Ok(result)
+}
+
+async fn register(
+    State(server): State<Arc<Server>>,
+    ConnectInfo(peer): ConnectInfo<SocketAddr>,
+    Json(input): Json<Credentials>,
+) -> Result<Json<Value>, ApiError> {
+    if input.username.len() > 48 || input.password.len() > 512 {
+        return Err(error(
+            StatusCode::BAD_REQUEST,
+            "Invalid registration fields",
+        ));
+    }
+    {
+        let mut attempts = server.registrations.lock().map_err(internal)?;
+        attempts.retain(|_, (time, _)| time.elapsed() < Duration::from_secs(3600));
+        if attempts.len() >= 1024 {
+            return Err(error(StatusCode::TOO_MANY_REQUESTS, "Try again later"));
+        }
+        // Reverse-proxy peers intentionally share this conservative registration bound.
+        let entry = attempts
+            .entry(peer.ip().to_string())
+            .or_insert((Instant::now(), 0));
+        entry.1 += 1;
+        if entry.1 > 10 {
+            return Err(error(
+                StatusCode::TOO_MANY_REQUESTS,
+                "Too many registrations; wait one hour",
+            ));
+        }
+    }
+    let _permit = server
+        .auth_slots
+        .try_acquire()
+        .map_err(|_| error(StatusCode::TOO_MANY_REQUESTS, "Authentication busy"))?;
+    let worker = server.clone();
+    let user = tokio::task::spawn_blocking(move || {
+        auth::register(
+            &*worker.auth.lock().map_err(|_| "Account unavailable")?,
+            &input.username,
+            &input.password,
+        )
+    })
+    .await
+    .map_err(internal)?
+    .map_err(|e| error(StatusCode::BAD_REQUEST, &e))?;
+    Ok(Json(json!({"user":user,"loginRequired":true})))
+}
+
+async fn mcp_tokens(
+    State(server): State<Arc<Server>>,
+    headers: HeaderMap,
+) -> Result<Json<Value>, ApiError> {
+    let (user, _) = server.user(&headers)?;
+    ready(&user)?;
+    let tokens =
+        auth::list_mcp_tokens(&*server.auth.lock().map_err(internal)?, &user).map_err(internal)?;
+    Ok(Json(
+        json!({"tokens":tokens,"endpoint":format!("{}/mcp",server.origin)}),
+    ))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct TokenInput {
+    name: String,
+    scope: String,
+    days: i64,
+}
+
+async fn create_mcp_token(
+    State(server): State<Arc<Server>>,
+    headers: HeaderMap,
+    Json(input): Json<TokenInput>,
+) -> Result<Json<Value>, ApiError> {
+    let (user, _) = server.user(&headers)?;
+    ready(&user)?;
+    let (record, secret) = auth::create_mcp_token(
+        &*server.auth.lock().map_err(internal)?,
+        &user,
+        &input.name,
+        &input.scope,
+        input.days,
+    )
+    .map_err(|e| error(StatusCode::BAD_REQUEST, &e))?;
+    Ok(Json(json!({"token":record,"secret":secret})))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RevokeInput {
+    id: String,
+}
+
+async fn revoke_mcp_token(
+    State(server): State<Arc<Server>>,
+    headers: HeaderMap,
+    Json(input): Json<RevokeInput>,
+) -> Result<Json<Value>, ApiError> {
+    let (user, _) = server.user(&headers)?;
+    ready(&user)?;
+    auth::revoke_mcp_token(&*server.auth.lock().map_err(internal)?, &user, &input.id)
+        .map_err(|e| error(StatusCode::BAD_REQUEST, &e))?;
+    Ok(Json(json!({"ok":true})))
+}
+
+fn mcp_identity(
+    server: &Server,
+    headers: &HeaderMap,
+) -> Result<(User, crate::mcp::Permissions), ApiError> {
+    if let Some(origin) = headers.get(header::ORIGIN) {
+        if origin.to_str().ok() != Some(server.origin.as_str()) {
+            return Err(error(StatusCode::FORBIDDEN, "Origin rejected"));
+        }
+    }
+    let version = headers
+        .get("mcp-protocol-version")
+        .map(|h| h.to_str().unwrap_or(""));
+    if version.is_some_and(|v| !crate::mcp::VERSIONS.contains(&v)) {
+        return Err(error(
+            StatusCode::BAD_REQUEST,
+            "Unsupported MCP protocol version",
+        ));
+    }
+    let secret = headers
+        .get(header::AUTHORIZATION)
+        .and_then(|h| h.to_str().ok())
+        .and_then(|s| s.strip_prefix("Bearer "))
+        .ok_or_else(|| error(StatusCode::UNAUTHORIZED, "MCP bearer token required"))?;
+    let (user, scope) = auth::authenticate_mcp(&*server.auth.lock().map_err(internal)?, secret)
+        .map_err(|_| error(StatusCode::UNAUTHORIZED, "MCP bearer token required"))?;
+    Ok((
+        user,
+        crate::mcp::Permissions {
+            write: scope != "read",
+            delete: scope == "delete",
+        },
+    ))
+}
+
+async fn mcp_get(
+    State(server): State<Arc<Server>>,
+    headers: HeaderMap,
+) -> Result<StatusCode, ApiError> {
+    mcp_identity(&server, &headers)?;
+    Ok(StatusCode::METHOD_NOT_ALLOWED)
+}
+
+async fn mcp_post(
+    State(server): State<Arc<Server>>,
+    headers: HeaderMap,
+    Json(input): Json<Value>,
+) -> Result<Response, ApiError> {
+    let (user, permissions) = mcp_identity(&server, &headers)?;
+    let accept = headers
+        .get(header::ACCEPT)
+        .and_then(|h| h.to_str().ok())
+        .unwrap_or("");
+    let accepts = |kind| {
+        accept
+            .split(',')
+            .any(|v| v.trim().split(';').next() == Some(kind))
+    };
+    if !accepts("application/json") || !accepts("text/event-stream") {
+        return Err(error(
+            StatusCode::NOT_ACCEPTABLE,
+            "Accept application/json and text/event-stream",
+        ));
+    }
+    let _permit = server
+        .work_slots
+        .try_acquire()
+        .map_err(|_| error(StatusCode::TOO_MANY_REQUESTS, "Workspace server is busy"))?;
+    let workspace = server.workspace(&user)?;
+    let result = tokio::task::spawn_blocking(move || {
+        let mut workspace = workspace.lock().map_err(|_| "Workspace unavailable")?;
+        Ok::<_, &'static str>(crate::mcp::handle(&mut workspace, permissions, input))
+    })
+    .await
+    .map_err(internal)?
+    .map_err(internal)?;
+    Ok(match result {
+        Some(value) => Json(value).into_response(),
+        None => StatusCode::ACCEPTED.into_response(),
+    })
 }
 
 async fn session(

@@ -27,6 +27,21 @@ const groups = {
     auth: {
         name: '认证与会话',
         paths: {
+            '/api/auth/register': {
+                post: {
+                    summary: '自助注册普通账号',
+                    description:
+                        '直接开放注册，仅创建普通账号和独立工作区，不接受admin/账号ID/路径。不上传本地数据。用户名3—48位ASCII字母、数字、_或-，密码12—128字符；用户自设密码无需首次改密。10次/小时真实socket IP限流（私有反代共享），总账号上限1000；重复用户名拒绝。成功后登录，不直接签发会话。不提供邮箱验证或密码找回。',
+                    security: [],
+                    requestBody: { required: true, content: jsonContent(credentials) },
+                    responses: {
+                        200: response({
+                            type: 'object',
+                            properties: { user, loginRequired: { type: 'boolean' } }
+                        })
+                    }
+                }
+            },
             '/api/auth/login': {
                 post: {
                     summary: '登录',
@@ -57,9 +72,9 @@ const groups = {
             },
             '/api/auth/password': {
                 post: {
-                    summary: '修改密码并撤销全部会话',
+                    summary: '修改密码并撤销全部会话及MCP Token',
                     description:
-                        '首次登录也允许调用；原密码须匹配，新密码12—128字符且不同于原密码。成功后全部设备重新登录。',
+                        '首次登录也允许调用；原密码须匹配，新密码12—128字符且不同于原密码。成功后全部设备重新登录，全部用户MCP Token同时撤销。',
                     requestBody: {
                         required: true,
                         content: jsonContent({
@@ -100,7 +115,7 @@ const groups = {
                 post: {
                     summary: '管理员创建普通账号',
                     description:
-                        '无公开注册，不接受admin或工作区ID参数；初始密码必须修改。用户名ASCII字母/数字/_/-，3—48字符，重复拒绝。',
+                        '与自助注册并存；不接受admin或工作区ID参数；管理员分配的初始密码必须修改。用户名ASCII字母/数字/_/-，3—48字符，重复拒绝。',
                     requestBody: { required: true, content: jsonContent(credentials) },
                     responses: { 200: response({ type: 'object', properties: { user } }) }
                 }
@@ -165,6 +180,115 @@ const groups = {
             }
         }
     },
+    account: {
+        name: '用户MCP凭据',
+        paths: {
+            '/api/account/mcp-tokens': {
+                get: {
+                    summary: '查询自己的MCP Token元数据',
+                    description:
+                        '仅交互登录会话且已改初始密码；返回本账号有效Token元数据及MCP endpoint，永不返回secret或摘要。不接受MCP Token作为网页登录凭据。',
+                    responses: {
+                        200: response({
+                            type: 'object',
+                            properties: {
+                                tokens: { type: 'array', items: object },
+                                endpoint: { type: 'string', format: 'uri' }
+                            }
+                        })
+                    }
+                },
+                post: {
+                    summary: '生成用户MCP Token（仅显示一次）',
+                    description:
+                        '仅交互登录会话；最多20个有效Token，默认UI只读。read=7查询，write=14查询/新建/修改，delete=18完整CRUD；权限仅限本人远端工作区，与管理员身份/本地stdio无关。有效期7/30/90天，数据库仅存SHA256摘要。secret只在本次创建返回，禁止日志/URL/持久前端存储/自动重试。',
+                    requestBody: {
+                        required: true,
+                        content: jsonContent({
+                            type: 'object',
+                            additionalProperties: false,
+                            required: ['name', 'scope', 'days'],
+                            properties: {
+                                name: { type: 'string', minLength: 1, maxLength: 64 },
+                                scope: { type: 'string', enum: ['read', 'write', 'delete'] },
+                                days: { type: 'integer', enum: [7, 30, 90] }
+                            }
+                        })
+                    },
+                    responses: {
+                        200: response({
+                            type: 'object',
+                            properties: {
+                                token: object,
+                                secret: { type: 'string', readOnly: true }
+                            }
+                        })
+                    }
+                }
+            },
+            '/api/account/mcp-tokens/revoke': {
+                post: {
+                    summary: '撤销自己的MCP Token',
+                    description:
+                        '只允许撤销本账号Token；后续请求立即失效，不回滚已提交或已获授权执行中的操作。改密同时撤销全部Token。',
+                    requestBody: {
+                        required: true,
+                        content: jsonContent({
+                            type: 'object',
+                            additionalProperties: false,
+                            required: ['id'],
+                            properties: { id: { type: 'string' } }
+                        })
+                    },
+                    responses: { 200: response(object) }
+                }
+            }
+        }
+    },
+    mcp: {
+        name: '远端MCP传输',
+        paths: {
+            '/mcp': {
+                get: {
+                    summary: 'MCP SSE能力探测（不提供流）',
+                    description:
+                        '需要用户MCP Bearer Token；不提供SSE流，鉴权后405。不是网页会话。Origin存在时仅允许服务器同源。',
+                    security: [{ mcpToken: [] }],
+                    responses: { 405: { description: '不提供SSE流' } }
+                },
+                post: {
+                    summary: '账号隔离的MCP Streamable HTTP',
+                    description:
+                        '无状态单JSON-RPC消息，最大256KiB；支持initialize/ping/tools/list/tools/call及通知202空体。无Session-ID/SSE/OAuth自动发现。需专用epmcp_ Bearer（不能使用cookie或网页登录token）；Accept必须包含application/json与text/event-stream；后续MCP-Protocol-Version支持2025-03-26/06-18/11-25，缺省按03-26。Origin若存在必须同源，原生客户端可不带。18工具复用既有MCP inputSchema/业务校验，7/14/18按Token权限过滤；不接收账号ID或数据库路径。写前恢复点、脱敏审计，与Web共用账号锁并使旧revision失效；删除保留名称匹配和关联约束，客户端仍须审批。不得自动重试写操作。',
+                    security: [{ mcpToken: [] }],
+                    parameters: [
+                        {
+                            in: 'header',
+                            name: 'Accept',
+                            required: true,
+                            schema: {
+                                type: 'string',
+                                example: 'application/json, text/event-stream'
+                            }
+                        },
+                        {
+                            in: 'header',
+                            name: 'MCP-Protocol-Version',
+                            schema: {
+                                type: 'string',
+                                enum: ['2025-03-26', '2025-06-18', '2025-11-25']
+                            }
+                        }
+                    ],
+                    requestBody: { required: true, content: jsonContent(object) },
+                    responses: {
+                        200: response(object),
+                        202: { description: '通知已接收，无响应体' }
+                    }
+                }
+            }
+        }
+    },
     operations: {
         name: '运行状态',
         paths: {
@@ -203,7 +327,7 @@ for (const group of Object.values(groups)) {
                     }
                 }
             }
-            if (method === 'post')
+            if (method === 'post' && path !== '/mcp')
                 operation.parameters = [
                     ...(operation.parameters || []),
                     {
@@ -235,7 +359,8 @@ const document = {
     components: {
         securitySchemes: {
             browserSession: { type: 'apiKey', in: 'cookie', name: 'ep_session' },
-            desktopSession: { type: 'http', scheme: 'bearer' }
+            desktopSession: { type: 'http', scheme: 'bearer' },
+            mcpToken: { type: 'http', scheme: 'bearer', bearerFormat: 'epmcp_ personal token' }
         }
     },
     paths

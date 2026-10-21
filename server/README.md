@@ -1,5 +1,9 @@
 # EasyProject headless server
 
+2026-10-21新增开放注册与用户MCP：`POST /api/auth/register`仅注册普通账号、自设密码无需首次改密（管理员分配账号仍须改密）；10次/小时/socket IP且总账号上限1000，反代共享限额。不提供邮箱验证/自助找回。账号库事务升级schema2，原身份/密码/会话保留。升级前须备份，旧schema1程序不能直接读取schema2；回滚不能仅切旧二进制，更不能未经核对恢复旧库丢失新用户记录。
+
+登录后“MCP 接入”生成个人Token，一次显示、只存SHA256摘要、7/30/90天、最多20个有效Token；read/write/delete分别开放7/14/18工具，默认只读，删除包含写权限。支持撤销，改密撤销全部会话和Token。Token仅用于`https://home-host.tail2956dd.ts.net/mcp`的Authorization Bearer，不用cookie/网页登录令牌、不放URL或日志，与本地stdio独立。无状态Streamable HTTP以JSON响应、通知202、GET405；Accept为application/json与text/event-stream，版本为2025-03-26/06-18/11-25。无OAuth发现/SSE；需支持手动Bearer的客户端。Origin存在时必须同源。工具复用本地schema/领域校验/恢复点/审计，仅访问本人库、与Web共享锁和revision失效，不自动重试写入。契约见docs/api/web-openapi.json，部署状态见[检查点](../docs/OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)。
+
 新增账号式在线工作区，复用`src-tauri/src/{common,models,db,services}`；服务器不依赖Tauri/GTK，不适用旧Linux桌面链风险例外。桌面默认展示登录，同时提供“不登录，本地使用”，离线本地能力保留，不自动上传/合并/错误切换本地库。最新部署状态见[登录与服务检查点](../docs/DESKTOP_LOGIN_SERVICE_CHECKPOINT.md)，下方初期用户服务说明仅历史迁移参考。
 
 ## 模式与安全边界

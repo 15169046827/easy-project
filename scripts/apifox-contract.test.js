@@ -13,8 +13,13 @@ const powerShellAvailable =
 describe('Apifox API documentation boundary', () => {
     it('documents the real authenticated HTTP server separately from native protocols', () => {
         const api = JSON.parse(readFileSync('docs/api/web-openapi.json', 'utf8'))
-        expect(Object.keys(api.paths)).toHaveLength(8)
-        expect(Object.values(api.paths).flatMap(methods => Object.values(methods))).toHaveLength(9)
+        expect(Object.keys(api.paths)).toHaveLength(12)
+        expect(Object.values(api.paths).flatMap(methods => Object.values(methods))).toHaveLength(15)
+        expect(api.paths['/api/auth/register'].post.security).toEqual([])
+        expect(api.paths['/mcp'].post.security).toEqual([{ mcpToken: [] }])
+        expect(
+            api.paths['/mcp'].post.parameters.some(p => p.name === 'X-EasyProject-Request')
+        ).toBe(false)
         expect(api.paths['/api/auth/login'].post.security).toEqual([])
         expect(
             api.paths['/api/workspace/action'].post.parameters.some(

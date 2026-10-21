@@ -10,4 +10,5 @@ pub mod services;
 
 pub mod auth;
 pub mod http;
+pub mod mcp;
 pub mod workspace;

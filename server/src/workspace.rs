@@ -52,6 +52,25 @@ impl Workspace {
         Ok(self.current_revision)
     }
 
+    pub fn mcp_call(
+        &mut self,
+        mutation: bool,
+        call: impl FnOnce(&DbState) -> Result<Value, String>,
+    ) -> Result<Value, String> {
+        if mutation {
+            let next = new_revision();
+            self.db
+                .lock_connection()
+                .map_err(|_| "Workspace unavailable")?
+                .execute("UPDATE web_revision SET value=?1 WHERE id=1", [next])
+                .map_err(|_| "Workspace unavailable")?;
+            self.current_revision = next;
+        }
+        // The caller holds the same per-account mutex as Web actions. Existing
+        // MCP code owns its validated transaction, recovery point and redacted audit.
+        call(&self.db)
+    }
+
     pub fn run(&mut self, request: Action, expected: Option<i64>) -> Result<Value, (u16, String)> {
         let mutation = is_mutation(&request.model, &request.action)
             .ok_or((400, "Unsupported action".into()))?;

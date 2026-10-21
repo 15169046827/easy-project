@@ -40,4 +40,6 @@ MCP独立程序使用已有schema-v5数据库的绝对路径启动，不创建�
 
 ## 文档与运行验证
 
+2026-10-21新增远端契约：Web开放`POST /api/auth/register`普通账号注册；`/api/account/mcp-tokens`查询/生成个人Token，`/revoke`撤销。专用Bearer仅用于`/mcp`无状态Streamable HTTP（JSON响应、通知202、GET405），不接受网页登录cookie/会话，提供7/14/18工具的只读/可写/完整CRUD选择。工具业务Schema复用下文stdio目录，账号锁/旧Web revision失效、恢复点/脱敏审计共同保护。它不是把原stdio改成HTTP；旧本机连接、exe和权限不变。无OAuth发现/邮箱验证/找回，不公开公网。新HTTP共15操作/12路径，详web-openapi.json；实现/部署边界见开放注册检查点。
+
 catalog.json保留实际交付exe工具Schema、二进制源SHA/摘要和当前桌面分发清单；不声称旧独立exe已更新到新安全锁。测试只能在隔离库CRUD，文档同步只上传接口定义/合成示例，不携带真实业务记录。Apifox为私有项目8948094/main，文档维护不公开发布、不修改其它项目。

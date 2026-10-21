@@ -1,5 +1,16 @@
 # 桌面默认登录与独立服务账户检查点
 
+## 2026-10-21 当前账户覆盖安装完成
+
+- 用户明确允许覆盖当前安装；本轮基线1e6cc8130a792badd101b7ee7a3b7e76d1f243f2、同分支，开工Git干净。WACAS未定义/待确认、UPARS1.1.0及既有规则；额度五小时75%、周69%。旧关机授权已失效，本轮未关机、不重置/唤醒。
+- 已核对注册位置为E盘runtime-current-user/app、原主程序未运行，现用data配置无pending。NSIS SHA仍2FDBB3051680364C95CF0A5A4DCFA87DB400EACA9E6C330A67CD845378EF3C50。两个独立MCP进程占用库导致最初Get-FileHash默认共享方式失败，安装前安全停止；未关停MCP，改为只读共享哈希和SQLite官方在线backup，源/备份全表摘要、完整性/外键核对通过。不是生拷贝打开的SQLite。
+- 全部322旧安装文件（程序/配置/数据/备份/WebView）保留到E盘src-tauri/target/audit-tools/login-service-overwrite-20261021/app，非DB逐文件SHA匹配，DB在线副本逐表行摘要一致；before-files.json/before-database.json/install-result.json保留。备份目录独立新建，未覆盖历史副本。
+- NSIS在原E盘路径静默覆盖退出0。最初把安装exe与未打包release exe直接比较失败，复核本地tauri-utils平台源码确认安装类型标记；整份程序只有偏移13730112的三字节UNK→NSS差异，将唯一__TAURI_BUNDLE_TYPE_VAR_UNK标记在内存变换后与安装exe逐字节全等。未修改真实安装程序以制造通过。实际安装exe SHA32544A6F8F580C24EA5680B9D7236BE372EB9CB4419ED7F9A89A8DDBE31BD7A2，源码仍4b41287。
+- NSIS既定资源包含easyproject-mcp.exe，因此安装侧伴随程序正常更新为release原件SHA9FBAABB3D6FE2CA047A1BF7A744DC12A153C7E67FAD2B4A6208198E01C4E4D16；当前Codex实际使用的artifacts/mcp/easyproject-mcp.exe仍原SHA8C11FCDFAA263BBA8E9AE52F7FE9F6162737D44A075F15FEF589EC01C50AD5B3，未替换/改配置/扩大权限。不能把安装侧更新当Codex独立程序已升级。
+- 除主exe/伴随MCP/uninstall这3个包内程序外，原319文件在安装后启动前SHA逐一未变，含数据库/旧备份/存储配置/窗口缓存。启动后全部业务表行摘要仍与备份前一致，integrity ok/外键0；数据仍1项目/5任务/4依赖/0成员/0团队/5基线，未CRUD真实数据。实际WebView全部使用原E盘profile，无新共享运行时安装。
+- 已启动实际安装程序PID36072且响应；可访问性树显示只有用户名/密码/登录/不登录本地使用，无地址框。截图捕获为Windows锁屏，因此立即停止UI操作，不把本次记为完整可见外观/键盘或真实账号人工验收；源候选此前隔离原生/浏览器证据仍各自有效。应用留在登录入口，用户解锁后可试用；未自动化输入真实凭据或改密。
+- 本轮只更新当前安装状态/检查点与交接，产品源码/API契约/服务器配置不变，原有233/67/8/47+1门禁不冒称重新全量执行。Git/Wolai/交接同步收尾，规则/架构无新变化；下一步等待用户试用反馈，正式发布和未验边界不变。当前未提交仅本检查点及handoff状态/入口/检查点，精确列表以git status核对。
+
 ## 最终完成状态（2026-10-21，覆盖下方阶段记录）
 
 闭环同步确认：文档723e6bc2304006deeffd2eca797c696455d55b08已精确同树cea3eba3d18141a612649412a30b8c28d17645d9/同SHA非强制同步；Wolai主状态v75、交接首部v12、DOMAIN-01 v3、API增补v6读回匹配产品源4b4128769b6a2d3653beae31210643fb4801195b与手册1.7。DOMAIN-01已明确替换旧默认本地/账号未批准口径；各增补保留历史与最新覆盖边界。Apifox总览及manifest闭环有效。两隔离窗口进程均已退出，服务保持运行，不执行关机。以下“同步收尾中/未提交”均为当时快照，本补记仅保存完成结果，无代码或部署变化；保存并同步此补记后工作区应干净，下一步等待用户试用/具体指示，不自动覆盖安装。

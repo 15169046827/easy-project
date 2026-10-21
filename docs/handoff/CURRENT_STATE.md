@@ -2,6 +2,8 @@
 
 ## 2026-10-21 默认登录与服务身份调整
 
+最新安装覆盖：用户已批准，已在原E盘runtime-current-user/app覆盖退出0；322文件新安全副本保留E盘，安装后启动前319非程序文件SHA未变，启动后全业务行摘要一致/完整性ok/外键0。实际安装exe SHA32544A6F8F580C24EA5680B9D7236BE372EB9CB4419ED7F9A89A8DDBE31BD7A2（与release仅框架NSIS标记3字节不同，已逐字节验证），程序响应并有无地址框登录结构；Windows锁屏未继续UI。安装侧MCP随包更新为9FBA...，Codex实际独立artifacts/mcp原8C11...未动/连接未中断。详[检查点](../DESKTOP_LOGIN_SERVICE_CHECKPOINT.md)，下文“未覆盖”是历史，正式发布结论不变。
+
 用户最新决策覆盖此前“默认本地”：每次桌面新启动展示登录，显式“不登录，本地使用”保留离线能力，不自动上传/混库/错误回退；本次启动本地选择通过启动UUID保持，重启返回登录，浮窗保持本地。服务器改独立受限easyproject系统账户和独立应用管理员easyproject_admin，旧ym_li应用账号从未与Ubuntu身份共享认证，但同名已纠正。准确实施/验证/部署状态见[检查点](../DESKTOP_LOGIN_SERVICE_CHECKPOINT.md)，不沿用下方历史运行身份/初始凭据。上次关机授权已失效，本轮不关机。
 
 最新源4b4128769b6a2d3653beae31210643fb4801195b（最终同步见检查点）：服务器地址对用户透明，登录仅用户名密码，旧地址缓存不作为凭据目标；本地点击“登录账号”直达登录页。233单测、67零重试生产界面、8真实HTTP及Rust47+stdio1/质量构建通过。服务器独立easyproject已active/enabled、锁定密码/nologin/无sudo，数据/var/lib/easyproject700、root管理/opt版本；应用easyproject_admin初始密码仅root600文件，首次改密强制门禁通过，旧用户服务disabled/旧库原件保留。新NSIS已构建但未覆盖原安装，真实桌面已观察最终无地址框/PrimeVue/严格CSP。物理整机重启新unit自启、真实多设备人工登录等仍未验；正式发布结论不变。

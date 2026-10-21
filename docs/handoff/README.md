@@ -4,6 +4,8 @@
 
 普通用户只输入用户名/密码，服务器地址由应用内置配置透明处理，不展示地址框或要求自行配置。维护部署见server/README；HTTP/MCP/IPC权限契约不因默认入口变化混用。
 
+2026-10-21用户授权后已覆盖原E盘安装，原数据/配置/备份保留；实际安装程序已启动并显示登录结构（当前Windows锁屏，未继续UI操作）。安全副本、安装exe打包标记摘要及独立MCP身份区别见[当前检查点](../DESKTOP_LOGIN_SERVICE_CHECKPOINT.md)，下方“候选未安装”仅对应此前阶段。
+
 最新状态（2026-10-20）：[数据存储整改](../STORAGE_LOCATION_CHECKPOINT.md)已部署本机E盘，原生新设置UI仍待补验；[MCP完整CRUD启用](../MCP_CRUD_ENABLEMENT_CHECKPOINT.md)获用户明确授权并配置，已有客户端需重连发现18工具。
 
 交接版本：1.7，2026-10-21（Asia/Shanghai，默认登录/显式离线与独立服务身份；仍79条）。仅适用于 EasyProject；不涉及 Watch App。本包面向人类开发者和新的 AI 助手，不要求读取旧聊天。

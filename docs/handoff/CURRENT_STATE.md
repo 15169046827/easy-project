@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-10-21私有浏览器连接修复：用户批准后，只在当前Clash配置为home-host.tail2956dd.ts.net添加精确DIRECT与hosts→100.65.59.38；原3852规则/general设置/手动节点选择未变，普通代理路径网页/健康200。服务器与Tailscale正常，根因是代理路由及Clash私有域名DNS NXDOMAIN；不是关闭TLS或修改系统DNS。切换/更新订阅可能覆盖本地规则，精确证据和禁止上传凭据的备份边界见[检查点](../PRIVATE_HTTPS_CONNECTIVITY_CHECKPOINT.md)。应用/API/服务器配置未变。
+
 ## 2026-10-21 默认登录与服务身份调整
 
 最新安装覆盖：用户已批准，已在原E盘runtime-current-user/app覆盖退出0；322文件新安全副本保留E盘，安装后启动前319非程序文件SHA未变，启动后全业务行摘要一致/完整性ok/外键0。实际安装exe SHA32544A6F8F580C24EA5680B9D7236BE372EB9CB4419ED7F9A89A8DDBE31BD7A2（与release仅框架NSIS标记3字节不同，已逐字节验证），程序响应并有无地址框登录结构；Windows锁屏未继续UI。安装侧MCP随包更新为9FBA...，Codex实际独立artifacts/mcp原8C11...未动/连接未中断。详[检查点](../DESKTOP_LOGIN_SERVICE_CHECKPOINT.md)，下文“未覆盖”是历史，正式发布结论不变。

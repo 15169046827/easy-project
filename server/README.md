@@ -41,6 +41,10 @@ Windows WebView仅在EasyProject自身主窗/浮窗进程使用`--no-proxy-serve
 
 ## 独立服务身份与启动命令
 
+### 私有域名与浏览器代理
+
+2026-10-21本机浏览器连接故障已定位为Clash规则与其内置DNS：Tailscale/服务器正常，直连200，Clash DNS对私有域名NXDOMAIN。当前配置仅新增该域名DIRECT和精确hosts→100.65.59.38后，普通代理路径网页/健康200；未改系统DNS/代理模式或TLS验证。切换配置/更新订阅可能覆盖本地两行，Tailscale地址变化也须重新核对。完整证据及私有备份边界见[连接检查点](../docs/PRIVATE_HTTPS_CONNECTIVITY_CHECKPOINT.md)，不要把代理凭据/备份上传。
+
 普通用户不输入服务器地址，桌面内置`DESKTOP_SERVER_ORIGIN`并与精确CSP绑定；本地模式点击“登录账号”直接回登录页。旧用户缓存地址不作为凭据目标。更换域名由维护者改应用受控配置/CSP/systemd环境并重新验证。
 
 目标系统服务`easyproject.service`以锁定密码、nologin、无sudo权限的`easyproject`系统账户运行，不再使用`ym_li`用户会话。只读版本`/opt/easyproject/releases/<源码>`和`current`由root管理；持久数据`/var/lib/easyproject`归服务账户所有且700。系统unit为`deploy/easyproject-system.service`，启用ProtectSystem=strict/ProtectHome/NoNewPrivileges，仅数据目录可写；既有用户unit必须停用，不能同时监听8080。

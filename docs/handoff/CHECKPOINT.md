@@ -1,5 +1,7 @@
 # EasyProject 交接任务检查点
 
+最新暂停入口：[ACCOUNT_TOOLBAR_CHECKPOINT.md](../ACCOUNT_TOOLBAR_CHECKPOINT.md)。2026-10-21五小时余7%触发长期10%门禁；用户头像同排菜单、桌面注册包交付、Token独立上层只读复制弹窗三项一并保留。4源文件WIP未提交，类型检查4错明确记录；禁止将当前WIP构建发布。不重置/唤醒/关机，待用户恢复后提醒。
+
 2026-10-21开放注册收尾闭环：功能48b0d6d、交付2cbe3f1、上线证据948a257，当前私有服务可注册并生成个人MCP Token。Wolai主状态v78/交接v15/DOMAIN-01v4/API-03v7已独立读回，Apifox15HTTP与55原生协议分组/Schema/SHA核验。准确安装候选/安全副本/验证和未验边界见[专项检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)。下一步用户网页使用反馈，桌面新包覆盖需另行安排；不重复部署、生产CRUD、bootstrap或历史关机。
 
 2026-10-21最新任务：开放注册、个人MCP Token、远端CRUD已私有部署，交接1.8/79条；续接读[专项检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)并核对Git，不重复此前部署/安装/注册测试或关机。Git源48b0d6d及交付2cbe3f1已推送，Apifox15HTTP权威读回；Wolai收尾回执见专项检查点，桌面新包尚未覆盖。

@@ -1,6 +1,6 @@
 # EasyProject 交接时当前状态与待办
 
-2026-10-21开放注册/MCP进行中：用户明确直接开放注册；普通账号自设密码、独立工作区。个人Token具备7/14/18工具权限、摘要存储/到期/撤销/改密失效，账号库事务升级v2，旧身份/会话迁移测试通过。服务端29共享+13专项、前端233单测、8真实HTTP界面（含注册/令牌3尺寸深浅/nonce）通过，严格Clippy/lint/typecheck/build通过；完整回归、API远端同步、Linux构建和真实部署待完成，旧服务器/安装尚未变化。交接1.8/79条；见[当前检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)。
+2026-10-21开放注册/MCP已私有部署：功能源48b0d6d、交付源2cbe3f1；普通注册、独立工作区，个人Token7/14/18工具权限/到期撤销改密失效。home-host current=2cbe3f1e6920，easyproject服务active/enabled；升级前root私有新副本，账号schema1→2且原行摘要完全一致，仍1账号/0会话/0Token/0工作区，未做生产注册或CRUD。233单测、67生产UI+真实HTTP8、桌面Rust47+stdio1、服务端42及严格质量/构建/Linux安全检查通过；15HTTP分组/Schema/摘要权威读回，27目录/70接口、26参考保留。桌面NSIS新候选已构建，未覆盖现安装/独立MCP；原生新UI、真实多设备/新用户人工使用未验，不提供邮箱找回/OAuth发现，不公开公网/不等于正式发布。交接1.8/79条；见[检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)。
 
 2026-10-21私有浏览器连接修复：用户批准后，只在当前Clash配置为home-host.tail2956dd.ts.net添加精确DIRECT与hosts→100.65.59.38；原3852规则/general设置/手动节点选择未变，普通代理路径网页/健康200。服务器与Tailscale正常，根因是代理路由及Clash私有域名DNS NXDOMAIN；不是关闭TLS或修改系统DNS。切换/更新订阅可能覆盖本地规则，精确证据和禁止上传凭据的备份边界见[检查点](../PRIVATE_HTTPS_CONNECTIVITY_CHECKPOINT.md)。应用/API/服务器配置未变。
 

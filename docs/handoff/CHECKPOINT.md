@@ -1,6 +1,6 @@
 # EasyProject 交接任务检查点
 
-2026-10-21最新任务：开放注册、个人MCP Token、远端CRUD，交接1.8/79条；续接读[专项检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)并核对Git，不重复此前部署/安装或关机。本轮Git/Wolai/Apifox待闭环，未部署功能不能视为上线。
+2026-10-21最新任务：开放注册、个人MCP Token、远端CRUD已私有部署，交接1.8/79条；续接读[专项检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)并核对Git，不重复此前部署/安装/注册测试或关机。Git源48b0d6d及交付2cbe3f1已推送，Apifox15HTTP权威读回；Wolai收尾回执见专项检查点，桌面新包尚未覆盖。
 
 2026-10-21浏览器代理修复入口：[PRIVATE_HTTPS_CONNECTIVITY_CHECKPOINT](../PRIVATE_HTTPS_CONNECTIVITY_CHECKPOINT.md)。仅用户授权当前Clash单域名DIRECT+私有地址映射，3852旧规则及通用设置/手动节点保持；普通代理HTTPS200，订阅覆盖/地址变更风险明确。私有配置备份只在E盘ignored受限目录，不能上传；当前源码/API/安装/服务器/规则无变，无关机/唤醒。本次Git/Wolai读回结果以该检查点后续回执为准。
 

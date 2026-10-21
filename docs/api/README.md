@@ -4,7 +4,7 @@
 
 ## 当前覆盖
 
-2026-10-21当前源码扩为15个HTTP操作/12路径：新增普通注册、个人MCP凭据、远端MCP传输两个分组；原55原生协议条目不变。远端同步进行中，实际ID/摘要以web-apifox-manifest及[检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)为准，下方9操作为此前部署基线。
+2026-10-21已同步15个HTTP操作/12路径：新增普通注册、个人MCP凭据、远端MCP传输两个分组；总27目录/70接口，原55原生协议条目和26参考保留。15项权威详情状态testing/分组、请求Schema、说明及SHA读回通过；结构搜索可能缓存旧状态，不以写入success代替权威读回。实际ID/摘要见web-apifox-manifest及[检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)，下方9操作为此前部署基线。
 
 - 新增真实HTTP服务：`04 Web HTTP 接口`按认证与会话/账号管理/工作区/运行状态组织9个操作（8路径），契约[web-openapi.json](web-openapi.json)、远端ID与读回摘要[web-apifox-manifest.json](web-apifox-manifest.json)。与下列55个非HTTP原生接口分开维护，合计64接口。HTTP账号、cookie/Bearer、Origin/CSRF、revision冲突边界不能套用本地MCP权限。`verify-web-apifox.ps1`验证远端HTTP定义；首次导入须先读项目结构、忽略同名覆盖，不能用批量导入覆盖旧条目。导入器可能按tags额外建同名目录，应核对并归回既定模块，勿遗留重复层级。
 

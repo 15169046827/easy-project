@@ -15,7 +15,7 @@
 
 - 2026-10-21用户更新：桌面新启动默认展示登录，必须同时提供“不登录，本地使用”入口；显式本地使用仍无需登录/联网，不自动上传/合并/替换本地库，网络或鉴权失败不得静默切换数据源。本地选择仅在同次启动有效，重启回到登录；浮窗保持本地。服务器仅Tailscale私有HTTPS，使用受限easyproject系统账户和独立应用管理员，不复用服务器管理员身份/密码，不自动公开公网。最新进度见`docs/DESKTOP_LOGIN_SERVICE_CHECKPOINT.md`，前期部署见`docs/WEB_SERVER_CHECKPOINT.md`。
 
-- 新增Web HTTP契约单独保存在`docs/api/web-openapi.json`，Apifox `04 Web HTTP 接口`按认证/账号/工作区/运行状态维护9操作，与55个MCP/IPC通用协议条目分开；不得混用账号会话、cookie/Bearer、Origin/CSRF、revision冲突或本地备份/撤销权限。远端模式不能展示或操作本地存储配置。
+- Web HTTP契约单独保存在`docs/api/web-openapi.json`，Apifox `04 Web HTTP 接口`按认证/账号/工作区/运行状态/用户MCP凭据/远端MCP维护15操作，与55个本地MCP/IPC通用协议条目分开。2026-10-21用户明确直接开放普通注册；个人MCP Token仅本人远端工作区，7/14/18工具权限、摘要存储、到期/撤销/改密失效，不能与网页cookie/Bearer或本地stdio混用。Origin/CSRF、revision、恢复点/审计边界不放宽，远端不展示或操作本地存储配置；仍仅Tailnet，不自动公开公网。进度见`docs/OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md`。
 
 - 本项目API契约同步维护到私有Apifox EasyProject（projectId=8948094，main branchId=8751742），入口`docs/api/README.md`。MCP工具/桌面命令/模型/权限或响应变化时同步实际契约、Apifox、Git/Wolai/交接并读回；不得虚构HTTP接口或上传真实数据/凭据，不操作其它项目、不自动公开。55个通用协议接口按MCP/IPC及业务模块分组，26篇旧正文归入规范/历史参考，保留分组与已管理ID；不能把非HTTP协议条目当HTTP调试或客户端已加载证明。
 

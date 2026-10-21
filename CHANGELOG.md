@@ -6,6 +6,8 @@ All notable changes to EasyProject are documented here.
 
 ### Added
 
+- Open self-registration for ordinary accounts with isolated workspaces, plus personal remote MCP tokens (read / write / full CRUD scopes, one-time secret display, expiry and revocation). The new stateless Streamable HTTP endpoint shares existing validated entity tools and invalidates stale web revisions; password changes revoke sessions and MCP tokens. Local offline mode and the independent stdio companion remain unchanged.
+
 - Authenticated web/desktop remote workspaces, with a headless Rust server sharing existing domain validation, per-account storage, Argon2id passwords, revocable sessions, first-login password change, administrator account creation, CSRF/origin checks, conflict revisions and pre-write snapshots. Desktop launches at sign-in with an explicit login-free local/offline entry; no automatic migration, merge or error fallback. A dedicated restricted Ubuntu service account and system-level startup unit separate the application from the host administrator. Private Tailscale HTTPS deployment is separate from public release.
 
 - Opt-in local stdio MCP companion: project/task/member CRUD plus project-team membership tools, default read-only permissions, explicit deletion confirmation, write recovery points and privacy-reduced operation audit. Desktop and MCP entity writes share business validation and an atomic SQLite boundary.

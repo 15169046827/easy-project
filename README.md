@@ -1,5 +1,7 @@
 # EasyProject
 
+Account settings and MCP access are available from the toolbar avatar menu. Refreshing after a remote workspace conflict reloads data without signing out; only a genuinely expired or revoked session requires login again. One-time MCP secrets use a separate read-only copy dialog.
+
 EasyProject is an open-source, local-first desktop project planning application. It combines structured task planning, dependency-aware scheduling, execution views, portable data exchange, and local recovery without requiring an account.
 
 The [authenticated web workspace](server/README.md) reuses the same Rust domain services. Desktop launches at sign-in, with an explicit **Use locally without signing in** option that works offline. Local and remote workspaces remain separate: no automatic upload, merge, or error fallback. Deployment, dedicated service account and startup commands: [current checkpoint](docs/DESKTOP_LOGIN_SERVICE_CHECKPOINT.md).

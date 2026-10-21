@@ -87,6 +87,63 @@ describe('optional remote workspace transport', () => {
         )
         expect(network).toHaveBeenCalledTimes(2)
     })
+    it('refreshes a conflicted desktop workspace without dropping its in-memory session', async () => {
+        const network = vi
+            .fn()
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({ user: { username: 'alice' }, token: 'memory-only-session' })
+            })
+            .mockResolvedValueOnce({ ok: true, json: async () => ({ revision: 4 }) })
+            .mockResolvedValueOnce({
+                ok: false,
+                status: 409,
+                json: async () => ({ error: 'Conflict' })
+            })
+            .mockResolvedValueOnce({ ok: true, json: async () => ({ revision: 5 }) })
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({ revision: 5, data: { list: [] } })
+            })
+        vi.stubGlobal('fetch', network)
+        const remote = await import('../../api/remote')
+        await remote.loginRemote('alice', 'synthetic-password')
+        await expect(remote.remoteAction('project', 'update', { id: 'p' })).rejects.toThrow(
+            'Conflict'
+        )
+        await remote.refreshRemoteWorkspace()
+        expect(remote.remoteUser.value.username).toBe('alice')
+        expect(remote.remoteStale.value).toBe(false)
+        await remote.remoteAction('project', 'get_all', {})
+        expect(network.mock.calls[4][1].headers.Authorization).toBe('Bearer memory-only-session')
+        expect(network.mock.calls[4][1].headers['X-Workspace-Revision']).toBe('5')
+        expect(JSON.stringify(localStorage) + JSON.stringify(sessionStorage)).not.toContain(
+            'memory-only-session'
+        )
+    })
+    it('preserves conflict and authentication on network refresh failure but honors real session expiry', async () => {
+        const network = vi
+            .fn()
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({ user: { username: 'alice' }, token: 'memory-only-session' })
+            })
+            .mockRejectedValueOnce(new Error('Offline'))
+            .mockResolvedValueOnce({
+                ok: false,
+                status: 401,
+                json: async () => ({ error: 'Expired' })
+            })
+        vi.stubGlobal('fetch', network)
+        const remote = await import('../../api/remote')
+        await remote.loginRemote('alice', 'synthetic-password')
+        remote.remoteStale.value = true
+        await expect(remote.refreshRemoteWorkspace()).rejects.toThrow('Offline')
+        expect(remote.remoteUser.value.username).toBe('alice')
+        expect(remote.remoteStale.value).toBe(true)
+        await expect(remote.refreshRemoteWorkspace()).rejects.toThrow('Expired')
+        expect(remote.remoteUser.value).toBeNull()
+    })
     it('uses same-origin cookies rather than a JavaScript token in web mode', async () => {
         const marker = document.createElement('meta')
         marker.name = 'easyproject-web'

@@ -118,11 +118,16 @@
         </main>
         <section v-else class="remote-session">
             <div class="remote-workspace">
-                <App>
+                <App :key="workspaceVersion">
                     <template #notice>
                         <div v-if="remoteStale" class="remote-status" role="status">
                             <span>{{ $t('remote.stale') }}</span>
-                            <Button size="small" :label="$t('remote.reload')" @click="reload" />
+                            <Button
+                                size="small"
+                                :loading="busy"
+                                :label="$t('remote.reload')"
+                                @click="reload"
+                            />
                         </div>
                         <Message v-if="message" severity="error" :closable="false">{{
                             message
@@ -227,6 +232,7 @@ import {
     resumeRemote,
     leaveRemote,
     remoteRequest,
+    refreshRemoteWorkspace,
     checkRemoteRevision
 } from '../api/remote'
 
@@ -247,6 +253,7 @@ const accountName = ref('')
 const accountPassword = ref('')
 const showAccounts = ref(false)
 const changingPassword = ref(false)
+const workspaceVersion = ref(0)
 provide('easyproject-account-actions', {
     settings: () => {
         changingPassword.value = true
@@ -332,8 +339,11 @@ async function addAccount() {
         accounts.value = (await remoteRequest('/api/admin/users')).users
     })
 }
-function reload() {
-    window.location.reload()
+async function reload() {
+    await perform(async () => {
+        await refreshRemoteWorkspace()
+        workspaceVersion.value += 1
+    })
 }
 onMounted(async () => {
     if (remoteActive.value && isWebServer) {

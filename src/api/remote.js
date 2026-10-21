@@ -140,3 +140,16 @@ export async function checkRemoteRevision() {
     const result = await remoteRequest('/api/workspace/revision')
     if (result.revision !== revision) remoteStale.value = true
 }
+
+export function refreshRemoteWorkspace() {
+    // Serialize with outstanding operations; refresh data without destroying the
+    // desktop's memory-only session. A real 401 still returns to sign-in.
+    const operation = async () => {
+        const result = await remoteRequest('/api/workspace/revision')
+        revision = result.revision
+        remoteStale.value = false
+    }
+    const result = queue.then(operation)
+    queue = result.catch(() => {})
+    return result
+}

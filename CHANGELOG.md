@@ -23,6 +23,8 @@ All notable changes to EasyProject are documented here.
 
 ### Improved
 
+- Account avatar menu shares the theme/help toolbar; one-time MCP secrets appear in a separate read-only upper dialog with explicit copy and immediate close cleanup. Workspace conflict refresh reloads data without reloading the page or dropping the desktop memory-only login; actual session expiry still requires sign-in.
+
 - Installation-local storage replaces the Windows AppData default: database/backups/MCP audit in `data`, WebView profiles in `webview`, and an installation-side location config. The Data page accepts a new/empty non-C local directory for verified next-launch migration; unsafe destinations and silent empty fallbacks are rejected. Legacy production data is copied without deleting the source; debug builds remain isolated.
 
 - Dashboard task-status rows keep identical geometry on pointer hover and keyboard focus, avoiding a two-pixel border-induced jump.

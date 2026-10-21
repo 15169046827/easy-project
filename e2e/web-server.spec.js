@@ -14,7 +14,7 @@ async function login(page, username = 'test_admin', password = 'Synthetic-change
     await page.locator('#remote-password').fill(password)
     await page
         .locator('form')
-        .getByRole('button', { name: /登录|Sign in/, exact: true })
+        .getByRole('button', { name: /^(登录|Sign in)$/ })
         .click()
     await expect(page.locator('.account-menu-entry')).toBeVisible()
     const skip = page.locator('.onboard-skip').first()
@@ -253,6 +253,8 @@ test('two browser sessions share writes, reject stale edits and preserve data af
         timeout: 20000
     })
     await b.getByRole('button', { name: /刷新（放弃|Refresh \(discard/ }).click()
+    await expect(b.locator('.account-menu-entry')).toBeVisible()
+    await expect(b.locator('#remote-username')).toHaveCount(0)
     await expect(b.getByText(name, { exact: true })).toBeVisible()
     await b.reload()
     await expect(b.getByText(name, { exact: true })).toBeVisible()
@@ -298,4 +300,107 @@ test('administrator creates an isolated account and first login requires passwor
     await expect(
         page.getByRole('heading', { name: /数据存储位置|Data storage location/, exact: true })
     ).toHaveCount(0)
+})
+
+test('desktop bearer conflict refresh reloads data without navigating or signing out', async ({
+    page,
+    request
+}) => {
+    // Real HTTP/SQLite fixture, but no real desktop account or production traffic.
+    // Strip only the Web marker to exercise the desktop memory-Bearer adapter.
+    await page.addInitScript(() => {
+        window.isTauri = true
+        Object.defineProperty(navigator, 'userAgent', {
+            get: () => 'Desktop bearer transport test'
+        })
+        localStorage.setItem('easyproject-onboarding-done', 'true')
+        window.__TAURI_INTERNALS__ = {
+            invoke: async () => {
+                throw new Error('Unexpected native IPC')
+            }
+        }
+    })
+    await page.route(origin + '/', async route => {
+        const response = await route.fetch()
+        await route.fulfill({
+            response,
+            // This fixture runs the desktop adapter in a loopback browser.
+            // Allow only its exact intercepted target; production CSP is unchanged.
+            headers: {
+                ...response.headers(),
+                'content-security-policy': response
+                    .headers()
+                    [
+                        'content-security-policy'
+                    ].replace("connect-src 'self'", "connect-src 'self' https://home-host.tail2956dd.ts.net")
+            },
+            body: (await response.text()).replace(
+                /<meta name="easyproject-web" content="true">/g,
+                ''
+            )
+        })
+    })
+    const bearerHeaders = []
+    let loginCount = 0
+    await page.route('https://home-host.tail2956dd.ts.net/api/**', async route => {
+        const original = route.request()
+        const path = new URL(original.url()).pathname
+        if (path === '/api/auth/login') loginCount += 1
+        if (original.headers().authorization) bearerHeaders.push(original.headers().authorization)
+        const response = await route.fetch({
+            url: origin + path,
+            headers: { ...original.headers(), origin: 'tauri://localhost' }
+        })
+        await route.fulfill({
+            response,
+            headers: { ...response.headers(), 'access-control-allow-origin': origin }
+        })
+    })
+    await login(page)
+    const session = await request.post(origin + '/api/auth/login', {
+        headers: {
+            Origin: origin,
+            'X-EasyProject-Request': '1',
+            'X-EasyProject-Client': 'desktop'
+        },
+        data: { username: 'test_admin', password: 'Synthetic-changed-456!' }
+    })
+    const { token } = await session.json()
+    const headers = {
+        Origin: origin,
+        'X-EasyProject-Request': '1',
+        Authorization: `Bearer ${token}`
+    }
+    const revision = (
+        await (await request.get(origin + '/api/workspace/revision', { headers })).json()
+    ).revision
+    const name = `Desktop refresh ${Date.now()}`
+    const write = await request.post(origin + '/api/workspace/action', {
+        headers: { ...headers, 'X-Workspace-Revision': String(revision) },
+        data: {
+            model: 'project',
+            action: 'add',
+            data: { name, version: 'v1.0', type: 'private', status: 'Draft', owner: '' }
+        }
+    })
+    expect(write.status()).toBe(200)
+    await page.getByRole('button', { name: /项目管理|Projects/, exact: true }).click()
+    const refresh = page.getByRole('button', { name: /刷新（放弃|Refresh \(discard/ })
+    await expect(refresh).toBeVisible({ timeout: 20000 })
+    let navigations = 0
+    page.on('framenavigated', frame => {
+        if (frame === page.mainFrame()) navigations += 1
+    })
+    await refresh.click()
+    await expect(page.locator('.account-menu-entry')).toBeVisible()
+    await expect(page.locator('#remote-username')).toHaveCount(0)
+    await expect(page.getByText(name, { exact: true })).toBeVisible()
+    expect(navigations).toBe(0)
+    expect(loginCount).toBe(1)
+    expect(new Set(bearerHeaders).size).toBe(1)
+    expect(bearerHeaders.length).toBeGreaterThan(1)
+    const stored = await page.evaluate(
+        () => JSON.stringify(localStorage) + JSON.stringify(sessionStorage)
+    )
+    expect(bearerHeaders.some(header => stored.includes(header.slice(7)))).toBe(false)
 })

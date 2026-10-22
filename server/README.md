@@ -1,5 +1,7 @@
 # EasyProject headless server
 
+2026-10-22官网静态交付完成：根路径无应用hash展示产品官网，`/index.html#/dashboard`进入在线工作区，原`/#/...`深链保留。current现为`/opt/easyproject/releases/cd05e93-landing-20261022`；后端仍bca2d45原二进制、服务PID不变，未停服/重启/迁移，数据仍`/var/lib/easyproject`。原版本及新root700安全副本保留，37个旧assets也保留以兼容已打开页懒加载。精确SHA/完整性/HTTP验证/回退边界见[官网检查点](../docs/LANDING_PAGE_CHECKPOINT.md)。下方旧版本和私有阶段不覆盖本次事实，正式生产发布仍未通过。
+
 2026-10-22用户批准零预算Funnel公网试用，现有`https://home-host.tail2956dd.ts.net`已可经公网中继访问，不再要求访客加入Tailnet；后端仍只监听127.0.0.1:8080、受限easyproject身份/原账号隔离不变。原Serve配置root700副本和精确切换/回退见[公网检查点](../docs/FUNNEL_PUBLIC_ACCESS_CHECKPOINT.md)。仅开放应用，SSH/数据库仍不公开；下方私有部署/Funnel禁用段是此前阶段。当前共享限流和缺少细粒度存储配额未整改，公网可达不代表正式发布通过。后台bg持久性为配置/官方行为，物理重启未验。
 
 离线升级入口：先`sudo systemctl stop easyproject`并创建受保护的新副本，再以受限服务身份执行`sudo -u easyproject env EASYPROJECT_DATA_DIR=/var/lib/easyproject <新版本目录>/bin/easyproject-server migrate-storage`。只迁移现有账号库及已存在的工作区库，不创建缺失库/账号，不输出凭据；预检全部目录/链接，每库原副本和事务保护，但不宣称跨库原子性。全部字段/ID映射核验通过才切换current并启动，失败保持停服、保存现场并人工决定回滚，不能仅切旧程序读取新库。

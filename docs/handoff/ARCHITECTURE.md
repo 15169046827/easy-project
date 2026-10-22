@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-22官网部署地图：/opt/easyproject/current原子指向releases/cd05e93-landing-20261022，bin为bca2d45原二进制逐字节复制，web为cd05e93构建+37旧assets保留；运行中的服务器assets仍使用current/web路径，不重启即可读到新文件。未改变systemd/Origin/CSP/nonce/Funnel或数据路径，进程与全部DB表逻辑不变。回退须确认无后续部署后仅原子切换current至保留的bca2d4506e33，不自动覆盖DB、不执行旧迁移脚本。该部署模型/限制详见官网检查点。
+
 2026-10-22官网入口：src/utils/entryMode.js判断根路径无应用hash/无demo/非桌面；main.js将桌面存储启动信息也作为桌面门禁，以防错误引导被官网吞掉。LandingPage独立异步加载，不导入router/RemoteRoot、不查会话或工作区；显式/index.html#/dashboard及原/#/...继续主应用，浮窗不变。server仍同一index.html注入Web标记/nonce，不新增HTTP业务接口、不改CSP。页面词典landing-zh/en在既有i18n维护，使用PrimeVue Button、原图标及仓库历史合成看板截图，明确非当前截图/非真实数据。源码已实现但部署状态以官网检查点为准。
 
 2026-10-22状态显示边界：useStatusLabels只将Object.hasOwn确认的内置枚举映射传入vue-i18n，未知/历史字符串原样按文本展示；禁止`t(map[value]) || value`，因为`t(undefined)`会先抛INVALID_ARGUMENT/17。Todo/Pending同待办，空值维持缺省，不为渲染修复重写真实状态或收紧API。生产回归需含非枚举历史状态，不能只用InProgress理想fixture。

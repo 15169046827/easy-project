@@ -1,5 +1,9 @@
 # EasyProject
 
+[产品官网 / Product homepage](https://home-host.tail2956dd.ts.net/) · [进入在线版 / Open web app](https://home-host.tail2956dd.ts.net/index.html#/dashboard)
+
+2026-10-22 homepage delivery: the bilingual, responsive product page is live on the existing server. Explicit `/index.html` and historical `/#/...` workspace links remain compatible. Desktop installers are not publicly distributed yet; local offline use, data isolation and MCP permissions are unchanged. See [deployment evidence and limitations](docs/LANDING_PAGE_CHECKPOINT.md).
+
 2026-10-22 public trial: the owner explicitly enabled Tailscale Funnel for the existing HTTPS application endpoint. Only the application is exposed; SSH/database access stays private, and local offline use is unchanged. Basic public-relay reachability and anonymous-access checks passed, but shared authentication rate limits, storage quotas and wider-network acceptance remain open. See [the public-access checkpoint](docs/FUNNEL_PUBLIC_ACCESS_CHECKPOINT.md); this is not production-release acceptance.
 
 2026-10-22 private deployment: account profiles, 6–31-character passwords, protected password recovery and full-ID schema migrations are installed on the desktop and private server. “Forgot password” is a small link below the password field, aligned right. The independent MCP was updated; reconnect Codex to load it. See the [delivery checkpoint](docs/ACCOUNT_PROFILE_DATABASE_CHECKPOINT.md) for protected backups and remaining verification boundaries. Public production release remains unapproved.

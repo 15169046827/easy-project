@@ -1,4 +1,20 @@
 export default {
+    betaWarning:
+        'Public prerelease, unsigned and unnotarized. Your OS may warn about an unidentified publisher. Verify the GitHub source and SHA-256; do not disable system security. Formal production acceptance is incomplete. Back up important data first.',
+    betaNote:
+        'Windows x64 is the primary trial platform. Clean MSI installs, native macOS/notarization and cross-version upgrade/rollback matrices remain incomplete. macOS downloads are experimental; read the release notes first.',
+    systemRequirements:
+        'Windows 10/11 x64 (WebView2 required); macOS 10.15+ (also subject to hardware and WebKit capabilities)',
+    publishedOn: 'Published:',
+    checksums: 'Download SHA-256 checksums',
+    downloads: {
+        winNsis: 'Windows x64 installer (recommended)',
+        winMsi: 'Windows x64 · MSI',
+        macArmDmg: 'macOS Apple Silicon · DMG',
+        macIntelDmg: 'macOS Intel · DMG',
+        macArmApp: 'macOS Apple Silicon · App archive',
+        macIntelApp: 'macOS Intel · App archive'
+    },
     navFeatures: 'Features',
     navModes: 'Your workspace',
     navDownload: 'Download',

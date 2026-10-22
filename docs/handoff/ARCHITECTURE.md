@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-22公开beta发布入口：release.yml手动public_beta=true/beta_number独立预留精确SHA新draft，internal/stable行为保留，不能同时internal+beta；质量/新鲜安全/三平台构建、独立核验后仍需显式公开。Windows validate/普通verify仅进程TEMP/TMP指向workspace/.validation-temp，拒绝C盘workspace以遵守DPAPI存储保护，不删除或改松测试。官网downloadRelease.js为固定本仓库单候选链接/实际公开日期，ready开关须在资产公开核验后才启用；不改业务API/MCP或后端。
+
 2026-10-22官网部署地图：/opt/easyproject/current原子指向releases/cd05e93-landing-20261022，bin为bca2d45原二进制逐字节复制，web为cd05e93构建+37旧assets保留；运行中的服务器assets仍使用current/web路径，不重启即可读到新文件。未改变systemd/Origin/CSP/nonce/Funnel或数据路径，进程与全部DB表逻辑不变。回退须确认无后续部署后仅原子切换current至保留的bca2d4506e33，不自动覆盖DB、不执行旧迁移脚本。该部署模型/限制详见官网检查点。
 
 2026-10-22官网入口：src/utils/entryMode.js判断根路径无应用hash/无demo/非桌面；main.js将桌面存储启动信息也作为桌面门禁，以防错误引导被官网吞掉。LandingPage独立异步加载，不导入router/RemoteRoot、不查会话或工作区；显式/index.html#/dashboard及原/#/...继续主应用，浮窗不变。server仍同一index.html注入Web标记/nonce，不新增HTTP业务接口、不改CSP。页面词典landing-zh/en在既有i18n维护，使用PrimeVue Button、原图标及仓库历史合成看板截图，明确非当前截图/非真实数据。源码已实现但部署状态以官网检查点为准。

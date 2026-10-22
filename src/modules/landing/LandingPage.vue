@@ -147,16 +147,49 @@
                 <div class="landing-download">
                     <i class="pi pi-desktop" aria-hidden="true"></i>
                     <div>
-                        <h3>{{ t('landing.releaseStatus') }}</h3>
-                        <p>{{ t('landing.releaseBody') }}</p>
+                        <h3>
+                            {{
+                                desktopRelease.ready
+                                    ? desktopRelease.tag
+                                    : t('landing.releaseStatus')
+                            }}
+                        </h3>
+                        <template v-if="desktopRelease.ready">
+                            <p>{{ t('landing.betaWarning') }}</p>
+                            <p class="landing-note">
+                                {{ t('landing.publishedOn') }} {{ desktopRelease.publishedDate }} ·
+                                {{ t('landing.systemRequirements') }}
+                            </p>
+                            <div class="landing-download-links">
+                                <Button
+                                    v-for="asset in desktopRelease.assets"
+                                    :key="asset.key"
+                                    as="a"
+                                    :href="desktopRelease.base + asset.file"
+                                    :label="t('landing.downloads.' + asset.key)"
+                                    icon="pi pi-download"
+                                    outlined
+                                />
+                            </div>
+                            <p>
+                                <a :href="desktopRelease.base + 'SHA256SUMS.txt'">{{
+                                    t('landing.checksums')
+                                }}</a>
+                            </p>
+                        </template>
+                        <p v-else>{{ t('landing.releaseBody') }}</p>
                         <Button
                             as="a"
-                            :href="repo + '/releases'"
+                            :href="desktopRelease.ready ? desktopRelease.url : repo + '/releases'"
                             :label="t('landing.releaseAction')"
                             outlined
                             icon="pi pi-external-link"
                         />
-                        <p class="landing-note">{{ t('landing.releaseNote') }}</p>
+                        <p class="landing-note">
+                            {{
+                                t(desktopRelease.ready ? 'landing.betaNote' : 'landing.releaseNote')
+                            }}
+                        </p>
                     </div>
                 </div>
             </section>
@@ -203,6 +236,7 @@ import { useI18n } from 'vue-i18n'
 import Button from 'primevue/button'
 import { useTheme } from '../../composables/useTheme'
 import { setLocale } from '../../i18n'
+import { desktopRelease } from './downloadRelease'
 
 const repo = 'https://github.com/15169046827/easy-project'
 // Pin to verified public documentation: the feature branch is not merged into main yet.
@@ -395,6 +429,14 @@ function changeLanguage() {
 .landing-download h3 {
     font-size: 18px;
     margin: 20px 0 12px;
+}
+.landing-download-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.landing-download-links .p-button {
+    max-width: 100%;
 }
 .landing-features p {
     font-size: 14px;

@@ -1,5 +1,17 @@
 # 公开测试版 Beta 1 检查点
 
+最新目标已改为v0.1.1-beta.2：beta.1草稿420810898/源513b77f保留，不公开/不改名/不替换旧资产。完整日志进一步发现npm全量开发链2moderate/1high（生产0），官方补丁Vite6.4.4与Vitest4.1.12可消除；现正定向修补并加全量high门禁。任务仍为本次用户批准的公开测试版，不扩大权限/覆盖本机。下文beta.1为候选历史，准确后续会补新源/运行/核验，不把513构建作为最终新包。
+
+依赖修复环境记录：npm11.3.0/Node24的Arborist在原目录与E盘干净隔离目录均报内部TypeError edgesOut，未产生有效新锁；不能当补丁不兼容或靠--force/legacy-peer-deps绕过。使用官方npm10.9.4仅E盘缓存/进程内解析，不改全局工具；精确根版本6.4.4/4.1.12，不用caret拉入后续次版本。beta.1六job后来均成功，但完整开发链风险未关闭故仍不公开。两种独立资产下载均遇连接/超时，未安装或运行、未把部分文件当通过，旧草稿与资产保留。
+
+解析根因进一步确认：npm10也会尝试在Vitest支持的6/7/8范围中选Vite8，触发可选devtools→Vitest5递归后内部错误。仅对vitest和@vitest/mocker的vite使用根依赖引用$vite（6.4.4本来就在官方允许范围），无force/legacy-peer-deps、不放宽peer；随后npm10正常生成新锁、全量审计0。精确变动仅Vite6.4.3→6.4.4及8个Vitest系列4.1.11→4.1.12，esbuild仍0.25.10；npm10附带删除5个不相关libc标记待恢复，当前按新锁安装/复验中。未引入Vite8/Vitest5或全栈升级。
+
+补丁安装里程碑：npm ci --ignore-scripts完成，447包；仅显式执行既有获准的esbuild0.25.10脚本，未新增允许列表，Mac可选fsevents不在Windows执行。最终官方全量npm audit=0（含dev与prod），3旧开发链告警清零。安装曾出现npm11对满足范围的@types/node22.20.5的peer提示，后续以npm ls与完整测试核对，不吞告警；原vue-i18n10等废弃提示保留，不为此擅自跨主版本迁移。原5个不相关libc属性机械恢复，不改变依赖版本；本地完整复验进行中，下一步新beta.2源提交与完整CI。
+
+后续核验：npm11的ls将实际满足范围的6.4.4与esbuild0.25.10误标invalid（官方semver均true）；npm10.9.4在同一目录ls退出0。随后npm10按新锁offline/strict-peer-deps/ignore-scripts再完整ci（387本平台包，Windows过滤其它可选平台）成功、ls退出0，显式esbuild脚本成功；没有关闭peer检查或改松版本。某次早期ls命令忘设E盘cache，沙箱报告一个C盘临时日志；按准确路径只读及审批检查均不存在，未删用户文件，后续所有命令显式E盘cache/TEMP，不冒称曾移动该不存在文件。完整新版258测试与构建重新执行中，之前中止的运行不计通过。
+
+beta.2本地候选：补丁后258单测/53文件通过，lint/typecheck通过，build/release:check结果收尾核对；全量npm审计0，npm10 strict-peer-deps安装/ls退出0。即将提交当前完整受保护候选（网站ready=false），dispatch beta_number=2；旧beta.1不公开。实际新源/运行编号须在派发后补记，发布前仍需六job与独立六资产验证，不能用本地单测代替。
+
 日期2026-10-22；用户明确批准公开未签名预发布测试版，并接入官网下载。此授权不代表正式生产验收通过，不授权覆盖本机、迁移真实库或改变MCP/服务器权限。
 
 - 目标：当前源重新构建Windows x64 NSIS/MSI、macOS ARM/Intel各app/DMG；逐份摘要/容器/版本/架构核验后，公开新v0.1.1-beta.1，官网列实际文件与风险。旧7个草稿及资产保留，不改名冒充新包。
@@ -18,6 +30,12 @@
 - 最新额度五小时余81%、周余15%；无重置/唤醒/关机，足够继续当前阶段，重要里程碑再次查。准确下一步：等当前workflow结果；如安全/构建失败先定向处理。下载脚本/核验器历史参数固定旧0.1.0，必须新建或精确参数化，不盲跑旧脚本。
 
 ## 新鲜安全检查与目标适用性
+
+- EP-REL-SEC-001/P2：官方npm audit全量3依赖问题（1high/2moderate），涉及Vite6.4.3开发服务器launch-editor/路径边界及Vitest/@vitest/mocker4.1.11手动mock注册/Windows路径校验。触发需开发服务/测试浏览器相关入口；Rust线上服务与打包静态生产资产不启用这些处理器，不能称生产远程漏洞，但构建/开发边界须修。证据GHSA-587h-7wmj-h5pm等5条Vite公告和GHSA-qxg6-89mg-rqv8/GHSA-xp26-3454-mjgp，官方最低兼容修补6.4.4/4.1.12，npm官方元数据和公告已核对。定向lock更新/复验进行中，未关闭或忽略检查。
+- release/普通CI新增全量npm high门禁，保留原生产门禁；beta/internal标签不走稳定版push发布路径，仍只手动构建，避免公开候选时再启动不匹配稳定版标签的流程。需要新候选beta.2；现有beta.1资产/草稿均保留。
+
+- 第二轮39793266820已启动，headSha=513b77f08bc2482651887b3554196369905c4770（CI修复、无产品逻辑/依赖改动）。第一轮无draft，继续beta.1并由预留器再查冲突。下载辅助精确源/目录已同步到第二轮，不能使用55f作为最终包来源。
+- 本机E盘TEMP下原两项credentials::tests均通过（2/2），未放宽C盘拒绝；二次CI将复验全部52 Rust+stdio门禁。Wolai主/交接已保存第一阶段源55f/运行39791228497进度，后续需追加首轮失败/CI修复513b77f/二轮结果，不冒称外部文档已含最终交付。
 
 - 第一轮39791228497最终失败，prepare/build未执行、无新Release：Rust51通过/1失败，credentials::tests::protected_file_can_be_saved_replaced_read_cleared_and_rejects_corruption在CI默认C盘TEMP触发“EasyProject storage must not be on drive C”。产品保护符合规范，不是放宽路径或删除测试；release validate和普通CI verify两个Windows作业设置进程级TEMP/TMP到github.workspace/.validation-temp，创建目录并明确拒绝C盘workspace。准备重跑完整门禁；旧失败保留，不声称首轮成功。
 - 官网WIP本地完整258单测/53文件、lint/typecheck/build通过，ready仍false。与55f构建源区分；下一轮仅提交CI修复及检查点，网站WIP继续保留至实际公开后启用。

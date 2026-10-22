@@ -1,5 +1,7 @@
 # EasyProject 新伙伴接手入口
 
+公开beta最新续接：beta.1草稿420810898/513b77f及其六文件保留未公开；虽然其CI六job成功，额外全量npm扫描发现开发链3告警（生产0），正在精确补丁Vite6.4.4/Vitest4.1.12并加全量门禁，转新beta.2。npm11内部解析错误正用E盘隔离的npm10处理，不改产品保护或忽略peer。官网仍ready=false，无新公开下载。先读[专项检查点顶部](../PUBLIC_BETA_1_CHECKPOINT.md)，不要执行下方旧beta.1发布计划。
+
 2026-10-22新任务：用户明确批准新未签名公开预发布测试版及官网下载，目标v0.1.1-beta.1；不能直接公开旧0.1.0草稿或假称正式验收通过。当前发布流程增受保护beta候选，仍需质量/新鲜安全/三平台构建与独立逐份核验；尚未公开。准确续接[PUBLIC_BETA_1_CHECKPOINT](../PUBLIC_BETA_1_CHECKPOINT.md)，不覆盖本机/真实库/MCP，不自动延长旧内部风险例外。
 
 2026-10-22官网已上线：https://home-host.tail2956dd.ts.net/ ，在线工作区为/index.html#/dashboard，历史/#/...兼容。current=cd05e93-landing-20261022，前端cd05e93、后端仍bca2d45，未重启服务/迁移/改真实库；新root700副本及旧资源保留。线上摘要/TLS/API匿名拒绝与两公网中继通过；新线上浏览器工具超时、真实账号操作未验，不改正式发布结论，不公开内部安装包。准确证据/回退/持续待办见[官网检查点](../LANDING_PAGE_CHECKPOINT.md)，下方“暂停/未部署”为历史。

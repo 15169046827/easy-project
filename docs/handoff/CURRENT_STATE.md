@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+公开候选现转beta.2：旧beta.1六job完成但完整开发链扫描3告警，未公开/未改旧资产；生产依赖0。Vite6.4.4/Vitest4.1.12定向修补、全量high门禁进行中，npm11内部错误已记录，E盘隔离npm10解析中。官网WIP仍ready=false，准确源/运行/后续以[PUBLIC_BETA_1_CHECKPOINT顶部](../PUBLIC_BETA_1_CHECKPOINT.md)为准，不能公开513旧候选或把静态包齐全当全面通过。
+
 2026-10-22用户批准公开beta：正在准备新0.1.1应用/v0.1.1-beta.1及受保护构建流程，旧7个Release均草稿且早于最新修复，不直接改名公开。官网仍暂无公开包，需新产物门禁/逐份核验通过并实际发布后再接入；正式生产未通过。任务检查点[PUBLIC_BETA_1_CHECKPOINT](../PUBLIC_BETA_1_CHECKPOINT.md)记录未提交文件、验证和下一步，不自动覆盖安装/真实数据/配置。
 
 最新官网已交付（2026-10-22）：原地址首页为官网，/index.html#/dashboard为在线入口，旧深链兼容；当前服务器版本目录cd05e93-landing-20261022，后端仍bca2d45同SHA，进程PID/两库全部表逻辑/账号凭据权限保持，root700副本和37旧assets保留。63交付文件/62线上静态SHA/2HTML/CSP与4匿名401边界/health、两个公网中继正常TLS200通过。本轮最终构建12真实HTTP通过；前轮255/82仍有效。线上浏览器工具超时未做真实账号UI操作，非正式生产发布、无公开桌面包；安装/独立MCP未变。后续按用户反馈，不自动重做迁移或继续其它功能。详[检查点](../LANDING_PAGE_CHECKPOINT.md)。

@@ -2,7 +2,7 @@ name: Release desktop
 
 on:
     push:
-        tags: ['v*']
+        tags: ['v*', '!v*-beta.*', '!v*-internal.*']
     workflow_dispatch:
         inputs:
             internal_test:
@@ -76,6 +76,9 @@ jobs:
 
             - name: Audit production dependencies
               run: npm audit --omit=dev --audit-level=high
+
+            - name: Audit development and build dependencies
+              run: npm audit --audit-level=high
 
             - name: Run frontend tests
               run: npm test

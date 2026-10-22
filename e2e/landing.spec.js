@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { desktopRelease } from '../src/modules/landing/downloadRelease'
 
 for (const width of [1280, 960, 375]) {
     for (const dark of [false, true]) {
@@ -44,7 +45,22 @@ for (const width of [1280, 960, 375]) {
             await expect(page.locator('#main-content')).toBeFocused()
             await page.locator('.landing-actions a').last().click()
             await expect(page).toHaveURL(/#download$/)
-            await expect(page.locator('#download')).toContainText('当前未提供公开安装包')
+            await expect(page.locator('#download')).toContainText(
+                desktopRelease.ready ? desktopRelease.tag : '当前未提供公开安装包'
+            )
+            if (desktopRelease.ready) {
+                await expect(page.locator('.landing-download-links a')).toHaveCount(6)
+                for (const asset of desktopRelease.assets)
+                    await expect(
+                        page.locator(
+                            `.landing-download-links a[href="${desktopRelease.base + asset.file}"]`
+                        )
+                    ).toHaveCount(1)
+                await expect(page.locator('#download')).toContainText('不要关闭系统安全功能')
+                await page.locator('#download').screenshot({
+                    path: `test-results/downloads-${width}-${dark}.png`
+                })
+            }
             await expect(page.locator('a[download]')).toHaveCount(0)
             await page.getByRole('button', { name: 'Switch to English' }).click()
             await expect(page.locator('h1')).toContainText('Clear projects.')

@@ -1,4 +1,20 @@
 export default {
+    betaWarning:
+        '公开预发布测试版，未签名/未公证，系统可能提示无法识别发行者。请核对 GitHub 来源和 SHA-256，不要关闭系统安全功能。正式生产发布验收尚未通过，重要数据请先备份。',
+    betaNote:
+        'Windows x64 为主要试用平台；MSI 干净安装、macOS 实机/公证及跨版本升级回滚未完成全矩阵验收。macOS 文件为实验性试用，请先阅读发布说明。',
+    systemRequirements:
+        'Windows 10/11 x64（需 WebView2）；macOS 10.15+（同时受硬件与 WebKit 能力限制）',
+    publishedOn: '发布日期：',
+    checksums: '下载 SHA-256 校验清单',
+    downloads: {
+        winNsis: 'Windows x64 安装程序（推荐）',
+        winMsi: 'Windows x64 · MSI',
+        macArmDmg: 'macOS Apple Silicon · DMG',
+        macIntelDmg: 'macOS Intel · DMG',
+        macArmApp: 'macOS Apple Silicon · App 归档',
+        macIntelApp: 'macOS Intel · App 归档'
+    },
     navFeatures: '功能',
     navModes: '使用方式',
     navDownload: '下载',

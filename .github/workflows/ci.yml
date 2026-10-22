@@ -55,6 +55,9 @@ jobs:
             - name: Audit production dependencies
               run: npm audit --omit=dev --audit-level=high
 
+            - name: Audit development and build dependencies
+              run: npm audit --audit-level=high
+
             - name: Run frontend tests
               run: npm test
 

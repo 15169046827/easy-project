@@ -6,10 +6,10 @@
   "transport": "Streamable HTTP https://api.apifox.com/mcp",
   "documents": {
     "overview": {
-      "name": "EasyProject API / 协议与权限总览",
+      "folderId": 97872382,
       "id": 9567481,
-      "sha256": "afdd69ba671fd47c4733fd7b7cd72a806933e8453a988a561539cc4f2b8c1aac",
-      "folderId": 97872382
+      "sha256": "f041def39061a1bd33fda4d3d89eab5b0bf95e5977339fa06bb101a8a5184d30",
+      "name": "EasyProject API / 协议与权限总览"
     },
     "models": {
       "folderId": 97872382,

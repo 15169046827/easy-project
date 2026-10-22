@@ -1,5 +1,7 @@
 # EasyProject release process
 
+2026-10-22 separately authorized public trial: existing HTTPS endpoint is exposed with background Tailscale Funnel; protected before/after config shows only AllowFunnel changed. Public relay TLS requests and anonymous/Origin checks passed. No new installer, application build, database migration, public GitHub Release or paid plan was created. Shared rate limits, disk quotas/alerting and external-network/reboot acceptance remain open; production verdict unchanged. Evidence: [Funnel checkpoint](FUNNEL_PUBLIC_ACCESS_CHECKPOINT.md).
+
 2026-10-22 private delivery completed with explicit approval: desktop/frontend71ec2c7, server bca2d45 (Linux run39722557466), protected schema3/6 migrations and separate MCP replacement. Original fields, hashes, references and workspace directories verified; new backups retained. Latest unsigned NSIS SHA98A2176567ADAB3F432861CF6E8CE5571995837CF11A46DF8C75EC21AEC53B51. Native account interactions and Codex reconnection remain unverified; normal proxy-path TLS EOF was observed although certificate-verified direct HTTPS passed. This is not production release acceptance. Exact evidence: account/profile checkpoint.
 
 ## Account/profile and identity migration candidate (2026-10-22)

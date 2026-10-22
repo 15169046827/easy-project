@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-22现阶段零新增预算Funnel公网试用已获用户明确批准并启用：既有HTTPS443→127.0.0.1:8080，仅AllowFunnel由无→true，原配置root700副本保留，应用/SSH/数据库权限不变。公共DNS及两个公网中继强制TLS请求初验：首页/health200、匿名401；恶意跨源403/no-store。共享限流、存储配额/告警、地区速度/容量/物理重启与移动网络尚有未验/待整改，不是正式发布通过；下一步先收手机移动网络反馈再由用户决定整改，不自动开发、付费或扩大暴露。最新手册1.10/仍79条，完整证据与回退见docs/FUNNEL_PUBLIC_ACCESS_CHECKPOINT.md。
+
 2026-10-22实际已部署账号3/业务6，旧上部候选说明按此覆盖。server/maintenance.rs提供操作员离线migrate-storage，预检现有路径/链接，不建缺失库；必须停服/外部新副本，每库事务备份而非跨库原子。scripts/verify-id-migration.py逐字段核对原值/ID图/凭据摘要/目录key，允许服务重启epoch单独变化；验证器只输出数量与结论。MCP仍只接受已有schema6，不负责迁移，新独立exe需重连。账号资料检查点是准确部署来源。
 
 2026-10-22待交付源码：account_schema负责账号schema3事务迁移，账号ID与workspace_key分离；profile负责本人头像/用户名校验，password_reset负责管理员短时一次性码/摘要/原子撤销旧凭据。common/id与id_migration统一大写语义+完整UUID、业务schema6全关联迁移及原备份；credentials为Windows当前用户DPAPI加密、安装侧非C盘文件，不进入业务导出。准确实现/验证/尚未部署状态见新账号资料检查点，尚不能替换当前13e6ab7部署事实。

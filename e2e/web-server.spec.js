@@ -226,7 +226,7 @@ test('two browser sessions share writes, reject stale edits and preserve data af
     const create = {
         model: 'project',
         action: 'add',
-        data: { name, version: 'v1.0', type: 'private', status: 'InProgress', owner: '' }
+        data: { name, version: 'v1.0', type: 'private', status: '进行中', owner: '' }
     }
     const status = await a.evaluate(
         async ({ revision, create }) =>

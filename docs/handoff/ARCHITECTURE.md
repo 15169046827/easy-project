@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-22状态显示边界：useStatusLabels只将Object.hasOwn确认的内置枚举映射传入vue-i18n，未知/历史字符串原样按文本展示；禁止`t(map[value]) || value`，因为`t(undefined)`会先抛INVALID_ARGUMENT/17。Todo/Pending同待办，空值维持缺省，不为渲染修复重写真实状态或收紧API。生产回归需含非枚举历史状态，不能只用InProgress理想fixture。
+
 2026-10-22 UI入口增补：App 的路由区改由 `src/components/WorkspaceRouteView.vue` 承接，Vue Router 异步模块错误及子页渲染错误分别转为脱敏诊断码和 PrimeVue 提示/重试/返回。恢复只重挂当前路由子树，不整页reload、不销毁RemoteRoot内存登录或切换数据源。ProjectList用命名路由传完整ID；hover样式精确匹配真实PrimeVue组件，不能用全局覆盖破坏其它控件。详见项目跳转专项检查点；API、数据库、权限及部署拓扑均未改。
 
 2026-10-22现阶段零新增预算Funnel公网试用已获用户明确批准并启用：既有HTTPS443→127.0.0.1:8080，仅AllowFunnel由无→true，原配置root700副本保留，应用/SSH/数据库权限不变。公共DNS及两个公网中继强制TLS请求初验：首页/health200、匿名401；恶意跨源403/no-store。共享限流、存储配额/告警、地区速度/容量/物理重启与移动网络尚有未验/待整改，不是正式发布通过；下一步先收手机移动网络反馈再由用户决定整改，不自动开发、付费或扩大暴露。最新手册1.10/仍79条，完整证据与回退见docs/FUNNEL_PUBLIC_ACCESS_CHECKPOINT.md。

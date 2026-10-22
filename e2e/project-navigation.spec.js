@@ -35,9 +35,14 @@ test.beforeEach(async ({ page }) => {
                     !['get_all', 'get_by_project'].includes(args.action)
                 )
                     throw new Error('Read-only UI fixture rejected an unexpected operation')
-                const list = (data[args.model] || []).filter(
-                    row => !args.data.projectId || row.project_id === args.data.projectId
-                )
+                const fixtureStatus = sessionStorage.getItem('regression-project-status')
+                const list = (data[args.model] || [])
+                    .filter(row => !args.data.projectId || row.project_id === args.data.projectId)
+                    .map(row =>
+                        args.model === 'project' && fixtureStatus
+                            ? { ...row, status: fixtureStatus }
+                            : row
+                    )
                 return { success: true, data: { list, total: list.length } }
             }
         }
@@ -199,5 +204,38 @@ test('project template cards keep their geometry and readable text on hover and 
             expect(await card.boundingBox()).toEqual(before)
             expect(await card.evaluate(node => getComputedStyle(node).color)).toBe(textColor)
         }
+    }
+})
+
+test('renders imported custom project statuses without breaking page navigation', async ({
+    page
+}) => {
+    await page.addInitScript(() => {
+        sessionStorage.setItem('regression-project-status', '进行中')
+    })
+    await page.goto('/#/dashboard')
+    await expect(page.locator('.dashboard')).toBeVisible()
+    await expect(page.locator('.recent-list .status-pill')).toHaveText('进行中')
+    await page
+        .getByRole('navigation', { name: 'Workspace views' })
+        .getByRole('button', { name: '项目管理', exact: true })
+        .click()
+    await expect(page.locator('.project-link')).toBeVisible()
+    await page.locator('.project-link').click()
+    await expect(page.locator('.project-workspace h2')).toHaveText(fixtures.project[0].name)
+    await expect(page.locator('.task-name-text')).toHaveText(fixtures.task[0].name)
+    await expect(page.locator('.workspace-route-error')).toHaveCount(0)
+    for (const [name, selector] of [
+        ['任务列表', '.panel.workspace-page'],
+        ['人员管理', '.members-page'],
+        ['数据管理', '.data-page'],
+        ['仪表盘', '.dashboard']
+    ]) {
+        await page
+            .getByRole('navigation', { name: 'Workspace views' })
+            .getByRole('button', { name, exact: true })
+            .click()
+        await expect(page.locator(selector)).toBeVisible()
+        await expect(page.locator('.workspace-route-error')).toHaveCount(0)
     }
 })

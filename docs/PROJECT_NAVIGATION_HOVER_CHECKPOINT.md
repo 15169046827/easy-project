@@ -4,6 +4,14 @@
 
 ## 最新现场失败（覆盖下方通过/待用户说明）
 
+最终根因修复候选已通过252单测/51文件、全75生产UI串行零重试、11真实HTTP，以及规范/类型/build/release:check/diff；75项独立截图/输出保存在`src-tauri/target/audit-tools/project-navigation-status-fix-ui-evidence`。保留此前并行甘特失败记录，不宣称从未失败。准备提交源码/构建NSIS/新副本覆盖，当前真实安装仍5a8ecda，等待最终现场复验。
+
+根因修复门禁里程碑：252单测/51文件通过，lint/typecheck/build/release:check/diff通过，含中文状态的真实HTTP11项通过。首轮并行生产UI为74通过/1既有甘特日期用例失败（期望2026-07-20、实际2026-06-30），未改断言/延时/超时/产品甘特逻辑；无其它浏览器测试并发的全量串行复验中，该甘特用例已通过，完整结果待收尾。生产反例在修复前精确显示`SyntaxError · Button · 17`，修复后同一fixture跨仪表盘/项目/关联任务/其它主页面通过。当前未提交清单：CHANGELOG、本检查点、handoff README/CURRENT_STATE/ARCHITECTURE/CHECKPOINT、e2e project-navigation/web-server、useStatusLabels.js与新增useStatusLabels.test.js。源码基线72f405b89f481694cacab4476b77303176a5f390；分支仍codex/audit-release-20261006-api；当前安装5a8ecda诊断版。下一步收齐75生产UI结果→提交→NSIS→本轮已批准新副本覆盖→用户原账号现场复验→Git/Wolai/交接收尾。Wolai尚未同步本次根因修复；API/DB/服务器/独立MCP不变。最近额度余37%/23%，不重置/唤醒。
+
+2026-10-22具体诊断已取到：用户报告 `PAGE_RENDER_FAILED / SyntaxError · Button · 17`。本地安装依赖源码确认vue-i18n/core-base INVALID_ARGUMENT=17；新增生产合成fixture把项目状态设为中文“进行中”，在原5a8ecda代码上精确复现同样Button/17与仪表盘消失（失败证据Playwright错误上下文）。根因：useStatusLabels对不在内置枚举中的状态执行`t(undefined)`，原`|| status`回退在异常后无法生效，仪表盘按钮/项目页受影响；原覆盖没有修到此根因。
+
+已开始最小整改：仅映射自有明确key时才翻译，未知/历史字符串安全显示原值（不改库），空/非字符串保持缺省；防原型键误匹配，任务Todo/Pending同待办。新增真实vue-i18n4单测，生产回归覆盖中文状态从仪表盘→项目→关联任务及其它主页面，真实HTTP合成项目亦保留中文状态。最终门禁和新安全覆盖待完成，不提前宣称现场通过。用户本轮必要覆盖/重启授权仍有效。
+
 诊断候选5a8ecda24011290e03280e5b9477c9323e6ce4a1已推送并按本轮明确授权安全覆盖，NSIS成功、248单测/6生产专项通过。新副本 `project-navigation-overwrite-20261022-diagnostic-5a8ecda`：426文件/423非程序文件不变、DB全表逻辑一致/integrity ok/FK0、独立MCP不变；未操作登录或CRUD。NSIS6317725字节/SHA8782185295925B0C735CE7C54B4BA046BC35B4228408CB59F693B53F7C393BC6，raw exe D40A469626E98D0A855C48790D31DD5ABD23B1A63F976075E2839A96896233F8，安装exe F1256B11BEB9C8120CD2C20D6466137A29F2B742B8F3304741CD430682977BD0，随包companion A5183DFFBE088900CB9A08807D5591B3B29BDF8700790DB1CCE8BF4207E6A06D。产物固定于 `project-navigation-diagnostic-5a8ecda`。已正常关闭旧程序而非强制结束，重新启动等待用户登录重现具体本地诊断文字；任务仍未完成。Wolai主88/交接25记录源码和失败边界，安装回执待同步。仅本检查点未提交。
 
 2026-10-22用户已明确授权本轮必要的新安全副本、覆盖和重启直到定位修复，仅本轮有效。新增 `src/utils/pageFailure.js` 及3项单测，只显示内建JS错误类型/受控组件名与脱敏限长文字；任意Error消息不展示、URL/ID/邮箱/长凭据形状串替换，不持久化/传输。WorkspaceRouteView显示本地详情。248单测/50文件、lint/typecheck/build通过，6项生产专项复验中；未再次安装。原生工具依技能完整读取/初始化后窗口绑定元数据虽匹配，实际图像不匹配，已停止所有输入；只启动过现有程序，未操作认证或真实数据。最近额度余48%/25%，无重置。

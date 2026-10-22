@@ -2,7 +2,7 @@ import { appendFileSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-export function releasePlan(version, sha, internal, number = '2') {
+export function releasePlan(version, sha, internal, number = '2', beta = false, betaNumber = '1') {
     if (
         !/^\d+\.\d+\.\d+$/.test(version) ||
         version.trim() !== version ||
@@ -12,6 +12,10 @@ export function releasePlan(version, sha, internal, number = '2') {
         throw new Error('Release requires a stable version and exact source SHA')
     }
     const parsedNumber = Number(number)
+    if (internal && beta) throw new Error('Internal and public beta modes are mutually exclusive')
+    if (beta && (!/^[1-9]\d{0,3}$/.test(betaNumber) || Number(betaNumber) > 9999)) {
+        throw new Error('Beta number must be an integer from 1 to 9999')
+    }
     if (
         internal &&
         (!Number.isSafeInteger(parsedNumber) ||
@@ -22,17 +26,19 @@ export function releasePlan(version, sha, internal, number = '2') {
         throw new Error('Internal number must be an integer from 2 to 9999')
     }
     return {
-        tag_name: `v${version}${internal ? `-internal.${number}` : ''}`,
-        name: `EasyProject v${version}${internal ? ` — Internal Test ${number} (unsigned)` : ''}`,
+        tag_name: `v${version}${beta ? `-beta.${betaNumber}` : internal ? `-internal.${number}` : ''}`,
+        name: `EasyProject v${version}${beta ? ` — Public Beta ${betaNumber} (unsigned)` : internal ? ` — Internal Test ${number} (unsigned)` : ''}`,
         target_commitish: sha,
         draft: true,
-        prerelease: internal,
-        body: 'Unsigned internal test only. Formal release acceptance is NOT complete. Signing, notarization and platform acceptance remain pending. Do not publish this draft.'
+        prerelease: internal || beta,
+        body: beta
+            ? 'Unsigned public beta candidate. Keep draft until independent artifact verification completes. Formal production-release acceptance is NOT complete; signing, notarization and clean-device/platform acceptance remain pending.'
+            : 'Unsigned internal test only. Formal release acceptance is NOT complete. Signing, notarization and platform acceptance remain pending. Do not publish this draft.'
     }
 }
 
 export async function reserveInternalRelease(plan, request) {
-    if (!plan.draft || !plan.prerelease) throw new Error('Only internal drafts may be reserved')
+    if (!plan.draft || !plan.prerelease) throw new Error('Only prerelease drafts may be reserved')
     const ref = await request(`git/ref/tags/${encodeURIComponent(plan.tag_name)}`)
     if (ref.status !== 404) throw new Error('Tag is occupied or its availability is unknown')
     let exhausted = false
@@ -68,10 +74,18 @@ export async function reserveInternalRelease(plan, request) {
 
 async function main() {
     const internal = process.env.INTERNAL_TEST === 'true'
+    const beta = process.env.PUBLIC_BETA === 'true'
     const { version } = JSON.parse(readFileSync('package.json', 'utf8'))
-    const plan = releasePlan(version, process.env.GITHUB_SHA, internal, process.env.INTERNAL_NUMBER)
+    const plan = releasePlan(
+        version,
+        process.env.GITHUB_SHA,
+        internal,
+        process.env.INTERNAL_NUMBER,
+        beta,
+        process.env.BETA_NUMBER
+    )
     let id = ''
-    if (internal) {
+    if (internal || beta) {
         const repository = process.env.GITHUB_REPOSITORY
         if (!/^[\w.-]+\/[\w.-]+$/.test(repository) || !process.env.GITHUB_TOKEN) {
             throw new Error('Authenticated GitHub repository context is required')

@@ -49,6 +49,26 @@ describe('independent internal candidates', () => {
         expect(await reserveInternalRelease(plan, request)).toBe(123)
         expect(request.mock.calls[2][1]).toEqual({ method: 'POST', body: JSON.stringify(plan) })
     })
+    it('prepares a public beta as an exact-source protected draft, never auto-published', () => {
+        expect(releasePlan('0.1.1', sha, false, '2', true, '1')).toMatchObject({
+            tag_name: 'v0.1.1-beta.1',
+            target_commitish: sha,
+            draft: true,
+            prerelease: true
+        })
+        expect(() => releasePlan('0.1.1', sha, true, '2', true, '1')).toThrow()
+        for (const number of ['0', '01', '10000', '1\nrelease_id=1', '-1'])
+            expect(() => releasePlan('0.1.1', sha, false, '2', true, number)).toThrow()
+    })
+    it('retains the same tag, draft and exact-source guards for public beta reservations', async () => {
+        const beta = releasePlan('0.1.1', sha, false, '2', true, '1')
+        const request = vi
+            .fn()
+            .mockResolvedValueOnce(response(404))
+            .mockResolvedValueOnce(response(200, []))
+            .mockResolvedValueOnce(response(201, { ...beta, id: 456 }))
+        expect(await reserveInternalRelease(beta, request)).toBe(456)
+    })
     it('blocks an existing tag or failed availability check before writing', async () => {
         for (const status of [200, 403, 500]) {
             const request = vi.fn().mockResolvedValue(response(status))

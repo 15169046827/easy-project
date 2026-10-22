@@ -18,6 +18,9 @@ if ($Tool -and $Tool -ne 'listAccessibleProjects') {
         if ($arguments.id -notin ($readIds + $writeIds)) { throw 'OpenAPI operation has not been reviewed.' }
         if ([string]$project -ne '8948094') { throw 'An explicit EasyProject binding is required.' }
         if ($arguments.id -in $writeIds -and -not $AllowWrite) { throw 'Document writes require -AllowWrite.' }
+    } elseif ($Tool -in @('importData', 'updateHttpEndpoint')) {
+        if ([string]$project -ne '8948094' -or -not $AllowWrite) { throw 'HTTP contract writes require explicit EasyProject binding and -AllowWrite.' }
+        if ($Tool -eq 'importData' -and ($arguments.body.importFormat -ne 'openapi' -or $arguments.body.url -or $arguments.body.apiOverwriteMode -ne 'ignore' -or $arguments.body.schemaOverwriteMode -ne 'ignore')) { throw 'Only additive inline OpenAPI import is allowed.' }
     } elseif ($Tool -notin @('getProjectSummary', 'getStructureInfo', 'readEntityDetails', 'getHttpEndpoint', 'listOpenApiEndpoints', 'getOpenApiDetails')) {
         throw 'This helper only supports reviewed API-document maintenance tools.'
     }

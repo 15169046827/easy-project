@@ -34,6 +34,14 @@ foreach ($key in $web.interfaces.Keys) {
     $expected = $spec.paths[$entry.path][$entry.method]
     if (-not $actual -or $actual.summary -ne $expected.summary -or [string]$actual.description -ne [string]$expected.description) { throw "HTTP contract mismatch: $key" }
     foreach ($code in $expected.responses.Keys) { if (-not $actual.responses[$code]) { throw "Missing response $code for $key" } }
+    foreach ($code in $expected.responses.Keys) {
+        $schema = $expected.responses[$code].content.'application/json'.schema
+        if ($schema) {
+            $expectedResponse = Normalize-Schema $schema | ConvertTo-Json -Depth 100 -Compress
+            $actualResponse = Normalize-Schema $actual.responses[$code].content.'application/json'.schema | ConvertTo-Json -Depth 100 -Compress
+            if ($expectedResponse -ne $actualResponse) { throw "Response schema mismatch: $code $key" }
+        }
+    }
     if ($entry.method -eq 'post' -and $entry.path -ne '/mcp') {
         if ('X-EasyProject-Request' -notin $actual.parameters.name -or 'Origin' -notin $actual.parameters.name) { throw "Missing CSRF boundary: $key" }
     }

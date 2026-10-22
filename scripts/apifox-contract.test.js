@@ -78,6 +78,18 @@ describe('Apifox API documentation boundary', () => {
             expect(docs.some(doc => doc.key === `tauri_${command}`)).toBe(true)
     })
     it.skipIf(!powerShellAvailable).each([
+        [
+            'HTTP write without approval',
+            { headers: { 'X-Project-Id': '8948094' }, pathParams: { http_api_id: 526827472 } },
+            'updateHttpEndpoint',
+            'require explicit EasyProject'
+        ],
+        [
+            'HTTP import without approval',
+            { pathParams: { projectId: '8948094' } },
+            'importData',
+            'require explicit EasyProject'
+        ],
         ['wrong project', { projectId: 8948095 }, 'getProjectSummary', 'Only EasyProject'],
         [
             'conflicting project',

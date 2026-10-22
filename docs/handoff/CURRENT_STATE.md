@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-10-22候选就绪（源码25afe85，未部署）：头像/用户名/6—31密码/管理员码找回/DPAPI/schema3和6均已隔离验证；243前端、68生产UI+11HTTP、桌面52+1、服务器49通过，Linux39720455218成功。Apifox29目录/74接口/27参考读回。真实桌面/服务器仍13e6ab7，独立MCP仍schema5；等待新副本、ID迁移、覆盖与MCP更新重连的明确确认。详情[专项检查点](../ACCOUNT_PROFILE_DATABASE_CHECKPOINT.md)。
+
 2026-10-22新任务进行中（未部署）：头像正圆/上传预览裁剪压缩、用户名修改、桌面加密保存密码、密码统一6—31、管理员一次性重置码找回、全部自有表ID规范整改。实际库原本已账号/业务分离，但账号/会话/Token及部分业务ID不符合完整前缀UUID要求。源码实现与隔离迁移验证进行中，当前真实桌面/服务器仍13e6ab7。准确续接[当前任务检查点](../ACCOUNT_PROFILE_DATABASE_CHECKPOINT.md)，库设计[DATABASE_DESIGN](../DATABASE_DESIGN.md)；不要用旧schema2/5脚本部署新schema3/6，也不要提前迁移真实库。
 
 2026-10-21当前交付：源13e6ab7已包含头像同排菜单、独立只读Token上层弹窗、冲突刷新不退出桌面登录，已安全覆盖E盘并启动；服务器/opt/easyproject/current为13e6ab766a45，active/enabled，正常TLS健康/页面/主模块200且SHA一致。两服务器库全表（含Token/会话）及370文件桌面副本/367非程序文件与业务行保持不变。238单测、67生产UI、9真实HTTP、规范/类型/build/NSIS/元数据通过。原生登录后人工冲突未验，正式发布仍未通过，独立MCP未动。下方“部署中/暂停/未覆盖”为历史；当前证据[检查点顶部](../ACCOUNT_TOOLBAR_CHECKPOINT.md)。

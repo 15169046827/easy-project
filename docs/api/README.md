@@ -4,6 +4,8 @@
 
 ## 当前覆盖
 
+2026-10-22最新候选契约已同步并逐项读回：源码25afe853482ec6aa341feba56a522444b90ecbfa，56原生接口、18HTTP操作、27参考；HTTP保持testing，不等于当前服务器已部署。新增资料独立分组；旧15HTTP和55原生ID均保留。`sync-web-apifox.ps1`默认只读计划，`-Apply`先校验所有已管理SHA再增量导入、分组、更新及读回；中断须先检查远端/manifest，再以`-ResumeFrom <operationId>`续接未完成项，不盲重试。无说明须传空字符串而非null；请求/响应以实际Schema核验，保留原响应ID，不把写入成功当读回。原生参考同步仍使用原两个脚本。
+
 2026-10-22候选契约：56原生条目（18 MCP/7注册IPC/31动作）及18 HTTP操作/15路径，新资料编辑、管理员重置码/凭码找回、desktop_credentials与schema6规范。最终Apifox写入/读回和部署状态以[新任务检查点](../ACCOUNT_PROFILE_DATABASE_CHECKPOINT.md)为准，尚不能把本段当作已同步或已上线。旧独立MCP与新schema6不兼容，更新与重连前不得迁移其实际数据库。
 
 2026-10-21已同步15个HTTP操作/12路径：新增普通注册、个人MCP凭据、远端MCP传输两个分组；总27目录/70接口，原55原生协议条目和26参考保留。15项权威详情状态testing/分组、请求Schema、说明及SHA读回通过；结构搜索可能缓存旧状态，不以写入success代替权威读回。实际ID/摘要见web-apifox-manifest及[检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)，下方9操作为此前部署基线。

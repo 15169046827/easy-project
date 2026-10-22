@@ -1,5 +1,31 @@
 # 账号设置与数据库规范整改检查点
 
+## 候选阶段完成，等待真实升级确认（2026-10-22）
+
+2026-10-22候选验证与接口同步完成，真实部署等待用户明确确认：产品源码25afe853482ec6aa341feba56a522444b90ecbfa已推送，Linux CI39720455218的server/security均成功。243前端单测/48文件、68生产UI及独立11真实HTTP、桌面52+stdio1、服务端49、lint/typecheck/fmt/严格clippy/build/NSIS/元数据/UPARS1.1.0通过；无关闭检查/删测试。Apifox8948094/main8751742共29目录/74接口（56原生+18HTTP）/27参考，原ID保留、请求/响应Schema/分组/testing/摘要读回；新增HTTP同步脚本先全量SHA预检、增量导入、续接与读回，null说明错误拒绝后先核对再修正，未盲重试。Wolai主v81/交接入口v18已读回候选与规则增补，末轮回执继续保存。
+
+候选仅E盘src-tauri/target/audit-tools/account-profile-25afe85：NSIS6316237字节、未签名，SHA4AE0A60E82917E17395F2648309ED2FC93DA1CD2EDEEBB94368CFC1965EDDA34；MCP8E3978B6651CC13BC84A16464369B1F9F0B1AA6A448AEC1B9AE6BCAA31E46A55；Linux916A1E25AEB69EC05FBF32FF37DB24C64B00F9C0CC10882110CCE51D746CC06B。当前实际桌面/服务器仍13e6ab7，独立MCP8C11/schema5不动；新schema3/6迁移、全新副本、独立MCP替换与客户端重连必须获确认后统一处理，不复用旧schema2校验脚本，不先迁移再留旧写进程。真实桌面新UI与真实库迁移尚未验，正式发布仍未通过。准确设计/字段见docs/DATABASE_DESIGN.md。
+
+10-22到期复查节点已检查15项逆依赖：原5提示在Windows/macOS ARM/Intel均无启用路径，告警保留/限定平台和责任边界不变，不批准Linux或正式发布，不新设自动延期；两锁新鲜扫描0漏洞/0撤回。home-host本轮未连，真实数据未变；无关机、重置、定时唤醒。WACAS未定义，UPARS1.1.0/交接1.9/79条。下一步只等部署/ID迁移/MCP更新确认；恢复先读本检查点、核对Git和实际文件，不重做候选实现。
+
+候选源码已提交25afe85；以下为收尾提交前全部未提交文件（收尾后应为空，不以历史清单推断当前WIP）：
+
+- docs/ACCOUNT_PROFILE_DATABASE_CHECKPOINT.md
+- docs/api/MODELS.md
+- docs/api/README.md
+- docs/api/apifox-documents.json
+- docs/api/apifox-layout.json
+- docs/api/apifox-manifest.json
+- docs/api/catalog.json
+- docs/api/web-apifox-manifest.json
+- docs/handoff/CHECKPOINT.md
+- docs/handoff/CURRENT_STATE.md
+- docs/handoff/README.md
+- scripts/apifox-contract.test.js
+- scripts/apifox-mcp.ps1
+- scripts/verify-web-apifox.ps1
+- scripts/sync-web-apifox.ps1
+
 ## 客户端关闭后恢复（2026-10-22，优先于下方历史）
 
 末轮补充：证书补丁后的桌面52+stdio1及全目标严格clippy通过；服务端49+clippy通过；NSIS候选构建成功，SHA256=4AE0A60E82917E17395F2648309ED2FC93DA1CD2EDEEBB94368CFC1965EDDA34，未签名/未安装；独立候选MCP release编译成功，未替换当前客户端文件。API专项8项Vitest通过（误用node --test的运行器错误已纠正，不是产品失败）；fmt、release:check、diff通过。本次恢复后生产UI首次因受限环境回环服务启动超时未运行，正规授权环境重跑中。Wolai outline可读，但目标块get_block遭HTTP传输错误，尚未写入。最新额度五小时余40%、周39%。

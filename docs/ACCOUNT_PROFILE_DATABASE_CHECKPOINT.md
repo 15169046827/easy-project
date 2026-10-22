@@ -1,6 +1,20 @@
 # 账号设置与数据库规范整改检查点
 
+## 真实交付完成与剩余边界（2026-10-22，优先于全部历史）
+
+用户已明确批准部署/迁移/MCP更新，均已执行。前端/桌面源码71ec2c738b2991a6bf5e961c1997a54d89d23b18，后端bca2d4506e334bc7967c7ca31c5f12dcecfe4fa0/成功CI39722557466；WACAS未定义，UPARS1.1.0/手册1.9/79条。新增忘记密码真实PrimeVue小字位于密码框右下，4桌面深浅/键盘及6网页尺寸主题几何断言、完整68生产UI+11真实HTTP通过；末轮243/48前端与lint/typecheck/build/release检查通过，服务端35+16=51/严格clippy，桌面52+stdio1仍有效。真实登录后头像/改名/DPAPI人工流程未操作，不冒充原生交互已验。
+
+桌面最终覆盖NSIS6317611字节，SHA98A2176567ADAB3F432861CF6E8CE5571995837CF11A46DF8C75EC21AEC53B51；安装exe E770F6D9C9B1F0E67B4618F16836D9BA158EA2E2C38B06AAF6B946A8114A6DE7，正常NSIS标记核验通过。全新副本account-profile-overwrite-20261022-final保护394文件/391非程序文件原样，初次schema5原副本及中间副本均保留E盘，不覆盖。主窗PID45256已启动响应，WebView实际E盘；本地schema6全部原字段/引用按ID映射保留，1项目/5任务/4依赖/0人员/0团队/5基线不变。伴随与独立MCP最终EC9C6EFEF361166B25FFD57AF48F12886A81AACF4DFCA33E9D60047466049420；原8C11及manifest/文档受限备份保留。配置路径/18权限不变，真实新exe仅握手发现18工具、DB SHA不变；当前Codex会话需要用户重连/重启加载，未自动重启客户端。
+
+服务器current=/opt/easyproject/releases/bca2d4506e33，受限easyproject身份active/enabled；新root700副本/var/backups/easyproject/bca2d45-profile-20261022。账号2→3/业务5→6、账号与工作区目录映射不变，所有原账号/会话/Token哈希和权限及全部业务字段/关联保留，integrity ok/外键0；实际2账号/1会话/1个人Token/0重置码、1工作区1项目20任务。44程序/前端/验证器文件SHA核验；新启动epoch可变，不误报数据损坏。正常证书验证直连HTTPS page/health/主应用模块200，匿名session401；主模块/assets/index-CEFD4-Ux.js SHA420923E8F9CA6D0A3D8A85AF8E49EF0A727216DC62C4C30CC8B6AF306B6BEC61与本地一致。普通系统代理路径出现TLS EOF，直连复验通过；本轮未修改系统代理/DNS/证书，不能称普通代理链路通过，若网页受影响需单独定位该链路。
+
+Git源代码已推送；实际独立MCP来源与摘要已重新发现绑定71ec2c7，Apifox29目录/74接口/27参考保持分组、原ID和逐项读回，新总览同步正在收尾。HTTP契约本轮无新增变化，原18项Schema复验仍有效。Git部署回执/交接/Wolai最终同步待下节记录；现有未提交均文档生成/清单/部署交接，不含未验证产品修改。设备确认本Windows与home-host，本轮无关机/重置/自动唤醒。正式发布仍未通过，未修改公开Release/旧草稿。后续仅重连MCP、用户试用反馈与代理链路诊断，不重复已完成迁移或用旧schema2/5程序回退新库。
+
 ## 已批准安全部署，部署准备中（2026-10-22）
+
+真实升级已完成（最终回执待同步）：离线服务端bca2d45/CI39722557466已部署到/opt/easyproject/releases/bca2d4506e33，前端为71ec2c7（含忘记密码右下小字），44文件SHA逐个核验；正常停服后全新root700副本/var/backups/easyproject/bca2d45-profile-20261022，账号2→3、业务5→6。全部原字段/密码哈希/会话与Token摘要/权限/目录key及业务引用按映射核验保持；实际2账号/1会话/1个人Token/0重置码、1工作区1项目/20任务，其余业务0，完整性ok/外键0/全ID规范。current原子切换、easyproject身份active/enabled，未生产注册/重置/业务CRUD，不读取或输出凭据。
+
+最终桌面小字补丁98A2176567ADAB3F432861CF6E8CE5571995837CF11A46DF8C75EC21AEC53B51已覆盖，独立新副本account-profile-overwrite-20261022-final保护394文件；391非程序文件与迁移后DB原样，退出0；安装exe E770F6D9C9B1F0E67B4618F16836D9BA158EA2E2C38B06AAF6B946A8114A6DE7与NSIS标记核验通过。包内及独立MCP最终EC9C6EFEF361166B25FFD57AF48F12886A81AACF4DFCA33E9D60047466049420，旧原件独立受限副本保留；桌面启动PID45256。所有原本地字段/映射/关联再次验证保留，1项目/5任务/4依赖/5基线不变。独立新exe真实仅握手18工具，DB SHA前后相同；现聊天尚未动态重连，需重启Codex后实际加载，不把独立探测算客户端重连。最终API目录已生成来源71ec2c7/新MCP，Apifox对应来源摘要同步中；Wolai/交接和Git部署回执待本节收尾，无关机/重置/唤醒。
 
 本地已迁移里程碑：第二次新副本account-profile-overwrite-20261022-2保护390文件，387非程序文件安装后SHA不变、覆盖退出0；NSIS5F28C31E...，安装exe8C5B213D...、包内伴随MCP92F94A...符合本次固定构建。独立旧MCP已完整备份到受限account-profile-mcp-backup-20261022，按SkipBuild替换为92F94A...，原配置路径与18工具权限不变。桌面正常启动PID41820，业务schema5→6；新逐字段验证器验证所有原字段/引用按ID映射保持，integrity ok/外键0/完整前缀ID，表数量1项目/5任务/4依赖/0成员/0团队/5基线不变。新MCP仅握手发现18工具，前后真实DB SHA相同，无自动业务CRUD；当前聊天需重连/重启后实际加载新进程，不能把单独发现当已重连。
 

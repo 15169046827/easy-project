@@ -1,5 +1,7 @@
 # EasyProject
 
+2026-10-22 private deployment: account profiles, 6–31-character passwords, protected password recovery and full-ID schema migrations are installed on the desktop and private server. “Forgot password” is a small link below the password field, aligned right. The independent MCP was updated; reconnect Codex to load it. See the [delivery checkpoint](docs/ACCOUNT_PROFILE_DATABASE_CHECKPOINT.md) for protected backups and remaining verification boundaries. Public production release remains unapproved.
+
 2026-10-22 candidate: circular account avatars with square upload preview and automatic crop/compression, editable login usernames, opt-in Windows-protected password saving, 6–31-character passwords and administrator-issued one-time password recovery. Account schema3 and business schema6 retain separate databases and use full semantic-prefix UUID IDs. See [database design](docs/DATABASE_DESIGN.md) and [implementation/deployment checkpoint](docs/ACCOUNT_PROFILE_DATABASE_CHECKPOINT.md) before upgrading; old independent MCP executables must not be used with schema6.
 
 Account settings and MCP access are available from the toolbar avatar menu. Refreshing after a remote workspace conflict reloads data without signing out; only a genuinely expired or revoked session requires login again. One-time MCP secrets use a separate read-only copy dialog.

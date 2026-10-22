@@ -268,6 +268,10 @@ test('two browser sessions share writes, reject stale edits and preserve data af
     await expect(b.locator('.account-menu-entry')).toBeVisible()
     await expect(b.locator('#remote-username')).toHaveCount(0)
     await expect(b.getByText(name, { exact: true })).toBeVisible()
+    await b.locator('.project-link').filter({ hasText: name }).click()
+    await expect(b.locator('.project-workspace h2')).toHaveText(name)
+    await expect(b.locator('.panel.embedded')).toBeVisible()
+    await b.getByRole('button', { name: /返回项目列表|Back to projects/ }).click()
     await b.reload()
     await expect(b.getByText(name, { exact: true })).toBeVisible()
     await first.close()
@@ -399,6 +403,11 @@ test('desktop bearer conflict refresh reloads data without navigating or signing
     await page.getByRole('button', { name: /项目管理|Projects/, exact: true }).click()
     const refresh = page.getByRole('button', { name: /刷新（放弃|Refresh \(discard/ })
     await expect(refresh).toBeVisible({ timeout: 20000 })
+    // The conflict banner belongs to RemoteRoot and can appear while the lazy
+    // Projects navigation is still pending. Finish that navigation before
+    // measuring whether the subsequent refresh itself navigates/reloads.
+    await expect(page).toHaveURL(/#\/projects$/)
+    await expect(page.locator('.projects-page')).toBeVisible()
     let navigations = 0
     page.on('framenavigated', frame => {
         if (frame === page.mainFrame()) navigations += 1
@@ -408,6 +417,9 @@ test('desktop bearer conflict refresh reloads data without navigating or signing
     await expect(page.locator('#remote-username')).toHaveCount(0)
     await expect(page.getByText(name, { exact: true })).toBeVisible()
     expect(navigations).toBe(0)
+    await page.locator('.project-link').filter({ hasText: name }).click()
+    await expect(page.locator('.project-workspace h2')).toHaveText(name)
+    await expect(page.locator('.panel.embedded')).toBeVisible()
     expect(loginCount).toBe(1)
     expect(new Set(bearerHeaders).size).toBe(1)
     expect(bearerHeaders.length).toBeGreaterThan(1)

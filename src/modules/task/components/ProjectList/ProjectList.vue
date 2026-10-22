@@ -90,14 +90,14 @@
                 :rows-per-page-options="[20, 50, 100]"
                 :pt="{
                     root: { class: 'workspace-table' },
-                    table: { style: 'min-width: 60rem' }
+                    table: { style: 'table-layout: fixed; min-width: 68rem' }
                 }"
                 @row-edit-init="cacheRow"
                 @row-edit-save="saveRow"
                 @row-edit-cancel="cancelRow"
             >
                 <Column selectionMode="multiple" frozen style="width: 3rem" />
-                <Column field="name" :header="$t('projects.columnName')">
+                <Column field="name" :header="$t('projects.columnName')" style="width: 18rem">
                     <template #editor="{ data, field }">
                         <InputText
                             v-model="data[field]"
@@ -107,7 +107,9 @@
                     <template #body="{ data }">
                         <Button class="project-link" @click="openProject(data.id)">
                             <i class="pi pi-folder"></i>
-                            {{ data.name || $t('projects.untitled') }}
+                            <span v-tooltip.bottom="data.name || $t('projects.untitled')">{{
+                                data.name || $t('projects.untitled')
+                            }}</span>
                         </Button>
                     </template>
                 </Column>
@@ -157,7 +159,7 @@
                         </span>
                     </template>
                 </Column>
-                <Column field="owner" :header="$t('projects.columnOwner')">
+                <Column field="owner" :header="$t('projects.columnOwner')" style="width: 12rem">
                     <template #editor="{ data, field }">
                         <MemberSelect
                             v-model="data[field]"
@@ -224,7 +226,9 @@ const router = useRouter()
 const { t } = useI18n()
 const confirmDeletion = usePrimeConfirmation()
 function openProject(id) {
-    router.push('/project/' + id)
+    return router.push({ name: 'Project', params: { id } }).catch(() => {
+        // WorkspaceRouteView presents the navigation failure and recovery actions.
+    })
 }
 
 const projects = ref([])
@@ -582,7 +586,7 @@ onMounted(loadProjects)
     background: var(--color-surface);
 }
 
-.project-link {
+.project-link.p-button {
     display: flex;
     align-items: center;
     gap: 0.45rem;
@@ -592,14 +596,35 @@ onMounted(loadProjects)
     background: transparent;
     font: inherit;
     font-weight: 600;
+    max-width: 100%;
+    min-width: 0;
+    justify-content: flex-start;
+    text-align: left;
+    box-shadow: none;
     cursor: pointer;
     transition: color 0.15s ease;
 }
 .project-link i {
     color: var(--color-primary);
     font-size: 0.85rem;
+    flex-shrink: 0;
 }
-.project-link:hover {
+.project-link span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.project-link.p-button:not(:disabled):hover,
+.project-link.p-button:not(:disabled):active {
+    border: 0;
+    background: transparent;
+    color: var(--color-primary);
+    box-shadow: none;
+}
+.project-link.p-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
     color: var(--color-primary);
 }
 .version-tag {

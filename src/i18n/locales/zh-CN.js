@@ -188,6 +188,10 @@ export default {
         members: '人员管理'
     },
     app: {
+        pageFailed: '当前页面未能正常打开',
+        pageFailedHint:
+            '可以重试或返回项目列表。此操作不会退出登录或切换数据源。若仍失败，请反馈下方诊断码。',
+        retryPage: '重试打开页面',
         subtitle: '本地项目管理',
         language: '语言',
         themeToLight: '切换到浅色模式',

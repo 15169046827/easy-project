@@ -207,7 +207,7 @@ onMounted(() => {
     gap: 1rem;
     min-width: 0;
 }
-.back-button {
+.back-button.p-button {
     display: grid;
     width: 2.5rem;
     height: 2.5rem;
@@ -220,7 +220,7 @@ onMounted(() => {
     flex-shrink: 0;
     transition: all 0.15s ease;
 }
-.back-button:hover {
+.back-button.p-button:not(:disabled):hover {
     border-color: var(--color-primary);
     color: var(--color-primary);
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12);
@@ -287,7 +287,7 @@ onMounted(() => {
     background: var(--color-surface);
     flex-shrink: 0;
 }
-.view-switch button {
+.view-switch .p-button {
     display: flex;
     align-items: center;
     gap: 0.45rem;
@@ -299,15 +299,28 @@ onMounted(() => {
     cursor: pointer;
     font-size: 0.85rem;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
-.view-switch button:hover {
+.view-switch .p-button:not(:disabled):hover,
+.view-switch .p-button:not(:disabled):active {
+    border: 0;
+    background: var(--color-subtle-hover);
     color: var(--color-text);
 }
-.view-switch button.active {
+.view-switch .p-button.active,
+.view-switch .p-button.active:not(:disabled):hover,
+.view-switch .p-button.active:not(:disabled):active {
     color: #fff;
     background: var(--color-primary);
     box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+.back-button.p-button:focus-visible,
+.view-switch .p-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 .view-switch button i {
     font-size: 0.9rem;

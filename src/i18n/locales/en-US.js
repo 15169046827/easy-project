@@ -198,6 +198,10 @@ export default {
         members: 'Members'
     },
     app: {
+        pageFailed: 'This page could not be opened',
+        pageFailedHint:
+            'Retry or return to projects without signing out or switching data sources. If it still fails, report the diagnostic code below.',
+        retryPage: 'Retry opening page',
         subtitle: 'LOCAL PROJECT PLANNING',
         language: 'Language',
         themeToLight: 'Switch to light mode',

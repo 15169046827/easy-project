@@ -1448,7 +1448,7 @@ onMounted(async () => {
     outline-offset: -2px;
     background: var(--color-primary-light);
 }
-.tree-toggle {
+.tree-toggle.p-button {
     display: grid;
     width: 1.5rem;
     height: 1.5rem;
@@ -1460,8 +1460,15 @@ onMounted(async () => {
     cursor: pointer;
     border-radius: 4px;
 }
-.tree-toggle:hover {
+.tree-toggle.p-button:not(:disabled):hover,
+.tree-toggle.p-button:not(:disabled):active {
+    border: 0;
     background: var(--color-subtle-hover);
+    color: var(--color-primary);
+}
+.tree-toggle.p-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
 }
 .drag-handle,
 .tree-toggle {

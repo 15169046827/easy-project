@@ -25,7 +25,7 @@
                     <small>{{ tasksByStatus[column.status].length }}</small>
                 </header>
                 <div class="card-list">
-                    <button
+                    <Button
                         v-for="task in tasksByStatus[column.status]"
                         :key="task.id"
                         class="board-card"
@@ -45,10 +45,13 @@
                                 ><i class="pi pi-calendar"></i>{{ dateOnly(task.end_time) }}</time
                             >
                         </footer>
-                        <span class="progress-track"
-                            ><i :style="{ width: `${Number(task.progress) || 0}%` }"></i
-                        ></span>
-                    </button>
+                        <ProgressBar
+                            class="progress-track"
+                            :value="Number(task.progress) || 0"
+                            :showValue="false"
+                            :aria-label="$t('tasks.columnProgress')"
+                        />
+                    </Button>
                     <p v-if="!tasksByStatus[column.status].length" class="empty-column">
                         {{ $t('board.empty') }}
                     </p>
@@ -60,6 +63,8 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import Button from 'primevue/button'
+import ProgressBar from 'primevue/progressbar'
 import { useI18n } from 'vue-i18n'
 import { crudAction } from '../../../api'
 
@@ -234,7 +239,7 @@ async function dropTask(status) {
     align-content: start;
     gap: 0.6rem;
 }
-.board-card {
+.board-card.p-button {
     display: grid;
     gap: 0.55rem;
     width: 100%;
@@ -250,9 +255,16 @@ async function dropTask(status) {
 .board-card:active {
     cursor: grabbing;
 }
-.board-card:hover {
+.board-card.p-button:not(:disabled):hover,
+.board-card.p-button:not(:disabled):active {
     border-color: #bfdbfe;
+    background: var(--color-subtle-hover);
+    color: var(--color-text);
     box-shadow: 0 5px 14px var(--color-card-shadow);
+}
+.board-card.p-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 .priority {
     width: fit-content;
@@ -302,7 +314,7 @@ async function dropTask(status) {
     border-radius: 999px;
     background: var(--color-border);
 }
-.progress-track i {
+.progress-track :deep(.p-progressbar-value) {
     display: block;
     height: 100%;
     border-radius: inherit;

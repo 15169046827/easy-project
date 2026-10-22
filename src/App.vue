@@ -89,7 +89,7 @@
         </header>
 
         <slot name="notice" />
-        <router-view :key="viewRevision" />
+        <WorkspaceRouteView :revision="viewRevision" />
 
         <Transition name="history-fade">
             <div
@@ -153,6 +153,7 @@ import { openFloatingWindow } from './modules/floating/windowActions'
 import { listen } from '@tauri-apps/api/event'
 import { isTauri } from '@tauri-apps/api/core'
 import RemoteConnect from './components/RemoteConnect.vue'
+import WorkspaceRouteView from './components/WorkspaceRouteView.vue'
 import { remoteActive } from './api/remote'
 
 const route = useRoute()
@@ -175,7 +176,9 @@ let backupTimer
 const shortcutsHelp = SHORTCUTS_HELP
 
 function go(path) {
-    router.push(path)
+    return router.push(path).catch(() => {
+        // WorkspaceRouteView owns the visible navigation error/recovery state.
+    })
 }
 
 function showHistoryMessage(value, isError = false) {

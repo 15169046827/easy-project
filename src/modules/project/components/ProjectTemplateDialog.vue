@@ -10,7 +10,7 @@
         <div class="template-dialog">
             <p class="dialog-intro">{{ $t('projectTemplates.dialogDescription') }}</p>
             <div class="template-grid">
-                <button
+                <Button
                     v-for="template in PROJECT_TEMPLATES"
                     :key="template.id"
                     type="button"
@@ -26,7 +26,7 @@
                         v-if="form.templateId === template.id"
                         class="pi pi-check selection-mark"
                     ></i>
-                </button>
+                </Button>
             </div>
 
             <div class="form-grid">
@@ -48,7 +48,7 @@
             </div>
 
             <label v-if="selectedTemplate.tasks.length" class="assign-option">
-                <input v-model="form.assignOwner" type="checkbox" :disabled="!form.owner" />
+                <Checkbox v-model="form.assignOwner" binary :disabled="!form.owner" />
                 <span>{{ $t('projectTemplates.assignOwner') }}</span>
             </label>
             <p v-if="error" class="dialog-error">{{ error }}</p>
@@ -76,6 +76,7 @@
 <script setup>
 import { computed, reactive, watch } from 'vue'
 import Button from 'primevue/button'
+import Checkbox from 'primevue/checkbox'
 import DatePicker from 'primevue/datepicker'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
@@ -166,7 +167,7 @@ watch(
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
 }
-.template-card {
+.template-card.p-button {
     position: relative;
     display: flex;
     align-items: flex-start;
@@ -184,11 +185,17 @@ watch(
         box-shadow var(--transition-fast),
         background var(--transition-fast);
 }
-.template-card:hover,
-.template-card.selected {
+.template-card.p-button:not(:disabled):hover,
+.template-card.p-button:not(:disabled):active,
+.template-card.p-button.selected {
     border-color: var(--color-primary);
     background: var(--color-subtle);
+    color: var(--color-text);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+.template-card.p-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 .template-card strong,
 .template-card small {

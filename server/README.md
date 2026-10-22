@@ -1,5 +1,7 @@
 # EasyProject headless server
 
+离线升级入口：先`sudo systemctl stop easyproject`并创建受保护的新副本，再以受限服务身份执行`sudo -u easyproject env EASYPROJECT_DATA_DIR=/var/lib/easyproject <新版本目录>/bin/easyproject-server migrate-storage`。只迁移现有账号库及已存在的工作区库，不创建缺失库/账号，不输出凭据；预检全部目录/链接，每库原副本和事务保护，但不宣称跨库原子性。全部字段/ID映射核验通过才切换current并启动，失败保持停服、保存现场并人工决定回滚，不能仅切旧程序读取新库。
+
 2026-10-22候选：账号schema3/业务schema6，独立字符串ID统一完整语义前缀+32位UUID。account新增avatar/workspace_key，目录key与账号ID分离，用户名改变不迁库；账号/会话/MCP/重置码仍独立accounts.db，业务另库。头像/改名接口POST /api/account/profile；新密码与登录6—31字符。忘记密码为管理员15分钟一次性码，POST /api/admin/reset-codes发码，POST /api/auth/reset-password凭码重置并撤销旧会话/Token。仅保存摘要/一次显示，不提供用户名直接改密或邮件找回。
 
 唯一应用管理员也忘记密码时，服务器维护者可在自己的SSH终端执行`sudo -u easyproject env EASYPROJECT_DATA_DIR=/var/lib/easyproject /opt/easyproject/current/bin/easyproject-server issue-reset-code <应用用户名>`。只在新候选已部署后使用，输出是敏感一次性码，不发到聊天/日志/云文档。此命令依赖对账号库的系统文件权限，不能给普通网页用户开放；不是重用SSH密码。正常界面优先由已登录应用管理员发码。

@@ -13,6 +13,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if !root.is_absolute() {
         return Err("EASYPROJECT_DATA_DIR must be absolute".into());
     }
+    if std::env::args().nth(1).as_deref() == Some("migrate-storage") {
+        let count = easyproject_server::maintenance::migrate_existing(&root)?;
+        println!("Existing storage migrated and validated: {count} workspaces");
+        return Ok(());
+    }
     if std::env::args().nth(1).as_deref() == Some("issue-reset-code") {
         if !root.join("accounts.db").is_file() {
             return Err("Existing account database required".into());

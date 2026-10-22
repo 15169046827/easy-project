@@ -11,6 +11,7 @@ pub mod services;
 mod account_schema;
 pub mod auth;
 pub mod http;
+pub mod maintenance;
 pub mod mcp;
 mod password_reset;
 mod profile;

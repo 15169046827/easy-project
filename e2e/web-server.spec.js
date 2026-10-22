@@ -82,7 +82,11 @@ for (const width of [1280, 960, 375]) {
             await page.keyboard.press('Escape')
             await expect(account).toBeFocused()
             await accountAction(page, /用户设置|User settings/)
-            await expect(page.getByRole('dialog')).toContainText('test_admin')
+            await expect(page.getByRole('dialog').locator('#profile-username')).toHaveValue(
+                'test_admin'
+            )
+            await page.getByRole('tab', { name: /修改密码|Change password/ }).focus()
+            await page.keyboard.press('Enter')
             await expect(page.locator('#current-password')).toBeVisible()
             await page.keyboard.press('Escape')
             await expect(page.locator('html')).toHaveClass(dark ? /app-dark/ : /^(?!.*app-dark)/)
@@ -404,3 +408,111 @@ test('desktop bearer conflict refresh reloads data without navigating or signing
     )
     expect(bearerHeaders.some(header => stored.includes(header.slice(7)))).toBe(false)
 })
+
+for (const [width, dark] of /** @type {[number,boolean][]} */ ([
+    [1280, false],
+    [375, true]
+])) {
+    test(`profile avatar rename and administrator reset dialog at ${width}px dark=${dark}`, async ({
+        page,
+        request
+    }) => {
+        await page.setViewportSize({ width, height: 800 })
+        await page.addInitScript(
+            dark => localStorage.setItem('easyproject-theme', dark ? 'dark' : 'light'),
+            dark
+        )
+        const original = `profile_${width}_${Date.now()}`
+        const renamed = original + '_new'
+        const oldPassword = 'Profile-password-123!'
+        const created = await request.post(origin + '/api/auth/register', {
+            headers: { Origin: origin, 'X-EasyProject-Request': '1' },
+            data: { username: original, password: oldPassword }
+        })
+        expect(created.status()).toBe(200)
+        await login(page, original, oldPassword)
+        await accountAction(page, /用户设置|User settings/)
+        const settings = page.getByRole('dialog', { name: /^(用户设置|User settings)$/ })
+        const image = await page.evaluate(() => {
+            const canvas = document.createElement('canvas')
+            canvas.width = 400
+            canvas.height = 200
+            const context = canvas.getContext('2d')
+            context.fillStyle = '#34b3c0'
+            context.fillRect(0, 0, 400, 200)
+            return canvas.toDataURL('image/png').split(',')[1]
+        })
+        await settings.locator('input[type=file]').setInputFiles({
+            name: 'synthetic-avatar.png',
+            mimeType: 'image/png',
+            buffer: Buffer.from(image, 'base64')
+        })
+        const preview = settings.locator('.avatar-square img')
+        await expect(preview).toBeVisible()
+        await expect
+            .poll(() =>
+                preview.evaluate(img =>
+                    img instanceof HTMLImageElement ? [img.naturalWidth, img.naturalHeight] : [0, 0]
+                )
+            )
+            .toEqual([128, 128])
+        await settings.locator('#profile-username').fill(renamed)
+        await settings.locator('#profile-password').fill(oldPassword)
+        await settings
+            .getByRole('button', { name: /保存头像和用户名|Save avatar and username/ })
+            .click()
+        await expect(settings).not.toBeVisible()
+        const avatar = page.locator('.account-menu-entry .p-avatar')
+        await expect(avatar.locator('img')).toBeVisible()
+        const shape = await avatar.evaluate(element => {
+            const box = element.getBoundingClientRect()
+            return {
+                width: box.width,
+                height: box.height,
+                radius: getComputedStyle(element).borderRadius
+            }
+        })
+        expect(Math.abs(shape.width - shape.height)).toBeLessThan(0.1)
+        expect(shape.radius).toBe('50%')
+        await accountAction(page, /用户设置|User settings/)
+        await expect(settings.locator('#profile-username')).toHaveValue(renamed)
+        await settings.screenshot({
+            animations: 'disabled',
+            path: `test-results/profile-${width}-${dark}.png`
+        })
+        await page.keyboard.press('Escape')
+        await accountAction(page, /退出登录|Sign out/)
+        await login(page)
+        await accountAction(page, /账号管理|Accounts/)
+        const accounts = page.getByRole('dialog', { name: /^(账号管理|Accounts)$/ })
+        await accounts
+            .locator('li')
+            .filter({ hasText: renamed })
+            .getByRole('button', { name: /生成重置码|Generate reset code/ })
+            .click()
+        const secret = page.getByRole('dialog', {
+            name: /一次性密码重置码|One-time password reset code/
+        })
+        await expect(secret).toBeVisible()
+        await expect(secret.locator('input,textarea,[contenteditable=true]')).toHaveCount(0)
+        const code = await secret.locator('code').innerText()
+        expect(code).toMatch(/^epreset_[a-f0-9]{64}$/)
+        await page.keyboard.press('Escape')
+        await expect(secret).not.toBeVisible()
+        await page.keyboard.press('Escape')
+        await accountAction(page, /退出登录|Sign out/)
+        await page.getByRole('button', { name: /忘记密码|Forgot password/ }).click()
+        const recovery = page.getByRole('dialog', { name: /忘记密码|Forgot password/ })
+        await recovery.locator('#reset-username').fill(renamed)
+        await recovery.locator('#reset-code').fill(code)
+        await recovery.locator('#reset-new-password').fill('abc123')
+        await recovery.locator('#reset-confirm-password').fill('abc123')
+        await recovery.getByRole('button', { name: /^(重置密码|Reset password)$/ }).click()
+        await expect(recovery.getByRole('alert')).toContainText(/密码已重置|Password reset/)
+        await expect(recovery.locator('#reset-code')).toHaveValue('')
+        await expect(recovery.locator('#reset-new-password')).toHaveValue('')
+        await page.keyboard.press('Escape')
+        await login(page, renamed, 'abc123')
+        await expect(page.locator('.account-menu-entry .p-avatar img')).toBeVisible()
+    })
+}

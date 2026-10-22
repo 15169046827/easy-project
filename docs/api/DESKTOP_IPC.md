@@ -1,6 +1,8 @@
 # EasyProject桌面内部IPC契约
 
-只供受控Tauri窗口调用，不是HTTP接口，也不是对外MCP工具。应用来源提交见catalog.json；schema版本5。IPC不可通过浏览器地址直接调用。
+只供受控Tauri窗口调用，不是HTTP接口，也不是对外MCP工具。应用来源提交见catalog.json；候选schema版本6（旧schema5须受保护迁移）。IPC不可通过浏览器地址直接调用。
+
+新增`desktop_credentials`：仅Windows主窗口，`{action:'read'|'save'|'clear',credentials:{username,password}|null}`；读取返回凭据/null，保存/清除返回null。仅安装侧非C盘受控DPAPI文件，不接受路径/服务器地址，默认关闭/不自动登录，不进入业务导出。不记录参数/响应/密码，失败不伪装成功或登出。不是HTTP/MCP接口，浮窗不能调用。
 
 ## 统一分发
 

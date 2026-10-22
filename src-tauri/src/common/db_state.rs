@@ -14,7 +14,7 @@ impl DbState {
     }
 }
 
-pub(crate) const CURRENT_SCHEMA_VERSION: i64 = 5;
+pub(crate) const CURRENT_SCHEMA_VERSION: i64 = 6;
 
 pub fn init_db(database_path: &Path) -> Result<DbState, String> {
     let conn = Connection::open(database_path)
@@ -28,6 +28,37 @@ pub fn init_db(database_path: &Path) -> Result<DbState, String> {
         return Err(format!(
             "Database schema {existing_version} is newer than this EasyProject build supports ({CURRENT_SCHEMA_VERSION})"
         ));
+    }
+    let has_existing_tables: bool = conn
+        .query_row(
+            "SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table')",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|e| e.to_string())?;
+    if existing_version < CURRENT_SCHEMA_VERSION && has_existing_tables {
+        let parent = database_path
+            .parent()
+            .ok_or("Database parent unavailable")?;
+        let backups = parent.join("backups");
+        for ancestor in backups.ancestors() {
+            if let Ok(metadata) = std::fs::symlink_metadata(ancestor) {
+                if metadata.file_type().is_symlink() {
+                    return Err("Linked backup directory is not allowed".into());
+                }
+            }
+        }
+        std::fs::create_dir_all(&backups).map_err(|e| e.to_string())?;
+        let snapshot = backups.join(format!(
+            "pre-id-schema6-{}.db",
+            uuid::Uuid::new_v4().simple()
+        ));
+        conn.backup(
+            rusqlite::DatabaseName::Main,
+            &snapshot,
+            None::<fn(rusqlite::backup::Progress)>,
+        )
+        .map_err(|e| format!("Pre-migration backup failed: {e}"))?;
     }
 
     conn.execute_batch(
@@ -272,8 +303,12 @@ pub fn init_db(database_path: &Path) -> Result<DbState, String> {
     )
     .map_err(|error| format!("Failed to create plan_baseline indexes: {error}"))?;
 
-    conn.pragma_update(None, "user_version", CURRENT_SCHEMA_VERSION)
-        .map_err(|error| format!("Failed to record schema version: {error}"))?;
+    if existing_version < CURRENT_SCHEMA_VERSION {
+        super::id_migration::migrate(&conn)
+            .map_err(|error| format!("Identity migration failed: {error}"))?;
+    }
+    super::id_migration::normalize_memberships(&conn)
+        .map_err(|e| format!("Membership identity migration failed: {e}"))?;
 
     Ok(DbState(Mutex::new(conn), database_path.to_path_buf()))
 }

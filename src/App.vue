@@ -689,6 +689,14 @@ nav button.p-button.active {
     gap: 0.4rem;
     padding: 0 0.6rem;
 }
+.header-actions .account-menu-entry {
+    flex: 0 0 2.1rem;
+    width: 2.1rem;
+    min-width: 2.1rem;
+    height: 2.1rem;
+    padding: 0;
+    border-radius: 50%;
+}
 .floating-entry-label {
     font-size: 0.8rem;
     white-space: nowrap;

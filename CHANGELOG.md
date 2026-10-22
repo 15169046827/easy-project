@@ -6,6 +6,9 @@ All notable changes to EasyProject are documented here.
 
 ### Added
 
+- Candidate account profile editor with square, metadata-free compressed avatars and authenticated username changes, Windows current-user DPAPI password saving (opt-in, no automatic sign-in), and administrator-issued 15-minute single-use password recovery. Recovery revokes existing sessions and MCP credentials. Login and new passwords use 6–31 characters without a legacy long-password exception.
+- Protected account-schema3 and business-schema6 identity migrations: each owned table has an independent semantic-prefix full UUID ID, separate account/workspace keys preserve storage, all business references are mapped transactionally, original backups and expected ID maps are retained. JSON exports use version6 with v1–v6 imports, and managed schema5 backups are migrated without altering the source.
+
 - Open self-registration for ordinary accounts with isolated workspaces, plus personal remote MCP tokens (read / write / full CRUD scopes, one-time secret display, expiry and revocation). The new stateless Streamable HTTP endpoint shares existing validated entity tools and invalidates stale web revisions; password changes revoke sessions and MCP tokens. Local offline mode and the independent stdio companion remain unchanged.
 
 - Authenticated web/desktop remote workspaces, with a headless Rust server sharing existing domain validation, per-account storage, Argon2id passwords, revocable sessions, first-login password change, administrator account creation, CSRF/origin checks, conflict revisions and pre-write snapshots. Desktop launches at sign-in with an explicit login-free local/offline entry; no automatic migration, merge or error fallback. A dedicated restricted Ubuntu service account and system-level startup unit separate the application from the host administrator. Private Tailscale HTTPS deployment is separate from public release.

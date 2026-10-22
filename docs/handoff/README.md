@@ -1,5 +1,7 @@
 # EasyProject 新伙伴接手入口
 
+最新手册1.9/79条（2026-10-22）：新账号资料/密码/管理员码找回与全表ID规范任务，先读[专项检查点](../ACCOUNT_PROFILE_DATABASE_CHECKPOINT.md)和[数据库整体设计](../DATABASE_DESIGN.md)，再核对源码/候选/真实部署。旧1.8/schema2/5与13e6ab7为上一交付，不得直接用旧安装/校验脚本迁移新schema3/6；独立MCP须另行兼容更新与重连，权限不扩大。
+
 2026-10-21新增授权：直接开放普通账号注册、用户级MCP Token和本人远端CRUD；最新边界见[开放注册检查点](../OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)。交接版本1.8，仍79条；下方1.7等为阶段历史。不开放公网、不替换本地离线或独立stdio MCP。
 
 当前新增调整（2026-10-21）：桌面新启动默认登录，同时提供“不登录，本地使用”，保留独立离线数据；服务器采用独立受限easyproject身份和独立应用管理员/系统级自启。最新实现/部署/验证见[登录与服务检查点](../DESKTOP_LOGIN_SERVICE_CHECKPOINT.md)，前期部署见[WEB_SERVER_CHECKPOINT](../WEB_SERVER_CHECKPOINT.md)。新候选不等于原安装已覆盖；正式公开发布仍未通过。

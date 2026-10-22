@@ -38,9 +38,9 @@ pub fn handle_action(
             }
 
             let uuid = Uuid::new_v4().to_string().replace("-", "");
-            let unique_part = &uuid[..18.min(uuid.len())];
+            let unique_part = &uuid;
             let new_pm = NewProjectMember {
-                id: format!("PM:{}", unique_part),
+                id: format!("PROJECT_MEMBER:{}", unique_part),
                 project_id: req.project_id,
                 member_id: req.member_id,
                 role: req.role,

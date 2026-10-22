@@ -24,9 +24,9 @@ pub fn handle_action(
             let mut baselines = Vec::with_capacity(req.tasks.len());
             for t in &req.tasks {
                 let uuid = Uuid::new_v4().to_string().replace("-", "");
-                let unique_part = &uuid[..18.min(uuid.len())];
+                let unique_part = &uuid;
                 baselines.push(NewPlanBaseline {
-                    id: format!("BL:{}", unique_part),
+                    id: format!("PLAN_BASELINE:{}", unique_part),
                     project_id: req.project_id.clone(),
                     task_id: t.task_id.clone(),
                     task_name: t.task_name.clone(),

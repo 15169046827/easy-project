@@ -46,7 +46,7 @@
                         toggle-mask
                         :autocomplete="registering ? 'new-password' : 'current-password'"
                         required
-                        :input-props="{ minlength: registering ? 12 : undefined, maxlength: 128 }"
+                        :input-props="{ minlength: 6, maxlength: 31 }"
                         fluid
                     />
                     <template v-if="registering && !remoteUser">
@@ -62,7 +62,7 @@
                             autocomplete="new-password"
                             required
                             fluid
-                            :input-props="{ minlength: 12, maxlength: 128 }"
+                            :input-props="{ minlength: 6, maxlength: 31 }"
                         />
                     </template>
                     <template v-if="remoteUser">
@@ -74,7 +74,7 @@
                             toggle-mask
                             autocomplete="new-password"
                             required
-                            :input-props="{ minlength: 12, maxlength: 128 }"
+                            :input-props="{ minlength: 6, maxlength: 31 }"
                             fluid
                         />
                         <p>{{ $t('remote.passwordHint') }}</p>
@@ -85,6 +85,18 @@
                         :closable="false"
                         >{{ message }}</Message
                     >
+                    <div
+                        v-if="canRemember && !registering && !remoteUser"
+                        class="remember-password"
+                    >
+                        <Checkbox
+                            input-id="remember-password"
+                            v-model="rememberPassword"
+                            binary
+                            @update:model-value="onRememberChange"
+                        />
+                        <label for="remember-password">{{ $t('remote.rememberPassword') }}</label>
+                    </div>
                     <Button
                         type="submit"
                         :loading="busy"
@@ -113,7 +125,19 @@
                         :label="$t('remote.useLocal')"
                         @click="leaveRemote"
                     />
+                    <Button
+                        v-if="!remoteUser && !registering"
+                        type="button"
+                        text
+                        :label="$t('remote.forgetPassword')"
+                        @click="showRecovery = true"
+                    />
                 </form>
+                <PasswordRecoveryDialog
+                    v-model:visible="showRecovery"
+                    :username="username"
+                    @reset="clearSavedPassword"
+                />
             </div>
         </main>
         <section v-else class="remote-session">
@@ -142,9 +166,19 @@
                 :header="$t('remote.accounts')"
                 :style="{ width: '30rem', maxWidth: '95vw' }"
             >
-                <ul>
+                <ul class="account-list">
                     <li v-for="account in accounts" :key="account.id">
-                        {{ account.username }}{{ account.admin ? ` · ${$t('remote.admin')}` : '' }}
+                        <span
+                            >{{ account.username
+                            }}{{ account.admin ? ` · ${$t('remote.admin')}` : '' }}</span
+                        >
+                        <Button
+                            size="small"
+                            text
+                            :label="$t('remote.issueResetCode')"
+                            :loading="busy"
+                            @click="issueReset(account.username)"
+                        />
                     </li>
                 </ul>
                 <form class="remote-form" @submit.prevent="addAccount">
@@ -165,11 +199,25 @@
                         toggle-mask
                         required
                         autocomplete="new-password"
-                        :input-props="{ minlength: 12, maxlength: 128 }"
+                        :input-props="{ minlength: 6, maxlength: 31 }"
                         fluid
                     />
                     <Button type="submit" :loading="busy" :label="$t('remote.createAccount')" />
                 </form>
+            </Dialog>
+            <Dialog
+                :visible="Boolean(resetSecret)"
+                modal
+                :header="$t('remote.resetCodeTitle')"
+                :style="{ width: '30rem', maxWidth: '95vw' }"
+                @update:visible="resetSecret = ''"
+            >
+                <p>{{ $t('remote.resetHint') }}</p>
+                <pre class="reset-secret"><code tabindex="0">{{ resetSecret }}</code></pre>
+                <Button :label="$t('remote.copyToken')" icon="pi pi-copy" @click="copyReset" />
+                <Message v-if="resetCopyMessage" severity="info" :closable="false">{{
+                    resetCopyMessage
+                }}</Message>
             </Dialog>
             <Dialog
                 v-model:visible="changingPassword"
@@ -177,49 +225,109 @@
                 :header="$t('remote.userSettings')"
                 :style="{ width: '30rem', maxWidth: '95vw' }"
             >
-                <p>{{ $t('remote.username') }}：{{ remoteUser.username }}</p>
-                <form class="remote-form" @submit.prevent="changePassword">
-                    <label for="current-password">{{ $t('remote.currentPassword') }}</label>
-                    <Password
-                        input-id="current-password"
-                        v-model="password"
-                        :feedback="false"
-                        toggle-mask
-                        required
-                        autocomplete="current-password"
-                        fluid
-                    />
-                    <label for="new-password">{{ $t('remote.newPassword') }}</label>
-                    <Password
-                        input-id="new-password"
-                        v-model="newPassword"
-                        :feedback="false"
-                        toggle-mask
-                        required
-                        autocomplete="new-password"
-                        :input-props="{ minlength: 12, maxlength: 128 }"
-                        fluid
-                    />
-                    <p>{{ $t('remote.passwordHint') }}</p>
-                    <Button type="submit" :loading="busy" :label="$t('remote.changePassword')" />
-                </form>
+                <Tabs value="profile">
+                    <TabList>
+                        <Tab value="profile">{{ $t('remote.profileTab') }}</Tab>
+                        <Tab value="password">{{ $t('remote.changePassword') }}</Tab>
+                    </TabList>
+                    <TabPanels>
+                        <TabPanel value="profile">
+                            <form class="remote-form" @submit.prevent="saveProfile">
+                                <AccountAvatarEditor v-model="profileAvatar" />
+                                <label for="profile-username">{{ $t('remote.username') }}</label>
+                                <InputText
+                                    id="profile-username"
+                                    v-model="profileUsername"
+                                    required
+                                    minlength="3"
+                                    maxlength="48"
+                                    pattern="[A-Za-z0-9_-]{3,48}"
+                                    autocomplete="username"
+                                />
+                                <template v-if="profileUsername !== remoteUser.username">
+                                    <label for="profile-password">{{
+                                        $t('remote.currentPassword')
+                                    }}</label>
+                                    <Password
+                                        input-id="profile-password"
+                                        v-model="profilePassword"
+                                        :feedback="false"
+                                        toggle-mask
+                                        required
+                                        autocomplete="current-password"
+                                        :input-props="{ minlength: 6, maxlength: 31 }"
+                                        fluid
+                                    />
+                                </template>
+                                <Button
+                                    type="submit"
+                                    :loading="busy"
+                                    :label="$t('remote.saveProfile')"
+                                />
+                            </form>
+                        </TabPanel>
+                        <TabPanel value="password">
+                            <form class="remote-form" @submit.prevent="changePassword">
+                                <label for="current-password">{{
+                                    $t('remote.currentPassword')
+                                }}</label>
+                                <Password
+                                    input-id="current-password"
+                                    v-model="password"
+                                    :feedback="false"
+                                    toggle-mask
+                                    required
+                                    autocomplete="current-password"
+                                    :input-props="{ minlength: 6, maxlength: 31 }"
+                                    fluid
+                                />
+                                <label for="new-password">{{ $t('remote.newPassword') }}</label>
+                                <Password
+                                    input-id="new-password"
+                                    v-model="newPassword"
+                                    :feedback="false"
+                                    toggle-mask
+                                    required
+                                    autocomplete="new-password"
+                                    :input-props="{ minlength: 6, maxlength: 31 }"
+                                    fluid
+                                />
+                                <p>{{ $t('remote.passwordHint') }}</p>
+                                <Button
+                                    type="submit"
+                                    :loading="busy"
+                                    :label="$t('remote.changePassword')"
+                                />
+                            </form>
+                        </TabPanel>
+                    </TabPanels>
+                </Tabs>
             </Dialog>
         </section>
     </template>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, provide, ref } from 'vue'
+import { onMounted, onUnmounted, provide, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Message from 'primevue/message'
 import Dialog from 'primevue/dialog'
+import Checkbox from 'primevue/checkbox'
+import Tabs from 'primevue/tabs'
+import TabList from 'primevue/tablist'
+import Tab from 'primevue/tab'
+import TabPanels from 'primevue/tabpanels'
+import TabPanel from 'primevue/tabpanel'
+import { invoke } from '@tauri-apps/api/core'
 import App from '../App.vue'
 import DesktopRoot from './DesktopRoot.vue'
 import WindowTitleBar from './WindowTitleBar.vue'
 import RemoteMcpTokens from './RemoteMcpTokens.vue'
+import AccountAvatarEditor from './AccountAvatarEditor.vue'
+import PasswordRecoveryDialog from './PasswordRecoveryDialog.vue'
 import { getWindowChromeMode } from '../utils/windowChrome'
 import { hasDesktopStorage } from '../api/storage'
 import {
@@ -254,8 +362,41 @@ const accountPassword = ref('')
 const showAccounts = ref(false)
 const changingPassword = ref(false)
 const workspaceVersion = ref(0)
+const profileUsername = ref('')
+const profileAvatar = ref('')
+const profilePassword = ref('')
+const showRecovery = ref(false)
+const resetSecret = ref('')
+const resetCopyMessage = ref('')
+const canRemember = !isWebServer && hasDesktopStorage() && /Windows/i.test(navigator.userAgent)
+const rememberPassword = ref(false)
+watch(remoteUser, user => {
+    if (!user) {
+        showAccounts.value = false
+        changingPassword.value = false
+        resetSecret.value = ''
+        resetCopyMessage.value = ''
+    }
+})
+let accountsEpoch = 0
+watch(showAccounts, () => {
+    accountsEpoch += 1
+    resetSecret.value = ''
+    resetCopyMessage.value = ''
+})
+watch(changingPassword, value => {
+    if (!value) {
+        password.value = ''
+        newPassword.value = ''
+        profilePassword.value = ''
+        profileAvatar.value = ''
+    }
+})
 provide('easyproject-account-actions', {
     settings: () => {
+        profileUsername.value = remoteUser.value.username
+        profileAvatar.value = remoteUser.value.avatar || ''
+        profilePassword.value = ''
         changingPassword.value = true
     },
     accounts: loadAccounts,
@@ -297,6 +438,22 @@ async function submit() {
             return
         }
         await loginRemote(username.value, password.value)
+        if (canRemember) {
+            try {
+                await invoke('desktop_credentials', {
+                    action:
+                        rememberPassword.value && !remoteUser.value.mustChangePassword
+                            ? 'save'
+                            : 'clear',
+                    credentials:
+                        rememberPassword.value && !remoteUser.value.mustChangePassword
+                            ? { username: username.value, password: password.value }
+                            : null
+                })
+            } catch {
+                message.value = t('remote.savedPasswordFailed')
+            }
+        }
         password.value = ''
     })
 }
@@ -316,11 +473,56 @@ async function changePassword() {
             currentPassword: password.value,
             newPassword: newPassword.value
         })
+        await clearSavedPassword()
         password.value = ''
         newPassword.value = ''
         remoteUser.value = null
         changingPassword.value = false
     })
+}
+async function saveProfile() {
+    await perform(async () => {
+        const result = await remoteRequest('/api/account/profile', {
+            username: profileUsername.value,
+            avatar: profileAvatar.value,
+            currentPassword: profilePassword.value
+        })
+        const renamed = result.user.username !== remoteUser.value.username
+        remoteUser.value = result.user
+        if (renamed) await clearSavedPassword()
+        profilePassword.value = ''
+        changingPassword.value = false
+    })
+}
+async function clearSavedPassword() {
+    if (!canRemember) return
+    try {
+        await invoke('desktop_credentials', { action: 'clear', credentials: null })
+        rememberPassword.value = false
+    } catch {
+        message.value = t('remote.savedPasswordFailed')
+    }
+}
+function onRememberChange(value) {
+    if (!value) void clearSavedPassword()
+}
+async function issueReset(target) {
+    const current = accountsEpoch
+    await perform(async () => {
+        const result = await remoteRequest('/api/admin/reset-codes', { username: target })
+        if (showAccounts.value && current === accountsEpoch) {
+            resetCopyMessage.value = ''
+            resetSecret.value = result.code
+        }
+    })
+}
+async function copyReset() {
+    try {
+        await navigator.clipboard.writeText(resetSecret.value)
+        resetCopyMessage.value = t('remote.tokenCopied')
+    } catch {
+        resetCopyMessage.value = t('remote.tokenCopyFailed')
+    }
 }
 async function loadAccounts() {
     await perform(async () => {
@@ -346,6 +548,18 @@ async function reload() {
     })
 }
 onMounted(async () => {
+    if (canRemember && !username.value && !password.value) {
+        try {
+            const saved = await invoke('desktop_credentials', { action: 'read', credentials: null })
+            if (saved && !username.value && !password.value) {
+                username.value = saved.username
+                password.value = saved.password
+                rememberPassword.value = true
+            }
+        } catch {
+            message.value = t('remote.savedPasswordFailed')
+        }
+    }
     if (remoteActive.value && isWebServer) {
         try {
             await resumeRemote()
@@ -366,6 +580,35 @@ onUnmounted(() => clearInterval(timer))
 </script>
 
 <style scoped>
+.account-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+}
+.account-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+.account-list li span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.account-list li :deep(.p-button) {
+    flex-shrink: 0;
+}
+.remember-password {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.reset-secret {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    user-select: text;
+}
 .remote-auth,
 .remote-status,
 .remote-form {

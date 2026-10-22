@@ -55,13 +55,13 @@ fn export_json(db: &DbState) -> Result<Value, String> {
         7,
     )?;
     Ok(
-        json!({"schemaVersion":5,"exportedAt":Local::now().to_rfc3339(),"projects":projects,"tasks":tasks,"dependencies":dependencies,"members":members,"project_members":project_members,"plan_baselines":plan_baselines}),
+        json!({"schemaVersion":6,"exportedAt":Local::now().to_rfc3339(),"projects":projects,"tasks":tasks,"dependencies":dependencies,"members":members,"project_members":project_members,"plan_baselines":plan_baselines}),
     )
 }
 
 fn import_json(db: &DbState, payload: &Value) -> Result<(), String> {
     let schema_version = payload.get("schemaVersion").and_then(Value::as_i64);
-    if !matches!(schema_version, Some(1..=5)) {
+    if !matches!(schema_version, Some(1..=6)) {
         return Err("Unsupported or missing schemaVersion".to_string());
     }
     let projects = payload
@@ -220,6 +220,10 @@ fn import_json(db: &DbState, payload: &Value) -> Result<(), String> {
             "Import contains {invalid_relations} invalid project, member, assignee, or baseline relationship(s)"
         ));
     }
+    let mappings = crate::common::id_migration::normalize(&tx)
+        .map_err(|e| format!("Imported identity normalization failed: {e}"))?;
+    crate::common::id_migration::save_mapping(&tx, &mappings)
+        .map_err(|e| format!("Identity mapping protection failed: {e}"))?;
     tx.commit().map_err(|e| e.to_string())
 }
 
@@ -256,10 +260,18 @@ fn database_counts(path: &Path) -> Result<Value, String> {
     if integrity != "ok" {
         return Err(format!("Backup integrity check failed: {integrity}"));
     }
+    if conn
+        .prepare("PRAGMA foreign_key_check")
+        .map_err(|e| e.to_string())?
+        .exists([])
+        .map_err(|e| e.to_string())?
+    {
+        return Err("Backup foreign-key validation failed".into());
+    }
     let version: i64 = conn
         .query_row("PRAGMA user_version", [], |row| row.get(0))
         .map_err(|error| format!("Cannot read backup schema version: {error}"))?;
-    if version != CURRENT_SCHEMA_VERSION {
+    if version != CURRENT_SCHEMA_VERSION && version != 5 {
         return Err(format!(
             "Backup schema version {version} is incompatible with this application ({CURRENT_SCHEMA_VERSION})"
         ));
@@ -371,11 +383,20 @@ fn restore_backup(db: &DbState, source: &Path) -> Result<Value, String> {
     let mut conn =
         db.0.lock()
             .map_err(|_| "Database lock failed".to_string())?;
-    match conn.restore(
-        DatabaseName::Main,
-        source,
-        None::<fn(rusqlite::backup::Progress)>,
-    ) {
+    let result = conn
+        .restore(
+            DatabaseName::Main,
+            source,
+            None::<fn(rusqlite::backup::Progress)>,
+        )
+        .and_then(|()| {
+            let version: i64 = conn.query_row("PRAGMA user_version", [], |r| r.get(0))?;
+            if version == 5 {
+                crate::common::id_migration::migrate(&conn)?;
+            }
+            Ok(())
+        });
+    match result {
         Ok(()) => Ok(json!({"safety_backup": safety})),
         Err(error) => {
             let rollback = if safety_path.is_empty() {
@@ -529,7 +550,7 @@ mod tests {
     }
 
     #[test]
-    fn round_trips_plan_baselines_in_schema_five() {
+    fn round_trips_plan_baselines_in_schema_six() {
         let root = std::env::temp_dir().join(format!(
             "easyproject-baseline-export-{}",
             uuid::Uuid::new_v4()
@@ -554,7 +575,7 @@ mod tests {
         }
 
         let snapshot = export_json(&state).expect("snapshot should export");
-        assert_eq!(snapshot["schemaVersion"], 5);
+        assert_eq!(snapshot["schemaVersion"], 6);
         assert_eq!(snapshot["plan_baselines"].as_array().unwrap().len(), 1);
         import_json(&state, &snapshot).expect("snapshot should import");
         let count: i64 = state
@@ -567,6 +588,30 @@ mod tests {
 
         drop(state);
         let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn restores_schema_five_with_identity_migration_without_modifying_old_backup() {
+        let root =
+            std::env::temp_dir().join(format!("restore-v5-{}", uuid::Uuid::new_v4().simple()));
+        fs::create_dir_all(root.join("backups")).unwrap();
+        let live = init_db(&root.join("project_manager.db")).unwrap();
+        let old_path = root.join("backups/legacy-v5.db");
+        let old = init_db(&old_path).unwrap();
+        old.lock_connection().unwrap().execute_batch("INSERT INTO project(id,name) VALUES('legacy-project','Legacy title'); INSERT INTO task(id,project_id,name) VALUES('legacy-task','legacy-project','Legacy task'); PRAGMA user_version=5;").unwrap();
+        drop(old);
+        let original = fs::read(&old_path).unwrap();
+        restore_backup(&live, &old_path).unwrap();
+        let db = live.lock_connection().unwrap();
+        let (project,task):(String,String)=db.query_row("SELECT p.id,t.id FROM project p JOIN task t ON t.project_id=p.id WHERE p.name='Legacy title' AND t.name='Legacy task'",[],|r|Ok((r.get(0)?,r.get(1)?))).unwrap();
+        assert!(crate::common::id::valid_id(&project, "PROJECT"));
+        assert!(crate::common::id::valid_id(&task, "TASK"));
+        assert_eq!(
+            db.query_row("PRAGMA user_version", [], |r| r.get::<_, i64>(0))
+                .unwrap(),
+            6
+        );
+        assert_eq!(fs::read(&old_path).unwrap(), original);
     }
 
     #[test]

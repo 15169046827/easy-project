@@ -60,7 +60,7 @@ impl Server {
         }
         std::fs::create_dir_all(&root).map_err(|e| e.to_string())?;
         let auth = auth::open(&root.join("accounts.db"))?;
-        let dummy_hash = auth::password_hash(&auth::random_token())?;
+        let dummy_hash = auth::password_hash(&auth::random_token()[..31])?;
         Ok(Arc::new(Self {
             auth: Mutex::new(auth),
             root,
@@ -97,8 +97,18 @@ impl Server {
                 "Workspace capacity reached",
             ));
         }
+        let key: String = self
+            .auth
+            .lock()
+            .map_err(internal)?
+            .query_row(
+                "SELECT workspace_key FROM account WHERE id=?1",
+                [&user.id],
+                |r| r.get(0),
+            )
+            .map_err(internal)?;
         let workspace = Arc::new(Mutex::new(
-            Workspace::open(&self.root, &user.id).map_err(internal)?,
+            Workspace::open(&self.root, &key).map_err(internal)?,
         ));
         map.insert(user.id.clone(), workspace.clone());
         Ok(workspace)
@@ -157,6 +167,9 @@ pub fn router(server: Arc<Server>) -> Router {
         .route("/api/auth/session", get(session))
         .route("/api/auth/logout", post(logout))
         .route("/api/auth/password", post(password))
+        .route("/api/account/profile", post(profile))
+        .route("/api/auth/reset-password", post(reset_password))
+        .route("/api/admin/reset-codes", post(issue_reset_code))
         .route("/api/admin/users", get(users).post(create_user))
         .route("/api/workspace/revision", get(revision))
         .route("/api/workspace/action", post(action))
@@ -234,7 +247,7 @@ async fn login(
     headers: HeaderMap,
     Json(input): Json<Credentials>,
 ) -> Result<Response, ApiError> {
-    if input.username.len() > 48 || input.password.len() > 512 {
+    if input.username.len() > 48 || !(6..=31).contains(&input.password.chars().count()) {
         return Err(error(StatusCode::BAD_REQUEST, "Invalid credentials"));
     }
     {
@@ -543,6 +556,122 @@ async fn password(
     .map_err(internal)?
     .map_err(|e| error(StatusCode::BAD_REQUEST, &e))?;
     Ok(Json(json!({"ok":true,"loginRequired":true})))
+}
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProfileChange {
+    username: String,
+    avatar: String,
+    #[serde(default)]
+    current_password: String,
+}
+async fn profile(
+    State(server): State<Arc<Server>>,
+    headers: HeaderMap,
+    Json(input): Json<ProfileChange>,
+) -> Result<Json<Value>, ApiError> {
+    let (user, _) = server.user(&headers)?;
+    ready(&user)?;
+    if input.current_password.len() > 512
+        || input.avatar.len() > 180_000
+        || input.username.len() > 48
+    {
+        return Err(error(StatusCode::BAD_REQUEST, "Invalid profile size"));
+    }
+    let _permit = server
+        .auth_slots
+        .try_acquire()
+        .map_err(|_| error(StatusCode::TOO_MANY_REQUESTS, "Authentication busy"))?;
+    let worker = server.clone();
+    let updated = tokio::task::spawn_blocking(move || {
+        crate::profile::update(
+            &*worker.auth.lock().map_err(|_| "Account unavailable")?,
+            &user,
+            &input.username,
+            &input.avatar,
+            &input.current_password,
+        )
+    })
+    .await
+    .map_err(internal)?
+    .map_err(|e| error(StatusCode::BAD_REQUEST, &e))?;
+    Ok(Json(json!({"user":updated})))
+}
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ResetPassword {
+    username: String,
+    code: String,
+    new_password: String,
+}
+async fn reset_password(
+    State(server): State<Arc<Server>>,
+    ConnectInfo(peer): ConnectInfo<SocketAddr>,
+    Json(input): Json<ResetPassword>,
+) -> Result<Json<Value>, ApiError> {
+    if input.username.len() > 48
+        || input.code.len() > 72
+        || !(6..=31).contains(&input.new_password.chars().count())
+    {
+        return Err(error(StatusCode::BAD_REQUEST, "Invalid reset request"));
+    }
+    {
+        let mut attempts = server.attempts.lock().map_err(internal)?;
+        attempts.retain(|_, (time, _)| time.elapsed() < Duration::from_secs(900));
+        if attempts.len() >= 1024 {
+            return Err(error(StatusCode::TOO_MANY_REQUESTS, "Try again later"));
+        }
+        let entry = attempts
+            .entry(format!("reset:{}", peer.ip()))
+            .or_insert((Instant::now(), 0));
+        entry.1 += 1;
+        if entry.1 > 10 {
+            return Err(error(
+                StatusCode::TOO_MANY_REQUESTS,
+                "Try again in 15 minutes",
+            ));
+        }
+    }
+    let _permit = server
+        .auth_slots
+        .try_acquire()
+        .map_err(|_| error(StatusCode::TOO_MANY_REQUESTS, "Authentication busy"))?;
+    let worker = server.clone();
+    tokio::task::spawn_blocking(move || {
+        crate::password_reset::reset(
+            &mut *worker.auth.lock().map_err(|_| "Reset unavailable")?,
+            &input.username,
+            &input.code,
+            &input.new_password,
+        )
+    })
+    .await
+    .map_err(internal)?
+    .map_err(|_| error(StatusCode::BAD_REQUEST, "Invalid or expired reset code"))?;
+    Ok(Json(json!({"ok":true})))
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ResetTarget {
+    username: String,
+}
+async fn issue_reset_code(
+    State(server): State<Arc<Server>>,
+    headers: HeaderMap,
+    Json(input): Json<ResetTarget>,
+) -> Result<Json<Value>, ApiError> {
+    let (user, _) = server.user(&headers)?;
+    ready(&user)?;
+    if !user.admin {
+        return Err(error(StatusCode::FORBIDDEN, "Administrator required"));
+    }
+    if input.username.len() > 48 {
+        return Err(error(StatusCode::BAD_REQUEST, "Invalid username"));
+    }
+    let code =
+        crate::password_reset::issue(&mut *server.auth.lock().map_err(internal)?, &input.username)
+            .map_err(|e| error(StatusCode::BAD_REQUEST, &e))?;
+    Ok(Json(json!({"code":code,"expiresIn":900})))
 }
 async fn users(
     State(server): State<Arc<Server>>,

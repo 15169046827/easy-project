@@ -12,7 +12,10 @@
         >
             <Avatar
                 v-if="remoteUser"
-                :label="remoteUser.username.slice(0, 1).toUpperCase()"
+                :label="
+                    remoteUser.avatar ? undefined : remoteUser.username.slice(0, 1).toUpperCase()
+                "
+                :image="remoteUser.avatar || undefined"
                 shape="circle"
                 aria-hidden="true"
             />
@@ -101,16 +104,28 @@ const items = computed(() => [
 .remote-connect-entry {
     flex: 0 0 2.5rem;
     width: 2.5rem;
+    height: 2.5rem;
+    aspect-ratio: 1;
     min-width: 2.5rem;
     padding: 0;
     color: inherit;
 }
 .account-menu-entry :deep(.p-avatar) {
+    flex: 0 0 1.75rem;
     width: 1.75rem;
     height: 1.75rem;
+    min-width: 1.75rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
     font-size: 0.8rem;
     background: rgb(255 255 255 / 16%);
     color: inherit;
     pointer-events: none;
+}
+.account-menu-entry :deep(.p-avatar img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 </style>

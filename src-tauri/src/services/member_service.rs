@@ -23,7 +23,7 @@ pub fn handle_action(
             }
 
             let uuid = Uuid::new_v4().to_string().replace("-", "");
-            let unique_part = &uuid[..18.min(uuid.len())];
+            let unique_part = &uuid;
 
             let new_member = NewMember {
                 id: format!("MEMBER:{}", unique_part),

@@ -10,8 +10,7 @@ use std::collections::{HashMap, HashSet};
 use uuid::Uuid;
 
 fn generated_id(prefix: &str) -> String {
-    let value = Uuid::new_v4().simple().to_string();
-    format!("{prefix}:{}", &value[..18])
+    crate::common::id::new_id(prefix)
 }
 
 pub fn handle_action(
@@ -36,7 +35,7 @@ pub fn handle_action(
             }
 
             let uuid = Uuid::new_v4().to_string().replace("-", "");
-            let unique_part = &uuid[..18.min(uuid.len())];
+            let unique_part = &uuid;
 
             let new_project = NewProject {
                 id: format!("PROJECT:{}", unique_part),
@@ -52,10 +51,8 @@ pub fn handle_action(
                 calendar_exceptions: project_create_request.calendar_exceptions,
             };
 
-            let owner_membership_id = (!new_project.owner.is_empty()).then(|| {
-                let uuid = Uuid::new_v4().to_string().replace("-", "");
-                format!("PM:{}", &uuid[..18.min(uuid.len())])
-            });
+            let owner_membership_id =
+                (!new_project.owner.is_empty()).then(|| generated_id("PROJECT_MEMBER"));
             if let Err(e) =
                 project_db::insert_project(db, &new_project, owner_membership_id.as_deref())
             {
@@ -98,7 +95,7 @@ pub fn handle_action(
                 weekend_days: request.project.weekend_days,
                 calendar_exceptions: request.project.calendar_exceptions,
             };
-            let owner_membership_id = (!owner.is_empty()).then(|| generated_id("PM"));
+            let owner_membership_id = (!owner.is_empty()).then(|| generated_id("PROJECT_MEMBER"));
 
             let mut key_to_id: HashMap<String, String> = HashMap::new();
             let mut tasks = Vec::with_capacity(request.tasks.len());
@@ -210,7 +207,11 @@ pub fn handle_action(
                     "INSERT INTO task_dependency
                      (id, predecessor_task_id, successor_task_id, dependency_type, lag_minutes)
                      VALUES (?1, ?2, ?3, 'FS', 0)",
-                    params![generated_id("DEP"), predecessor_id, successor_id],
+                    params![
+                        generated_id("TASK_DEPENDENCY"),
+                        predecessor_id,
+                        successor_id
+                    ],
                 ) {
                     return ApiResponse::err(&format!("DB error: {e}"));
                 }
@@ -314,11 +315,10 @@ pub fn handle_action(
             param_set.push("update_time = datetime('now', 'localtime')".to_string());
             value_set.push(id.to_string());
 
-            let owner_membership_id =
-                owner.as_deref().filter(|value| !value.is_empty()).map(|_| {
-                    let uuid = Uuid::new_v4().to_string().replace("-", "");
-                    format!("PM:{}", &uuid[..18.min(uuid.len())])
-                });
+            let owner_membership_id = owner
+                .as_deref()
+                .filter(|value| !value.is_empty())
+                .map(|_| generated_id("PROJECT_MEMBER"));
             let owner_membership = owner_membership_id
                 .as_deref()
                 .zip(owner.as_deref().filter(|value| !value.is_empty()));

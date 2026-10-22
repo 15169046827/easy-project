@@ -2,7 +2,6 @@ use crate::common::db_state::DbState;
 use crate::models::task_dependency::TaskDependency;
 use rusqlite::{params, OptionalExtension};
 use std::collections::{HashMap, HashSet};
-use uuid::Uuid;
 
 /// 有向图环检测 DFS，导出便于测试
 pub fn has_cycle(graph: &HashMap<String, Vec<String>>, start: &str, target: &str) -> bool {
@@ -122,7 +121,7 @@ pub fn replace_predecessors(
     )
     .map_err(|e| e.to_string())?;
     for predecessor in predecessors {
-        let id = format!("DEP:{}", &Uuid::new_v4().simple().to_string()[..18]);
+        let id = crate::common::id::new_id("TASK_DEPENDENCY");
         tx.execute(
             "INSERT INTO task_dependency (id, predecessor_task_id, successor_task_id, dependency_type, lag_minutes) VALUES (?1, ?2, ?3, 'FS', 0)",
             params![id, predecessor, successor_id],

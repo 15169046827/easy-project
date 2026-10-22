@@ -8,7 +8,10 @@ pub mod models;
 #[path = "../../src-tauri/src/services/mod.rs"]
 pub mod services;
 
+mod account_schema;
 pub mod auth;
 pub mod http;
 pub mod mcp;
+mod password_reset;
+mod profile;
 pub mod workspace;

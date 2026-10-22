@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-22待交付源码：account_schema负责账号schema3事务迁移，账号ID与workspace_key分离；profile负责本人头像/用户名校验，password_reset负责管理员短时一次性码/摘要/原子撤销旧凭据。common/id与id_migration统一大写语义+完整UUID、业务schema6全关联迁移及原备份；credentials为Windows当前用户DPAPI加密、安装侧非C盘文件，不进入业务导出。准确实现/验证/尚未部署状态见新账号资料检查点，尚不能替换当前13e6ab7部署事实。
+
 2026-10-21冲突刷新修复：`remote.js::refreshRemoteWorkspace`与业务操作共用队列，更新revision后由RemoteRoot增加workspaceVersion仅重建App。不得调用整页reload处理工作区冲突，否则桌面仅内存Bearer丢失；网络失败保留登录/冲突，真正401仍回登录。显式退出/切换模式的整页重载不受此改动影响，Token不持久化。
 
 2026-10-21账户UI入口调整：RemoteRoot提供菜单回调，RemoteConnect现在渲染PrimeVue头像菜单于App header-actions中（沿用文件名，不再独立云按钮）；用户设置/MCP/管理员账号管理/退出均由该菜单进入。App notice插槽将冲突/错误放在工具栏下，不再挤动标题栏。RemoteMcpTokens的Secret仅内存，上层Dialog正文/code+显式复制，关闭/管理页关闭即清理，viewEpoch拒绝旧响应重新显示。API、鉴权及Token生命周期后端规则不变；最新验证/部署见专项检查点。

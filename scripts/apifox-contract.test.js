@@ -13,8 +13,17 @@ const powerShellAvailable =
 describe('Apifox API documentation boundary', () => {
     it('documents the real authenticated HTTP server separately from native protocols', () => {
         const api = JSON.parse(readFileSync('docs/api/web-openapi.json', 'utf8'))
-        expect(Object.keys(api.paths)).toHaveLength(12)
-        expect(Object.values(api.paths).flatMap(methods => Object.values(methods))).toHaveLength(15)
+        expect(Object.keys(api.paths)).toHaveLength(15)
+        expect(Object.values(api.paths).flatMap(methods => Object.values(methods))).toHaveLength(18)
+        expect(api.paths['/api/auth/reset-password'].post.security).toEqual([])
+        expect(
+            api.paths['/api/auth/register'].post.requestBody.content['application/json'].schema
+                .properties.password
+        ).toMatchObject({ minLength: 6, maxLength: 31 })
+        expect(
+            api.paths['/api/account/profile'].post.requestBody.content['application/json'].schema
+                .additionalProperties
+        ).toBe(false)
         expect(api.paths['/api/auth/register'].post.security).toEqual([])
         expect(api.paths['/mcp'].post.security).toEqual([{ mcpToken: [] }])
         expect(
@@ -34,10 +43,10 @@ describe('Apifox API documentation boundary', () => {
     })
     it('groups all native protocol interfaces without inventing HTTP endpoints', () => {
         const layout = JSON.parse(readFileSync('docs/api/apifox-layout.json', 'utf8'))
-        expect(layout.folders).toHaveLength(20)
-        expect(layout.interfaces).toHaveLength(55)
-        expect(new Set(layout.interfaces.map(item => item.key)).size).toBe(55)
-        expect(new Set(layout.interfaces.map(item => item.path)).size).toBe(55)
+        expect(layout.folders).toHaveLength(21)
+        expect(layout.interfaces).toHaveLength(56)
+        expect(new Set(layout.interfaces.map(item => item.key)).size).toBe(56)
+        expect(new Set(layout.interfaces.map(item => item.path)).size).toBe(56)
         for (const item of layout.interfaces) {
             expect(layout.folders.some(folder => folder.key === item.group)).toBe(true)
             expect(['MCP stdio', 'Tauri IPC']).toContain(item.protocol)
@@ -45,12 +54,12 @@ describe('Apifox API documentation boundary', () => {
             expect(item.path).not.toMatch(/^https?:/)
         }
         expect(layout.interfaces.filter(item => item.protocol === 'MCP stdio')).toHaveLength(18)
-        expect(layout.interfaces.filter(item => item.protocol === 'Tauri IPC')).toHaveLength(37)
+        expect(layout.interfaces.filter(item => item.protocol === 'Tauri IPC')).toHaveLength(38)
     })
-    it('records all 18 MCP tools, 6 commands and 31 dispatcher actions without inventing HTTP', () => {
+    it('records all 18 MCP tools, 7 commands and 31 dispatcher actions without inventing HTTP', () => {
         expect(catalog.tools).toHaveLength(18)
         expect(new Set(catalog.tools.map(tool => tool.name)).size).toBe(18)
-        expect(catalog.commands).toHaveLength(6)
+        expect(catalog.commands).toHaveLength(7)
         expect(Object.values(catalog.actions).flat()).toHaveLength(31)
         expect(catalog.transport.mcp).toContain('no HTTP')
         expect(catalog.tools.every(tool => tool.inputSchema.additionalProperties === false)).toBe(
@@ -59,7 +68,7 @@ describe('Apifox API documentation boundary', () => {
     })
     it('keeps generated documentation keys unique and exactly covers the registered API', () => {
         const docs = JSON.parse(readFileSync('docs/api/apifox-documents.json', 'utf8'))
-        expect(docs).toHaveLength(26)
+        expect(docs).toHaveLength(27)
         expect(new Set(docs.map(doc => doc.key)).size).toBe(docs.length)
         for (const tool of catalog.tools)
             expect(

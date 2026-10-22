@@ -4,6 +4,7 @@
 
 pub mod cmds;
 pub mod common;
+pub mod credentials;
 pub mod db;
 pub mod floating_window;
 pub mod mcp;
@@ -89,6 +90,7 @@ pub fn run() {
             storage::storage_info,
             storage::set_data_directory,
             storage::reveal_backup_directory
+            ,credentials::desktop_credentials
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -34,13 +34,22 @@ impl Workspace {
         std::fs::create_dir_all(&directory).map_err(|e| e.to_string())?;
         let db = init_db(&directory.join("project_manager.db"))?;
         db.lock_connection().map_err(|e| e.to_string())?.execute_batch(
-            "CREATE TABLE IF NOT EXISTS web_revision(id INTEGER PRIMARY KEY CHECK(id=1), value INTEGER NOT NULL);
-             INSERT OR IGNORE INTO web_revision VALUES(1,0);"
+            "CREATE TABLE IF NOT EXISTS web_revision(id TEXT PRIMARY KEY NOT NULL,singleton_key INTEGER NOT NULL UNIQUE CHECK(singleton_key=1), value INTEGER NOT NULL);"
         ).map_err(|e| e.to_string())?;
+        db.lock_connection()
+            .map_err(|e| e.to_string())?
+            .execute(
+                "INSERT OR IGNORE INTO web_revision VALUES(?1,1,0)",
+                [crate::common::id::new_id("WEB_REVISION")],
+            )
+            .map_err(|e| e.to_string())?;
         let revision = new_revision();
         db.lock_connection()
             .map_err(|e| e.to_string())?
-            .execute("UPDATE web_revision SET value=?1 WHERE id=1", [revision])
+            .execute(
+                "UPDATE web_revision SET value=?1 WHERE singleton_key=1",
+                [revision],
+            )
             .map_err(|e| e.to_string())?;
         Ok(Self {
             db,
@@ -62,7 +71,10 @@ impl Workspace {
             self.db
                 .lock_connection()
                 .map_err(|_| "Workspace unavailable")?
-                .execute("UPDATE web_revision SET value=?1 WHERE id=1", [next])
+                .execute(
+                    "UPDATE web_revision SET value=?1 WHERE singleton_key=1",
+                    [next],
+                )
                 .map_err(|_| "Workspace unavailable")?;
             self.current_revision = next;
         }
@@ -92,7 +104,10 @@ impl Workspace {
             self.db
                 .lock_connection()
                 .map_err(|e| (500, e.to_string()))?
-                .execute("UPDATE web_revision SET value=?1 WHERE id=1", [next])
+                .execute(
+                    "UPDATE web_revision SET value=?1 WHERE singleton_key=1",
+                    [next],
+                )
                 .map_err(|e| (500, e.to_string()))?;
             // Keep the process epoch independently of SQLite restore contents.
             // If post-restore bookkeeping fails, old backup revisions stay invalid.
@@ -151,10 +166,10 @@ impl Workspace {
         }
         if mutation {
             self.db.lock_connection().map_err(|e| (500,e.to_string()))?.execute_batch(
-                "CREATE TABLE IF NOT EXISTS web_revision(id INTEGER PRIMARY KEY CHECK(id=1), value INTEGER NOT NULL);"
+                "CREATE TABLE IF NOT EXISTS web_revision(id TEXT PRIMARY KEY NOT NULL,singleton_key INTEGER NOT NULL UNIQUE CHECK(singleton_key=1), value INTEGER NOT NULL);"
             ).map_err(|e| (500,e.to_string()))?;
             self.db.lock_connection().map_err(|e| (500,e.to_string()))?
-                .execute("INSERT INTO web_revision VALUES(1,?1) ON CONFLICT(id) DO UPDATE SET value=excluded.value", [next]).map_err(|e| (500,e.to_string()))?;
+                .execute("INSERT INTO web_revision VALUES(?1,1,?2) ON CONFLICT(singleton_key) DO UPDATE SET value=excluded.value", rusqlite::params![crate::common::id::new_id("WEB_REVISION"),next]).map_err(|e| (500,e.to_string()))?;
         }
         Ok(json!({"data":result.data,"revision":next}))
     }

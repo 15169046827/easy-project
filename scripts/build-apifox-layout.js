@@ -38,6 +38,11 @@ const operations = {
     fetch_ics: '获取ICS'
 }
 const commands = {
+    desktop_credentials: [
+        '桌面加密保存密码',
+        'ipc.account',
+        '参数{action:"read"|"save"|"clear",credentials:{username,password}|null}；仅Windows主窗口可调用，read返回凭据或null，save/clear返回null，失败reject且不改变登录。安装侧非C盘DPAPI当前用户加密文件，默认不保存、只填充不自动登录、不进入业务导出；不接受自定义路径、服务器地址或任意账号字段。不得记录响应/密码。'
+    ],
     crud_action: ['统一业务分发', 'ipc', desktop],
     open_task_window: [
         '打开任务悬浮窗',
@@ -74,6 +79,7 @@ const folders = [
     ...Object.entries(models).map(([key, name]) => ({ key: `ipc.${key}`, name, parent: 'ipc' })),
     { key: 'ipc.window', name: '窗口与悬浮窗', parent: 'ipc' },
     { key: 'ipc.storage', name: '存储位置', parent: 'ipc' },
+    { key: 'ipc.account', name: '本机登录凭据', parent: 'ipc' },
     { key: 'guide', name: '03 接入规范与模型' },
     { key: 'archive', name: '99 历史文档快照' },
     { key: 'archive.mcp', name: 'MCP 原文快照', parent: 'archive' },
@@ -119,7 +125,7 @@ for (const [model, actions] of Object.entries(catalog.actions)) {
         })
     }
 }
-if (interfaces.length !== 55 || new Set(interfaces.map(item => item.key)).size !== 55)
+if (interfaces.length !== 56 || new Set(interfaces.map(item => item.key)).size !== 56)
     throw new Error('Interface inventory mismatch')
 writeFileSync(
     'docs/api/apifox-layout.json',

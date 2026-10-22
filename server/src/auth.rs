@@ -16,38 +16,17 @@ pub struct User {
     pub username: String,
     pub admin: bool,
     pub must_change_password: bool,
+    pub avatar: String,
 }
 
 pub fn open(path: &Path) -> Result<Connection, String> {
-    let db = Connection::open(path).map_err(|e| e.to_string())?;
-    let version: i64 = db
-        .query_row("PRAGMA user_version", [], |row| row.get(0))
-        .map_err(|e| e.to_string())?;
-    if version > 2 {
-        return Err("Account schema is newer than this server supports".into());
-    }
-    db.execute_batch(
-        "PRAGMA foreign_keys=ON;
-         BEGIN IMMEDIATE;
-         CREATE TABLE IF NOT EXISTS account(
-           id TEXT PRIMARY KEY, username TEXT NOT NULL UNIQUE,
-           password_hash TEXT NOT NULL, admin INTEGER NOT NULL DEFAULT 0,
-           must_change INTEGER NOT NULL DEFAULT 1, disabled INTEGER NOT NULL DEFAULT 0);
-         CREATE TABLE IF NOT EXISTS session(
-           token_hash TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES account(id),
-           expires INTEGER NOT NULL);
-         CREATE INDEX IF NOT EXISTS session_expiry ON session(expires);
-         CREATE TABLE IF NOT EXISTS mcp_token(
-           id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES account(id),
-           name TEXT NOT NULL, token_hash TEXT NOT NULL UNIQUE,
-           scope TEXT NOT NULL CHECK(scope IN ('read','write','delete')),
-           created INTEGER NOT NULL, expires INTEGER NOT NULL);
-         CREATE INDEX IF NOT EXISTS mcp_token_account ON mcp_token(account_id);
-         PRAGMA user_version=2;
-         COMMIT;",
-    )
-    .map_err(|e| e.to_string())?;
-    Ok(db)
+    crate::account_schema::open(path)
+}
+
+/// Host operators may issue a short-lived recovery code from their own terminal.
+/// Never invoke this to display a real code in logs or assistant tool output.
+pub fn issue_password_reset(db: &mut Connection, username: &str) -> Result<String, String> {
+    crate::password_reset::issue(db, username)
 }
 
 pub fn digest(token: &str) -> String {
@@ -63,8 +42,8 @@ pub fn random_token() -> String {
 }
 
 pub fn password_hash(password: &str) -> Result<String, String> {
-    if !(12..=128).contains(&password.chars().count()) {
-        return Err("Password must contain 12 to 128 characters".into());
+    if !(6..=31).contains(&password.chars().count()) {
+        return Err("Password must contain 6 to 31 characters".into());
     }
     Argon2::default()
         .hash_password(password.as_bytes(), &SaltString::generate(&mut OsRng))
@@ -115,14 +94,15 @@ fn create_account(
     }
     let hash = password_hash(password)?;
     let user = User {
-        id: uuid::Uuid::new_v4().simple().to_string(),
+        id: crate::common::id::new_id("ACCOUNT"),
         username: username.to_owned(),
         admin,
         must_change_password: must_change,
+        avatar: String::new(),
     };
     db.execute(
-        "INSERT INTO account(id,username,password_hash,admin,must_change) VALUES(?1,?2,?3,?4,?5)",
-        params![user.id, user.username, hash, admin, must_change],
+        "INSERT INTO account(id,username,password_hash,admin,must_change,workspace_key) VALUES(?1,?2,?3,?4,?5,?6)",
+        params![user.id, user.username, hash, admin, must_change, uuid::Uuid::new_v4().simple().to_string()],
     )
     .map_err(|_| "Account creation failed (possibly duplicate username)")?;
     Ok(user)
@@ -134,6 +114,7 @@ fn read_user(row: &rusqlite::Row<'_>) -> rusqlite::Result<User> {
         username: row.get(1)?,
         admin: row.get(2)?,
         must_change_password: row.get(3)?,
+        avatar: row.get(4)?,
     })
 }
 
@@ -143,9 +124,12 @@ pub fn login(
     password: &str,
     dummy_hash: &str,
 ) -> Result<(User, String), String> {
+    if !(6..=31).contains(&password.chars().count()) {
+        return Err("Invalid username or password".into());
+    }
     let record = db.query_row(
-        "SELECT id,username,admin,must_change,password_hash FROM account WHERE username=?1 AND disabled=0",
-        [username], |row| Ok((read_user(row)?, row.get::<_, String>(4)?)),
+        "SELECT id,username,admin,must_change,avatar,password_hash FROM account WHERE username=?1 AND disabled=0",
+        [username], |row| Ok((read_user(row)?, row.get::<_, String>(5)?)),
     ).optional().map_err(|_| "Authentication unavailable")?;
     let hash = record
         .as_ref()
@@ -162,8 +146,13 @@ pub fn login(
     // Bound sessions for each account; only most recent 20 are retained.
     db.execute("DELETE FROM session WHERE account_id=?1 AND token_hash NOT IN (SELECT token_hash FROM session WHERE account_id=?1 ORDER BY expires DESC LIMIT 19)", [&user.id]).map_err(|_| "Session unavailable")?;
     db.execute(
-        "INSERT INTO session VALUES(?1,?2,?3)",
-        params![digest(&token), user.id, now + SESSION_SECONDS],
+        "INSERT INTO session(id,token_hash,account_id,expires) VALUES(?1,?2,?3,?4)",
+        params![
+            crate::common::id::new_id("SESSION"),
+            digest(&token),
+            user.id,
+            now + SESSION_SECONDS
+        ],
     )
     .map_err(|_| "Session unavailable")?;
     Ok((user, token))
@@ -174,7 +163,7 @@ pub fn authenticate(db: &Connection, token: &str) -> Result<User, String> {
         return Err("Authentication required".into());
     }
     db.query_row(
-        "SELECT a.id,a.username,a.admin,a.must_change FROM account a JOIN session s ON s.account_id=a.id
+        "SELECT a.id,a.username,a.admin,a.must_change,a.avatar FROM account a JOIN session s ON s.account_id=a.id
          WHERE s.token_hash=?1 AND s.expires>?2 AND a.disabled=0",
         params![digest(token), chrono::Utc::now().timestamp()], read_user,
     ).map_err(|_| "Authentication required".into())
@@ -186,6 +175,9 @@ pub fn change_password(
     old: &str,
     new: &str,
 ) -> Result<(), String> {
+    if !(6..=31).contains(&old.chars().count()) {
+        return Err("Invalid current password".into());
+    }
     let hash: String = db
         .query_row(
             "SELECT password_hash FROM account WHERE id=?1",
@@ -210,6 +202,8 @@ pub fn change_password(
         .map_err(|_| "Session invalidation failed")?;
     tx.execute("DELETE FROM mcp_token WHERE account_id=?1", [&user.id])
         .map_err(|_| "Token invalidation failed")?;
+    tx.execute("DELETE FROM password_reset WHERE account_id=?1", [&user.id])
+        .map_err(|_| "Reset code invalidation failed")?;
     tx.commit().map_err(|_| "Password update failed".into())
 }
 
@@ -252,7 +246,7 @@ pub fn create_mcp_token(
         return Err("Maximum 20 active tokens per account".into());
     }
     let record = McpToken {
-        id: uuid::Uuid::new_v4().simple().to_string(),
+        id: crate::common::id::new_id("MCP_TOKEN"),
         name: name.trim().to_owned(),
         scope: scope.to_owned(),
         created: now,
@@ -311,13 +305,13 @@ pub fn authenticate_mcp(db: &Connection, secret: &str) -> Result<(User, String),
     if secret.len() != 70 || !secret.starts_with("epmcp_") {
         return Err("MCP token required".into());
     }
-    db.query_row("SELECT a.id,a.username,a.admin,a.must_change,t.scope FROM account a JOIN mcp_token t ON t.account_id=a.id WHERE t.token_hash=?1 AND t.expires>?2 AND a.disabled=0 AND a.must_change=0", params![digest(secret),chrono::Utc::now().timestamp()], |r| Ok((read_user(r)?,r.get(4)?))).map_err(|_| "MCP token required".into())
+    db.query_row("SELECT a.id,a.username,a.admin,a.must_change,a.avatar,t.scope FROM account a JOIN mcp_token t ON t.account_id=a.id WHERE t.token_hash=?1 AND t.expires>?2 AND a.disabled=0 AND a.must_change=0", params![digest(secret),chrono::Utc::now().timestamp()], |r| Ok((read_user(r)?,r.get(5)?))).map_err(|_| "MCP token required".into())
 }
 
 pub fn list(db: &Connection) -> Result<Vec<User>, String> {
     let mut stmt = db
         .prepare(
-            "SELECT id,username,admin,must_change FROM account WHERE disabled=0 ORDER BY username",
+            "SELECT id,username,admin,must_change,'' AS avatar FROM account WHERE disabled=0 ORDER BY username",
         )
         .map_err(|e| e.to_string())?;
     let users = stmt

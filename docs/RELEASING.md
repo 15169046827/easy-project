@@ -1,5 +1,9 @@
 # EasyProject release process
 
+## Account/profile and identity migration candidate (2026-10-22)
+
+This candidate introduces account schema3 and business schema6, semantic-prefix full UUIDs, protected old-ID maps, managed schema5 restore migration, account profiles, 6–31-character passwords and administrator-issued single-use recovery. Snapshot all account and workspace data before activation, verify ID mappings/relationships plus unchanged non-ID fields and credential hashes, and preserve original backups. Old schema2/5 binaries cannot be used for a blind rollback. The independent local MCP executable/configuration must be upgraded/reconnected separately before using schema6; do not kill active clients or migrate their real database without coordinating the change. Current Windows UI, Linux artifact, safety-copy and approval status live in [the checkpoint](ACCOUNT_PROFILE_DATABASE_CHECKPOINT.md). Building an unsigned candidate does not authorize covering the installation, public release, extending expired audit exceptions or restoring an old database over newer user records.
+
 ## Installation-local storage patch (2026-10-20)
 
 The local Windows NSIS patch now uses installation-side `data` and `webview`, with a Data-page next-launch location setting; C-drive data storage is rejected and old production AppData is migration-only. Install into a writable non-C directory, preserve `data`, `webview` and `easyproject-storage.json` through replacement/uninstall, and update independent MCP paths separately. Current-device migration and complete automated gates passed; the new storage UI's native interaction, MSI/macOS and true cross-version rollback remain unverified. This local patch did not overwrite Internal Test 2's remote assets or grant public-release approval. Exact installer/executable hashes and data-protection evidence: [storage checkpoint](STORAGE_LOCATION_CHECKPOINT.md).

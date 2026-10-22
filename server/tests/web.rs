@@ -296,7 +296,7 @@ fn account_v1_migration_preserves_existing_identity_and_sessions() {
     assert_eq!(
         db.query_row("PRAGMA user_version", [], |r| r.get::<_, i64>(0))
             .unwrap(),
-        2
+        3
     );
     assert_eq!(
         db.query_row("SELECT password_hash FROM account", [], |r| r
@@ -311,6 +311,295 @@ fn account_v1_migration_preserves_existing_identity_and_sessions() {
         "unchanged-session"
     );
     assert!(db.prepare("SELECT * FROM mcp_token").is_ok());
+    for (table, prefix) in [("account", "ACCOUNT"), ("session", "SESSION")] {
+        let id: String = db
+            .query_row(&format!("SELECT id FROM {table}"), [], |r| r.get(0))
+            .unwrap();
+        assert!(easyproject_server::common::id::valid_id(&id, prefix));
+    }
+    assert!(!db
+        .prepare("PRAGMA foreign_key_check")
+        .unwrap()
+        .exists([])
+        .unwrap());
+}
+
+#[test]
+fn passwords_use_exact_six_to_thirty_one_character_boundary() {
+    for length in [6, 31] {
+        assert!(auth::password_hash(&"x".repeat(length)).is_ok());
+    }
+    for length in [0, 5, 32, 128] {
+        assert!(auth::password_hash(&"x".repeat(length)).is_err());
+    }
+    assert!(auth::password_hash(&"中".repeat(31)).is_ok());
+}
+
+fn synthetic_avatar(size: u32) -> String {
+    use base64::Engine;
+    let mut output = Vec::new();
+    {
+        let mut encoder = png::Encoder::new(&mut output, size, size);
+        encoder.set_color(png::ColorType::Rgba);
+        encoder.set_depth(png::BitDepth::Eight);
+        encoder
+            .write_header()
+            .unwrap()
+            .write_image_data(&vec![128; (size * size * 4) as usize])
+            .unwrap();
+    }
+    format!(
+        "data:image/png;base64,{}",
+        base64::engine::general_purpose::STANDARD.encode(output)
+    )
+}
+
+#[tokio::test]
+async fn profile_updates_require_ownership_password_and_safe_square_image() {
+    let (server, _) = setup();
+    let (id, token) = signup(server.clone(), "profile_old").await;
+    let key: String = server
+        .auth
+        .lock()
+        .unwrap()
+        .query_row(
+            "SELECT workspace_key FROM account WHERE id=?1",
+            [&id],
+            |r| r.get(0),
+        )
+        .unwrap();
+    for avatar in [
+        "data:image/svg+xml,<svg/>".to_owned(),
+        synthetic_avatar(32),
+        "data:image/png;base64,bad".to_owned(),
+    ] {
+        assert_eq!(
+            call(
+                server.clone(),
+                Method::POST,
+                "/api/account/profile",
+                json!({"username":"profile_old","avatar":avatar}),
+                Some(&token),
+                None
+            )
+            .await
+            .0,
+            StatusCode::BAD_REQUEST
+        );
+    }
+    assert_eq!(
+        call(
+            server.clone(),
+            Method::POST,
+            "/api/account/profile",
+            json!({"username":"profile_new","avatar":"","currentPassword":"wrong!"}),
+            Some(&token),
+            None
+        )
+        .await
+        .0,
+        StatusCode::BAD_REQUEST
+    );
+    let (status,user,_)=call(server.clone(),Method::POST,"/api/account/profile",json!({"username":"profile_new","avatar":synthetic_avatar(128),"currentPassword":"Synthetic-signup-123!"}),Some(&token),None).await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(user["user"]["id"], id);
+    assert!(user["user"]["avatar"]
+        .as_str()
+        .unwrap()
+        .starts_with("data:image/png;base64,"));
+    {
+        let db = server.auth.lock().unwrap();
+        assert_eq!(
+            db.query_row(
+                "SELECT workspace_key FROM account WHERE id=?1",
+                [&id],
+                |r| r.get::<_, String>(0)
+            )
+            .unwrap(),
+            key
+        );
+        assert_eq!(
+            auth::authenticate(&db, &token).unwrap().username,
+            "profile_new"
+        );
+    }
+    assert_eq!(
+        call(
+            server,
+            Method::POST,
+            "/api/account/profile",
+            json!({"username":"profile_new","avatar":"","admin":true}),
+            Some(&token),
+            None
+        )
+        .await
+        .0,
+        StatusCode::UNPROCESSABLE_ENTITY
+    );
+}
+
+#[tokio::test]
+async fn reset_codes_are_admin_only_one_time_expiring_and_revoke_old_credentials() {
+    let (server, _) = setup();
+    account(&server, "reset_admin", true);
+    let admin = ready_token(server.clone(), "reset_admin").await;
+    let (id, user) = signup(server.clone(), "reset_user").await;
+    let (_, pat) = pat(server.clone(), &user, "delete").await;
+    assert_eq!(
+        call(
+            server.clone(),
+            Method::POST,
+            "/api/admin/reset-codes",
+            json!({"username":"reset_user"}),
+            Some(&user),
+            None
+        )
+        .await
+        .0,
+        StatusCode::FORBIDDEN
+    );
+    let (status, result, _) = call(
+        server.clone(),
+        Method::POST,
+        "/api/admin/reset-codes",
+        json!({"username":"reset_user"}),
+        Some(&admin),
+        None,
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    let code = result["code"].as_str().unwrap();
+    let stored: String = server
+        .auth
+        .lock()
+        .unwrap()
+        .query_row(
+            "SELECT token_hash FROM password_reset WHERE account_id=?1",
+            [&id],
+            |r| r.get(0),
+        )
+        .unwrap();
+    assert_ne!(stored, code);
+    assert_eq!(stored, auth::digest(code));
+    let reset = json!({"username":"reset_user","code":code,"newPassword":"abc123"});
+    assert_eq!(
+        call(
+            server.clone(),
+            Method::POST,
+            "/api/auth/reset-password",
+            json!({"username":"unknown","code":code,"newPassword":"abc123"}),
+            None,
+            None
+        )
+        .await
+        .0,
+        StatusCode::BAD_REQUEST
+    );
+    assert_eq!(
+        call(
+            server.clone(),
+            Method::POST,
+            "/api/auth/reset-password",
+            reset.clone(),
+            None,
+            None
+        )
+        .await
+        .0,
+        StatusCode::OK
+    );
+    {
+        let db = server.auth.lock().unwrap();
+        assert!(auth::authenticate(&db, &user).is_err());
+        assert!(auth::authenticate_mcp(&db, &pat).is_err());
+        assert_eq!(
+            db.query_row(
+                "SELECT COUNT(*) FROM password_reset WHERE account_id=?1",
+                [&id],
+                |r| r.get::<_, i64>(0)
+            )
+            .unwrap(),
+            0
+        );
+    }
+    assert_eq!(
+        call(
+            server.clone(),
+            Method::POST,
+            "/api/auth/reset-password",
+            reset,
+            None,
+            None
+        )
+        .await
+        .0,
+        StatusCode::BAD_REQUEST
+    );
+    assert_eq!(
+        call(
+            server.clone(),
+            Method::POST,
+            "/api/auth/login",
+            json!({"username":"reset_user","password":"abc123"}),
+            None,
+            None
+        )
+        .await
+        .0,
+        StatusCode::OK
+    );
+    let (_, result, _) = call(
+        server.clone(),
+        Method::POST,
+        "/api/admin/reset-codes",
+        json!({"username":"reset_user"}),
+        Some(&admin),
+        None,
+    )
+    .await;
+    server
+        .auth
+        .lock()
+        .unwrap()
+        .execute("UPDATE password_reset SET expires=0", [])
+        .unwrap();
+    assert_eq!(
+        call(
+            server.clone(),
+            Method::POST,
+            "/api/auth/reset-password",
+            json!({"username":"reset_user","code":result["code"],"newPassword":"abc456"}),
+            None,
+            None
+        )
+        .await
+        .0,
+        StatusCode::BAD_REQUEST
+    );
+    for _ in 0..10 {
+        let _ = call(
+            server.clone(),
+            Method::POST,
+            "/api/auth/reset-password",
+            json!({"username":"unknown","code":"invalid","newPassword":"abc123"}),
+            None,
+            None,
+        )
+        .await;
+    }
+    assert_eq!(
+        call(
+            server,
+            Method::POST,
+            "/api/auth/reset-password",
+            json!({"username":"unknown","code":"invalid","newPassword":"abc123"}),
+            None,
+            None
+        )
+        .await
+        .0,
+        StatusCode::TOO_MANY_REQUESTS
+    );
 }
 
 #[tokio::test]
@@ -547,7 +836,17 @@ async fn remote_mcp_crud_is_account_isolated_and_invalidates_web_revisions() {
         json!({"id":mid,"confirm_name":"Member edited"}),
     )
     .await;
-    let directory = root.join("data/workspaces").join(uid);
+    let key: String = server
+        .auth
+        .lock()
+        .unwrap()
+        .query_row(
+            "SELECT workspace_key FROM account WHERE id=?1",
+            [uid],
+            |r| r.get(0),
+        )
+        .unwrap();
+    let directory = root.join("data/workspaces").join(key);
     let audit = std::fs::read_to_string(directory.join("mcp-audit.jsonl")).unwrap();
     assert!(audit.contains("committed"));
     assert!(!audit.contains("Secret synthetic"));
@@ -658,7 +957,7 @@ fn account_schema_and_write_audit_fail_closed_without_logging_business_values() 
         .auth
         .lock()
         .unwrap()
-        .execute_batch("PRAGMA user_version=3")
+        .execute_batch("PRAGMA user_version=4")
         .unwrap();
     assert!(auth::open(&root.join("data/accounts.db")).is_err());
     let id = uuid::Uuid::new_v4().simple().to_string();

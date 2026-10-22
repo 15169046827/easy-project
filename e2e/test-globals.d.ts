@@ -1,4 +1,8 @@
 interface Window {
+    __testSavedCredentials: (args: {
+        action: string
+        credentials?: { username: string; password: string } | null
+    }) => Promise<{ username: string; password: string } | null>
     __tokenCopyCount: number
     isTauri?: boolean
     __EASY_PROJECT_FAIL_BACKUP__?: boolean
@@ -16,6 +20,8 @@ interface Window {
                 data: Record<string, any>
                 value?: unknown
                 directory?: string
+                action: string
+                credentials?: { username: string; password: string } | null
             }
         ) => Promise<unknown>
     }

@@ -6,10 +6,17 @@ import { resolve } from 'node:path'
 const root = resolve(import.meta.dirname, '..')
 const source = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim()
 const binary = resolve(root, 'artifacts/mcp/easyproject-mcp.exe')
-const database = process.argv[2]
-if (!database) throw new Error('Provide the existing database path; no mutations will be invoked')
+const reuseTools = process.argv.includes('--reuse-tools')
+const previous = reuseTools
+    ? JSON.parse(readFileSync(resolve(root, 'docs/api/catalog.json'), 'utf8'))
+    : null
+const database = reuseTools ? null : process.argv[2]
+if (!reuseTools && !database)
+    throw new Error('Provide the existing database path; no mutations will be invoked')
 const sha = value => createHash('sha256').update(value).digest('hex')
-const before = sha(readFileSync(database))
+if (reuseTools && previous.mcpBinary.sha256 !== sha(readFileSync(binary)))
+    throw new Error('Previously verified MCP binary changed; cannot reuse tool inventory')
+const before = reuseTools ? null : sha(readFileSync(database))
 const input =
     [
         {
@@ -27,12 +34,14 @@ const input =
     ]
         .map(message => JSON.stringify(message))
         .join('\n') + '\n'
-const result = spawnSync(binary, ['--database', database, '--allow-write', '--allow-delete'], {
-    input,
-    encoding: 'utf8',
-    windowsHide: true,
-    timeout: 10000
-})
+const result = reuseTools
+    ? { status: 0, stdout: JSON.stringify({ id: 2, result: { tools: previous.tools } }) }
+    : spawnSync(binary, ['--database', database, '--allow-write', '--allow-delete'], {
+          input,
+          encoding: 'utf8',
+          windowsHide: true,
+          timeout: 10000
+      })
 if (result.status !== 0) throw new Error('MCP catalog discovery failed')
 const tools = result.stdout
     .trim()
@@ -41,7 +50,7 @@ const tools = result.stdout
     .find(item => item.id === 2)?.result?.tools
 if (tools?.length !== 18 || new Set(tools.map(tool => tool.name)).size !== 18)
     throw new Error('Expected eighteen unique tools')
-if (before !== sha(readFileSync(database)))
+if (!reuseTools && before !== sha(readFileSync(database)))
     throw new Error('Database changed during discovery; review before documenting')
 const sourceFiles = {
     project: 'project_service',
@@ -70,12 +79,12 @@ const commands = entry
     .split(',')
     .map(name => name.trim().split('::').at(-1))
     .filter(Boolean)
-if (commands.length !== 6 || Object.values(actions).flat().length !== 31)
+if (commands.length !== 7 || Object.values(actions).flat().length !== 31)
     throw new Error('IPC inventory changed; review contract documentation')
 const catalog = {
     sourceCommit: source,
     sourceNote:
-        'Documentation source; standalone MCP binary provenance is recorded separately, not rebuilt by this generator.',
+        'Documentation source; unchanged MCP input schemas may be reused only when the previously verified binary digest matches. Binary provenance is separate; this generator does not rebuild or replace it.',
     mcpBinary: {
         sha256: sha(readFileSync(binary)),
         sourceCommit: JSON.parse(readFileSync(resolve(root, 'artifacts/mcp/manifest.json'), 'utf8'))
@@ -152,6 +161,7 @@ console.log(
         commands: commands.length,
         actions: Object.values(actions).flat().length,
         source,
-        databaseUnchanged: true
+        reusedToolInventory: reuseTools,
+        databaseUnchanged: reuseTools ? null : true
     })
 )

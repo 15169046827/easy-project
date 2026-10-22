@@ -1,5 +1,7 @@
 # EasyProject API：协议、权限与错误
 
+2026-10-22候选新增18个HTTP操作/15路径：本人头像/用户名、管理员一次性重置码、匿名凭码重置；新密码及登录统一6—31字符，无长密码兼容，账号schema3/业务schema6。新增desktop_credentials仅Windows主窗加密保存，原生56条=18MCP+7注册IPC+31动作。全部自有记录ID统一大写语义前缀+完整32位UUID，业务ID升级会变化，外部脚本/旧深链须重新查询；不改变内容/关系。部署/实际独立MCP兼容身份必须看专项检查点，不把候选当已上线。账号与业务本来分库，目标设计见../DATABASE_DESIGN.md；本机MCP不自动迁移，旧schema5独立exe不得连接schema6，须受保护更新/重连。下方旧15/55条为历史。
+
 本页描述本地桌面/MCP协议：MCP JSON-RPC over stdio与受控Tauri invoke内部IPC共享Rust业务校验，两者自身不监听HTTP。另有账号式网页版/headless HTTP服务，真实契约见[web-openapi.json](web-openapi.json)与[服务说明](../../server/README.md)。桌面默认登录并提供显式“不登录，本地使用”，本地能力仍离线可用、不自动上传/混库，也不自动把本地MCP接到远端；启动入口变化不改变协议认证或权限契约。
 
 ## 接入与能力

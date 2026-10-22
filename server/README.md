@@ -1,5 +1,11 @@
 # EasyProject headless server
 
+2026-10-22候选：账号schema3/业务schema6，独立字符串ID统一完整语义前缀+32位UUID。account新增avatar/workspace_key，目录key与账号ID分离，用户名改变不迁库；账号/会话/MCP/重置码仍独立accounts.db，业务另库。头像/改名接口POST /api/account/profile；新密码与登录6—31字符。忘记密码为管理员15分钟一次性码，POST /api/admin/reset-codes发码，POST /api/auth/reset-password凭码重置并撤销旧会话/Token。仅保存摘要/一次显示，不提供用户名直接改密或邮件找回。
+
+唯一应用管理员也忘记密码时，服务器维护者可在自己的SSH终端执行`sudo -u easyproject env EASYPROJECT_DATA_DIR=/var/lib/easyproject /opt/easyproject/current/bin/easyproject-server issue-reset-code <应用用户名>`。只在新候选已部署后使用，输出是敏感一次性码，不发到聊天/日志/云文档。此命令依赖对账号库的系统文件权限，不能给普通网页用户开放；不是重用SSH密码。正常界面优先由已登录应用管理员发码。
+
+升级必须停服务新安全副本、迁移映射/密码哈希/会话/Token/工作区引用核验；旧schema2/5程序不能直接回退读取新库。业务备份原件保留，schema5恢复受控迁移，JSON导入1—6/导出6。受控backups/id-map-schema6-*.json记录预期旧→新ID映射，需核对实际schema/新ID确认提交，文件存在不等于迁移成功。旧ID和深链/外部脚本需重新查询，不自动使用旧独立stdio exe读schema6。精确状态见[当前检查点](../docs/ACCOUNT_PROFILE_DATABASE_CHECKPOINT.md)，本段不代表已更新实际服务器。
+
 2026-10-21新增开放注册与用户MCP：`POST /api/auth/register`仅注册普通账号、自设密码无需首次改密（管理员分配账号仍须改密）；10次/小时/socket IP且总账号上限1000，反代共享限额。不提供邮箱验证/自助找回。账号库事务升级schema2，原身份/密码/会话保留。升级前须备份，旧schema1程序不能直接读取schema2；回滚不能仅切旧二进制，更不能未经核对恢复旧库丢失新用户记录。
 
 登录后“MCP 接入”生成个人Token，一次显示、只存SHA256摘要、7/30/90天、最多20个有效Token；read/write/delete分别开放7/14/18工具，默认只读，删除包含写权限。支持撤销，改密撤销全部会话和Token。Token仅用于`https://home-host.tail2956dd.ts.net/mcp`的Authorization Bearer，不用cookie/网页登录令牌、不放URL或日志，与本地stdio独立。无状态Streamable HTTP以JSON响应、通知202、GET405；Accept为application/json与text/event-stream，版本为2025-03-26/06-18/11-25。无OAuth发现/SSE；需支持手动Bearer的客户端。Origin存在时必须同源。工具复用本地schema/领域校验/恢复点/审计，仅访问本人库、与Web共享锁和revision失效，不自动重试写入。契约见docs/api/web-openapi.json，部署状态见[检查点](../docs/OPEN_SIGNUP_MCP_TOKEN_CHECKPOINT.md)。

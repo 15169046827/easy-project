@@ -14,7 +14,7 @@ export default {
         confirmPassword: 'Confirm password',
         passwordMismatch: 'Passwords do not match',
         registerHint:
-            'Username: 3–48 ASCII letters, digits, underscores or hyphens. Password: 12–128 characters. Each ordinary account has a separate workspace.',
+            'Username: 3–48 ASCII letters, digits, underscores or hyphens. Password: 6–31 characters. Each ordinary account has a separate workspace.',
         registered: 'Registration complete. Sign in with your new password.',
         mcpTokens: 'MCP access',
         tokenHint:
@@ -46,7 +46,26 @@ export default {
         newPassword: 'New password',
         changePassword: 'Change password',
         passwordHint:
-            'Use 12–128 characters. All devices must sign in again after a password change.',
+            'Use 6–31 characters. All devices must sign in again after a password change.',
+        avatarPreview: 'Square avatar preview',
+        avatarHint:
+            'Upload PNG, JPEG or WebP (up to 5MB); automatically center-cropped and compressed to 128×128.',
+        chooseAvatar: 'Upload avatar',
+        removeAvatar: 'Remove avatar',
+        avatarInvalid: 'Invalid image. Choose PNG, JPEG or WebP up to 5MB and 20 megapixels.',
+        saveProfile: 'Save avatar and username',
+        profileTab: 'Profile',
+        rememberPassword: 'Save password (this Windows account only)',
+        savedPasswordFailed:
+            'Could not read, save or clear the protected password. Enter it manually; this does not change your login session.',
+        forgetPassword: 'Forgot password',
+        resetCode: 'One-time reset code from your administrator',
+        resetPassword: 'Reset password',
+        resetHint:
+            'Ask your administrator for a reset code valid for 15 minutes. Reset revokes all old sessions and MCP tokens.',
+        resetComplete: 'Password reset. Sign in with your new password.',
+        issueResetCode: 'Generate reset code',
+        resetCodeTitle: 'One-time password reset code (shown only once)',
         isolation:
             'Access the same account across devices. Each account has an isolated workspace.',
         returnLocal: 'Return to local (no login)',

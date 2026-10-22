@@ -10,7 +10,7 @@ All notable changes to EasyProject are documented here.
 
 - Stabilize project table columns and row heights on hover/focus, keep project names readable with truncation/tooltips, and preserve full semantic UUIDs in named-route navigation.
 - Keep project view tabs, task expand buttons, board cards and template selection geometry stable. Board/template buttons, template checkbox and board progress now use actual PrimeVue components.
-- Add in-session page-load/render failure feedback and retry/back recovery rather than leaving a blank workspace or reloading away desktop authentication. The reported installed-desktop blank screen's original trigger remains unconfirmed; isolated full-ID and HTTP navigation regressions pass.
+- Add in-session page-load/render failure feedback and retry/back recovery without reloading away desktop authentication. The historical-status crash was reproduced and fixed; the user confirmed restored pages and associated project tasks after the final safe desktop update.
 
 ### Added
 

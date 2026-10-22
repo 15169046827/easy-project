@@ -2,6 +2,8 @@
 
 ## 候选阶段完成，等待真实升级确认（2026-10-22）
 
+最终同步回执：产品25afe85与收尾6cea4004449d8c3091e414f94b4749b8adc18309均已远端核对。常规Git连接重置后先确认直接父，再用既有受保护传输校验树6aa3c30cb32b7fad5eb95a20962561872d42fb42/15文件/精确提交SHA、force=false成功，不绕TLS。Wolai主状态v83/交接入口v20最终读回本阶段回执；Apifox29/74/27已完成，三方状态一致（候选完成、真实升级待批准）。收尾前Git已干净，本条及handoff回执为最后纯文档修改；提交后应再次干净。没有新连接home-host、真实数据迁移或当前安装/MCP替换。
+
 2026-10-22候选验证与接口同步完成，真实部署等待用户明确确认：产品源码25afe853482ec6aa341feba56a522444b90ecbfa已推送，Linux CI39720455218的server/security均成功。243前端单测/48文件、68生产UI及独立11真实HTTP、桌面52+stdio1、服务端49、lint/typecheck/fmt/严格clippy/build/NSIS/元数据/UPARS1.1.0通过；无关闭检查/删测试。Apifox8948094/main8751742共29目录/74接口（56原生+18HTTP）/27参考，原ID保留、请求/响应Schema/分组/testing/摘要读回；新增HTTP同步脚本先全量SHA预检、增量导入、续接与读回，null说明错误拒绝后先核对再修正，未盲重试。Wolai主v81/交接入口v18已读回候选与规则增补，末轮回执继续保存。
 
 候选仅E盘src-tauri/target/audit-tools/account-profile-25afe85：NSIS6316237字节、未签名，SHA4AE0A60E82917E17395F2648309ED2FC93DA1CD2EDEEBB94368CFC1965EDDA34；MCP8E3978B6651CC13BC84A16464369B1F9F0B1AA6A448AEC1B9AE6BCAA31E46A55；Linux916A1E25AEB69EC05FBF32FF37DB24C64B00F9C0CC10882110CCE51D746CC06B。当前实际桌面/服务器仍13e6ab7，独立MCP8C11/schema5不动；新schema3/6迁移、全新副本、独立MCP替换与客户端重连必须获确认后统一处理，不复用旧schema2校验脚本，不先迁移再留旧写进程。真实桌面新UI与真实库迁移尚未验，正式发布仍未通过。准确设计/字段见docs/DATABASE_DESIGN.md。

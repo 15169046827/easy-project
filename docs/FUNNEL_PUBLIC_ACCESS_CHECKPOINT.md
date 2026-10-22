@@ -2,6 +2,8 @@
 
 ## 已切换并完成公网初验（2026-10-22）
 
+同步回执：33357822fd28f84b6fecddd2c67493f9eaafc5b5已精确SHA/同树非强制同步，工作区干净；Wolai主状态v85/交接入口v22读回Funnel授权、配置/公网证据、手机代理差异及原因未定。Apifox总览和本地交接1.10/79条一致；HTTP18/原生56无契约变更。仅本回执为最后纯文档修改，提交后应干净。设备/入口均保持，停止进一步网络测试，待用户决定后续诊断，不将手机号/凭据/真实数据上传云文档。
+
 补充复测：103.84.155.217匿名session仍401/3.17秒；103.84.155.153随后TCP连接8秒超时（curl28、HTTP000），证明当前至少存在间歇性链路问题，不能只保留前6次成功结果或判定为确定地域封锁。已停止进一步网络测试，Funnel保持用户批准的公开试用状态。仅变更路由/文档，未改产品源码/数据库；本轮release:check、UPARS1.1.0验证与diff检查通过，不冒充重跑全量业务测试。
 
 当前后续：先讨论是否继续定位移动直连/中继稳定性，以及共享限流/存储配额整改；不自动开始开发或收费服务。全部本轮未提交为AGENTS.md、README.md、server/README.md、docs/FUNNEL_PUBLIC_ACCESS_CHECKPOINT.md、docs/PROJECT_PLAN.md、docs/RELEASING.md、docs/api/OVERVIEW.md、docs/api/apifox-documents.json、docs/api/apifox-manifest.json及docs/handoff的README/RULES/ARCHITECTURE/CURRENT_STATE/CHECKPOINT。Apifox仅总览更新且读回，其余26参考UNCHANGED，接口/HTTP/权限不变。Git/Wolai收尾正在保存；SSH/本轮探测均退出，后台Funnel和原服务保持运行。

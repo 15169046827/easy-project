@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+最新公开测试版待权限确认：产品源34de5f2/Actions39799550769已成功，258单测、9性能、52Rust+stdio1、完整npm0、三平台六资产已生成于受保护草稿420856621/v0.1.1-beta.2，仍未公开；生产UI81直接通过+1重试通过，同用例本地零重试3/3。六份workflow备份已E盘下载，但Mac备份为展开App，不能替代原tar摘要。只读桥接fc6e2c4/39805193677读取草稿HTTP403；拟提升该job至contents:write被自动审批拒绝，已撤回，待用户明确允许，不绕过。官网仍cd05e93/ready=false，正式生产未通过，桌面/MCP/服务器/真实数据未变。本轮未新连home-host；详细续接与全部验证/限制见[公开测试版检查点](../PUBLIC_BETA_1_CHECKPOINT.md)。旧beta.1及其它草稿保留，不公开过时包。
+
 公开候选现转beta.2：旧beta.1六job完成但完整开发链扫描3告警，未公开/未改旧资产；生产依赖0。Vite6.4.4/Vitest4.1.12定向修补、全量high门禁进行中，npm11内部错误已记录，E盘隔离npm10解析中。官网WIP仍ready=false，准确源/运行/后续以[PUBLIC_BETA_1_CHECKPOINT顶部](../PUBLIC_BETA_1_CHECKPOINT.md)为准，不能公开513旧候选或把静态包齐全当全面通过。
 
 2026-10-22用户批准公开beta：正在准备新0.1.1应用/v0.1.1-beta.1及受保护构建流程，旧7个Release均草稿且早于最新修复，不直接改名公开。官网仍暂无公开包，需新产物门禁/逐份核验通过并实际发布后再接入；正式生产未通过。任务检查点[PUBLIC_BETA_1_CHECKPOINT](../PUBLIC_BETA_1_CHECKPOINT.md)记录未提交文件、验证和下一步，不自动覆盖安装/真实数据/配置。

@@ -4,6 +4,8 @@
 
 ## 最终交付与剩余边界
 
+最终同步回执：部署证据8文档提交c64957a03e517032c4b25e8b07e510c2066b8853已同树2d13d7c655f5b773e4c469f601d76840e0135284/同SHA/force:false同步原GitHub分支；Wolai主状态v94、交接v31读回准确源/部署事实/未验边界。规则、API/Apifox复核无变。本回执为最后文档补记，不改变已部署cd05e93构建。1420/4173无本轮遗留服务，SSH已退出；线上浏览器工具超时产生的临时页由宿主回收，未标记持久交付页。不再自动开始其它任务。
+
 - 官网：https://home-host.tail2956dd.ts.net/ ；在线入口：https://home-host.tail2956dd.ts.net/index.html#/dashboard ，原/#/...深链由原入口判定保留，隔离回归已验证。
 - 源码/资产绑定cd05e93a3f631709d1e75cc949f5785f9f636420（产品实现a4428a8）；current=/opt/easyproject/releases/cd05e93-landing-20261022。不改systemd/反代/域名/Origin/API/MCP/DBschema，bin保持bca2d45原件SHA，运行PID不变。桌面安装/独立MCP不动，内部未签名包不公开；官网交付不等于正式生产发布验收。
 - 保护：新root700副本/var/backups/easyproject/cd05e93-landing-20261022，包括原release的逐文件核验和SQLite官方在线副本。两份真实库所有表逻辑（含账号/会话/Token/revision）前后相同，integrity ok/FK0；63新交付SHA通过，37旧assets逐个保留，运行服务active。

@@ -47,6 +47,14 @@ for (const width of [1280, 960, 375]) {
                 if (message.type() === 'error') violations.push(message.text())
             })
             await page.goto(origin)
+            const passwordBox = await page.locator('.p-password').first().boundingBox()
+            const recoveryBox = await page.locator('.password-recovery-link').boundingBox()
+            expect(passwordBox && recoveryBox).toBeTruthy()
+            expect(
+                Math.abs(passwordBox.x + passwordBox.width - recoveryBox.x - recoveryBox.width)
+            ).toBeLessThan(2)
+            expect(recoveryBox.y).toBeGreaterThanOrEqual(passwordBox.y + passwordBox.height)
+            expect(recoveryBox.y - passwordBox.y - passwordBox.height).toBeLessThan(16)
             await page.getByRole('button', { name: /立即注册|Register now/ }).click()
             await page.screenshot({
                 path: `test-results/signup-${width}-${dark ? 'dark' : 'light'}.png`

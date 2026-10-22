@@ -49,6 +49,15 @@
                         :input-props="{ minlength: 6, maxlength: 31 }"
                         fluid
                     />
+                    <Button
+                        v-if="!remoteUser && !registering"
+                        class="password-recovery-link"
+                        type="button"
+                        text
+                        size="small"
+                        :label="$t('remote.forgetPassword')"
+                        @click="showRecovery = true"
+                    />
                     <template v-if="registering && !remoteUser">
                         <p>{{ $t('remote.registerHint') }}</p>
                         <label for="remote-confirm-password">{{
@@ -124,13 +133,6 @@
                         text
                         :label="$t('remote.useLocal')"
                         @click="leaveRemote"
-                    />
-                    <Button
-                        v-if="!remoteUser && !registering"
-                        type="button"
-                        text
-                        :label="$t('remote.forgetPassword')"
-                        @click="showRecovery = true"
                     />
                 </form>
                 <PasswordRecoveryDialog
@@ -603,6 +605,13 @@ onUnmounted(() => clearInterval(timer))
     display: flex;
     align-items: center;
     gap: 0.5rem;
+}
+.password-recovery-link {
+    justify-self: end;
+    margin-top: -0.4rem;
+    padding: 0 0.125rem;
+    min-height: 1.5rem;
+    font-size: 0.8125rem;
 }
 .reset-secret {
     white-space: pre-wrap;

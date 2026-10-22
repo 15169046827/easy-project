@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-22官网入口：src/utils/entryMode.js判断根路径无应用hash/无demo/非桌面；main.js将桌面存储启动信息也作为桌面门禁，以防错误引导被官网吞掉。LandingPage独立异步加载，不导入router/RemoteRoot、不查会话或工作区；显式/index.html#/dashboard及原/#/...继续主应用，浮窗不变。server仍同一index.html注入Web标记/nonce，不新增HTTP业务接口、不改CSP。页面词典landing-zh/en在既有i18n维护，使用PrimeVue Button、原图标及仓库历史合成看板截图，明确非当前截图/非真实数据。源码已实现但部署状态以官网检查点为准。
+
 2026-10-22状态显示边界：useStatusLabels只将Object.hasOwn确认的内置枚举映射传入vue-i18n，未知/历史字符串原样按文本展示；禁止`t(map[value]) || value`，因为`t(undefined)`会先抛INVALID_ARGUMENT/17。Todo/Pending同待办，空值维持缺省，不为渲染修复重写真实状态或收紧API。生产回归需含非枚举历史状态，不能只用InProgress理想fixture。
 
 2026-10-22 UI入口增补：App 的路由区改由 `src/components/WorkspaceRouteView.vue` 承接，Vue Router 异步模块错误及子页渲染错误分别转为脱敏诊断码和 PrimeVue 提示/重试/返回。恢复只重挂当前路由子树，不整页reload、不销毁RemoteRoot内存登录或切换数据源。ProjectList用命名路由传完整ID；hover样式精确匹配真实PrimeVue组件，不能用全局覆盖破坏其它控件。详见项目跳转专项检查点；API、数据库、权限及部署拓扑均未改。

@@ -1,5 +1,9 @@
 # EasyProject 交接任务检查点
 
+官网任务最新暂停：五小时余8%，本地255/82/12已验，规范/类型/构建/元数据/diff通过；服务仍bca2d4506e33、active，官网未部署，真实数据/桌面/MCP未变。恢复先读[完整检查点](../LANDING_PAGE_CHECKPOINT.md)，核对Git和额度，再仅做安全静态部署，不重复有效工作；不重置/唤醒/关机。
+
+2026-10-22当前官网任务续接入口：[LANDING_PAGE_CHECKPOINT](../LANDING_PAGE_CHECKPOINT.md)。基线c077bc7，源码与专项测试已完成，末轮完整界面回归/文档同步中；255单测、7官网、12真实HTTP通过，未部署。仅一次已知凭据SSH只读确认home-host active/current=bca2d4506e33，没有服务器写入或停服；桌面与MCP保持原状。完整边界、失败、额度与下一步在专项文档，不能以此视为官网已上线。
+
 2026-10-22项目焦点/白屏专项完成：2f409c3已安全覆盖，用户确认各页及原项目任务恢复；252/75/11和规范/类型/构建/NSIS/元数据通过。Button/17精确反例为历史状态`t(undefined)`，最小显示层修复不改库。431文件新副本/428非程序文件及DB全表逻辑保持，服务器/域名/独立MCP/API/权限不变，规则1.10/79条复核不变。详细中间失败/诊断/最终证据和同步见 [PROJECT_NAVIGATION_HOVER_CHECKPOINT](../PROJECT_NAVIGATION_HOVER_CHECKPOINT.md)，不重放安装/迁移或延伸本轮重启授权，正式发布仍未通过。
 
 2026-10-22公网检查后停止进一步网络测试：电脑脱离Tailnet可用、手机代理可用但直连异常，一条中继出现后续超时；原因未定，不改DNS/代理/TLS或产品代码。Funnel保持用户批准的公网试用，下一步等待用户讨论定位或整改，先读FUNNEL_PUBLIC_ACCESS_CHECKPOINT顶部，不重复启用/重置路由。

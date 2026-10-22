@@ -4,6 +4,12 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+### Product homepage (2026-10-22)
+
+- Add a bilingual, responsive public homepage with product overview, demonstration board image, online/local mode boundaries, MCP documentation, privacy/trial disclosures and an explicit not-yet-public desktop download status.
+- Keep historical hash links, explicit `/index.html` workspace entry, desktop startup/storage-error handling and floating windows separate. The homepage does not fetch authentication or workspace data and retains PrimeVue nonce styling.
+- No installer is publicly released, and no production data, API contract or MCP permissions are changed. Deployment status: [landing checkpoint](docs/LANDING_PAGE_CHECKPOINT.md).
+
 ### UI maintenance (2026-10-22)
 
 - Fix the reproduced `SyntaxError / Button / 17` crash when historical/custom project statuses were passed as an undefined translation key. Known values are translated and unknown values remain safe text; no database status rewrite is performed. Include real vue-i18n, custom-status navigation and HTTP regressions.

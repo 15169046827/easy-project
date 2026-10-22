@@ -1,6 +1,8 @@
 import { createI18n } from 'vue-i18n'
 import zhCN from './locales/zh-CN'
 import enUS from './locales/en-US'
+import landingZh from './locales/landing-zh'
+import landingEn from './locales/landing-en'
 
 const STORAGE_KEY = 'easyproject-lang'
 export const SUPPORTED_LOCALES = ['zh-CN', 'en-US']
@@ -20,8 +22,8 @@ export const i18n = createI18n({
     locale: detectLocale(),
     fallbackLocale: 'en-US',
     messages: {
-        'zh-CN': zhCN,
-        'en-US': enUS
+        'zh-CN': { ...zhCN, landing: landingZh },
+        'en-US': { ...enUS, landing: landingEn }
     }
 })
 

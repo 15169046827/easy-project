@@ -9,7 +9,7 @@ test.beforeAll(() => {
 
 async function login(page, username = 'test_admin', password = 'Synthetic-changed-456!') {
     await page.addInitScript(() => localStorage.setItem('easyproject-onboarding-done', 'true'))
-    await page.goto(origin)
+    await page.goto(origin + '/index.html')
     await page.locator('#remote-username').fill(username)
     await page.locator('#remote-password').fill(password)
     await page
@@ -25,6 +25,26 @@ async function accountAction(page, name) {
     await page.getByRole('button', { name: /^(用户菜单|User menu)$/ }).click()
     await page.getByRole('menuitem', { name, exact: true }).click()
 }
+
+test('real HTTP homepage is public and online entry retains same-origin login', async ({
+    page
+}) => {
+    const api = []
+    const errors = []
+    page.on('request', request => {
+        if (new URL(request.url()).pathname.startsWith('/api/')) api.push(request.url())
+    })
+    page.on('pageerror', error => errors.push(error.message))
+    await page.goto(origin)
+    await expect(page.locator('.landing-page')).toBeVisible()
+    await expect(page.locator('.landing-preview img')).toHaveJSProperty('naturalWidth', 1272)
+    expect(api).toEqual([])
+    await page.locator('.landing-actions a').first().click()
+    await expect(page.locator('#remote-username')).toBeVisible()
+    await expect(page).toHaveURL(origin + '/index.html#/dashboard')
+    expect(api.some(url => url.endsWith('/api/auth/session'))).toBe(true)
+    expect(errors).toEqual([])
+})
 
 for (const width of [1280, 960, 375]) {
     for (const dark of [false, true]) {
@@ -46,7 +66,7 @@ for (const width of [1280, 960, 375]) {
             page.on('console', message => {
                 if (message.type() === 'error') violations.push(message.text())
             })
-            await page.goto(origin)
+            await page.goto(origin + '/index.html')
             const passwordBox = await page.locator('.p-password').first().boundingBox()
             const recoveryBox = await page.locator('.password-recovery-link').boundingBox()
             expect(passwordBox && recoveryBox).toBeTruthy()
@@ -336,7 +356,7 @@ test('desktop bearer conflict refresh reloads data without navigating or signing
             }
         }
     })
-    await page.route(origin + '/', async route => {
+    await page.route(origin + '/index.html', async route => {
         const response = await route.fetch()
         await route.fulfill({
             response,

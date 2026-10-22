@@ -33,9 +33,17 @@ jobs:
     validate:
         runs-on: windows-latest
         timeout-minutes: 30
+        env:
+            TEMP: ${{ github.workspace }}/.validation-temp
+            TMP: ${{ github.workspace }}/.validation-temp
         steps:
             - name: Checkout
               uses: actions/checkout@v6
+
+            - name: Prepare non-C test temporary directory
+              run: |
+                  if ([IO.Path]::GetPathRoot($env:TEMP) -ieq 'C:\') { throw 'Validation requires a non-C workspace' }
+                  New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
 
             - name: Verify audit standard
               run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-audit-standard.ps1

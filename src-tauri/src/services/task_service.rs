@@ -89,10 +89,29 @@ pub fn handle_action(
                 Err(error) => return ApiResponse::err(&format!("DB error: {}", error)),
             };
 
+            let selected_status = {
+                let conn = db.lock_connection().map_err(|e| e.to_string())?;
+                crate::common::task_status::seed_project(&conn, &task_create_request.project_id)
+                    .map_err(|e| e.to_string())?;
+                if task_create_request.status_id.is_empty() {
+                    crate::common::task_status::resolve_builtin_or_id(
+                        &conn,
+                        &task_create_request.project_id,
+                        &task_create_request.status,
+                    )?
+                } else {
+                    crate::common::task_status::resolve(
+                        &conn,
+                        &task_create_request.project_id,
+                        &task_create_request.status_id,
+                    )?
+                }
+            };
+
             let uuid = Uuid::new_v4().to_string().replace("-", "");
             let unique_part = &uuid;
 
-            let progress = if task_create_request.status == "Done" {
+            let progress = if selected_status.is_completed {
                 100
             } else {
                 task_create_request.progress.clamp(0, 100)
@@ -109,7 +128,7 @@ pub fn handle_action(
                 end_time: task_create_request.end_time,
                 r#type: task_create_request.r#type,
                 priority: task_create_request.priority,
-                status: task_create_request.status,
+                status: selected_status.id,
                 progress,
                 effort_days: task_create_request.effort_days.max(0.0),
                 schedule_mode: task_create_request.schedule_mode,

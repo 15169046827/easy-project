@@ -7,3 +7,4 @@ pub mod project_member_service;
 pub mod project_service;
 pub mod task_dependency_service;
 pub mod task_service;
+pub mod task_status_service;

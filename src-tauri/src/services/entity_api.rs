@@ -45,6 +45,7 @@ pub fn dispatch_raw(
     let result = match model {
         "project" => project_service::handle_action(db, action.into(), data),
         "task" => task_service::handle_action(db, action.into(), data),
+        "task_status" => super::task_status_service::handle_action(db, action.into(), data),
         "member" => member_service::handle_action(db, action.into(), data),
         "project_member" => project_member_service::handle_action(db, action.into(), data),
         _ => return Err("Unsupported entity".into()),
@@ -72,6 +73,7 @@ pub fn dispatch(
 
 pub fn get(db: &DbState, model: &str, id: &str) -> Result<Value, String> {
     let (table, fields) = match model {
+        "task_status" => ("task_status", "id,project_id,name,color,sort_order,is_completed,is_default,builtin_key,create_time,update_time,stateflag"),
         "project" => ("project", "id,name,version,type,status,owner,calendar_country,calendar_region,weekend_days,calendar_exceptions,creator,create_time,update_time,stateflag"),
         "task" => ("task", "id,project_id,sort_order,name,parent,dependence,start_time,end_time,type,priority,status,progress,effort_days,schedule_mode,comment,assignee,creator,create_time,update_time,stateflag"),
         "member" => ("member", "id,name,email,phone,role,avatar,availability_exceptions,create_time,update_time,stateflag"),

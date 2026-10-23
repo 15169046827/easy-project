@@ -60,6 +60,7 @@ pub(crate) fn insert_project_transaction(
     if let Some(relationship_id) = owner_membership_id {
         ensure_owner_membership(transaction, relationship_id, &p.id, &p.owner)?;
     }
+    crate::common::task_status::seed_project(transaction, &p.id)?;
     Ok(())
 }
 

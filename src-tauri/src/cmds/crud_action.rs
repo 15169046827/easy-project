@@ -14,7 +14,7 @@ pub fn crud_action(
     data: Value,
 ) -> Result<ApiResponse<Value>, String> {
     match model.as_str() {
-        "project" | "task" | "member" | "project_member" => {
+        "project" | "task" | "member" | "project_member" | "task_status" => {
             crate::services::entity_api::dispatch(&db, &model, &action, data)
         }
         "task_dependency" => task_dependency_service::handle_action(&db, action, data),

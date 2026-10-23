@@ -14,7 +14,7 @@ impl DbState {
     }
 }
 
-pub(crate) const CURRENT_SCHEMA_VERSION: i64 = 6;
+pub(crate) const CURRENT_SCHEMA_VERSION: i64 = 7;
 
 pub fn init_db(database_path: &Path) -> Result<DbState, String> {
     let conn = Connection::open(database_path)
@@ -50,7 +50,7 @@ pub fn init_db(database_path: &Path) -> Result<DbState, String> {
         }
         std::fs::create_dir_all(&backups).map_err(|e| e.to_string())?;
         let snapshot = backups.join(format!(
-            "pre-id-schema6-{}.db",
+            "pre-status-schema7-{}.db",
             uuid::Uuid::new_v4().simple()
         ));
         conn.backup(
@@ -303,12 +303,23 @@ pub fn init_db(database_path: &Path) -> Result<DbState, String> {
     )
     .map_err(|error| format!("Failed to create plan_baseline indexes: {error}"))?;
 
-    if existing_version < CURRENT_SCHEMA_VERSION {
+    if existing_version < 6 {
         super::id_migration::migrate(&conn)
             .map_err(|error| format!("Identity migration failed: {error}"))?;
     }
     super::id_migration::normalize_memberships(&conn)
         .map_err(|e| format!("Membership identity migration failed: {e}"))?;
+
+    if existing_version < 7 {
+        let transaction = conn.unchecked_transaction().map_err(|e| e.to_string())?;
+        super::task_status::migrate_rows(&transaction).map_err(|e| {
+            format!("Task status migration failed; original snapshot preserved: {e}")
+        })?;
+        transaction
+            .pragma_update(None, "user_version", 7)
+            .map_err(|e| e.to_string())?;
+        transaction.commit().map_err(|e| e.to_string())?;
+    }
 
     Ok(DbState(Mutex::new(conn), database_path.to_path_buf()))
 }

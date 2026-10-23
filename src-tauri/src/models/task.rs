@@ -13,6 +13,12 @@ pub struct Task {
     pub r#type: String,
     pub priority: String,
     pub status: String,
+    #[serde(default)]
+    pub status_id: String,
+    #[serde(default)]
+    pub is_completed: bool,
+    #[serde(default)]
+    pub status_builtin_key: String,
     pub progress: i64,
     pub effort_days: f64,
     pub schedule_mode: String,
@@ -37,7 +43,10 @@ pub struct TaskCreateRequest {
     pub end_time: String,
     pub r#type: String,
     pub priority: String,
+    #[serde(default)]
     pub status: String,
+    #[serde(default)]
+    pub status_id: String,
     #[serde(default)]
     pub progress: i64,
     #[serde(default)]

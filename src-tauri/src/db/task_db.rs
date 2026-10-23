@@ -76,11 +76,17 @@ pub(crate) fn insert_task_transaction(
     transaction: &Connection,
     p: &NewTask,
 ) -> rusqlite::Result<()> {
+    crate::common::task_status::seed_project(transaction, &p.project_id)?;
+    let state =
+        crate::common::task_status::resolve_builtin_or_id(transaction, &p.project_id, &p.status)
+            .map_err(|message| {
+                rusqlite::Error::ToSqlConversionFailure(Box::new(std::io::Error::other(message)))
+            })?;
     transaction.execute(
         "INSERT INTO task (id, project_id, sort_order, name, parent, dependence, start_time, end_time, type,
-        priority, status, progress, effort_days, schedule_mode, comment, assignee, creator, create_time, update_time, stateflag)
+        priority, status, progress, effort_days, schedule_mode, comment, assignee, creator, create_time, update_time, stateflag,status_id)
          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17,
-         datetime('now', 'localtime'), datetime('now', 'localtime'), '0')",
+         datetime('now', 'localtime'), datetime('now', 'localtime'), '0',?18)",
         params![
             p.id,
             p.project_id,
@@ -92,13 +98,14 @@ pub(crate) fn insert_task_transaction(
             p.end_time,
             p.r#type,
             p.priority,
-            p.status,
-            p.progress,
+            state.name,
+            if state.is_completed {100} else {p.progress},
             p.effort_days,
             p.schedule_mode,
             p.comment,
             p.assignee,
-            p.creator
+            p.creator,
+            state.id
         ],
     )?;
     Ok(())
@@ -121,7 +128,9 @@ pub fn get_all_task(
                 type, priority, status, COALESCE(progress, 0), COALESCE(effort_days, 0),
                 COALESCE(schedule_mode, 'fixed_dates'),
                 COALESCE(comment, ''), COALESCE(assignee, ''),
-                COALESCE(creator, ''), create_time, update_time, stateflag
+                COALESCE(creator, ''), create_time, update_time, stateflag,status_id,
+                COALESCE((SELECT is_completed FROM task_status s WHERE s.id=task.status_id),0),
+                COALESCE((SELECT builtin_key FROM task_status s WHERE s.id=task.status_id),'')
          FROM task
          WHERE stateflag = '0'";
 
@@ -168,7 +177,9 @@ pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec
         COALESCE(parent, ''), COALESCE(dependence, ''), COALESCE(start_time, ''),
         COALESCE(end_time, ''), type, priority, status, COALESCE(progress, 0),
         COALESCE(effort_days, 0), COALESCE(schedule_mode, 'fixed_dates'), COALESCE(comment, ''),
-        COALESCE(assignee, ''), COALESCE(creator, ''), create_time, update_time, stateflag
+        COALESCE(assignee, ''), COALESCE(creator, ''), create_time, update_time, stateflag,status_id,
+        COALESCE((SELECT is_completed FROM task_status s WHERE s.id=task.status_id),0),
+        COALESCE((SELECT builtin_key FROM task_status s WHERE s.id=task.status_id),'')
         FROM task WHERE stateflag = '0'";
 
     let mut conditions = Vec::new();
@@ -277,6 +288,9 @@ fn map_task(row: &Row<'_>) -> rusqlite::Result<Task> {
         r#type: row.get(8)?,
         priority: row.get(9)?,
         status: row.get(10)?,
+        status_id: row.get(20)?,
+        is_completed: row.get(21)?,
+        status_builtin_key: row.get(22)?,
         progress: row.get(11)?,
         effort_days: row.get(12)?,
         schedule_mode: row.get(13)?,

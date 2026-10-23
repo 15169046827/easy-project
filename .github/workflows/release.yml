@@ -248,3 +248,12 @@ jobs:
               env:
                   EXPECTED_BUNDLES: ${{ matrix.expected }}
               run: node scripts/check-release-artifacts.js
+
+            - name: Preserve original macOS release archives for independent verification
+              if: ${{ runner.os == 'macOS' }}
+              uses: actions/upload-artifact@v4
+              with:
+                  name: original-app-archive-${{ matrix.target }}
+                  path: src-tauri/target/**/*.app.tar.gz
+                  if-no-files-found: error
+                  retention-days: 14

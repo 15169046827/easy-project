@@ -86,12 +86,12 @@ export default {
     storage: {
         title: 'Data storage location',
         description:
-            'Defaults to the data folder beside the installation. Never falls back to drive C. Database and backups stay together.',
+            'Defaults to the data folder beside the installation. Writable local directories, including drive C, are supported. Database and backups stay together without silently switching locations.',
         currentDatabase: 'Current database (also used by local MCP)',
         profile: 'Window cache and interface preferences',
         destination: 'New data directory',
         pathHint:
-            'Use an absolute local path outside drive C. Choose a new or empty folder, not a parent or child of the current directory.',
+            'Use a writable absolute local path. Choose a new or empty folder, not a parent or child of the current directory.',
         pending:
             'Pending directory: {path}. Close and reopen the app to migrate the latest data. The current database remains active until then.',
         useDefault: 'Use the installation default',

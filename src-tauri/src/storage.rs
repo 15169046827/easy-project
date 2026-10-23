@@ -85,9 +85,6 @@ pub fn validate_directory(path: &Path) -> Result<(), String> {
         .to_string_lossy()
         .replace('\\', "/")
         .to_ascii_lowercase();
-    if normalized.starts_with("c:/") || normalized.starts_with("//?/c:/") {
-        return Err("EasyProject storage must not be on drive C".into());
-    }
     if normalized.starts_with("//?/unc/")
         || (normalized.starts_with("//") && !normalized.starts_with("//?/"))
     {
@@ -100,8 +97,9 @@ pub fn validate_directory(path: &Path) -> Result<(), String> {
             .to_string_lossy()
             .replace('\\', "/")
             .to_ascii_lowercase();
-        if value.starts_with("c:/") || value.starts_with("//?/c:/") {
-            return Err("Resolved storage must not be on drive C".into());
+        if value.starts_with("//?/unc/") || (value.starts_with("//") && !value.starts_with("//?/"))
+        {
+            return Err("Network storage is not supported".into());
         }
     }
     Ok(())
@@ -621,10 +619,8 @@ mod tests {
     }
 
     #[test]
-    fn rejects_c_drive_relative_network_and_nested_destinations() {
+    fn rejects_relative_network_and_nested_destinations() {
         for path in [
-            "C:/EasyProject/data",
-            "c:\\data",
             "relative/data",
             "//server/share",
             "\\\\?\\UNC\\server\\share",
@@ -644,6 +640,19 @@ mod tests {
             &PathBuf::from(info.active_dir.to_string_lossy().to_uppercase()).join("nested")
         )
         .is_err());
+    }
+
+    #[test]
+    #[cfg(windows)]
+    fn accepts_c_drive_paths_without_writing_to_them() {
+        // Product users may choose C; development tests must not create files there.
+        let root = std::env::var("SystemRoot").unwrap();
+        validate_directory(Path::new(&root)).unwrap();
+        let executable = Path::new("C:/EasyProject/easy-project.exe");
+        assert_eq!(
+            installation_directory(executable).unwrap(),
+            PathBuf::from("C:/EasyProject")
+        );
     }
 
     #[test]

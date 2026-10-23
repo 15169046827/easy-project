@@ -1,5 +1,9 @@
 # EasyProject 交接时当前状态与待办
 
+C盘政策源码整改复验完成：258单测（两worker）、Rust53+stdio1、存储8、fmt/严格clippy/lint/typecheck/build通过；生产UI80直接通过、2初轮失败后四存储场景+备份告警串行零重试5/5通过，原失败保留。未新发布/覆盖安装，Beta2仍旧限制。规则1.12与AGENTS已区分本机E盘维护约束和终端用户可选C盘存储；后续新补丁发布不得重传替换旧beta2资产，详专项检查点。
+
+2026-10-23用户澄清C盘政策：非C盘仅为维护者本机环境规范，产品允许C盘安装侧默认/自选可写本地目录。源码storage.rs已解除两处盘符拦截，保留安全/迁移守卫，新增只读C路径测试，不写C盘；中英文设置提示修正。交接1.12/AGENTS更新；公开beta.2及线上网站仍旧版，不能称已发布修复，不覆盖旧资产。本轮Rust53+stdio1/存储8、fmt/严格clippy通过；前端初轮Apifox超时待低并发复验，进度见[C盘政策检查点](../C_DRIVE_PRODUCT_POLICY_CHECKPOINT.md)。
+
 2026-10-23最终：v0.1.1-beta.2公开预发布/8附件，官网#download六下载已上线，源码6ac13ef/current=beta2-landing-20261023。新root700副本、78旧资产保留，后端同SHA/PID不变、两库全表逻辑不变。最终258单测、82生产UI零重试、12真实HTTP、lint/typecheck/build通过；正常TLS2HTML/62静态SHA/CSP与匿名401边界通过。临时CI写权限已恢复read；旧草稿保留。正式生产未通过，签名/公证/真实设备矩阵与服务器限流配额风险保留，不自动扩展开发。本轮公开测试及官网下载交付完成；完整证据/失败历史/副本/连接状态见[最终回执](../PUBLIC_BETA_1_CHECKPOINT.md)。下方“待部署/待许可”均为历史。
 
 2026-10-23公开beta.2已发布：https://github.com/15169046827/easy-project/releases/tag/v0.1.1-beta.2 ，源34de5f2、成功构建39799550769；六原包本地SHA/容器/版本/架构已核验，两Windows包NotSigned/MSI0.1.1 x64，八附件含校验清单与manifest。用户批准临时CI权限，桥接39885916458成功后已在f9e797d恢复read。官网ready=true候选258单测、lint/typecheck/build、82生产UI（零重试、12专用HTTP跳过）通过，待静态安全部署；服务仍cd05e93/active（本轮SSH只读确认）。不覆盖桌面/MCP/真实库，正式生产未通过。历史“未公开/待许可”已被本段覆盖；最终部署回执见专项检查点。

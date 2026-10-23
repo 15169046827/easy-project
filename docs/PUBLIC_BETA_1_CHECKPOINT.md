@@ -1,5 +1,7 @@
 # 公开测试版 Beta 1 检查点
 
+2026-10-23公开里程碑：Release420856621/v0.1.1-beta.2已显式draft=false/prerelease=true/latest=false，published_at=2026-10-23T01:50:06Z，匿名API八附件可见。六原始文件本机摘要全匹配，Mac tar版本0.1.1/正确ARM与Intel Mach-O、路径安全、DMG koly、PE/MSI容器通过，Windows两包NotSigned/EXE0.1.1/MSI0.1.1 x64。PowerShell COM只读MSI查询适配失败，改系统VBScript同一只读查询通过，不安装；失败不抹去。SHA256SUMS与manifest已附，不覆盖旧文件。官网ready/date/系统要求候选lint/typecheck/258单测/build与82生产UI零重试通过，12专用HTTP本轮单独待验，6张下载区深浅/窄图已产出、375dark实看正常。home-host SSH只读确认current=cd05e93-landing-20261022、active。接续：真实HTTP12复验→新源码提交→E盘唯一包→服务器新root700副本/只切静态、不重启、不改库→HTTPS读回与文档同步。WACAS/范围同上，基线f9e797d；未提交为本文、handoff CURRENT_STATE、release notes和3官网下载文件，API无变，Wolai待本阶段同步。
+
 2026-10-23桥接3180b57/39885916458 completed/success，附件12472502404（49015160 bytes）包含六份原Release字节和bridge-verification.json。已恢复job contents:read，临时授权结束；不再派发需要写权限的桥接。产品源34de5f2、Release420856621仍草稿；原六资产GET/固定SHA成功，本地下载与容器/版本/架构待完成，不提前公开。上一轮附件失败原因与证据保留。
 
 临时授权运行f5686a9/39885786950：原六文件GET及固定摘要核验步骤成功，但upload-artifact默认排除点目录，未产生附件；不是资产核验失败，不称整体成功。仅为精确路径.verified-beta2/*开启hidden-files上传（目录仅六原文件及公开元数据，无环境/凭据文件），重试同候选；取得附件后恢复contents:read。原始构建/资产均未改变。

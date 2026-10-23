@@ -4,7 +4,7 @@ export default {
     betaNote:
         'Windows x64 为主要试用平台；MSI 干净安装、macOS 实机/公证及跨版本升级回滚未完成全矩阵验收。macOS 文件为实验性试用，请先阅读发布说明。',
     systemRequirements:
-        'Windows 10/11 x64（需 WebView2）；macOS 10.15+（同时受硬件与 WebKit 能力限制）',
+        'Windows 10/11 x64（需 WebView2、非C盘可写安装目录）；macOS ARM/Intel 为实验性试用，需用户可写的 App 所在目录，尚未完成实机兼容验收',
     publishedOn: '发布日期：',
     checksums: '下载 SHA-256 校验清单',
     downloads: {

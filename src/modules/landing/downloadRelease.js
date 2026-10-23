@@ -1,9 +1,9 @@
 // Switch ready only after the exact new prerelease and all listed assets are public and verified.
 export const desktopRelease = {
-    ready: false,
+    ready: true,
     version: '0.1.1',
     tag: 'v0.1.1-beta.2',
-    publishedDate: '',
+    publishedDate: '2026-10-23',
     url: 'https://github.com/15169046827/easy-project/releases/tag/v0.1.1-beta.2',
     base: 'https://github.com/15169046827/easy-project/releases/download/v0.1.1-beta.2/',
     assets: [

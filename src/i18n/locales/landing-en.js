@@ -4,7 +4,7 @@ export default {
     betaNote:
         'Windows x64 is the primary trial platform. Clean MSI installs, native macOS/notarization and cross-version upgrade/rollback matrices remain incomplete. macOS downloads are experimental; read the release notes first.',
     systemRequirements:
-        'Windows 10/11 x64 (WebView2 required); macOS 10.15+ (also subject to hardware and WebKit capabilities)',
+        'Windows 10/11 x64 (WebView2 and a writable non-C installation directory required); macOS ARM/Intel is experimental, requires a user-writable app directory and has not completed real-device compatibility acceptance',
     publishedOn: 'Published:',
     checksums: 'Download SHA-256 checksums',
     downloads: {

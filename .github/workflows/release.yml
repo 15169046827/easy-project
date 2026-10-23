@@ -55,6 +55,7 @@ jobs:
               with:
                   name: verified-original-beta2-assets
                   path: .verified-beta2/*
+                  include-hidden-files: true
                   if-no-files-found: error
                   retention-days: 14
 

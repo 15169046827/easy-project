@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- 2026-10-23: Deployed project-owned task statuses to the approved local desktop, independent MCP and private server release. Protected schema 6→7 migration preserves original account/business fields and relationships; no new public installer release. Exact provenance and validation limits: `docs/PROJECT_TASK_STATUS_CHECKPOINT.md`.
+
 ### Project-owned task statuses (2026-10-23, candidate)
 
 - Add schema7 project status dictionaries and stable task references, explicit completion/default properties, dynamic boards and status filtering. Preserve legacy labels in protected, transactional migration.

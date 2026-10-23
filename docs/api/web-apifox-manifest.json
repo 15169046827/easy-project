@@ -55,7 +55,7 @@
       "method": "post",
       "folderId": 97961216,
       "name": "生成用户MCP Token（仅显示一次）",
-      "sha256": "3ce9cfd9092ab0e80a48454fe2a61cc71f54ebf3178cfa04c21dd75849bd6aff"
+      "sha256": "803c04f4b32375fb9b2e0b2601ccabe527e390d91acf0eb9fb8094291a816a39"
     },
     "post__api_account_mcp_tokens_revoke": {
       "id": 527000644,
@@ -79,7 +79,7 @@
       "method": "post",
       "folderId": 97961217,
       "name": "账号隔离的MCP Streamable HTTP",
-      "sha256": "90630a3cffabdaf69ce567adb988791062ec7ccd94a3c706f6fd1d276af23e4e"
+      "sha256": "86d6bef82058ee6a3eaaeb178609a8b7102477a9b0dc313b83b14a8727d35800"
     },
     "post__api_auth_login": {
       "id": 526827472,

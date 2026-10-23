@@ -1,5 +1,7 @@
 # EasyProject 新伙伴接手入口
 
+2026-10-23状态字典已实际交付到原桌面、独立MCP及home-host：业务schema7/账号3，保护副本与全部原字段/关联核验通过，MCP23工具release来源已重绑。当前客户端须重连，未真实CRUD或原生新UI全矩阵/正式生产验收。先读[状态专项最新回执](../PROJECT_TASK_STATUS_CHECKPOINT.md)及CURRENT_STATE；下方“未打包/未部署/待协调”为阶段历史，不重复迁移或覆盖。API/Git/Wolai最终同步结果以专项顶部为准。
+
 2026-10-23状态字典源码候选验证与契约同步完成：266单测/9性能、Rust56+stdio1/server37+16、84生产UI零重试+12真实HTTP及规范/类型/构建/严格检查通过，Apifox66原生+18HTTP/32参考读回。规则1.13/79条；尚未构建可交付NSIS/MCP release或部署schema7、迁移真实数据，正式发布未通过。继续前读[专项最新回执](../PROJECT_TASK_STATUS_CHECKPOINT.md)，不能直接运行debug连接真实库。Git最终提交/推送以回执为准。
 
 2026-10-23已恢复状态字典专项：最新后端56单测+1真实stdio通过，暂停前6失败已整改；源码schema7/MCP23工具尚未部署。正在接动态界面与项目状态管理，未完成全量门禁/契约同步，不启动源码迁移真实库。准确进度见[专项检查点顶部](../PROJECT_TASK_STATUS_CHECKPOINT.md)，下方暂停说明为历史。

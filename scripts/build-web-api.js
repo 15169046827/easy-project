@@ -276,7 +276,7 @@ const groups = {
                 post: {
                     summary: '生成用户MCP Token（仅显示一次）',
                     description:
-                        '仅交互登录会话；最多20个有效Token，默认UI只读。候选read=9查询，write=18查询/新建/修改，delete=23完整CRUD（含项目状态字典）；schema7尚未部署，真实环境仍7/14/18。权限仅限本人远端工作区，与管理员身份/本地stdio无关。有效期7/30/90天，数据库仅存SHA256摘要。secret只在本次创建返回，禁止日志/URL/持久前端存储/自动重试。',
+                        '仅交互登录会话；最多20个有效Token，默认UI只读。read=9查询，write=18查询/新建/修改，delete=23完整CRUD（含项目状态字典）。权限仅限本人远端工作区，与管理员身份/本地stdio无关。有效期7/30/90天，数据库仅存SHA256摘要。secret只在本次创建返回，禁止日志/URL/持久前端存储/自动重试。',
                     requestBody: {
                         required: true,
                         content: jsonContent({
@@ -334,7 +334,7 @@ const groups = {
                 post: {
                     summary: '账号隔离的MCP Streamable HTTP',
                     description:
-                        '无状态单JSON-RPC消息，最大256KiB；支持initialize/ping/tools/list/tools/call及通知202空体。无Session-ID/SSE/OAuth自动发现。需专用epmcp_ Bearer（不能使用cookie或网页登录token）；Accept必须包含application/json与text/event-stream；后续MCP-Protocol-Version支持2025-03-26/06-18/11-25，缺省按03-26。Origin若存在必须同源，原生客户端可不带。候选23工具复用MCP inputSchema/业务校验，9/18/23按Token权限过滤，新增项目状态CRUD且任务创建必填同项目已有status_id；schema7尚未部署，真实环境仍18工具。不接收账号ID或数据库路径。写前恢复点、脱敏审计，与Web共用账号锁并使旧revision失效；删除保留名称匹配和引用阻止约束，客户端仍须审批。不得自动重试写操作。',
+                        '无状态单JSON-RPC消息，最大256KiB；支持initialize/ping/tools/list/tools/call及通知202空体。无Session-ID/SSE/OAuth自动发现。需专用epmcp_ Bearer（不能使用cookie或网页登录token）；Accept必须包含application/json与text/event-stream；后续MCP-Protocol-Version支持2025-03-26/06-18/11-25，缺省按03-26。Origin若存在必须同源，原生客户端可不带。23工具复用MCP inputSchema/业务校验，9/18/23按Token权限过滤，包含项目状态CRUD且任务创建必填同项目已有status_id。不接收账号ID或数据库路径。写前恢复点、脱敏审计，与Web共用账号锁并使旧revision失效；删除保留名称匹配和引用阻止约束，客户端仍须审批。不得自动重试写操作。',
                     security: [{ mcpToken: [] }],
                     parameters: [
                         {

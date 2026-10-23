@@ -1,5 +1,7 @@
 # EasyProject 数据库整体设计
 
+2026-10-23实际迁移完成：桌面与服务器业务schema6→7、账号schema3不变，全部原字段/关联逐项保留且integrity ok/FK0。本机1项目/5任务/4依赖/5基线新增3状态；服务器1项目/20任务新增11状态（历史自定义名称保留），2账号/1会话/1MCP凭据保持。下文候选/未部署为阶段历史；副本、源码摘要及验证证据见状态专项检查点。账号与业务继续分库，未执行真实业务CRUD验收。
+
 ## 2026-10-23业务schema7候选（尚未部署）
 
 账号库仍schema3且与业务分库。新增业务表`task_status`：独立`id=TASK_STATUS:<32位UUID>`、project_id外键、name（新建1–64可见字符）、#RRGGBB color、sort_order（0–1000000）、is_completed/is_default布尔、builtin_key（默认翻译标识，重命名清除）、创建/修改时间与stateflag。项目默认播种Pending/InProgress/Done，每项目同名唯一且恰一默认；可新增自定义分类，不设三生命周期父层级。服务端新增上限100项，旧迁移不因超过100项丢弃数据。

@@ -150,7 +150,7 @@ const models =
 writeFileSync(resolve(root, 'docs/api/MODELS.md'), models)
 const overview = readFileSync(resolve(root, 'docs/api/OVERVIEW.md'), 'utf8')
 const desktop = readFileSync(resolve(root, 'docs/api/DESKTOP_IPC.md'), 'utf8')
-const provenance = `\n\n接口基线：${source}。候选MCP二进制源：${catalog.mcpBinary.sourceCommit}，worktreeDirty=${catalog.mcpBinary.worktreeDirty}，buildKind=${catalog.mcpBinary.buildKind}，SHA256：${catalog.mcpBinary.sha256}。文档维护不改变已安装程序或真实业务数据，schema7尚未部署。\n`
+const provenance = `\n\n接口基线：${source}。MCP二进制源：${catalog.mcpBinary.sourceCommit}，worktreeDirty=${catalog.mcpBinary.worktreeDirty}，buildKind=${catalog.mcpBinary.buildKind}，SHA256：${catalog.mcpBinary.sha256}。文档生成本身不执行部署；实际安装、迁移及客户端加载状态以项目专项检查点回执为准。\n`
 const documents = [
     { key: 'overview', name: 'EasyProject API / 协议与权限总览', content: overview + provenance },
     { key: 'models', name: 'EasyProject API / 模型与原生请求类型', content: models + provenance },

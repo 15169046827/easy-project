@@ -1,5 +1,7 @@
 # EasyProject 本地 MCP
 
+2026-10-23实际更新：业务schema7已在保护副本及逐字段核验后迁移，独立与安装侧MCP均为release 765B4C33330442DC947B76DE58747FEFF0EB78181B8738481B980E72C5FC70DF（构建源1640e31）。新进程tools/list实际发现23工具且真实库SHA不变；原有write/delete开关未扩大。当前Codex需要重连/重启重新发现；MCP仍不自行迁移。下方18工具/schema6为历史，当前语义以本段及状态专项为准。
+
 ## 2026-10-23项目状态字典候选（未替换已安装程序）
 
 新增`easyproject_task_status_list/get/create/update/delete`，只读9工具、可写18、完整23。list必填projectId；create数据须project_id/name，可选color/sort_order/is_completed/is_default；update变更不允许移动项目。get返回record和首50条usage（含total），更多冲突由IPC get_usage分页读取；delete使用id与精确confirm_name，任何任务引用（含软删除）均拒绝，默认/最后状态也拒绝。写前恢复点、事务、脱敏审计、审批及账号隔离不变。

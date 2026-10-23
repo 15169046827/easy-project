@@ -1,5 +1,36 @@
 # 项目独立任务状态改造
 
+## 2026-10-23交付收尾完成（Git最终同步回执另列）
+
+- 本轮获批的桌面安全覆盖、真实schema7迁移、服务器部署及独立MCP替换均完成，原数据/关联已核验保留。下方实际部署段给出完整摘要/保护副本/设备证据；不需要再部署或重新迁移。
+- 最终相称复验：前端266/54文件、API契约10、迁移核验器4、lint/typecheck/release:check/diff通过；线上正常TLS2入口/63静态SHA/4匿名401/health200通过。产品原生/Rust/Web全量此前56+stdio1/37+16/84生产UI+12HTTP证据继续有效，本轮运维文档未改变产品源码，不冒称再次全量执行。
+- 实际release来源已绑定API目录；Apifox66原生接口、32参考及18HTTP均完成同步/逐项读回，保留原ID/分组，所有受管摘要非空；HTTP另跑独立权威读回18项通过。状态仍testing，不以文档状态代替正式生产验收。
+- Wolai主/交接真实部署回执已读回，最终API/Git结果另补；交接README/RULES/CURRENT_STATE/ARCHITECTURE核对，RULES规范未变不机械重写。现有Codex客户端需重连才加载新23工具，不需要扩大权限。
+- 提交前完整未提交19文件：CHANGELOG.md、docs/{DATABASE_DESIGN.md,MCP.md,PROJECT_PLAN.md,PROJECT_TASK_STATUS_CHECKPOINT.md}、docs/api/{MODELS.md,OVERVIEW.md,README.md,apifox-documents.json,apifox-layout.json,apifox-manifest.json,catalog.json,web-apifox-manifest.json,web-openapi.json}、docs/handoff/{ARCHITECTURE.md,CURRENT_STATE.md,README.md}、scripts/{build-api-catalog.js,build-web-api.js}。本次仅生成器部署文案/来源及交付记录，产品代码不再改。
+- 剩余边界：原生Windows新UI全矩阵、macOS实机及真实多人CRUD未验；正式生产发布仍未通过，本轮没有公开新版安装包。用户可在项目工作区“任务状态”管理、任务/甘特创建编辑选择器底部“+”使用。新官网截图/es-ES/公网运维待后续专项，不作为本次状态字典阻断。
+- 下一步仅保存本轮提交、非强制push并远端SHA读回、Wolai最终回执；若Git网络失败明确记录缺口，不重做有效迁移或自动扩大授权。桌面及服务器保持运行，未继承关机授权。
+
+## 真实部署完成，文档收尾（2026-10-23，覆盖下方协调/未部署历史）
+
+收尾复验：正常TLS两HTML入口、63个当前dist静态文件SHA、4条匿名401边界及/api/health 200全部通过；此前误探/health得到404，已按真实路由/api/health复验。本轮追加全量前端266/54文件通过，API契约10测试、lint/typecheck/release:check/diff通过，补齐末次展示层改动后的单测证据。HTTP18同步及独立权威读回已通过；32参考文档已读回，66原生接口来源分组更新正在逐项读回。Wolai主/交接已保存真实部署回执并读回；Git远端只读确认仍1640e31，本轮6aeb14c及最终文档待非强制推送。当前五小时余38%，未重置。
+
+- 目标：项目独立状态字典及UI/MCP全链路；本轮真实迁移/新副本/桌面覆盖/服务器/独立MCP更新均经用户批准，不含公开新安装包、关机、额度重置。WACAS未定义/待确认，实际AGENTS/交接1.13/UPARS1.1.0。基线6aeb14cfe3da70ab94b43a863021d0157b46da73，分支codex/audit-release-20261006-api；最新额度五小时余46%、周余70%。
+- 本机安装完成并启动响应正常，schema6→7逐字段保留1项目/5任务/4依赖/5基线、3状态，integrity ok/FK0。E盘受限新副本status-overwrite-1640e31-20261023保护480文件，477非程序SHA不变；安装包E0B2A0CF3845442071935DE728B5954A38C67A738AD38A8322A918F4AD952BAA，安装exe C618C905D0740673B04D04AE6B6AF35FBC63A57837BB9D64CE2DF49780045237。
+- 用户“继续尝试”后实时精确核对/断开3个旧artifacts/mcp进程，受限新副本status-mcp-before-1640e31保留旧程序/manifest/说明。新独立与安装侧MCP均765B4C33330442DC947B76DE58747FEFF0EB78181B8738481B980E72C5FC70DF，实际构建源1640e31+dirty=true，与后续6aeb14c Rust源码无差异。新独立进程只做tools/list，发现23项且真实库SHA不变；当前Codex旧目录仍须重连，不称本聊天已加载。
+- home-host已确认在线；SSH认证后经受限easyproject身份迁移、原子切current并启动，服务active/enabled。新release=/opt/easyproject/releases/status-1640e31，新root700全量副本=/var/backups/easyproject/status-1640e31-20261023。Linux源53d664e/成功CI39964991851，二进制4730A7394B7C569C54C12F88ED0CEE3C37F86345A74D96F15BE2BAEBBDABFA4E；66交付文件摘要全部核验，包7f5a795ad95c4a872ca3e7a2ef93c9b6a90fd53a600345151e1025bc483a510c；旧网页哈希资源保留。
+- 服务器账号schema3全部字段保留：2账号/1会话/1MCP凭据/0重置码；业务6→7全部原字段/关系保留：1项目/20任务/0依赖/0成员/0团队/0基线/1revision/11状态（历史自定义名称保留）。迁移前后及服务启动后只读核验integrity ok/FK0，revision仅允许预期epoch变化。未运行真实账号/业务CRUD或代操作登录。
+- 新迁移核验器4测试在E盘TEMP环境通过；压缩续接后一次漏设TEMP的运行于setUp无法打开临时库，补齐既定E盘TEMP/TMP后4/4通过，不是产品源回归。此前全量验证结果仍见源码候选完成回执，没有冒称再次全量执行。
+- 当前全部未提交：本检查点、CHANGELOG、docs/PROJECT_PLAN、docs/DATABASE_DESIGN、docs/MCP、docs/api/{OVERVIEW,README,MODELS,catalog,apifox-documents,apifox-layout}、docs/handoff/{ARCHITECTURE,CURRENT_STATE}、scripts/{build-api-catalog,build-web-api}；后续生成会增加web-openapi及同步manifest，提交前以git status完整核对。
+- 正在收尾：公网正常TLS只读入口/静态摘要/匿名边界；API文案已去除生成器硬编码“尚未部署”，待重生成并同步Apifox读回；Wolai两处待更新。Git上次6aeb14c推送SSL失败，须只读远端核对后非强制推送。本轮未完成原生新UI全矩阵、macOS实机、真实多人CRUD，正式生产发布仍未通过。没有当前关机授权。桌面与服务器保持运行，不自动停止。
+- 准确下一步：完成只读公网验证→生成实际release来源契约/相称门禁→Apifox只读计划再同步读回→Git提交/非强制推送并读回→Wolai主/交接最终回执读回。新版官网截图/es-ES/公网运维后置，不重做已通过的状态开发或再次迁移。
+
+## 本机真实schema7已核验（2026-10-23）
+
+- 用户继续指示后实时核对并断开3个精确artifacts/mcp旧进程（不是复用历史PID）；新受限status-mcp-before-1640e31副本保留原EC9C6EFE exe/manifest/说明。替换后独立与安装侧伴随MCP均765B4C33330442DC947B76DE58747FEFF0EB78181B8738481B980E72C5FC70DF；manifest实际构建来源更正1640e31+dirty=true（后续6aeb14c仅运维验证器/文档，Rust源无差异）。
+- 启动后逐字段核验原schema6→7，1项目/5任务/4依赖/5基线保留，新增3状态，integrity ok/FK0；桌面PID15376/Responding=true/MainWindowTitle EasyProject。未操作登录或真实业务CRUD，不称原生新UI全矩阵通过。
+- 实际新独立MCP仅tools/list发现23项，真实库文件SHA前后不变；当前Codex现有目录未自动重连，不冒称已动态加载。API源码已按实际release exe重新生成，来源/Apifox同步待本轮收尾。
+- 服务器候选66文件/包SHA7f5a795ad95c4a872ca3e7a2ef93c9b6a90fd53a600345151e1025bc483a510c，专用部署脚本已基于旧流程逐项替换固定路径/摘要并保留旧哈希资源，上传进行中；尚未停服务器或迁移。下一步完成上传核验、全新root700副本/停写迁移/逐字段验证后才切current；失败不自动覆盖回滚数据库。
+
 当前待用户协调：只读CIM核对旧MCP进程2220/3436/38684/11288均为E:/Project/Project/easy-project/artifacts/mcp/easyproject-mcp.exe。未强停，可能属于其他仍在工作的任务；先请用户暂停这些任务的EasyProject MCP写操作并确认可断开，再重新查询实时PID（不能复用此历史PID直接终止）、保护原件、替换/迁移/逐字段核验与重连。当前桌面覆盖但未启动、真实库仍schema6；服务器仅只读确认，尚未上传/停止或部署。新增verifier与4测试及交接回执保存Git，Wolai同步本协调点；无后台自动继续或关机。
 
 ## 真实升级中间里程碑（2026-10-23）

@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-10-23用户批准更新C盘政策补丁：新app0.1.2/v0.1.2-beta.1候选bd2e403，完整Actions39895304412进行中，尚未公开。metadata/10发布脚本/lint通过；原网站仍beta2下载且准确披露旧限制，须新六包门禁/核验/显式公开后再切换。新增原Mac压缩包workflow备份，不加CI权限、不复用旧临时授权。范围不含覆盖本机或真实数据；续接[专项检查点](../C_DRIVE_PRODUCT_POLICY_CHECKPOINT.md)。
+
 C盘政策源码整改复验完成：258单测（两worker）、Rust53+stdio1、存储8、fmt/严格clippy/lint/typecheck/build通过；生产UI80直接通过、2初轮失败后四存储场景+备份告警串行零重试5/5通过，原失败保留。未新发布/覆盖安装，Beta2仍旧限制。规则1.12与AGENTS已区分本机E盘维护约束和终端用户可选C盘存储；后续新补丁发布不得重传替换旧beta2资产，详专项检查点。
 
 2026-10-23用户澄清C盘政策：非C盘仅为维护者本机环境规范，产品允许C盘安装侧默认/自选可写本地目录。源码storage.rs已解除两处盘符拦截，保留安全/迁移守卫，新增只读C路径测试，不写C盘；中英文设置提示修正。交接1.12/AGENTS更新；公开beta.2及线上网站仍旧版，不能称已发布修复，不覆盖旧资产。本轮Rust53+stdio1/存储8、fmt/严格clippy通过；前端初轮Apifox超时待低并发复验，进度见[C盘政策检查点](../C_DRIVE_PRODUCT_POLICY_CHECKPOINT.md)。

@@ -2,6 +2,12 @@
 
 ## 2026-10-23新补丁发布进行中
 
+新公开包里程碑：421426167/v0.1.2-beta.1已于2026-10-23T03:46:47Z显式公开预发布（非latest），匿名API八附件可见，源101720104397e8ed7610eb9a4fe8cee961855f0c/39895533485整体success。258单测、9性能、82生产UI、53Rust+stdio1及完整质量通过，npm全量/生产0漏洞；Rust1349公告/528依赖、5原信息告警保留。六原始文件通过workflow备份取回E盘，与新Release每份size/digest相等，Mac版本0.1.2与ARM/Intel Mach-O/安全tar、DMG koly、PE/MSI通过；WindowsNotSigned/EXE0.1.2/MSI0.1.2 x64，未安装。SHA256SUMS/manifest已附，旧包不变。官网下载候选改新tag/六文件/支持C盘文案；其初次单测发现旧固定0.1.1文件断言，已准确更新为0.1.2，保留六数/固定仓库/精确版本检查；最终完整单测进行中。新网站lint/typecheck/build/82生产UI通过，12真实HTTP复验中。服务器只读确认当前beta2-landing-20261023/active，待新源码提交与唯一安全静态部署；无CI权限提升。
+
+39895533485里程碑：validate与rust-security均success，完整前端/生产UI/Rust门禁已通过，prepare进行中，尚未公开新包。后续必须等三平台build与Mac原压缩备份全部完成再逐份核验；安全信息告警/实际数量以该轮日志读回为准，不从旧轮虚构零告警。
+
+修正后候选101720104397e8ed7610eb9a4fe8cee961855f0c/tree f01bfe8058855734bcc2530fad64382c4573fc4d已同SHA非强制推送；Actions39895533485/headSha一致，pending（与旧安全扫描串行），不重复派发。旧39895304412的安全扫描尚未结束，validate已失败；原说明“待结束再派发”具体为新运行已排队而非抢占/取消旧运行。当前工作区代码干净，准确下一步等39895533485完整结果，旧bd2e403不得发布。当前官网/桌面/MCP/服务器/真实数据未动。
+
 首轮39895304412 validate在lint失败：既有verify-beta2-assets.mjs未列.gitattributes eol=lf，Windows checkout转CRLF后Prettier要求删除CR。本机i/lf、w/lf因此未复现；新增*.mjs text eol=lf，不改Prettier/忽略规则，不删除核验脚本。prepare/构建未达，不生成新draft；待原安全作业结束再派发同tag完整新运行，不公开失败源。
 
 构建入口：候选bd2e403704c421b32f6bc77b0a9ed6b13c860ff3/tree f8b7ec6ccfea9224aff81afb0956a6576caa3916已同SHA非强制推送，Actions39895304412/headSha精确一致。发布metadata0.1.2/10发布脚本测试/lint/diff通过。当前质量、安全进行中，尚无新公开包。下一步只读等待该运行，失败定位不跳门禁；成功后读取新draftID及原六文件摘要，不套用旧beta2的ID/SHA/辅助脚本固定参数。原网站/安装/服务器未改。

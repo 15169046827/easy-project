@@ -7,7 +7,7 @@ it('binds all download links to one exact prerelease in the project repository',
     expect(desktopRelease.base).toBe(prefix + 'download/' + desktopRelease.tag + '/')
     expect(new Set(desktopRelease.assets.map(asset => asset.file)).size).toBe(6)
     for (const asset of desktopRelease.assets) {
-        expect(asset.file).toMatch(/^EasyProject_0\.1\.1_[a-z0-9_.-]+$/)
+        expect(asset.file).toMatch(/^EasyProject_0\.1\.2_[a-z0-9_.-]+$/)
         expect(asset.file).not.toContain('..')
     }
     if (desktopRelease.ready) expect(desktopRelease.publishedDate).toMatch(/^\d{4}-\d{2}-\d{2}$/)

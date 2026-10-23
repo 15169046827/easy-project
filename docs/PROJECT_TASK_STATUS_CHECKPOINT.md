@@ -1,5 +1,21 @@
 # 项目独立任务状态改造
 
+当前待用户协调：只读CIM核对旧MCP进程2220/3436/38684/11288均为E:/Project/Project/easy-project/artifacts/mcp/easyproject-mcp.exe。未强停，可能属于其他仍在工作的任务；先请用户暂停这些任务的EasyProject MCP写操作并确认可断开，再重新查询实时PID（不能复用此历史PID直接终止）、保护原件、替换/迁移/逐字段核验与重连。当前桌面覆盖但未启动、真实库仍schema6；服务器仅只读确认，尚未上传/停止或部署。新增verifier与4测试及交接回执保存Git，Wolai同步本协调点；无后台自动继续或关机。
+
+## 真实升级中间里程碑（2026-10-23）
+
+- NSIS首次沙箱makensis系统DLL623失败，正常权限复验成功；包E0B2A0CF3845442071935DE728B5954A38C67A738AD38A8322A918F4AD952BAA（未公开）。Linux CI39964991851/源53d664e成功，已E盘下载候选4730A7394B7C569C54C12F88ED0CEE3C37F86345A74D96F15BE2BAEBBDABFA4E。
+- 用户开机后SSH密码认证只读确认home-host、easyproject active、current=/opt/easyproject/releases/012-landing-20261023。未停服/上传/迁移服务器。
+- 新scripts/verify-status-migration.py及4测试（初轮SQLite连接未关闭导致清理失败已修复并全通过）验证6→7原字段/引用/状态含义/默认/ID/账号3不变。E盘status-isolation-1640e31使用实际桌面库的SQLite隔离副本，真实Rust migrate-storage执行成功，逐字段核验1项目/5任务/4依赖/5基线、3状态，完整性ok/FK0。
+- 真实桌面已覆盖但未启动：新受限副本status-overwrite-1640e31-20261023保护480文件，477非程序SHA/数据库逻辑不变，NSIS退出0，安装exe C618C905D0740673B04D04AE6B6AF35FBC63A57837BB9D64CE2DF49780045237。独立MCP仍旧EC9C6EFE...；更新前检查发现已有MCP进程，保护脚本停止未替换/未启动桌面，需先核对进程精确路径并协调停止后继续。真实数据库仍未触发schema7启动迁移，不能说升级已完成。
+- 当前未提交：本检查点、新verifier/测试；下一步精确处理本机MCP写进程/新副本/替换，启动迁移核验，再做服务器新受限副本/部署及契约来源同步。Wolai/交接中间回执待同步；不复用旧部署脚本或删除原件。
+
+## 2026-10-23已获真实升级授权，候选构建中
+
+- 用户明确允许全新安全副本、真实schema7迁移、服务器/桌面/独立MCP更新，保留账号/内容/关系且不公开发布；此授权仅本轮，不含关机/重置。基线1640e31c6b19f48c408ee4afce74b6bde1243464，原分支，开工干净；五小时余93%、周余78%。WACAS未定义，实际AGENTS/交接1.13/UPARS1.1.0。
+- 已审旧安装/部署脚本，均固化旧路径/摘要/schema6，不直接复用。NSIS构建已启动（仅E盘TEMP/CARGO_HOME），尚未安装；真实进程初查未发现easy-project/easyproject-mcp，不据此推断库离线或可立即覆盖。SSH只读设备/部署路径确认进行中。
+- 关键下一步：构建候选并固化源/摘要；新增schema6→7逐字段/新增状态图验证器（旧verify-id-migration只接受schema6且账号假设过时，不能使用）；隔离验证后准备全新副本，再协调停写/迁移与分别安装部署。不运行旧deploy-profile或旧C盘补丁脚本，不丢旧网页资源。当前未提交仅本检查点，Wolai/交接授权回执待同步；尚未修改真实库/服务器或独立MCP。
+
 ## 2026-10-23恢复：Git同步已完成，等待真实升级授权
 
 - 已先读检查点、核对Git/文件与额度：五小时剩余98%、周剩余78%，未使用重置。工作区干净；分支codex/audit-release-20261006-api，源码4752da3，续接HEAD53d664e3cb2d8a5a7c379bad3ba525b5cd809139。WACAS未定义，实际AGENTS/交接1.13/UPARS1.1.0；范围仍为状态字典，不扩展后置路线图。

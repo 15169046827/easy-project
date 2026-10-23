@@ -39,7 +39,8 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 10
         permissions:
-            contents: read
+            # One-time user authorization; restore read after beta.2 verification.
+            contents: write
             actions: read
         steps:
             - uses: actions/checkout@v6

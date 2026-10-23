@@ -1,5 +1,15 @@
 # C盘产品限制纠正
 
+## 2026-10-23最终交付（覆盖下方历史进行中状态）
+
+- 公开补丁：https://github.com/15169046827/easy-project/releases/tag/v0.1.2-beta.1 ，Release421426167，published_at=2026-10-23T03:46:47Z；6原包+SHA256SUMS+manifest共8附件，prerelease且非latest。源101720104397e8ed7610eb9a4fe8cee961855f0c/成功运行39895533485。旧beta2及其它草稿/资产保留，未覆盖重传。
+- 产品修复C盘默认/自选本地可写目录，开发/测试/缓存/副本仍E盘；实际权限和路径/迁移安全不变。六原始包独立大小/SHA/版本0.1.2/容器/ARM与Intel架构通过，Windows两包NotSigned/MSI x64，未安装，不在C盘写测试文件。无额外CI权限提升，Mac原压缩备份可用。
+- 官网已部署：https://home-host.tail2956dd.ts.net/#download ，新网页源d3052df519171420b515edf061d69ca515c448ee，current=/opt/easyproject/releases/012-landing-20261023，新root700副本/var/backups/easyproject/012-landing-20261023。63交付文件、111旧资源保留；后端SHA904d2b3a...、PID不变/active，两库全表逻辑不变/integrity ok/FK0。
+- 最终网页lint/typecheck/build/diff、258单测/53文件、82生产UI、独立12真实HTTP通过；官网专用7项额外串行零重试通过，六截图重新保存并实看375dark正常。HTTP测试曾清理截图，首次图片读取不存在，未冒称看过；重跑官网7项后目视通过。正常TLS线上2HTML/62静态SHA/CSP+nonce/安全头/4匿名401/health200通过。
+- 新鲜安全结果npm完整/生产0漏洞，Rust1349公告/528依赖无漏洞撤包失败，5历史信息告警保留；签名/公证、Mac/MSI干净设备与跨版本/混合DPI矩阵未完成，正式生产未通过。首轮LF门禁失败及旧断言未更新失败保留，下方修复及完整重跑可追溯。
+- WACAS未定义，实际AGENTS/交接1.12/UPARS1.1.0；任务基线95c238c，分支codex/audit-release-20261006-api，网站交付基线d3052df，保存前未提交仅本文和handoff CURRENT_STATE；无其它代码待办。Git/Wolai主与交接本轮同步并读回，API无变不重传Apifox。已确认SSH home-host/正常Funnel HTTPS，本机桌面/MCP/真实库未操作，预览与测试子进程已结束。额度五小时余62%、周余94%，未重置/唤醒/关机。
+- 本轮新包与官网下载更新交付完成；后续仅按用户反馈，不自动覆盖本机或继续其它功能。恢复先读本回执/Git，不重复构建已交付版本。剩余生产验收风险不能因用户允许公开测试而自动消失。
+
 ## 2026-10-23新补丁发布进行中
 
 新公开包里程碑：421426167/v0.1.2-beta.1已于2026-10-23T03:46:47Z显式公开预发布（非latest），匿名API八附件可见，源101720104397e8ed7610eb9a4fe8cee961855f0c/39895533485整体success。258单测、9性能、82生产UI、53Rust+stdio1及完整质量通过，npm全量/生产0漏洞；Rust1349公告/528依赖、5原信息告警保留。六原始文件通过workflow备份取回E盘，与新Release每份size/digest相等，Mac版本0.1.2与ARM/Intel Mach-O/安全tar、DMG koly、PE/MSI通过；WindowsNotSigned/EXE0.1.2/MSI0.1.2 x64，未安装。SHA256SUMS/manifest已附，旧包不变。官网下载候选改新tag/六文件/支持C盘文案；其初次单测发现旧固定0.1.1文件断言，已准确更新为0.1.2，保留六数/固定仓库/精确版本检查；最终完整单测进行中。新网站lint/typecheck/build/82生产UI通过，12真实HTTP复验中。服务器只读确认当前beta2-landing-20261023/active，待新源码提交与唯一安全静态部署；无CI权限提升。

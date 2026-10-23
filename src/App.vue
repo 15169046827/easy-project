@@ -884,9 +884,13 @@ nav button.p-button.active {
         flex: 0 0 auto;
     }
     .header-actions {
-        position: absolute;
-        top: 1.2rem;
-        right: 1.5rem;
+        position: static;
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+    .header-actions .floating-entry-label {
+        display: none;
     }
 }
 </style>

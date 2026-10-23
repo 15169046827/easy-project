@@ -9,10 +9,7 @@
             <strong>{{ $t('board.total', { count: tasks.length }) }}</strong>
         </header>
         <p v-if="message" class="board-message" :class="messageType">{{ message }}</p>
-        <div
-            class="board-columns"
-            :style="{ gridTemplateColumns: `repeat(${columns.length || 1}, minmax(16rem, 1fr))` }"
-        >
+        <div class="board-columns">
             <article
                 v-for="column in columns"
                 :key="column.status"
@@ -24,7 +21,9 @@
             >
                 <header>
                     <span class="status-dot" :style="{ background: column.color }"></span>
-                    <h4>{{ column.label }}</h4>
+                    <h4 v-tooltip.top="{ value: column.label, class: 'task-content-tooltip' }">
+                        {{ column.label }}
+                    </h4>
                     <small>{{ tasksByStatus[column.status].length }}</small>
                 </header>
                 <div class="card-list">
@@ -40,10 +39,27 @@
                         <span class="priority" :class="`p${task.priority || 3}`"
                             >P{{ task.priority || 3 }}</span
                         >
-                        <strong>{{ task.name }}</strong>
-                        <p v-if="task.comment">{{ task.comment }}</p>
+                        <strong
+                            v-tooltip.top="{ value: task.name, class: 'task-content-tooltip' }"
+                            >{{ task.name }}</strong
+                        >
+                        <p
+                            v-if="task.comment"
+                            v-tooltip.top="{ value: task.comment, class: 'task-content-tooltip' }"
+                        >
+                            {{ task.comment }}
+                        </p>
                         <footer>
-                            <span><i class="pi pi-user"></i>{{ memberName(task.assignee) }}</span>
+                            <span
+                                v-tooltip.top="{
+                                    value: memberName(task.assignee),
+                                    class: 'task-content-tooltip'
+                                }"
+                                ><i class="pi pi-user"></i
+                                ><span class="assignee-name">{{
+                                    memberName(task.assignee)
+                                }}</span></span
+                            >
                             <time v-if="task.end_time"
                                 ><i class="pi pi-calendar"></i>{{ dateOnly(task.end_time) }}</time
                             >
@@ -198,6 +214,7 @@ async function dropTask(status) {
 <style scoped>
 .task-board {
     height: 100%;
+    min-width: 0;
     overflow: auto;
 }
 .board-heading {
@@ -243,13 +260,17 @@ async function dropTask(status) {
 }
 .board-columns {
     display: grid;
-    grid-template-columns: repeat(3, minmax(16rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 420px));
     gap: 0.9rem;
-    width: max-content;
-    min-width: 100%;
-    min-height: calc(100% - 5rem);
+    width: 100%;
+    align-items: start;
+    padding-bottom: 0.25rem;
 }
 .board-column {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: clamp(18rem, 55vh, 34rem);
     padding: 0.75rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
@@ -267,9 +288,14 @@ async function dropTask(status) {
     align-items: center;
     gap: 0.45rem;
     padding: 0.25rem 0.25rem 0.75rem;
+    flex: 0 0 auto;
 }
 .board-column h4 {
     flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     margin: 0;
     font-size: 0.86rem;
 }
@@ -282,6 +308,7 @@ async function dropTask(status) {
     background: var(--color-surface);
 }
 .status-dot {
+    flex-shrink: 0;
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
@@ -295,11 +322,23 @@ async function dropTask(status) {
 }
 .card-list {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     align-content: start;
     gap: 0.6rem;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+    flex: 1 1 auto;
+    padding: 0.2rem;
 }
 .board-card.p-button {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-content: stretch;
+    justify-items: stretch;
+    align-items: start;
+    min-width: 0;
     gap: 0.55rem;
     width: 100%;
     padding: 0.85rem;
@@ -344,14 +383,25 @@ async function dropTask(status) {
 }
 .board-card > strong {
     font-size: 0.86rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    text-align: left;
 }
 .board-card > p {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
     overflow: hidden;
     margin: 0;
     color: var(--color-text-secondary);
     font-size: 0.75rem;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: left;
 }
 .board-card footer {
     display: flex;
@@ -365,6 +415,20 @@ async function dropTask(status) {
     display: flex;
     align-items: center;
     gap: 0.25rem;
+    min-width: 0;
+}
+.board-card footer > span {
+    overflow: hidden;
+}
+.board-card footer .assignee-name {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.board-card time,
+.board-card footer i {
+    flex-shrink: 0;
 }
 .progress-track {
     display: block;

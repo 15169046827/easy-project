@@ -280,9 +280,15 @@
                                     "
                                 ></i>
                             </Button>
-                            <span class="task-name-text" v-tooltip.bottom="data.name">{{
-                                data.name
-                            }}</span>
+                            <span
+                                class="task-name-text"
+                                :title="data.name"
+                                v-tooltip.bottom="{
+                                    value: data.name,
+                                    class: 'task-content-tooltip'
+                                }"
+                                >{{ data.name }}</span
+                            >
                         </div>
                     </template>
                 </Column>
@@ -1711,6 +1717,25 @@ onMounted(async () => {
 }
 
 @media (max-width: 900px) {
+    .embedded-toolbar,
+    .toolbar-actions {
+        flex-wrap: wrap;
+    }
+    .embedded-toolbar-left {
+        flex: 1 1 100%;
+        flex-wrap: wrap;
+    }
+    .embedded-search,
+    .embedded-filter {
+        width: auto;
+        min-width: 0;
+        flex: 1 1 7rem;
+    }
+    .embedded-toolbar .p-button,
+    .toolbar-actions .p-button {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
     .panel {
         padding: 1rem;
     }

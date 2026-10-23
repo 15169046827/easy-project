@@ -309,6 +309,7 @@ test('keeps fixed, left-aligned names visible while optional columns scroll', as
     await page.goto('/#/tasks')
     await expect(page.locator('.tstat-icon.progress .pi-spin')).toHaveCount(0)
     const name = page.locator('.task-name-text').first()
+    await expect(name).toHaveAttribute('title', taskName)
     await name.hover()
     await expect(page.getByRole('tooltip')).toHaveText(taskName)
     await page.mouse.move(0, 0)
@@ -329,6 +330,97 @@ test('keeps fixed, left-aligned names visible while optional columns scroll', as
     const after = await name.boundingBox()
     expect(Math.abs(after.x - before.x)).toBeLessThanOrEqual(1)
 })
+
+for (const dark of [false, true]) {
+    test(`board fixed columns wrap and clipped text stays discoverable dark=${dark}`, async ({
+        page
+    }) => {
+        const longName = 'LongTaskTitle'.repeat(30)
+        const longComment = 'Long task description with full hover details. '.repeat(20)
+        await page.addInitScript(
+            ({ dark, longName, longComment }) => {
+                localStorage.setItem('easyproject-theme', dark ? 'dark' : 'light')
+                const original = window.__TAURI_INTERNALS__.invoke
+                window.__TAURI_INTERNALS__.invoke = async (command, args) => {
+                    const result =
+                        /** @type {{ data: { list: Array<Record<string, unknown>> } }} */ (
+                            await original(command, args)
+                        )
+                    if (args?.model === 'task_status' && args.action === 'get_all') {
+                        const sample = result.data.list[0]
+                        result.data.list = [
+                            ...result.data.list,
+                            ...[4, 5, 6].map(index => ({
+                                ...sample,
+                                id: `TASK_STATUS:${String(index).padStart(32, '0')}`,
+                                name: `Custom ${index}`,
+                                builtin_key: null,
+                                is_default: false
+                            }))
+                        ]
+                    }
+                    if (args?.model === 'task' && args.action === 'get_all') {
+                        const sample = result.data.list[0]
+                        result.data.list = [
+                            ...result.data.list,
+                            ...Array.from({ length: 20 }, (_, index) => ({
+                                ...sample,
+                                id: `long-${index}`,
+                                parent: '',
+                                name: `${longName}-${index}`,
+                                comment: longComment
+                            }))
+                        ]
+                    }
+                    return result
+                }
+            },
+            { dark, longName, longComment }
+        )
+        await page.setViewportSize({ width: 1280, height: 800 })
+        await page.goto('/#/project/p1')
+        await page.getByRole('button', { name: /看板|Board/ }).click()
+        await expect(page.locator('.board-column')).toHaveCount(6)
+        for (const [width, height, perRow] of [
+            [1280, 800, 2],
+            [1920, 1080, 4],
+            [960, 640, 2],
+            [640, 640, 1]
+        ]) {
+            await page.setViewportSize({ width, height })
+            const geometry = await page.locator('.board-columns').evaluate(node => {
+                const columns = [...node.querySelectorAll('.board-column')]
+                const boxes = columns.map(x => x.getBoundingClientRect())
+                const list = columns[1].querySelector('.card-list')
+                const card = list.querySelector('.board-card')
+                return {
+                    perRow: boxes.filter(x => Math.abs(x.y - boxes[0].y) < 1).length,
+                    width: boxes[0].width,
+                    overflow: node.scrollWidth > node.clientWidth + 1,
+                    wrapped: boxes.at(-1).y > boxes[0].y,
+                    scrolls: list.scrollHeight > list.clientHeight,
+                    aligned: getComputedStyle(card).justifyItems,
+                    titleClamp: getComputedStyle(card.querySelector('strong')).webkitLineClamp
+                }
+            })
+                expect(geometry.perRow, JSON.stringify({ width, ...geometry })).toBe(perRow)
+                expect(geometry.width).toBeLessThanOrEqual(421)
+            expect(geometry.overflow).toBe(false)
+            expect(geometry.wrapped).toBe(true)
+            expect(geometry.scrolls).toBe(true)
+            expect(geometry.aligned).toBe('stretch')
+            expect(geometry.titleClamp).toBe('2')
+        }
+        await page.setViewportSize({ width: 1280, height: 800 })
+        const card = page.locator('.board-card').filter({ hasText: `${longName}-0` })
+        await card.locator('strong').hover()
+        await expect(page.getByRole('tooltip')).toHaveText(`${longName}-0`)
+        await card.locator('p').hover()
+        await expect(page.getByRole('tooltip')).toHaveText(longComment.trim())
+        await card.focus()
+        await expect(card).toBeFocused()
+    })
+}
 
 test('excludes the hidden project column from embedded column preferences', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 })

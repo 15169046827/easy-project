@@ -1,4 +1,13 @@
 /* One outer grid for route pages; embedded project views keep their own toolbar. */
+.p-tooltip.task-content-tooltip {
+    max-width: min(32rem, calc(100vw - 2rem));
+}
+.task-content-tooltip .p-tooltip-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-height: min(28rem, 70vh);
+    overflow-y: auto;
+}
 .floating-document,
 .floating-document body,
 .floating-document #app {

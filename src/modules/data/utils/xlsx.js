@@ -35,6 +35,20 @@ const SHEETS = {
         'creator',
         'create_time',
         'update_time',
+        'stateflag',
+        'status_id'
+    ],
+    TaskStatuses: [
+        'id',
+        'project_id',
+        'name',
+        'color',
+        'sort_order',
+        'is_completed',
+        'is_default',
+        'builtin_key',
+        'create_time',
+        'update_time',
         'stateflag'
     ],
     Dependencies: [
@@ -64,6 +78,7 @@ const SHEETS = {
 const PAYLOAD_KEYS = {
     Projects: 'projects',
     Tasks: 'tasks',
+    TaskStatuses: 'task_statuses',
     Dependencies: 'dependencies',
     Members: 'members',
     ProjectMembers: 'project_members',
@@ -73,6 +88,17 @@ const PAYLOAD_KEYS = {
 async function excelModule() {
     const module = await import('exceljs/dist/exceljs.min.js')
     return module.default || module
+}
+/** @returns {Array<[string,string[]]>} */
+function sheetsForVersion(version) {
+    return Object.entries(SHEETS)
+        .filter(([name]) => version >= 7 || name !== 'TaskStatuses')
+        .map(([name, headers]) => [
+            name,
+            version < 7 && name === 'Tasks'
+                ? headers.filter(header => header !== 'status_id')
+                : headers
+        ])
 }
 
 function styleSheet(sheet) {
@@ -104,7 +130,7 @@ export async function snapshotToXlsx(snapshot) {
     metadata.getColumn(2).width = 64
     metadata.getRow(1).font = { bold: true, color: { argb: 'FF1D4ED8' } }
 
-    for (const [sheetName, headers] of Object.entries(SHEETS)) {
+    for (const [sheetName, headers] of sheetsForVersion(snapshot.schemaVersion || 5)) {
         const sheet = workbook.addWorksheet(sheetName)
         sheet.addRow(headers)
         for (const row of snapshot[PAYLOAD_KEYS[sheetName]] || []) sheet.addRow(row)
@@ -138,10 +164,11 @@ export async function xlsxToSnapshot(buffer) {
         project_members: [],
         plan_baselines: []
     }
+    if (schemaVersion >= 7) payload.task_statuses = []
     const mappings = []
     const warnings = []
 
-    for (const [sheetName, expectedHeaders] of Object.entries(SHEETS)) {
+    for (const [sheetName, expectedHeaders] of sheetsForVersion(schemaVersion)) {
         const sheet = workbook.getWorksheet(sheetName)
         if (!sheet) {
             warnings.push(`Missing worksheet: ${sheetName}`)
@@ -172,7 +199,9 @@ export async function xlsxToSnapshot(buffer) {
             mappings,
             warnings,
             counts: Object.fromEntries(
-                Object.entries(PAYLOAD_KEYS).map(([sheet, key]) => [sheet, payload[key].length])
+                Object.entries(PAYLOAD_KEYS)
+                    .filter(([, key]) => Array.isArray(payload[key]))
+                    .map(([sheet, key]) => [sheet, payload[key].length])
             )
         }
     }

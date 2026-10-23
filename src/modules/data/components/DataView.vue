@@ -219,6 +219,7 @@ function toCsv(snapshot) {
     ]
     for (const p of snapshot.projects) rows.push(['project', ...p])
     for (const t of snapshot.tasks) rows.push(['task', ...t])
+    for (const status of snapshot.task_statuses || []) rows.push(['task_status', ...status])
     for (const d of snapshot.dependencies) rows.push(['dependency', ...d])
     for (const m of snapshot.members || []) rows.push(['member', ...m])
     for (const pm of snapshot.project_members || []) rows.push(['project_member', ...pm])
@@ -263,11 +264,13 @@ function fromCsv(text) {
         project_members: [],
         plan_baselines: []
     }
+    payload.task_statuses = []
     for (const row of rows.slice(1)) {
         const [type, ...data] = row
         if (type === 'schema_version') payload.schemaVersion = Number(data[0]) || 1
         else if (type === 'project') payload.projects.push(data)
         else if (type === 'task') payload.tasks.push(data)
+        else if (type === 'task_status') payload.task_statuses.push(data)
         else if (type === 'dependency') payload.dependencies.push(data)
         else if (type === 'member') payload.members.push(data)
         else if (type === 'project_member') payload.project_members.push(data)
@@ -337,6 +340,9 @@ async function selectImportFile(event) {
                 counts: {
                     Projects: payload.projects?.length || 0,
                     Tasks: payload.tasks?.length || 0,
+                    ...(payload.schemaVersion >= 7
+                        ? { TaskStatuses: payload.task_statuses?.length || 0 }
+                        : {}),
                     Dependencies: payload.dependencies?.length || 0,
                     Members: payload.members?.length || 0,
                     ProjectMembers: payload.project_members?.length || 0,

@@ -1,0 +1,21 @@
+export default {
+    title: 'Task statuses',
+    unfinished: 'Unfinished tasks',
+    manage: 'Manage task statuses',
+    add: 'Add status',
+    name: 'Status name',
+    completed: 'Marks tasks as completed',
+    default: 'Default for new tasks',
+    color: 'Color',
+    order: 'Display order',
+    select: 'Select a status from this project',
+    projectFirst: 'Select a project first',
+    conflicts: 'This status is still used by tasks and cannot be deleted',
+    deletedTask: 'Deleted task',
+    conflictCount: '{count} referencing tasks',
+    deleteConfirm: 'Delete the unused status “{name}”?',
+    required: 'Enter a status name',
+    unnamed: 'Unrecognized status',
+    more: 'Load more',
+    defaultHint: 'Choose another default first. The final status cannot be deleted.'
+}

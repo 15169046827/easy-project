@@ -99,6 +99,31 @@ const fixtures = {
 
 test.beforeEach(async ({ page }) => {
     await page.addInitScript(data => {
+        data.task_status = data.project.flatMap(project =>
+            ['Pending', 'InProgress', 'Done'].map((key, index) => ({
+                id: `TASK_STATUS:${String(index + 1).padStart(32, '0')}`,
+                project_id: project.id,
+                name: key,
+                builtin_key: key,
+                is_default: index === 0,
+                is_completed: key === 'Done',
+                color: '#64748b',
+                sort_order: index
+            }))
+        )
+        data.task.forEach(task => {
+            const state = data.task_status.find(
+                state =>
+                    state.project_id === task.project_id &&
+                    state.builtin_key === (task.status === 'Todo' ? 'Pending' : task.status)
+            )
+            if (state)
+                Object.assign(task, {
+                    status_id: state.id,
+                    status_builtin_key: state.builtin_key,
+                    is_completed: state.is_completed
+                })
+        })
         localStorage.setItem('easyproject-onboarding-done', 'true')
         window.__EASY_PROJECT_CALLS__ = []
         window.__TAURI_INTERNALS__ = {
@@ -148,7 +173,8 @@ test.beforeEach(async ({ page }) => {
                                 !['Done', 'Archived'].includes(row.status) &&
                                 new Date(row.end_time) < new Date()
                             )
-                        return row.status === args.data.status
+                        if (args.data.status === 'Done') return row.is_completed
+                        return row.status_id === args.data.status || row.status === args.data.status
                     })
                 return { success: true, data: { list, total: list.length } }
             }
@@ -445,7 +471,8 @@ for (const dark of [false, true]) {
         }
         expect(new Set(backgrounds).size).toBe(1)
         const statuses = page.locator('.status-list button')
-        await expect(statuses).toHaveCount(3)
+        // The two states actually used by this project are dynamic, not three fixed buckets.
+        await expect(statuses).toHaveCount(2)
         expect(
             await page
                 .locator('style[data-primevue-style-id]')
@@ -518,11 +545,15 @@ for (const dark of [false, true]) {
 test('dashboard status and overdue cards navigate to an effective, clearable task filter', async ({
     page
 }) => {
-    for (const status of ['Pending', 'InProgress', 'Done']) {
+    for (const [status, suffix] of [
+        ['Pending', '1'],
+        ['InProgress', '2']
+    ]) {
+        const statusId = `TASK_STATUS:${suffix.padStart(32, '0')}`
         await page.goto('/#/dashboard')
-        const index = ['Pending', 'InProgress', 'Done'].indexOf(status)
+        const index = ['InProgress', 'Pending'].indexOf(status)
         await page.locator('.status-list button').nth(index).click()
-        await expect(page).toHaveURL(new RegExp(`status=${status}`))
+        await expect(page).toHaveURL(new RegExp(`status=${statusId}`))
         await expect
             .poll(() =>
                 page.evaluate(
@@ -537,7 +568,7 @@ test('dashboard status and overdue cards navigate to an effective, clearable tas
                             .at(-1)?.args.data.status
                 )
             )
-            .toBe(status)
+            .toBe(statusId)
         await expect(page.locator('.filter-bar .p-select').first()).toContainText(
             status === 'Pending' ? '待办' : status === 'Done' ? '完成' : '进行中'
         )
@@ -547,6 +578,9 @@ test('dashboard status and overdue cards navigate to an effective, clearable tas
             ).toHaveText('1')
         }
     }
+    await page.goto('/#/dashboard')
+    await page.locator('.metric-card').nth(2).click()
+    await expect(page).toHaveURL(/status=Done/)
     await page.goto('/#/dashboard')
     await page.locator('.metric-card').nth(3).click()
     await expect(page).toHaveURL(/status=Overdue/)

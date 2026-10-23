@@ -1,6 +1,6 @@
 # EasyProject模型与原生请求类型
 
-来源：71ec2c738b2991a6bf5e961c1997a54d89d23b18
+来源：536294b385e118522df8566cd0bbcfba4dfd3d20
 
 以下为真实Rust类型及serde默认属性。String不代表业务允许任意字符串；业务关系/范围以服务校验为准。MCP另有严格inputSchema和默认补齐，不能与桌面原生请求互换。
 
@@ -104,6 +104,12 @@ pub struct Task {
     pub r#type: String,
     pub priority: String,
     pub status: String,
+    #[serde(default)]
+    pub status_id: String,
+    #[serde(default)]
+    pub is_completed: bool,
+    #[serde(default)]
+    pub status_builtin_key: String,
     pub progress: i64,
     pub effort_days: f64,
     pub schedule_mode: String,
@@ -128,7 +134,10 @@ pub struct TaskCreateRequest {
     pub end_time: String,
     pub r#type: String,
     pub priority: String,
+    #[serde(default)]
     pub status: String,
+    #[serde(default)]
+    pub status_id: String,
     #[serde(default)]
     pub progress: i64,
     #[serde(default)]
@@ -158,6 +167,22 @@ pub struct NewTask {
     pub comment: String,
     pub assignee: String,
     pub creator: String,
+}
+```
+
+## task_status
+
+```rust
+#[derive(Debug, Serialize)]
+pub struct TaskStatus {
+    pub id: String,
+    pub project_id: String,
+    pub name: String,
+    pub color: String,
+    pub sort_order: i64,
+    pub is_completed: bool,
+    pub is_default: bool,
+    pub builtin_key: String,
 }
 ```
 

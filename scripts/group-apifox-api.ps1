@@ -54,7 +54,7 @@ foreach ($item in $layout.interfaces) {
     if ($state) { $path.id = [string]$state.id }
     $result = Dynamic-Call $(if ($state) { '0a1b56c981b3e8fc' } else { '1cbdd18b600ccea1' }) $path @{
         name = $item.name; protocol = $item.protocol; path = $item.path
-        folderId = [int]$folderId; content = $item.content; status = 'released'; tags = @('EasyProject', $item.protocol)
+        folderId = [int]$folderId; content = $item.content; status = $(if ($item.status) { $item.status } else { 'released' }); tags = @('EasyProject', $item.protocol)
     } $true
     $id = if ($state) { $state.id } else { $result.data.id }
     if (-not $id) { throw 'Interface write outcome unclear; inspect before retry' }

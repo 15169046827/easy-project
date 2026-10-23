@@ -3,6 +3,8 @@ import zhCN from './locales/zh-CN'
 import enUS from './locales/en-US'
 import landingZh from './locales/landing-zh'
 import landingEn from './locales/landing-en'
+import taskStatusZh from './locales/task-status-zh'
+import taskStatusEn from './locales/task-status-en'
 
 const STORAGE_KEY = 'easyproject-lang'
 export const SUPPORTED_LOCALES = ['zh-CN', 'en-US']
@@ -22,8 +24,8 @@ export const i18n = createI18n({
     locale: detectLocale(),
     fallbackLocale: 'en-US',
     messages: {
-        'zh-CN': { ...zhCN, landing: landingZh },
-        'en-US': { ...enUS, landing: landingEn }
+        'zh-CN': { ...zhCN, landing: landingZh, taskStatuses: taskStatusZh },
+        'en-US': { ...enUS, landing: landingEn, taskStatuses: taskStatusEn }
     }
 })
 

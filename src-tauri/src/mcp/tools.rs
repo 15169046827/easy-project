@@ -7,6 +7,9 @@ use std::io::Write;
 use uuid::Uuid;
 
 fn fields(model: &str) -> Value {
+    if model == "task_status" {
+        return json!({"project_id":{"type":"string","minLength":1,"maxLength":128},"name":{"type":"string","minLength":1,"maxLength":64},"color":{"type":"string","minLength":7,"maxLength":7},"sort_order":{"type":"integer","minimum":0,"maximum":1000000},"is_completed":{"type":"boolean"},"is_default":{"type":"boolean"}});
+    }
     if model == "project_member" {
         return json!({"project_id":{"type":"string","minLength":1,"maxLength":128},"member_id":{"type":"string","minLength":1,"maxLength":128},"role":{"type":"string","maxLength":64}});
     }
@@ -50,6 +53,8 @@ fn fields(model: &str) -> Value {
         fields["name"]["maxLength"] = json!(128);
     }
     if model == "task" {
+        fields.as_object_mut().unwrap().remove("status");
+        fields["status_id"] = json!({"type":"string","minLength":1,"maxLength":128,"description":"Existing active TASK_STATUS ID belonging to project_id; list project task statuses or explicitly create one first. Arbitrary labels are rejected."});
         fields["progress"] = json!({"type":"integer","minimum":0,"maximum":100});
         fields["effort_days"] = json!({"type":"number","minimum":0});
         fields["schedule_mode"] = json!({"type":"string","enum":["fixed_effort","fixed_dates"]});
@@ -70,6 +75,9 @@ fn object(properties: Value, required: &[&str]) -> Value {
 
 fn schema(model: &str, action: &str) -> Value {
     let id = json!({"type":"string","minLength":1,"maxLength":128});
+    if model == "task_status" && action == "list" {
+        return object(json!({"projectId":id}), &["projectId"]);
+    }
     if model == "project_member" {
         return match action {
             "list" => object(json!({"projectId":id}), &["projectId"]),
@@ -94,6 +102,8 @@ fn schema(model: &str, action: &str) -> Value {
         "get" => object(json!({"id":id}), &["id"]),
         "create" => {
             let required = if model == "task" {
+                vec!["name", "project_id", "status_id"]
+            } else if model == "task_status" {
                 vec!["name", "project_id"]
             } else {
                 vec!["name"]
@@ -102,6 +112,12 @@ fn schema(model: &str, action: &str) -> Value {
         }
         "update" => {
             let mut changes = object(fields(model), &[]);
+            if model == "task_status" {
+                changes["properties"]
+                    .as_object_mut()
+                    .unwrap()
+                    .remove("project_id");
+            }
             changes["minProperties"] = json!(1);
             object(
                 json!({"id":id,"changes":changes,"expected_update_time":{"type":"string","description":"Optional stale-edit check against get result; timestamp has second precision"}}),
@@ -117,7 +133,7 @@ fn schema(model: &str, action: &str) -> Value {
 
 pub fn catalog(permissions: Permissions) -> Vec<Value> {
     let mut tools = Vec::new();
-    for model in ["project", "task", "member", "project_member"] {
+    for model in ["project", "task", "member", "project_member", "task_status"] {
         for action in ["list", "get", "create", "update", "delete"] {
             if model == "project_member" && matches!(action, "get" | "update") {
                 continue;
@@ -171,6 +187,9 @@ fn validate(value: &Value, schema: &Value) -> Result<(), String> {
             {
                 return Err("String length outside allowed range".into());
             }
+        }
+        Some("boolean") => {
+            value.as_bool().ok_or("Expected boolean")?;
         }
         Some("integer") => {
             let number = value.as_i64().ok_or("Expected integer")? as f64;
@@ -236,12 +255,13 @@ fn validate_fields(data: &Value) -> Result<(), String> {
 
 fn defaults(model: &str) -> Value {
     match model {
+        "task_status" => json!({}),
         "project_member" => json!({"role":"Member"}),
         "project" => {
             json!({"version":"v1.0","type":"private","status":"Draft","owner":"","calendar_country":"CN","calendar_region":"","weekend_days":"[0,6]","calendar_exceptions":"[]"})
         }
         "task" => {
-            json!({"parent":"","dependence":"","start_time":"","end_time":"","type":"Task","priority":"Normal","status":"Draft","progress":0,"effort_days":0,"schedule_mode":"fixed_effort","comment":"","assignee":""})
+            json!({"parent":"","dependence":"","start_time":"","end_time":"","type":"Task","priority":"Normal","progress":0,"effort_days":0,"schedule_mode":"fixed_effort","comment":"","assignee":""})
         }
         _ => {
             json!({"email":"","phone":"","role":"Developer","avatar":"","availability_exceptions":"[]"})
@@ -283,7 +303,7 @@ pub fn call(
 ) -> Result<Value, String> {
     let suffix = name.strip_prefix("easyproject_").ok_or("Unknown tool")?;
     let (model, action) = suffix.rsplit_once('_').ok_or("Unknown tool")?;
-    if !["project", "task", "member", "project_member"].contains(&model)
+    if !["project", "task", "member", "project_member", "task_status"].contains(&model)
         || !["list", "get", "create", "update", "delete"].contains(&action)
     {
         return Err("Unknown tool".into());
@@ -308,6 +328,11 @@ pub fn call(
     }
     let id = arguments.get("id").and_then(Value::as_str);
     if action == "get" {
+        if model == "task_status" {
+            return Ok(
+                json!({"record":entity_api::get(db, model, id.ok_or("ID required")?)?,"usage":entity_api::dispatch(db,model,"get_usage",json!({"id":id}))?.data}),
+            );
+        }
         return Ok(json!({"record":entity_api::get(db, model, id.ok_or("ID required")?)?}));
     }
     if !permissions.write || (action == "delete" && !permissions.delete) {
@@ -384,6 +409,7 @@ fn execute(db: &DbState, model: &str, action: &str, arguments: &Value) -> Result
             data.insert("id".into(), json!(id));
             ("update", Value::Object(data))
         }
+        _ if model == "task_status" => ("delete", json!({"id":id})),
         _ => ("delete", json!({"ids":[id]})),
     };
     let result = entity_api::dispatch_raw(db, model, service_action, data)?;

@@ -213,6 +213,8 @@ mod tests {
             )
             .expect("schema should initialize");
 
+        crate::common::task_status::create_schema(&connection).unwrap();
+
         let transaction = connection.transaction().expect("transaction should start");
         insert_project_transaction(&transaction, &project("member-1"), Some("pm-1"))
             .expect("project and owner membership should insert");

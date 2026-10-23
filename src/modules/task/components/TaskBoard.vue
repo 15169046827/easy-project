@@ -9,7 +9,10 @@
             <strong>{{ $t('board.total', { count: tasks.length }) }}</strong>
         </header>
         <p v-if="message" class="board-message" :class="messageType">{{ message }}</p>
-        <div class="board-columns">
+        <div
+            class="board-columns"
+            :style="{ gridTemplateColumns: `repeat(${columns.length || 1}, minmax(16rem, 1fr))` }"
+        >
             <article
                 v-for="column in columns"
                 :key="column.status"
@@ -20,7 +23,7 @@
                 @drop="dropTask(column.status)"
             >
                 <header>
-                    <span class="status-dot" :class="column.status.toLowerCase()"></span>
+                    <span class="status-dot" :style="{ background: column.color }"></span>
                     <h4>{{ column.label }}</h4>
                     <small>{{ tasksByStatus[column.status].length }}</small>
                 </header>
@@ -62,15 +65,16 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import Button from 'primevue/button'
 import ProgressBar from 'primevue/progressbar'
 import { useI18n } from 'vue-i18n'
 import { crudAction } from '../../../api'
 
 const props = defineProps({
+    projectId: { type: String, default: '' },
     tasks: {
-        type: /** @type {import('vue').PropType<Array<{id: string, name: string, priority?: number, comment?: string, assignee?: string, end_time?: string, progress?: number, status?: string}>>} */ (
+        type: /** @type {import('vue').PropType<Array<{id: string, name: string, priority?: number, comment?: string, assignee?: string, end_time?: string, progress?: number, status?: string, status_id?: string, status_builtin_key?: string}>>} */ (
             Array
         ),
         default: () => []
@@ -87,16 +91,69 @@ const dragOver = ref('')
 const message = ref('')
 const messageType = ref('success')
 
-const columns = computed(() => [
-    { status: 'Pending', label: t('board.pending') },
-    { status: 'InProgress', label: t('board.inProgress') },
-    { status: 'Done', label: t('board.done') }
-])
+const states = ref([])
+let epoch = 0
+onBeforeUnmount(() => {
+    epoch++
+})
+watch(
+    () => props.projectId,
+    async projectId => {
+        const token = ++epoch
+        states.value = []
+        if (!projectId) return
+        try {
+            const result = await crudAction('task_status', 'get_all', { projectId })
+            if (token === epoch) states.value = result.list || []
+        } catch (error) {
+            if (token === epoch) {
+                messageType.value = 'error'
+                message.value = error.message
+            }
+        }
+    },
+    { immediate: true }
+)
+const keys = {
+    Pending: 'tasks.statusPending',
+    InProgress: 'tasks.statusInProgress',
+    Done: 'tasks.statusDone'
+}
+function taskColumn(task) {
+    const state = states.value.find(
+        item =>
+            item.id === task.status_id ||
+            (!task.status_id &&
+                item.builtin_key === (task.status === 'Todo' ? 'Pending' : task.status))
+    )
+    return state?.id || `unknown:${task.status_id || task.status || ''}`
+}
+const columns = computed(() => {
+    const result = states.value.map(state => ({
+        status: state.id,
+        label: Object.hasOwn(keys, state.builtin_key) ? t(keys[state.builtin_key]) : state.name,
+        color: state.color,
+        is_completed: state.is_completed,
+        writable: true
+    }))
+    for (const task of props.tasks) {
+        const id = taskColumn(task)
+        if (!result.some(column => column.status === id))
+            result.push({
+                status: id,
+                label: task.status || t('taskStatuses.unnamed'),
+                color: '#64748b',
+                is_completed: false,
+                writable: false
+            })
+    }
+    return result
+})
 const tasksByStatus = computed(() =>
     Object.fromEntries(
         columns.value.map(column => [
             column.status,
-            props.tasks.filter(task => (task.status || 'Pending') === column.status)
+            props.tasks.filter(task => taskColumn(task) === column.status)
         ])
     )
 )
@@ -117,12 +174,13 @@ function finishDrag() {
 async function dropTask(status) {
     const task = dragging.value
     finishDrag()
-    if (!task || task.status === status) return
+    const column = columns.value.find(item => item.status === status)
+    if (!task || taskColumn(task) === status || !column?.writable) return
     try {
         await crudAction('task', 'update', {
             id: task.id,
-            status,
-            ...(status === 'Done' ? { progress: 100 } : {})
+            status_id: status,
+            ...(column.is_completed ? { progress: 100 } : {})
         })
         messageType.value = 'success'
         message.value = t('board.moved', {
@@ -187,7 +245,8 @@ async function dropTask(status) {
     display: grid;
     grid-template-columns: repeat(3, minmax(16rem, 1fr));
     gap: 0.9rem;
-    min-width: 52rem;
+    width: max-content;
+    min-width: 100%;
     min-height: calc(100% - 5rem);
 }
 .board-column {

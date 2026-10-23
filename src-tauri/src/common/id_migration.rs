@@ -54,6 +54,19 @@ pub fn normalize(conn: &Connection) -> rusqlite::Result<IdMappings> {
             )?;
         }
     }
+    let has_status_table: bool = conn.query_row(
+        "SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name='task_status')",
+        [],
+        |row| row.get(0),
+    )?;
+    if has_status_table {
+        for (old, new) in &maps["project"] {
+            conn.execute(
+                "UPDATE task_status SET project_id=?1 WHERE project_id=?2",
+                params![new, old],
+            )?;
+        }
+    }
     {
         let mut stmt = conn.prepare(
             "SELECT id,dependence FROM task WHERE dependence IS NOT NULL AND dependence<>''",
@@ -228,7 +241,7 @@ mod tests {
         assert_eq!(
             db.query_row("PRAGMA user_version", [], |r| r.get::<_, i64>(0))
                 .unwrap(),
-            6
+            crate::common::db_state::CURRENT_SCHEMA_VERSION
         );
         assert!(!db
             .prepare("PRAGMA foreign_key_check")

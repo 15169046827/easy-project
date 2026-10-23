@@ -10,6 +10,7 @@ const editableFields = [
     'type',
     'priority',
     'status',
+    'status_id',
     'progress',
     'effort_days',
     'schedule_mode',

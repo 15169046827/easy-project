@@ -77,13 +77,12 @@
             </div>
             <div class="edit-field">
                 <label :for="prefix + '-status'">{{ $t('gantt.labelStatus') }}</label
-                ><Select
+                ><TaskStatusSelect
+                    v-if="visible"
                     :inputId="prefix + '-status'"
-                    v-model="form.status"
-                    :options="statuses"
-                    optionLabel="label"
-                    optionValue="value"
-                    fluid
+                    v-model="form.status_id"
+                    :projectId="projectId"
+                    @loaded="setDefaultStatus"
                 />
             </div>
             <div v-if="creating" class="edit-field">
@@ -147,9 +146,11 @@ import Message from 'primevue/message'
 import DatePickerDateString from '../../../components/DatePickerDateString.vue'
 import ProgressEditor from '../../../components/ProgressEditor.vue'
 import MemberSelect from '../../member/components/MemberSelect.vue'
+import TaskStatusSelect from '../../../components/TaskStatusSelect.vue'
 
 const props = defineProps({
     visible: Boolean,
+    projectId: { type: String, default: '' },
     creating: Boolean,
     saving: Boolean,
     error: { type: String, default: '' },
@@ -168,12 +169,18 @@ const types = computed(() => [
     { label: t('gantt.optionMilestone'), value: 'Milestone' },
     { label: t('tasks.typeFile'), value: 'File' }
 ])
-const statuses = computed(() => [
-    { label: t('tasks.statusPending'), value: 'Pending' },
-    { label: t('tasks.statusPending'), value: 'Todo' },
-    { label: t('tasks.statusInProgress'), value: 'InProgress' },
-    { label: t('tasks.statusDone'), value: 'Done' }
-])
+function setDefaultStatus(states) {
+    if (!form.value.status_id) {
+        const state = props.creating
+            ? states.find(item => item.is_default)
+            : states.find(
+                  item =>
+                      item.builtin_key ===
+                      (form.value.status === 'Todo' ? 'Pending' : form.value.status)
+              )
+        if (state) form.value.status_id = state.id
+    }
+}
 const priorities = computed(() =>
     [5, 4, 3, 2, 1].map(value => ({ label: t('tasks.p' + value), value: String(value) }))
 )

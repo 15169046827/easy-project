@@ -44,10 +44,7 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": [
-                  "username",
-                  "password"
-                ],
+                "required": ["username", "password"],
                 "properties": {
                   "username": {
                     "type": "string",
@@ -75,13 +72,7 @@
                   "properties": {
                     "user": {
                       "type": "object",
-                      "required": [
-                        "id",
-                        "username",
-                        "admin",
-                        "mustChangePassword",
-                        "avatar"
-                      ],
+                      "required": ["id", "username", "admin", "mustChangePassword", "avatar"],
                       "properties": {
                         "id": {
                           "type": "string",
@@ -291,9 +282,7 @@
             }
           }
         },
-        "tags": [
-          "认证与会话"
-        ],
+        "tags": ["认证与会话"],
         "x-easyproject-group": "认证与会话",
         "operationId": "post__api_auth_register",
         "parameters": [
@@ -312,9 +301,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "1"
-              ]
+              "enum": ["1"]
             }
           }
         ]
@@ -332,10 +319,7 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": [
-                  "username",
-                  "password"
-                ],
+                "required": ["username", "password"],
                 "properties": {
                   "username": {
                     "type": "string",
@@ -363,13 +347,7 @@
                   "properties": {
                     "user": {
                       "type": "object",
-                      "required": [
-                        "id",
-                        "username",
-                        "admin",
-                        "mustChangePassword",
-                        "avatar"
-                      ],
+                      "required": ["id", "username", "admin", "mustChangePassword", "avatar"],
                       "properties": {
                         "id": {
                           "type": "string",
@@ -580,9 +558,7 @@
             }
           }
         },
-        "tags": [
-          "认证与会话"
-        ],
+        "tags": ["认证与会话"],
         "x-easyproject-group": "认证与会话",
         "operationId": "post__api_auth_login",
         "parameters": [
@@ -601,9 +577,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "1"
-              ]
+              "enum": ["1"]
             }
           }
         ]
@@ -621,11 +595,7 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": [
-                  "username",
-                  "code",
-                  "newPassword"
-                ],
+                "required": ["username", "code", "newPassword"],
                 "properties": {
                   "username": {
                     "type": "string",
@@ -839,9 +809,7 @@
             }
           }
         },
-        "tags": [
-          "认证与会话"
-        ],
+        "tags": ["认证与会话"],
         "x-easyproject-group": "认证与会话",
         "operationId": "post__api_auth_reset_password",
         "parameters": [
@@ -860,9 +828,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "1"
-              ]
+              "enum": ["1"]
             }
           }
         ]
@@ -881,13 +847,7 @@
                   "properties": {
                     "user": {
                       "type": "object",
-                      "required": [
-                        "id",
-                        "username",
-                        "admin",
-                        "mustChangePassword",
-                        "avatar"
-                      ],
+                      "required": ["id", "username", "admin", "mustChangePassword", "avatar"],
                       "properties": {
                         "id": {
                           "type": "string",
@@ -1094,9 +1054,7 @@
             }
           }
         },
-        "tags": [
-          "认证与会话"
-        ],
+        "tags": ["认证与会话"],
         "x-easyproject-group": "认证与会话",
         "operationId": "get__api_auth_session"
       }
@@ -1305,9 +1263,7 @@
             }
           }
         },
-        "tags": [
-          "认证与会话"
-        ],
+        "tags": ["认证与会话"],
         "x-easyproject-group": "认证与会话",
         "operationId": "post__api_auth_logout",
         "parameters": [
@@ -1326,9 +1282,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "1"
-              ]
+              "enum": ["1"]
             }
           }
         ]
@@ -1345,10 +1299,7 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": [
-                  "currentPassword",
-                  "newPassword"
-                ],
+                "required": ["currentPassword", "newPassword"],
                 "properties": {
                   "currentPassword": {
                     "type": "string",
@@ -1557,9 +1508,7 @@
             }
           }
         },
-        "tags": [
-          "认证与会话"
-        ],
+        "tags": ["认证与会话"],
         "x-easyproject-group": "认证与会话",
         "operationId": "post__api_auth_password",
         "parameters": [
@@ -1578,9 +1527,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "1"
-              ]
+              "enum": ["1"]
             }
           }
         ]
@@ -1597,9 +1544,7 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": [
-                  "username"
-                ],
+                "required": ["username"],
                 "properties": {
                   "username": {
                     "type": "string",
@@ -1625,9 +1570,7 @@
                     },
                     "expiresIn": {
                       "type": "integer",
-                      "enum": [
-                        900
-                      ]
+                      "enum": [900]
                     }
                   }
                 }
@@ -1815,9 +1758,7 @@
             }
           }
         },
-        "tags": [
-          "账号管理"
-        ],
+        "tags": ["账号管理"],
         "x-easyproject-group": "账号管理",
         "operationId": "post__api_admin_reset_codes",
         "parameters": [
@@ -1836,9 +1777,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "1"
-              ]
+              "enum": ["1"]
             }
           }
         ]
@@ -1860,13 +1799,7 @@
                       "type": "array",
                       "items": {
                         "type": "object",
-                        "required": [
-                          "id",
-                          "username",
-                          "admin",
-                          "mustChangePassword",
-                          "avatar"
-                        ],
+                        "required": ["id", "username", "admin", "mustChangePassword", "avatar"],
                         "properties": {
                           "id": {
                             "type": "string",
@@ -2074,9 +2007,7 @@
             }
           }
         },
-        "tags": [
-          "账号管理"
-        ],
+        "tags": ["账号管理"],
         "x-easyproject-group": "账号管理",
         "operationId": "get__api_admin_users"
       },
@@ -2090,10 +2021,7 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": [
-                  "username",
-                  "password"
-                ],
+                "required": ["username", "password"],
                 "properties": {
                   "username": {
                     "type": "string",
@@ -2121,13 +2049,7 @@
                   "properties": {
                     "user": {
                       "type": "object",
-                      "required": [
-                        "id",
-                        "username",
-                        "admin",
-                        "mustChangePassword",
-                        "avatar"
-                      ],
+                      "required": ["id", "username", "admin", "mustChangePassword", "avatar"],
                       "properties": {
                         "id": {
                           "type": "string",
@@ -2334,9 +2256,7 @@
             }
           }
         },
-        "tags": [
-          "账号管理"
-        ],
+        "tags": ["账号管理"],
         "x-easyproject-group": "账号管理",
         "operationId": "post__api_admin_users",
         "parameters": [
@@ -2355,9 +2275,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "1"
-              ]
+              "enum": ["1"]
             }
           }
         ]
@@ -2565,9 +2483,7 @@
             }
           }
         },
-        "tags": [
-          "工作区"
-        ],
+        "tags": ["工作区"],
         "x-easyproject-group": "工作区",
         "operationId": "get__api_workspace_revision"
       }
@@ -2575,7 +2491,7 @@
     "/api/workspace/action": {
       "post": {
         "summary": "执行账号工作区业务动作",
-        "description": "服务端按登录账号选择独立数据库，请求不能指定账号/路径。原生参数/返回复用DESKTOP_IPC.md与MODELS.md，不套用MCP默认值。严格model/action白名单：{\"project\":[\"add\",\"create_from_template\",\"get_all\",\"update\",\"delete\"],\"task\":[\"add\",\"get_all\",\"swap_order\",\"update\",\"delete\"],\"member\":[\"add\",\"get_all\",\"update\",\"delete\",\"search\"],\"project_member\":[\"add\",\"get_by_member\",\"get_by_project\",\"delete\"],\"task_dependency\":[\"get_all\",\"set_for_task\"],\"data\":[\"export_json\",\"import_json\",\"backup\",\"list_backups\",\"preview_backup\",\"restore\"],\"calendar\":[\"fetch_ics\"],\"plan_baseline\":[\"save\",\"get_by_project\",\"clear\"]}。读返回data/revision；写须携带精确X-Workspace-Revision，旧值409且不写业务。写前UUID快照、持久失效旧epoch；传输中断先读回，禁止盲重试。JSON导入/恢复替换本账号全工作区，不是双向同步；远端不提供全库撤销。ICS沿用SSRF边界。",
+        "description": "服务端按登录账号选择独立数据库，请求不能指定账号/路径。原生参数/返回复用DESKTOP_IPC.md与MODELS.md，不套用MCP默认值。严格model/action白名单：{\"project\":[\"add\",\"create_from_template\",\"get_all\",\"update\",\"delete\"],\"task\":[\"add\",\"get_all\",\"swap_order\",\"update\",\"delete\"],\"member\":[\"add\",\"get_all\",\"update\",\"delete\",\"search\"],\"project_member\":[\"add\",\"get_by_member\",\"get_by_project\",\"delete\"],\"task_dependency\":[\"get_all\",\"set_for_task\"],\"data\":[\"export_json\",\"import_json\",\"backup\",\"list_backups\",\"preview_backup\",\"restore\"],\"calendar\":[\"fetch_ics\"],\"plan_baseline\":[\"save\",\"get_by_project\",\"clear\"],\"task_status\":[\"get_all\",\"get_usage\",\"add\",\"update\",\"delete\"]}。读返回data/revision；写须携带精确X-Workspace-Revision，旧值409且不写业务。写前UUID快照、持久失效旧epoch；传输中断先读回，禁止盲重试。JSON导入/恢复替换本账号全工作区，不是双向同步；远端不提供全库撤销。ICS沿用SSRF边界。",
         "requestBody": {
           "required": true,
           "content": {
@@ -2583,10 +2499,7 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": [
-                  "model",
-                  "action"
-                ],
+                "required": ["model", "action"],
                 "properties": {
                   "model": {
                     "type": "string",
@@ -2598,7 +2511,8 @@
                       "task_dependency",
                       "data",
                       "calendar",
-                      "plan_baseline"
+                      "plan_baseline",
+                      "task_status"
                     ]
                   },
                   "action": {
@@ -2622,7 +2536,8 @@
                       "restore",
                       "fetch_ics",
                       "save",
-                      "clear"
+                      "clear",
+                      "get_usage"
                     ]
                   },
                   "data": {
@@ -2660,9 +2575,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "1"
-              ]
+              "enum": ["1"]
             }
           }
         ],
@@ -2867,9 +2780,7 @@
             }
           }
         },
-        "tags": [
-          "工作区"
-        ],
+        "tags": ["工作区"],
         "x-easyproject-group": "工作区",
         "operationId": "post__api_workspace_action"
       }
@@ -3082,15 +2993,13 @@
             }
           }
         },
-        "tags": [
-          "用户MCP凭据"
-        ],
+        "tags": ["用户MCP凭据"],
         "x-easyproject-group": "用户MCP凭据",
         "operationId": "get__api_account_mcp_tokens"
       },
       "post": {
         "summary": "生成用户MCP Token（仅显示一次）",
-        "description": "仅交互登录会话；最多20个有效Token，默认UI只读。read=7查询，write=14查询/新建/修改，delete=18完整CRUD；权限仅限本人远端工作区，与管理员身份/本地stdio无关。有效期7/30/90天，数据库仅存SHA256摘要。secret只在本次创建返回，禁止日志/URL/持久前端存储/自动重试。",
+        "description": "仅交互登录会话；最多20个有效Token，默认UI只读。候选read=9查询，write=18查询/新建/修改，delete=23完整CRUD（含项目状态字典）；schema7尚未部署，真实环境仍7/14/18。权限仅限本人远端工作区，与管理员身份/本地stdio无关。有效期7/30/90天，数据库仅存SHA256摘要。secret只在本次创建返回，禁止日志/URL/持久前端存储/自动重试。",
         "requestBody": {
           "required": true,
           "content": {
@@ -3098,11 +3007,7 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": [
-                  "name",
-                  "scope",
-                  "days"
-                ],
+                "required": ["name", "scope", "days"],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -3111,19 +3016,11 @@
                   },
                   "scope": {
                     "type": "string",
-                    "enum": [
-                      "read",
-                      "write",
-                      "delete"
-                    ]
+                    "enum": ["read", "write", "delete"]
                   },
                   "days": {
                     "type": "integer",
-                    "enum": [
-                      7,
-                      30,
-                      90
-                    ]
+                    "enum": [7, 30, 90]
                   }
                 }
               }
@@ -3331,9 +3228,7 @@
             }
           }
         },
-        "tags": [
-          "用户MCP凭据"
-        ],
+        "tags": ["用户MCP凭据"],
         "x-easyproject-group": "用户MCP凭据",
         "operationId": "post__api_account_mcp_tokens",
         "parameters": [
@@ -3352,9 +3247,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "1"
-              ]
+              "enum": ["1"]
             }
           }
         ]
@@ -3371,9 +3264,7 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": [
-                  "id"
-                ],
+                "required": ["id"],
                 "properties": {
                   "id": {
                     "type": "string"
@@ -3575,9 +3466,7 @@
             }
           }
         },
-        "tags": [
-          "用户MCP凭据"
-        ],
+        "tags": ["用户MCP凭据"],
         "x-easyproject-group": "用户MCP凭据",
         "operationId": "post__api_account_mcp_tokens_revoke",
         "parameters": [
@@ -3596,9 +3485,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "1"
-              ]
+              "enum": ["1"]
             }
           }
         ]
@@ -3798,15 +3685,13 @@
             }
           }
         },
-        "tags": [
-          "远端MCP传输"
-        ],
+        "tags": ["远端MCP传输"],
         "x-easyproject-group": "远端MCP传输",
         "operationId": "get__mcp"
       },
       "post": {
         "summary": "账号隔离的MCP Streamable HTTP",
-        "description": "无状态单JSON-RPC消息，最大256KiB；支持initialize/ping/tools/list/tools/call及通知202空体。无Session-ID/SSE/OAuth自动发现。需专用epmcp_ Bearer（不能使用cookie或网页登录token）；Accept必须包含application/json与text/event-stream；后续MCP-Protocol-Version支持2025-03-26/06-18/11-25，缺省按03-26。Origin若存在必须同源，原生客户端可不带。18工具复用既有MCP inputSchema/业务校验，7/14/18按Token权限过滤；不接收账号ID或数据库路径。写前恢复点、脱敏审计，与Web共用账号锁并使旧revision失效；删除保留名称匹配和关联约束，客户端仍须审批。不得自动重试写操作。",
+        "description": "无状态单JSON-RPC消息，最大256KiB；支持initialize/ping/tools/list/tools/call及通知202空体。无Session-ID/SSE/OAuth自动发现。需专用epmcp_ Bearer（不能使用cookie或网页登录token）；Accept必须包含application/json与text/event-stream；后续MCP-Protocol-Version支持2025-03-26/06-18/11-25，缺省按03-26。Origin若存在必须同源，原生客户端可不带。候选23工具复用MCP inputSchema/业务校验，9/18/23按Token权限过滤，新增项目状态CRUD且任务创建必填同项目已有status_id；schema7尚未部署，真实环境仍18工具。不接收账号ID或数据库路径。写前恢复点、脱敏审计，与Web共用账号锁并使旧revision失效；删除保留名称匹配和引用阻止约束，客户端仍须审批。不得自动重试写操作。",
         "security": [
           {
             "mcpToken": []
@@ -3827,11 +3712,7 @@
             "name": "MCP-Protocol-Version",
             "schema": {
               "type": "string",
-              "enum": [
-                "2025-03-26",
-                "2025-06-18",
-                "2025-11-25"
-              ]
+              "enum": ["2025-03-26", "2025-06-18", "2025-11-25"]
             }
           }
         ],
@@ -4040,9 +3921,7 @@
             }
           }
         },
-        "tags": [
-          "远端MCP传输"
-        ],
+        "tags": ["远端MCP传输"],
         "x-easyproject-group": "远端MCP传输",
         "operationId": "post__mcp"
       }
@@ -4061,9 +3940,7 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "enum": [
-                        "ok"
-                      ]
+                      "enum": ["ok"]
                     }
                   }
                 }
@@ -4251,9 +4128,7 @@
             }
           }
         },
-        "tags": [
-          "运行状态"
-        ],
+        "tags": ["运行状态"],
         "x-easyproject-group": "运行状态",
         "operationId": "get__api_health"
       }
@@ -4269,10 +4144,7 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": [
-                  "username",
-                  "avatar"
-                ],
+                "required": ["username", "avatar"],
                 "properties": {
                   "username": {
                     "type": "string",
@@ -4305,13 +4177,7 @@
                   "properties": {
                     "user": {
                       "type": "object",
-                      "required": [
-                        "id",
-                        "username",
-                        "admin",
-                        "mustChangePassword",
-                        "avatar"
-                      ],
+                      "required": ["id", "username", "admin", "mustChangePassword", "avatar"],
                       "properties": {
                         "id": {
                           "type": "string",
@@ -4518,9 +4384,7 @@
             }
           }
         },
-        "tags": [
-          "用户资料"
-        ],
+        "tags": ["用户资料"],
         "x-easyproject-group": "用户资料",
         "operationId": "post__api_account_profile",
         "parameters": [
@@ -4539,9 +4403,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "1"
-              ]
+              "enum": ["1"]
             }
           }
         ]

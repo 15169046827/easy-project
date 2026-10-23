@@ -87,6 +87,31 @@ const fixtures = {
 
 test.beforeEach(async ({ page }) => {
     await page.addInitScript(mockData => {
+        mockData.task_status = mockData.project.flatMap(project =>
+            ['Pending', 'InProgress', 'Done'].map((key, index) => ({
+                id: `TASK_STATUS:${String(index + 1).padStart(32, '0')}`,
+                project_id: project.id,
+                name: key,
+                builtin_key: key,
+                color: '#64748b',
+                is_completed: key === 'Done',
+                is_default: index === 0,
+                sort_order: index
+            }))
+        )
+        mockData.task.forEach(task => {
+            const state = mockData.task_status.find(
+                state =>
+                    state.project_id === task.project_id &&
+                    state.builtin_key === (task.status === 'Todo' ? 'Pending' : task.status)
+            )
+            if (state)
+                Object.assign(task, {
+                    status_id: state.id,
+                    status_builtin_key: state.builtin_key,
+                    is_completed: state.is_completed
+                })
+        })
         localStorage.setItem('easyproject-onboarding-done', 'true')
         window.__EASY_PROJECT_CALLS__ = []
         window.__TAURI_INTERNALS__ = {
@@ -131,12 +156,122 @@ test.beforeEach(async ({ page }) => {
                         data: { id: 'project-template', taskCount: args.data.tasks.length }
                     }
                 }
-                const list = mockData[args.model] || []
+                let list = mockData[args.model] || []
+                if (args.model === 'task_status') {
+                    const data = args.data
+                    if (args.action === 'get_usage') {
+                        const tasks = mockData.task.filter(task => task.status_id === data.id)
+                        return {
+                            success: true,
+                            data: { list: tasks, total: tasks.length, pageIndex: 1 }
+                        }
+                    }
+                    if (args.action === 'add') {
+                        const state = {
+                            id: `TASK_STATUS:${String(list.length + 1).padStart(32, '0')}`,
+                            builtin_key: '',
+                            color: '#64748b',
+                            sort_order: 100,
+                            is_default: false,
+                            is_completed: false,
+                            ...data
+                        }
+                        list.push(state)
+                        return { success: true, data: { id: state.id } }
+                    }
+                    if (args.action === 'update') {
+                        Object.assign(
+                            list.find(state => state.id === data.id),
+                            data
+                        )
+                        return { success: true, data: { id: data.id } }
+                    }
+                    if (args.action === 'delete') {
+                        if (mockData.task.some(task => task.status_id === data.id))
+                            return { success: false, message: 'Referenced status' }
+                        mockData.task_status = list.filter(state => state.id !== data.id)
+                        return { success: true, data: { id: data.id, deleted: true } }
+                    }
+                }
+                if (args.model === 'task_status' && args.data.projectId)
+                    list = list.filter(state => state.project_id === args.data.projectId)
                 return { success: true, data: { list, total: list.length } }
             }
         }
     }, fixtures)
 })
+
+for (const dark of [false, true])
+    test(`project status quick add and conflict protection in ${dark ? 'dark narrow' : 'light'} UI`, async ({
+        page
+    }) => {
+        if (dark) await page.setViewportSize({ width: 960, height: 640 })
+        await page.addInitScript(dark => {
+            localStorage.setItem('easyproject-lang', 'en-US')
+            if (dark) localStorage.setItem('easyproject-theme', 'dark')
+        }, dark)
+        await page.route('http://127.0.0.1:4173/', async route => {
+            const response = await route.fetch()
+            await route.fulfill({
+                response,
+                body: (await response.text()).replace(
+                    /<style>/g,
+                    '<style nonce="status-test-nonce">'
+                ),
+                headers: {
+                    ...response.headers(),
+                    'content-security-policy': "style-src 'self' 'nonce-status-test-nonce'"
+                }
+            })
+        })
+        await page.goto('/#/project/project-1')
+        await page
+            .getByRole('button', { name: /New task/ })
+            .first()
+            .click()
+        await page.locator('#task-edit-name').fill('Draft must survive')
+        await page.locator('#task-edit-status').click()
+        await page.getByRole('button', { name: 'Add status', exact: true }).click()
+        const add = page.getByRole('dialog', { name: 'Add status', exact: true })
+        await add.getByLabel('Status name', { exact: true }).fill('Cancelled state')
+        await add.getByRole('button', { name: 'Cancel', exact: true }).click()
+        await expect(page.locator('#task-edit-name')).toHaveValue('Draft must survive')
+        await page.locator('#task-edit-status').click()
+        await page.getByRole('button', { name: 'Add status', exact: true }).click()
+        await add.getByLabel('Status name', { exact: true }).fill('Review')
+        await add.getByRole('button', { name: 'Save', exact: true }).click()
+        await expect(add).not.toBeVisible()
+        await expect(page.locator('#task-edit-status')).toContainText('Review')
+        await expect(page.locator('#task-edit-name')).toHaveValue('Draft must survive')
+        await page.keyboard.press('Escape')
+        await page.getByRole('button', { name: 'Manage task statuses', exact: true }).click()
+        await expect(page.locator('.status-manager')).toContainText('Review')
+        await page.getByRole('button', { name: 'Delete In Progress', exact: true }).click()
+        const conflict = page.getByRole('dialog', { name: 'Task statuses', exact: true })
+        await expect(conflict).toContainText('Design milestone')
+        await expect(conflict.getByRole('button', { name: 'Delete', exact: true })).toHaveCount(0)
+        await page.keyboard.press('Escape')
+        await page.getByRole('button', { name: /Board/ }).click()
+        await expect(page.locator('.board-column')).toHaveCount(4)
+        await expect(page.locator('.board-column')).toContainText([
+            'Pending',
+            'In Progress',
+            'Done',
+            'Review'
+        ])
+        const calls = await page.evaluate(() => window.__EASY_PROJECT_CALLS__)
+        expect(
+            calls.filter(call => call.args?.model === 'task_status' && call.args.action === 'add')
+        ).toHaveLength(1)
+        expect(
+            calls.some(call => call.args?.model === 'task_status' && call.args.action === 'delete')
+        ).toBe(false)
+        expect(
+            await page
+                .locator('style[data-primevue-style-id]')
+                .evaluateAll(styles => styles.every(style => style.nonce === 'status-test-nonce'))
+        ).toBe(true)
+    })
 
 test('loads the dashboard shell with mocked Tauri data', async ({ page }) => {
     await page.goto('/#/dashboard')
@@ -541,7 +676,7 @@ test('moves a task across the project board and supports undo', async ({ page })
                 args?.model === 'task' &&
                 args?.action === 'update' &&
                 args.data.id === 'task-1' &&
-                args.data.status === 'Done' &&
+                args.data.status_id === 'TASK_STATUS:00000000000000000000000000000003' &&
                 args.data.progress === 100
         )
     ).toBe(true)

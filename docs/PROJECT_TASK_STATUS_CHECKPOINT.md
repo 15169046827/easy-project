@@ -1,5 +1,175 @@
 # 项目独立任务状态改造
 
+## 2026-10-23源码候选完成回执（真实升级另需确认）
+
+- 目标已实现：项目独立自定义状态、稳定ID引用、MCP状态CRUD/任务强制引用、动态UI/统计、快捷新增/取消与独立管理、引用冲突阻止删除；不是隐藏三父分类。WACAS未定义/待确认，实际AGENTS/交接1.13（79条）/UPARS1.1.0。
+- 基线44557ae8e16d85f126f54d10a2f2ad209839587a，分支codex/audit-release-20261006-api；既有本地WIP536294b，当前全部改动准备新提交，远端同步结果须核对下方后续Git回执。五小时余12%、周余79%；不重置/关机/定时唤醒。
+- 最新实际验证：前端266单测/54文件、性能9；Rust56单测+真实stdio1；server37单测+16接口；生产UI84/84零重试（12真实HTTP项按独立入口跳过，独立test:web12/12通过）；lint/typecheck/build/release:check、双Rust格式/严格clippy及diff通过。末次TaskList自定义同名状态原文/完成属性显示保护后已再次build、84UI、lint/typecheck通过；266单测是在该展示层小改之前，后端未再改。保留大体积按需块既有警告与E盘增量缓存硬链接降级复制提示，没有关闭门禁。
+- 失败历史：暂停前49/6；后续目录数量/交换fixture/ID图修复到56/0；新增图校验后2个旧SQL fixture不完整，补正确字典后复验通过。前端旧Gantt fixture缺status_id导致5失败，改为显式合法引用后266通过。生产UI先遇沙箱回环EACCES/ETIMEDOUT（正常本机隔离进程通过），新增按钮图标可访问名及精确英文大小写断言、旧fixture缺字典/固定3行/旧URL状态文本断言均定位修正，最后84项零重试通过；未删除测试/放宽服务校验。没有宣称最初即全绿。
+- 数据/接口：schema7/JSONCSVXLSX7隔离升级与恢复/回滚、默认/状态图验证；真实环境仍schema6。MCP候选9/18/23工具；Apifox66原生接口+18HTTP、32参考均逐项读回，旧ID/分组保留，新2状态分组。原生同步HTTP0中断后先只读核对无未确认ID/摘要一致再续；HTTP同步中断后verify定位post__api_account_mcp_tokens并ResumeFrom准确续接，最终verify18项通过。debug目录发现仅合成库且前后SHA不变，D1E994F6...、536294b+dirty=true来源如catalog/manifest所述；不是已安装独立程序。未来正式候选必须从保存源码重构建并重绑交付来源/摘要，不以该debug exe交付。
+- 文档：AGENTS/规则1.13、数据库、MCP、API/Apifox、变更记录、计划、交接与当前状态已更新；Wolai已保存界面里程碑，最终回执待同步读回。公网运维/新版截图/es-ES仍后置不遗失。
+- 未验证与下一步：尚未构建本轮NSIS/独立MCP release候选、未原生Windows新UI全矩阵、未macOS实机；正式发布仍未通过。先由用户确认进入真实升级/迁移及覆盖阶段，再从本轮最终源码构建/重绑来源/准备全新E盘与服务器受限副本、确认部署设备在线、schema7隔离升级证据对照、分别更新服务器/桌面/独立MCP并逐字段核验原内容/关系/账号和重连。不自动沿用旧安装/迁移授权，不向真实库运行debug。状态功能的未来新增联机联动不等于本地/云自动合库。
+- 设备/进程：本轮无SSH/真实数据CRUD/安装/MCP替换，旧原件与安全副本未动；只确认本机隔离浏览器演示与测试服务，未确认home-host在线。临时IAB演示页已关闭、1420演示服务已停止，生产/HTTP测试脚本自身清理服务，无活动会话需要续接。没有本轮关机授权。
+- 提交前全部未提交文件（均本专项，提交后应以git status干净为准）：
+
+```text
+ M AGENTS.md
+ M CHANGELOG.md
+ M docs/DATABASE_DESIGN.md
+ M docs/MCP.md
+ M docs/PROJECT_PLAN.md
+ M docs/PROJECT_TASK_STATUS_CHECKPOINT.md
+ M docs/api/DESKTOP_IPC.md
+ M docs/api/MODELS.md
+ M docs/api/OVERVIEW.md
+ M docs/api/README.md
+ M docs/api/apifox-documents.json
+ M docs/api/apifox-layout.json
+ M docs/api/apifox-manifest.json
+ M docs/api/catalog.json
+ M docs/api/web-apifox-manifest.json
+ M docs/api/web-openapi.json
+ M docs/handoff/ARCHITECTURE.md
+ M docs/handoff/CURRENT_STATE.md
+ M docs/handoff/README.md
+ M docs/handoff/RULES.md
+ M e2e/smoke.spec.js
+ M e2e/ui-consistency.spec.js
+ M scripts/apifox-contract.test.js
+ M scripts/build-api-catalog.js
+ M scripts/build-apifox-layout.js
+ M scripts/build-web-api.js
+ M scripts/group-apifox-api.ps1
+ M scripts/run-e2e.js
+ M server/src/maintenance.rs
+ M server/src/workspace.rs
+ M server/tests/web.rs
+ M src-tauri/src/common/id_migration.rs
+ M src-tauri/src/common/task_status.rs
+ M src-tauri/src/db/project_db.rs
+ M src-tauri/src/db/task_db.rs
+ M src-tauri/src/mcp/mod.rs
+ M src-tauri/src/mcp/tests.rs
+ M src-tauri/src/mcp/tools.rs
+ M src-tauri/src/services/data_service.rs
+ M src-tauri/src/services/entity_api.rs
+ M src-tauri/src/services/task_service.rs
+ M src-tauri/src/services/task_status_service.rs
+ M src-tauri/tests/mcp_stdio.rs
+ M src/__tests__/api/demoReordering.test.js
+ M src/__tests__/composables/useGanttTaskEditors.test.js
+ M src/__tests__/data/xlsx.test.js
+ M src/api/demo.js
+ M src/i18n/index.js
+ M src/modules/dashboard/components/DashboardView.vue
+ M src/modules/data/components/DataView.vue
+ M src/modules/data/utils/xlsx.js
+ M src/modules/floating/taskSelection.js
+ M src/modules/gantt/components/GanttTaskDialog.vue
+ M src/modules/gantt/components/GanttView.vue
+ M src/modules/gantt/composables/useGanttCreateEditor.js
+ M src/modules/gantt/composables/useGanttEditEditor.js
+ M src/modules/gantt/utils/interaction.js
+ M src/modules/project/components/ProjectWorkspace.vue
+ M src/modules/task/components/TaskBoard.vue
+ M src/modules/task/components/TaskList/TaskList.vue
+ M src/modules/task/utils/taskRowPersistence.js
+ M src/router/index.js
+?? src/__tests__/components/TaskStatuses.test.js
+?? src/components/TaskStatusManager.vue
+?? src/components/TaskStatusSelect.vue
+?? src/i18n/locales/task-status-en.js
+?? src/i18n/locales/task-status-zh.js
+?? src/utils/taskStatus.js
+```
+
+
+## 2026-10-23界面与交换里程碑（进行中，非可部署结论）
+
+- 范围/基线：项目独立状态字典、严格引用、动态界面/MCP及契约；基线44557ae、HEAD本地WIP536294b、分支codex/audit-release-20261006-api，远端仍44557ae。WACAS未定义/待确认，实际AGENTS/交接1.13（79条）/UPARS1.1.0。五小时余23%、周余81%；没有重置/关机/自动唤醒授权。
+- 已实现：PrimeVue TaskStatusSelect（底部+上层新增/取消、保留草稿/立即选中/过期响应保护）、ProjectWorkspace独立TaskStatusManager（名称/颜色/排序/完成/默认编辑，分页冲突/引用阻止删除）、TaskBoard动态ID列/未知兜底，TaskList/甘特表单选择与跨项目显式选择，动态筛选/仪表盘及完成/逾期/浮窗语义。JSON/CSV/XLSX7含字典/引用、旧版兼容；导入/备份增加状态图/默认/ID/颜色校验与失败回滚负例。服务端远端MCP5工具CRUD及账号隔离/删除阻止/恢复点数量均有验证。
+- 验证：Rust56单测+1真实stdio通过、严格clippy通过；server37单测+16接口通过；前端266单测通过（其后增加文案/门禁/契约生成器改动待最终全量）；build通过；专项真实PrimeVue生产UI浅色/深色960宽严格CSP2/2零重试通过；真实HTTP12/12通过。全量生产UI正在执行，发现旧ui-consistency fixture缺状态字典导致编辑无法保存，及固定3行断言不符实际2状态；已修正fixture/期望且保留所有逐帧几何检查，待重跑。初轮回环EACCES/ETIMEDOUT为沙箱限制，正常本机隔离服务可跑；曾有新增测试精确英文大小写/图标可访问名称断言失败已修复。图校验加入后2个旧SQL fixture缺状态失败，已按新schema补播种并复验，不放宽产品保护。
+- 契约：本地已实际发现新debug候选23工具、7命令/36动作、66原生接口/23目录、32参考；HTTP仍18操作15路径，状态通过workspace action而非虚构REST。生成用新的隔离HTTP测试库，发现前后DB SHA不变；binary D1E994F6F8BD3FB32BF52B5FBEE7296D296D1982E17B77929D1BF08F165F278C，源536294b+worktreeDirty=true/debug-isolated-candidate，非已安装程序。manifest在忽略目录status-catalog-manifest.json；生成器新支持--binary/--manifest且校验摘要。Apifox只读同步计划进行中，尚未外部写入，不声称同步完成。
+- 准确下一步：收取当前全量UI/前端门禁结果，处理余下失败并零重试全量复验；完成API文档/Apifox计划后增量写入并读回，更新数据库/规则/交接/Wolai；做最终lint/typecheck/test/build/release/performance、Rust/server格式/严格检查及diff，保存Git提交/远端（当前未推送）。真实部署/schema7迁移/覆盖/独立MCP替换须另行确认，不能继承旧授权。
+- 文档同步：AGENTS/规则1.13/架构/数据库/MCP/计划/变更记录及本地API候选已增补；Wolai只有前个后端里程碑已读回，本界面里程碑待同步；Apifox当前仅只读计划，旧契约尚在。公网运维/新版截图/es-ES继续后置。设备：未SSH/未改真实库/安装/MCP，桌面与服务器仍schema6；所有新测试库/缓存/临时数据E盘，生产UI/Apifox计划等本轮会话需先查是否结束，不停止其它程序。
+- 本里程碑全部未提交文件如下（均本专项，后续新增须再核对）：
+
+```text
+ M AGENTS.md
+ M CHANGELOG.md
+ M docs/DATABASE_DESIGN.md
+ M docs/MCP.md
+ M docs/PROJECT_PLAN.md
+ M docs/PROJECT_TASK_STATUS_CHECKPOINT.md
+ M docs/api/DESKTOP_IPC.md
+ M docs/api/MODELS.md
+ M docs/api/OVERVIEW.md
+ M docs/api/apifox-documents.json
+ M docs/api/apifox-layout.json
+ M docs/api/catalog.json
+ M docs/api/web-openapi.json
+ M docs/handoff/ARCHITECTURE.md
+ M docs/handoff/CURRENT_STATE.md
+ M docs/handoff/README.md
+ M docs/handoff/RULES.md
+ M e2e/smoke.spec.js
+ M e2e/ui-consistency.spec.js
+ M scripts/apifox-contract.test.js
+ M scripts/build-api-catalog.js
+ M scripts/build-apifox-layout.js
+ M scripts/build-web-api.js
+ M scripts/run-e2e.js
+ M server/src/maintenance.rs
+ M server/src/workspace.rs
+ M server/tests/web.rs
+ M src-tauri/src/common/id_migration.rs
+ M src-tauri/src/common/task_status.rs
+ M src-tauri/src/db/project_db.rs
+ M src-tauri/src/db/task_db.rs
+ M src-tauri/src/mcp/mod.rs
+ M src-tauri/src/mcp/tests.rs
+ M src-tauri/src/mcp/tools.rs
+ M src-tauri/src/services/data_service.rs
+ M src-tauri/src/services/entity_api.rs
+ M src-tauri/src/services/task_service.rs
+ M src-tauri/src/services/task_status_service.rs
+ M src-tauri/tests/mcp_stdio.rs
+ M src/__tests__/api/demoReordering.test.js
+ M src/__tests__/data/xlsx.test.js
+ M src/api/demo.js
+ M src/i18n/index.js
+ M src/modules/dashboard/components/DashboardView.vue
+ M src/modules/data/components/DataView.vue
+ M src/modules/data/utils/xlsx.js
+ M src/modules/floating/taskSelection.js
+ M src/modules/gantt/components/GanttTaskDialog.vue
+ M src/modules/gantt/components/GanttView.vue
+ M src/modules/gantt/composables/useGanttCreateEditor.js
+ M src/modules/gantt/composables/useGanttEditEditor.js
+ M src/modules/gantt/utils/interaction.js
+ M src/modules/project/components/ProjectWorkspace.vue
+ M src/modules/task/components/TaskBoard.vue
+ M src/modules/task/components/TaskList/TaskList.vue
+ M src/modules/task/utils/taskRowPersistence.js
+ M src/router/index.js
+?? src/__tests__/components/TaskStatuses.test.js
+?? src/components/TaskStatusManager.vue
+?? src/components/TaskStatusSelect.vue
+?? src/i18n/locales/task-status-en.js
+?? src/i18n/locales/task-status-zh.js
+?? src/utils/taskStatus.js
+```
+
+
+## 2026-10-23恢复后的后端里程碑（进行中，覆盖下方暂停状态）
+
+- 用户已明确继续。基线44557ae8e16d85f126f54d10a2f2ad209839587a，分支codex/audit-release-20261006-api；HEAD为本地WIP536294b385e118522df8566cd0bbcfba4dfd3d20，远端未更新。WACAS未定义/待确认，实际AGENTS、交接1.12、UPARS1.1.0。五小时剩余56%、周剩余86%，不重置/唤醒。
+- 已完成后端：schema7隔离迁移、项目状态CRUD/引用冲突分页、任务更新严格同项目status_id/跨项目显式选择、JSON v7交换与旧库恢复路径、MCP五工具及9/18/23权限目录、Web模型白名单。删除有任意引用（包括软删除任务）即拒绝，未采用替换删除。
+- 实际复验：最新Rust56单测+1真实stdio通过。恢复过程中先后暴露目录数量、交换fixture/schema和ID图外键失败，均修复后全量复验，未删除测试或放宽保护。已新增严格缺失/文字/跨项目状态拒绝、重命名关联保留、完成属性、引用删除阻止测试。前端新PrimeVue选择器初次类型检查通过，后续TaskList接线尚待完整复验。
+- 当前未提交文件：server/src/workspace.rs；src-tauri/src/common/id_migration.rs、db/project_db.rs、db/task_db.rs、mcp/tests.rs、mcp/tools.rs、services/data_service.rs、services/entity_api.rs、services/task_service.rs、services/task_status_service.rs、tests/mcp_stdio.rs；src/i18n/index.js；src/modules/task/components/TaskList/TaskList.vue、utils/taskRowPersistence.js；新src/components/TaskStatusSelect.vue、src/i18n/locales/task-status-en.js、task-status-zh.js；本检查点与交接入口。
+- 下一步：完成动态看板、独立项目状态管理、任务选择器快捷新增/取消与demo；再检查统计/逾期/甘特/浮窗的完成语义、交换完整性与默认约束；补前后端/服务端回归，完整质量门禁后同步契约/Apifox/Git/Wolai/交接。尚不能称功能完成或可发布。
+- 同步：本地检查点和交接按此更新；Wolai里程碑同步待读回，API/Apifox尚未同步新契约。公网运维/截图/es-ES仍后置。设备：本轮未SSH、未连接/修改真实数据库、未安装/替换MCP；已部署仍schema6。真实schema7迁移/部署/覆盖须另行确认，不启动新源码读取真实库。
+
 ## 2026-10-23用户要求暂停，等待Codex重启后明确继续
 
 - 状态：已停止开发，不自动唤醒/部署/迁移/替换MCP。当前基线44557ae8e16d85f126f54d10a2f2ad209839587a，分支codex/audit-release-20261006-api；本轮WIP将仅本地Git保存，远端仍44557ae，避免暂停时推送触发CI。恢复后先核对此检查点/Git/相关文件，不能把WIP当可发布源码。额度五小时余81%、周余90%，无重置/关机授权。

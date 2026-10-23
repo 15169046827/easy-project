@@ -302,6 +302,7 @@ pub fn handle_action(
                 "type",
                 "priority",
                 "status",
+                "status_id",
                 "progress",
                 "effort_days",
                 "schedule_mode",
@@ -310,17 +311,45 @@ pub fn handle_action(
                 "sort_order",
             ];
             let current = crate::services::entity_api::get(db, "task", id)?;
-            let completing_task = data
-                .get("status")
-                .and_then(Value::as_str)
-                .or_else(|| current.get("status").and_then(Value::as_str))
-                == Some("Done");
+            if target_project_id != current_project_id && data.get("status_id").is_none() {
+                return ApiResponse::err(
+                    "Moving a task requires an explicit status_id from the destination project",
+                );
+            }
+            let selected_status = {
+                let conn = db.lock_connection().map_err(|e| e.to_string())?;
+                if let Some(value) = data.get("status_id") {
+                    crate::common::task_status::resolve(
+                        &conn,
+                        target_project_id,
+                        value.as_str().ok_or("status_id must be a string")?,
+                    )?
+                } else if let Some(value) = data.get("status") {
+                    crate::common::task_status::resolve_builtin_or_id(
+                        &conn,
+                        target_project_id,
+                        value.as_str().ok_or("status must be a string")?,
+                    )?
+                } else {
+                    crate::common::task_status::resolve(
+                        &conn,
+                        target_project_id,
+                        current["status_id"]
+                            .as_str()
+                            .ok_or("Task status reference missing")?,
+                    )?
+                }
+            };
+            let completing_task = selected_status.is_completed;
             for (key, value) in data.as_object().unwrap() {
                 if key == "id" {
                     continue;
                 }
                 if !ALLOWED_FIELDS.contains(&key.as_str()) {
                     return ApiResponse::err(&format!("Field is not editable: {}", key));
+                }
+                if matches!(key.as_str(), "status" | "status_id") {
+                    continue;
                 }
                 param_set.push(format!("{} = ?", key));
                 value_set.push(if key == "progress" && completing_task {
@@ -332,6 +361,10 @@ pub fn handle_action(
                         .unwrap_or_else(|| value.to_string())
                 });
             }
+            param_set.push("status = ?".into());
+            value_set.push(selected_status.name);
+            param_set.push("status_id = ?".into());
+            value_set.push(selected_status.id);
             if completing_task && !data.as_object().unwrap().contains_key("progress") {
                 param_set.push("progress = ?".to_string());
                 value_set.push("100".to_string());

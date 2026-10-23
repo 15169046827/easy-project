@@ -5,7 +5,14 @@ import { resolve } from 'node:path'
 
 const root = resolve(import.meta.dirname, '..')
 const source = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim()
-const binary = resolve(root, 'artifacts/mcp/easyproject-mcp.exe')
+const option = name => {
+    const index = process.argv.indexOf(name)
+    return index >= 0 ? process.argv[index + 1] : null
+}
+const binary = resolve(root, option('--binary') || 'artifacts/mcp/easyproject-mcp.exe')
+const manifestPath = resolve(root, option('--manifest') || 'artifacts/mcp/manifest.json')
+if (Boolean(option('--binary')) !== Boolean(option('--manifest')))
+    throw new Error('Custom binary requires its matching manifest')
 const reuseTools = process.argv.includes('--reuse-tools')
 const previous = reuseTools
     ? JSON.parse(readFileSync(resolve(root, 'docs/api/catalog.json'), 'utf8'))
@@ -14,6 +21,9 @@ const database = reuseTools ? null : process.argv[2]
 if (!reuseTools && !database)
     throw new Error('Provide the existing database path; no mutations will be invoked')
 const sha = value => createHash('sha256').update(value).digest('hex')
+const binaryManifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
+if (String(binaryManifest.sha256).toLowerCase() !== sha(readFileSync(binary)))
+    throw new Error('Binary manifest digest mismatch')
 if (reuseTools && previous.mcpBinary.sha256 !== sha(readFileSync(binary)))
     throw new Error('Previously verified MCP binary changed; cannot reuse tool inventory')
 const before = reuseTools ? null : sha(readFileSync(database))
@@ -48,8 +58,8 @@ const tools = result.stdout
     .split('\n')
     .map(line => JSON.parse(line))
     .find(item => item.id === 2)?.result?.tools
-if (tools?.length !== 18 || new Set(tools.map(tool => tool.name)).size !== 18)
-    throw new Error('Expected eighteen unique tools')
+if (tools?.length !== 23 || new Set(tools.map(tool => tool.name)).size !== 23)
+    throw new Error('Expected twenty-three unique tools')
 if (!reuseTools && before !== sha(readFileSync(database)))
     throw new Error('Database changed during discovery; review before documenting')
 const sourceFiles = {
@@ -72,6 +82,13 @@ const actions = Object.fromEntries(
         return [model, values]
     })
 )
+const statusSource = readFileSync(
+    resolve(root, 'src-tauri/src/services/task_status_service.rs'),
+    'utf8'
+)
+actions.task_status = ['get_all', 'get_usage', 'add', 'update', 'delete']
+if (actions.task_status.some(action => !statusSource.includes(`"${action}"`)))
+    throw new Error('Status dispatcher changed; review explicit inventory')
 const entry = readFileSync(resolve(root, 'src-tauri/src/lib.rs'), 'utf8')
 const commands = entry
     .split('.invoke_handler(generate_handler![')[1]
@@ -79,7 +96,7 @@ const commands = entry
     .split(',')
     .map(name => name.trim().split('::').at(-1))
     .filter(Boolean)
-if (commands.length !== 7 || Object.values(actions).flat().length !== 31)
+if (commands.length !== 7 || Object.values(actions).flat().length !== 36)
     throw new Error('IPC inventory changed; review contract documentation')
 const catalog = {
     sourceCommit: source,
@@ -87,8 +104,9 @@ const catalog = {
         'Documentation source; unchanged MCP input schemas may be reused only when the previously verified binary digest matches. Binary provenance is separate; this generator does not rebuild or replace it.',
     mcpBinary: {
         sha256: sha(readFileSync(binary)),
-        sourceCommit: JSON.parse(readFileSync(resolve(root, 'artifacts/mcp/manifest.json'), 'utf8'))
-            .sourceCommit
+        sourceCommit: binaryManifest.sourceCommit,
+        worktreeDirty: Boolean(binaryManifest.worktreeDirty),
+        buildKind: binaryManifest.buildKind || 'release'
     },
     transport: {
         mcp: 'stdio JSON-RPC; no HTTP listener',
@@ -103,6 +121,7 @@ writeFileSync(resolve(root, 'docs/api/catalog.json'), JSON.stringify(catalog, nu
 const modelNames = [
     'project',
     'task',
+    'task_status',
     'member',
     'project_member',
     'task_dependency',
@@ -115,7 +134,13 @@ const models =
     '\n\n以下为真实Rust类型及serde默认属性。String不代表业务允许任意字符串；业务关系/范围以服务校验为准。MCP另有严格inputSchema和默认补齐，不能与桌面原生请求互换。\n\n' +
     modelNames
         .map(name => {
-            const text = readFileSync(resolve(root, `src-tauri/src/models/${name}.rs`), 'utf8')
+            const text = readFileSync(
+                resolve(
+                    root,
+                    `src-tauri/src/${name === 'task_status' ? 'common' : 'models'}/${name}.rs`
+                ),
+                'utf8'
+            )
             const structs = [...text.matchAll(/(?:#\[[^\n]+\]\s*)*pub struct [\s\S]*?^}/gm)].map(
                 match => match[0]
             )
@@ -125,7 +150,7 @@ const models =
 writeFileSync(resolve(root, 'docs/api/MODELS.md'), models)
 const overview = readFileSync(resolve(root, 'docs/api/OVERVIEW.md'), 'utf8')
 const desktop = readFileSync(resolve(root, 'docs/api/DESKTOP_IPC.md'), 'utf8')
-const provenance = `\n\n接口基线：${source}。独立MCP二进制源：${catalog.mcpBinary.sourceCommit}，SHA256：${catalog.mcpBinary.sha256}。文档维护不改变程序或业务数据。\n`
+const provenance = `\n\n接口基线：${source}。候选MCP二进制源：${catalog.mcpBinary.sourceCommit}，worktreeDirty=${catalog.mcpBinary.worktreeDirty}，buildKind=${catalog.mcpBinary.buildKind}，SHA256：${catalog.mcpBinary.sha256}。文档维护不改变已安装程序或真实业务数据，schema7尚未部署。\n`
 const documents = [
     { key: 'overview', name: 'EasyProject API / 协议与权限总览', content: overview + provenance },
     { key: 'models', name: 'EasyProject API / 模型与原生请求类型', content: models + provenance },
@@ -133,11 +158,13 @@ const documents = [
         const action = tool.name.split('_').at(-1)
         const output =
             action === 'list'
-                ? tool.name.includes('project_member')
+                ? tool.name.includes('project_member') || tool.name.includes('task_status')
                     ? '{list}'
                     : '{list,total,pageIndex,pageSize,totalPage}'
                 : action === 'get'
-                  ? '当前活跃记录对象'
+                  ? tool.name.includes('task_status')
+                      ? '{record,usage:{list,total,pageIndex,pageSize}}；首50引用任务含软删除，IPC get_usage可继续分页'
+                      : '当前活跃记录对象'
                   : '{record,operation_id,recovery_point}；删除的record={id,deleted:true}'
         return {
             key: tool.name,
@@ -148,7 +175,7 @@ const documents = [
     ...commands.map(command => ({
         key: `tauri_${command}`,
         name: `Tauri IPC / ${command}`,
-        content: `# ${command}\n\n本项为受控桌面内部Tauri invoke命令，不是HTTP，也不是对外MCP。参数、返回、调用窗口限制如下；统一crud_action包含全部31个model/action。\n\n${desktop}${provenance}`
+        content: `# ${command}\n\n本项为受控桌面内部Tauri invoke命令，不是HTTP，也不是对外MCP。参数、返回、调用窗口限制如下；统一crud_action包含全部36个model/action。\n\n${desktop}${provenance}`
     }))
 ]
 writeFileSync(

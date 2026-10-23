@@ -75,7 +75,7 @@ pub fn get(db: &DbState, model: &str, id: &str) -> Result<Value, String> {
     let (table, fields) = match model {
         "task_status" => ("task_status", "id,project_id,name,color,sort_order,is_completed,is_default,builtin_key,create_time,update_time,stateflag"),
         "project" => ("project", "id,name,version,type,status,owner,calendar_country,calendar_region,weekend_days,calendar_exceptions,creator,create_time,update_time,stateflag"),
-        "task" => ("task", "id,project_id,sort_order,name,parent,dependence,start_time,end_time,type,priority,status,progress,effort_days,schedule_mode,comment,assignee,creator,create_time,update_time,stateflag"),
+        "task" => ("task", "id,project_id,sort_order,name,parent,dependence,start_time,end_time,type,priority,status,status_id,COALESCE((SELECT is_completed FROM task_status s WHERE s.id=task.status_id),0) AS is_completed,COALESCE((SELECT builtin_key FROM task_status s WHERE s.id=task.status_id),'') AS status_builtin_key,progress,effort_days,schedule_mode,comment,assignee,creator,create_time,update_time,stateflag"),
         "member" => ("member", "id,name,email,phone,role,avatar,availability_exceptions,create_time,update_time,stateflag"),
         "project_member" => ("project_member", "id,project_id,member_id,role,joined_at,stateflag"),
         _ => return Err("Unsupported entity".into()),
@@ -98,6 +98,11 @@ pub fn get(db: &DbState, model: &str, id: &str) -> Result<Value, String> {
             for (index, name) in columns.iter().enumerate() {
                 let value = match row.get_ref(index)? {
                     ValueRef::Null => Value::Null,
+                    ValueRef::Integer(value)
+                        if matches!(name.as_str(), "is_completed" | "is_default") =>
+                    {
+                        json!(value != 0)
+                    }
                     ValueRef::Integer(value) => json!(value),
                     ValueRef::Real(value) => json!(value),
                     ValueRef::Text(value) => json!(String::from_utf8_lossy(value)),

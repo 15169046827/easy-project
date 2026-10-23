@@ -4,7 +4,7 @@ import { createTaskEditPayload } from '../utils/interaction.js'
 import { recalculateFormEnd, recalculateFormEffort } from '../utils/taskFormSchedule.js'
 
 /** @typedef {{id: string, name?: string, start_time?: string, end_time?: string, effort_days?: number,
- * schedule_mode?: string, type?: string, status?: string, progress?: number, assignee?: string}} EditableTask */
+ * schedule_mode?: string, type?: string, status?: string, status_id?: string, progress?: number, assignee?: string}} EditableTask */
 /**
  * @param {{activeProject: import('vue').Ref<object>, message: import('vue').Ref<string>,
  * messageType: import('vue').Ref<string>, load: () => Promise<void>,
@@ -28,6 +28,7 @@ export function useGanttEditEditor({
         schedule_mode: 'fixed_dates',
         type: 'Task',
         status: 'Pending',
+        status_id: '',
         progress: 0,
         assignee: ''
     })
@@ -45,6 +46,7 @@ export function useGanttEditEditor({
             schedule_mode: task.schedule_mode || 'fixed_dates',
             type: task.type || 'Task',
             status: task.status || 'Pending',
+            status_id: task.status_id || '',
             progress: task.progress || 0,
             assignee: task.assignee || ''
         }
@@ -63,6 +65,11 @@ export function useGanttEditEditor({
     async function saveEdit() {
         const task = editingTask.value
         if (!task || saving) return
+        if (!editForm.value.status_id) {
+            messageType.value = 'error'
+            message.value = t('taskStatuses.select', { name: '' })
+            return
+        }
         saving = true
         try {
             await crudAction('task', 'update', createTaskEditPayload(task.id, editForm.value))

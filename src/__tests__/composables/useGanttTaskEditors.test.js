@@ -19,6 +19,7 @@ function context() {
 }
 const task = {
     id: 't1',
+    status_id: 'TASK_STATUS:00000000000000000000000000000001',
     name: 'Task',
     start_time: '2026-11-02 00:00:00',
     end_time: '2026-11-03 00:00:00',
@@ -59,6 +60,7 @@ describe('Gantt task editor responsibilities', () => {
         const state = useGanttCreateEditor(ctx)
         state.openCreateEditor(new Date(2026, 10, 2), new Date(2026, 10, 3))
         state.createForm.value.name = ' New task '
+        state.createForm.value.status_id = task.status_id
         state.createForm.value.comment = ' note '
         await state.saveCreate()
         expect(crudAction).toHaveBeenCalledExactlyOnceWith(
@@ -82,6 +84,7 @@ describe('Gantt task editor responsibilities', () => {
         const state = useGanttCreateEditor(ctx)
         state.openCreateEditor(new Date(2026, 10, 2), new Date(2026, 10, 3))
         state.createForm.value.name = 'Task'
+        state.createForm.value.status_id = task.status_id
         crudAction.mockRejectedValueOnce('create failed')
         await state.saveCreate()
         expect(state.creatingTask.value).toBe(true)
@@ -147,6 +150,7 @@ describe('Gantt task editor responsibilities', () => {
         const state = useGanttCreateEditor(context())
         state.openCreateEditor(new Date(2026, 10, 2), new Date(2026, 10, 3))
         state.createForm.value.name = 'Task'
+        state.createForm.value.status_id = task.status_id
         /** @type {(value?: unknown) => void} */
         let finish = () => {
             throw new Error('Request did not start')

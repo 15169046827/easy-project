@@ -4,6 +4,12 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+### Project-owned task statuses (2026-10-23, candidate)
+
+- Add schema7 project status dictionaries and stable task references, explicit completion/default properties, dynamic boards and status filtering. Preserve legacy labels in protected, transactional migration.
+- Use PrimeVue status selection with cancellable quick-add in task/Gantt dialogs and a separate project management view. Referenced statuses display conflicts and cannot be deleted, including references from soft-deleted tasks.
+- Add five MCP status CRUD tools (9/18/23 by scope); task creation requires an existing same-project status ID. Extend JSON/CSV/XLSX7 exchange, backup validation and older backup restore. Current installed schema6 programs have not been replaced; deployment remains separate.
+
 ### Product homepage (2026-10-22)
 
 - Add a bilingual, responsive public homepage with product overview, demonstration board image, online/local mode boundaries, MCP documentation, privacy/trial disclosures and an explicit not-yet-public desktop download status.

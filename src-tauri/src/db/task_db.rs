@@ -198,10 +198,12 @@ pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec
     }
     if let Some(status) = query.status.filter(|value| !value.is_empty()) {
         match status {
-            "Pending" => conditions.push("status IN ('Pending', 'Todo')".to_string()),
-            "Overdue" => conditions.push("status NOT IN ('Done', 'Archived') AND datetime(end_time) < datetime('now', 'localtime')".to_string()),
+            "Pending" => conditions.push("COALESCE((SELECT builtin_key FROM task_status s WHERE s.id=task.status_id),CASE WHEN status IN ('Pending','Todo') THEN 'Pending' ELSE '' END)='Pending'".to_string()),
+            "Overdue" => conditions.push("COALESCE((SELECT is_completed FROM task_status s WHERE s.id=task.status_id),CASE WHEN status IN ('Done','Archived') THEN 1 ELSE 0 END)=0 AND datetime(end_time) < datetime('now', 'localtime')".to_string()),
+            "Done" => conditions.push("COALESCE((SELECT is_completed FROM task_status s WHERE s.id=task.status_id),CASE WHEN status='Done' THEN 1 ELSE 0 END)=1".to_string()),
             _ => {
-                conditions.push("status = ?".to_string());
+                conditions.push("(status_id = ? OR status = ?)".to_string());
+                values.push(status.to_string());
                 values.push(status.to_string());
             }
         }
@@ -494,6 +496,8 @@ mod status_query_tests {
             ('empty','Empty','InProgress','');",
         )
         .unwrap();
+        conn.execute_batch("CREATE TABLE project(id TEXT PRIMARY KEY); ALTER TABLE task ADD COLUMN status_id TEXT NOT NULL DEFAULT '';").unwrap();
+        crate::common::task_status::create_schema(&conn).unwrap();
         let db = DbState(Mutex::new(conn), PathBuf::new());
         let mut query = TaskQuery {
             page_index: 1,

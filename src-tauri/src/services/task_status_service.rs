@@ -24,13 +24,28 @@ pub fn handle_action(
     }
     if action == "get_usage" {
         let id = text(&data, "id")?;
-        let page = data.get("pageIndex").and_then(Value::as_u64).unwrap_or(1).max(1);
-        let offset = page.saturating_sub(1).saturating_mul(50).min(i64::MAX as u64) as i64;
-        let total: i64 = conn.query_row("SELECT count(*) FROM task WHERE status_id=?1", [id], |r|r.get(0)).map_err(|e|e.to_string())?;
+        let page = data
+            .get("pageIndex")
+            .and_then(Value::as_u64)
+            .unwrap_or(1)
+            .max(1);
+        let offset = page
+            .saturating_sub(1)
+            .saturating_mul(50)
+            .min(i64::MAX as u64) as i64;
+        let total: i64 = conn
+            .query_row("SELECT count(*) FROM task WHERE status_id=?1", [id], |r| {
+                r.get(0)
+            })
+            .map_err(|e| e.to_string())?;
         let mut statement = conn.prepare("SELECT id,name,project_id,stateflag FROM task WHERE status_id=?1 ORDER BY id LIMIT 50 OFFSET ?2").map_err(|e|e.to_string())?;
         let rows = statement.query_map(params![id,offset], |r|Ok(json!({"id":r.get::<_,String>(0)?,"name":r.get::<_,String>(1)?,"project_id":r.get::<_,String>(2)?,"deleted":r.get::<_,String>(3)? != "0"}))).map_err(|e|e.to_string())?;
-        let list = rows.collect::<rusqlite::Result<Vec<_>>>().map_err(|e|e.to_string())?;
-        return ApiResponse::ok(Some(json!({"list":list,"total":total,"pageIndex":page,"pageSize":50})));
+        let list = rows
+            .collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(|e| e.to_string())?;
+        return ApiResponse::ok(Some(
+            json!({"list":list,"total":total,"pageIndex":page,"pageSize":50}),
+        ));
     }
     let map = data.as_object().ok_or("Expected status object")?;
     let allowed: &[&str] = match action.as_str() {
@@ -101,7 +116,7 @@ pub fn handle_action(
         if references != 0 {
             return Err(format!("Task status is referenced by {references} task(s); use task_status.get_usage to inspect conflicts. Deletion blocked"));
         }
-        if current.as_ref().is_some_and(|s|s.is_default) {
+        if current.as_ref().is_some_and(|s| s.is_default) {
             return Err("Choose another default status before deleting this status".into());
         }
         conn.execute("UPDATE task_status SET stateflag=strftime('%s','now'),is_default=0,update_time=datetime('now','localtime') WHERE id=?1", [&id]).map_err(|e|e.to_string())?;

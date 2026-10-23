@@ -6,6 +6,7 @@ const desktop = readFileSync('docs/api/DESKTOP_IPC.md', 'utf8')
 const models = {
     project: '项目',
     task: '任务',
+    task_status: '任务状态',
     member: '人员',
     project_member: '项目团队',
     task_dependency: '任务依赖',
@@ -21,6 +22,7 @@ const operations = {
     delete: '删除',
     add: '新建',
     get_all: '列表',
+    get_usage: '引用冲突',
     create_from_template: '从模板创建',
     swap_order: '交换排序',
     search: '搜索',
@@ -41,7 +43,7 @@ const commands = {
     desktop_credentials: [
         '桌面加密保存密码',
         'ipc.account',
-        '参数{action:"read"|"save"|"clear",credentials:{username,password}|null}；仅Windows主窗口可调用，read返回凭据或null，save/clear返回null，失败reject且不改变登录。安装侧非C盘DPAPI当前用户加密文件，默认不保存、只填充不自动登录、不进入业务导出；不接受自定义路径、服务器地址或任意账号字段。不得记录响应/密码。'
+        '参数{action:"read"|"save"|"clear",credentials:{username,password}|null}；仅Windows主窗口可调用，read返回凭据或null，save/clear返回null，失败reject且不改变登录。安装侧可写目录DPAPI当前用户加密文件，默认不保存、只填充不自动登录、不进入业务导出；不接受自定义路径、服务器地址或任意账号字段。不得记录响应/密码。'
     ],
     crud_action: ['统一业务分发', 'ipc', desktop],
     open_task_window: [
@@ -62,7 +64,7 @@ const commands = {
     set_data_directory: [
         '设置下次启动的数据目录',
         'ipc.storage',
-        '参数`{directory:string}`；仅main窗口允许。非C盘本地绝对新/空目录，拒绝链接、网络与父子重叠；返回StorageInfo。只记录pending，重启复制核验后切换，不删除源或失败后建空替代库。'
+        '参数`{directory:string}`；仅main窗口允许。本地可写绝对新/空目录（可含C盘），拒绝链接、网络与父子重叠；返回StorageInfo。只记录pending，重启复制核验后切换，不删除源或失败后建空替代库。'
     ],
     reveal_backup_directory: [
         '打开受管备份目录',
@@ -73,7 +75,9 @@ const commands = {
 const folders = [
     { key: 'mcp', name: '01 MCP 对外接口' },
     ...Object.entries(models)
-        .filter(([key]) => ['project', 'task', 'member', 'project_member'].includes(key))
+        .filter(([key]) =>
+            ['project', 'task', 'task_status', 'member', 'project_member'].includes(key)
+        )
         .map(([key, name]) => ({ key: `mcp.${key}`, name, parent: 'mcp' })),
     { key: 'ipc', name: '02 桌面 IPC 内部接口' },
     ...Object.entries(models).map(([key, name]) => ({ key: `ipc.${key}`, name, parent: 'ipc' })),
@@ -125,8 +129,11 @@ for (const [model, actions] of Object.entries(catalog.actions)) {
         })
     }
 }
-if (interfaces.length !== 56 || new Set(interfaces.map(item => item.key)).size !== 56)
+if (interfaces.length !== 66 || new Set(interfaces.map(item => item.key)).size !== 66)
     throw new Error('Interface inventory mismatch')
+interfaces.forEach(item => {
+    item.status = 'testing'
+})
 writeFileSync(
     'docs/api/apifox-layout.json',
     JSON.stringify({ rootFolderId: 97870489, folders, interfaces }, null, 2) + '\n'

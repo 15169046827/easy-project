@@ -1,0 +1,21 @@
+export default {
+    title: '任务状态',
+    unfinished: '未完成任务',
+    manage: '管理任务状态',
+    add: '添加状态',
+    name: '状态名称',
+    completed: '属于已完成状态',
+    default: '新任务默认状态',
+    color: '颜色',
+    order: '排列顺序',
+    select: '请选择当前项目的状态',
+    projectFirst: '请先选择项目',
+    conflicts: '此状态仍被任务使用，不能删除',
+    deletedTask: '已删除的任务',
+    conflictCount: '共 {count} 个引用任务',
+    deleteConfirm: '确定删除未被引用的状态“{name}”吗？',
+    required: '请输入状态名称',
+    unnamed: '未识别状态',
+    more: '加载更多',
+    defaultHint: '默认状态需要先切换到其他状态，最后一项不可删除。'
+}

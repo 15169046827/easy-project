@@ -14,7 +14,41 @@ impl Fixture {
         let db = crate::common::db_state::init_db(&directory.join("workspace.db")).unwrap();
         Self { directory, db }
     }
-    fn call(&self, name: &str, args: Value) -> Result<Value, String> {
+    fn call(&self, name: &str, mut args: Value) -> Result<Value, String> {
+        // Legacy scenario fixtures explicitly resolve the new project-owned state reference.
+        // Strict missing/foreign-reference tests call tools::call directly below.
+        if name == "easyproject_task_create" || name == "easyproject_task_update" {
+            let field = if name.ends_with("create") {
+                "data"
+            } else {
+                "changes"
+            };
+            let project = args[field]["project_id"]
+                .as_str()
+                .map(str::to_owned)
+                .or_else(|| {
+                    args["id"]
+                        .as_str()
+                        .and_then(|id| entity_api::get(&self.db, "task", id).ok())
+                        .and_then(|v| v["project_id"].as_str().map(str::to_owned))
+                });
+            let legacy = args[field]["status"].as_str().map(str::to_owned);
+            if args[field].get("status_id").is_none()
+                && (field == "data" || legacy.is_some() || args[field].get("project_id").is_some())
+            {
+                if let Some(project) = project {
+                    let connection = self.db.lock_connection().unwrap();
+                    if let Ok(state) = crate::common::task_status::resolve_builtin_or_id(
+                        &connection,
+                        &project,
+                        legacy.as_deref().unwrap_or("Pending"),
+                    ) {
+                        args[field]["status_id"] = json!(state.id);
+                        args[field].as_object_mut().unwrap().remove("status");
+                    }
+                }
+            }
+        }
         tools::call(
             &self.db,
             Permissions {
@@ -36,6 +70,102 @@ impl Drop for Fixture {
         drop(connection);
         let _ = std::fs::remove_dir_all(&self.directory);
     }
+}
+
+#[test]
+fn status_dictionary_enforces_project_references_and_blocks_in_use_deletion() {
+    let f = Fixture::new();
+    let p = f
+        .call("easyproject_project_create", json!({"data":{"name":"P"}}))
+        .unwrap()["record"]["id"]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    let q = f
+        .call("easyproject_project_create", json!({"data":{"name":"Q"}}))
+        .unwrap()["record"]["id"]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    let s = f
+        .call(
+            "easyproject_task_status_create",
+            json!({"data":{"project_id":p,"name":"Waiting","is_completed":false}}),
+        )
+        .unwrap()["record"]["id"]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    let permissions = Permissions {
+        write: true,
+        delete: true,
+    };
+    for data in [
+        json!({"name":"Missing","project_id":p}),
+        json!({"name":"Foreign","project_id":q,"status_id":s}),
+        json!({"name":"Text","project_id":p,"status_id":"Waiting"}),
+    ] {
+        assert!(tools::call(
+            &f.db,
+            permissions,
+            "easyproject_task_create",
+            json!({"data":data})
+        )
+        .is_err());
+    }
+    let t = f
+        .call(
+            "easyproject_task_create",
+            json!({"data":{"name":"Conflict task","project_id":p,"status_id":s}}),
+        )
+        .unwrap()["record"]["id"]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    let usage = f
+        .call("easyproject_task_status_get", json!({"id":s}))
+        .unwrap();
+    assert_eq!(usage["usage"]["list"][0]["id"], t);
+    assert!(f
+        .call(
+            "easyproject_task_status_delete",
+            json!({"id":s,"confirm_name":"Waiting"})
+        )
+        .unwrap_err()
+        .contains("Deletion blocked"));
+    f.call(
+        "easyproject_task_status_update",
+        json!({"id":s,"changes":{"name":"Accepted","is_completed":true}}),
+    )
+    .unwrap();
+    let task = f.call("easyproject_task_get", json!({"id":t})).unwrap();
+    assert_eq!(task["record"]["status_id"], s);
+    assert_eq!(task["record"]["status"], "Accepted");
+    assert_eq!(task["record"]["progress"], 100);
+    assert_eq!(task["record"]["is_completed"], true);
+    let unused = f
+        .call(
+            "easyproject_task_status_create",
+            json!({"data":{"project_id":p,"name":"Unused"}}),
+        )
+        .unwrap()["record"]["id"]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    assert!(f
+        .call(
+            "easyproject_task_status_delete",
+            json!({"id":unused,"confirm_name":"Incorrect"})
+        )
+        .is_err());
+    f.call(
+        "easyproject_task_status_delete",
+        json!({"id":unused,"confirm_name":"Unused"}),
+    )
+    .unwrap();
+    assert!(f
+        .call("easyproject_task_status_get", json!({"id":unused}))
+        .is_err());
 }
 
 #[test]
@@ -166,14 +296,14 @@ fn entity_crud_round_trip_preserves_rules_and_recovery_points() {
 #[test]
 fn disabled_and_invalid_calls_have_no_side_effects() {
     let f = Fixture::new();
-    assert_eq!(tools::catalog(Permissions::default()).len(), 7);
+    assert_eq!(tools::catalog(Permissions::default()).len(), 9);
     assert_eq!(
         tools::catalog(Permissions {
             write: true,
             delete: false
         })
         .len(),
-        14
+        18
     );
     assert_eq!(
         tools::catalog(Permissions {
@@ -181,7 +311,7 @@ fn disabled_and_invalid_calls_have_no_side_effects() {
             delete: true
         })
         .len(),
-        18
+        23
     );
     assert!(tools::call(
         &f.db,
@@ -283,7 +413,7 @@ fn protocol_requires_handshake_and_emits_only_json_lines() {
     assert_eq!(lines.len(), 6);
     assert_eq!(lines[0]["error"]["code"], -32002);
     assert_eq!(lines[1]["result"]["protocolVersion"], "2025-11-25");
-    assert_eq!(lines[2]["result"]["tools"].as_array().unwrap().len(), 7);
+    assert_eq!(lines[2]["result"]["tools"].as_array().unwrap().len(), 9);
     assert_eq!(lines[3]["result"]["isError"], true);
     assert_eq!(lines[4]["error"]["code"], -32601);
     assert_eq!(lines[5]["error"]["code"], -32700);

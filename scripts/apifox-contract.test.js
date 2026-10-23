@@ -43,24 +43,24 @@ describe('Apifox API documentation boundary', () => {
     })
     it('groups all native protocol interfaces without inventing HTTP endpoints', () => {
         const layout = JSON.parse(readFileSync('docs/api/apifox-layout.json', 'utf8'))
-        expect(layout.folders).toHaveLength(21)
-        expect(layout.interfaces).toHaveLength(56)
-        expect(new Set(layout.interfaces.map(item => item.key)).size).toBe(56)
-        expect(new Set(layout.interfaces.map(item => item.path)).size).toBe(56)
+        expect(layout.folders).toHaveLength(23)
+        expect(layout.interfaces).toHaveLength(66)
+        expect(new Set(layout.interfaces.map(item => item.key)).size).toBe(66)
+        expect(new Set(layout.interfaces.map(item => item.path)).size).toBe(66)
         for (const item of layout.interfaces) {
             expect(layout.folders.some(folder => folder.key === item.group)).toBe(true)
             expect(['MCP stdio', 'Tauri IPC']).toContain(item.protocol)
             expect(item.name).not.toContain('undefined')
             expect(item.path).not.toMatch(/^https?:/)
         }
-        expect(layout.interfaces.filter(item => item.protocol === 'MCP stdio')).toHaveLength(18)
-        expect(layout.interfaces.filter(item => item.protocol === 'Tauri IPC')).toHaveLength(38)
+        expect(layout.interfaces.filter(item => item.protocol === 'MCP stdio')).toHaveLength(23)
+        expect(layout.interfaces.filter(item => item.protocol === 'Tauri IPC')).toHaveLength(43)
     })
-    it('records all 18 MCP tools, 7 commands and 31 dispatcher actions without inventing HTTP', () => {
-        expect(catalog.tools).toHaveLength(18)
-        expect(new Set(catalog.tools.map(tool => tool.name)).size).toBe(18)
+    it('records all 23 MCP tools, 7 commands and 36 dispatcher actions without inventing HTTP', () => {
+        expect(catalog.tools).toHaveLength(23)
+        expect(new Set(catalog.tools.map(tool => tool.name)).size).toBe(23)
         expect(catalog.commands).toHaveLength(7)
-        expect(Object.values(catalog.actions).flat()).toHaveLength(31)
+        expect(Object.values(catalog.actions).flat()).toHaveLength(36)
         expect(catalog.transport.mcp).toContain('no HTTP')
         expect(catalog.tools.every(tool => tool.inputSchema.additionalProperties === false)).toBe(
             true
@@ -68,7 +68,7 @@ describe('Apifox API documentation boundary', () => {
     })
     it('keeps generated documentation keys unique and exactly covers the registered API', () => {
         const docs = JSON.parse(readFileSync('docs/api/apifox-documents.json', 'utf8'))
-        expect(docs).toHaveLength(27)
+        expect(docs).toHaveLength(32)
         expect(new Set(docs.map(doc => doc.key)).size).toBe(docs.length)
         for (const tool of catalog.tools)
             expect(

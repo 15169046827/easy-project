@@ -37,7 +37,8 @@ fn export_json(db: &DbState) -> Result<Value, String> {
         db.0.lock()
             .map_err(|_| "Database lock failed".to_string())?;
     let projects = table_rows(&conn, "SELECT id,name,version,type,status,owner,calendar_country,calendar_region,weekend_days,calendar_exceptions,creator,create_time,update_time,stateflag FROM project", 14)?;
-    let tasks = table_rows(&conn, "SELECT id,project_id,sort_order,name,parent,dependence,start_time,end_time,type,priority,status,progress,effort_days,schedule_mode,comment,assignee,creator,create_time,update_time,stateflag FROM task", 20)?;
+    let tasks = table_rows(&conn, "SELECT id,project_id,sort_order,name,parent,dependence,start_time,end_time,type,priority,status,progress,effort_days,schedule_mode,comment,assignee,creator,create_time,update_time,stateflag,status_id FROM task", 21)?;
+    let statuses = table_rows(&conn,"SELECT id,project_id,name,color,sort_order,is_completed,is_default,builtin_key,create_time,update_time,stateflag FROM task_status",11)?;
     let dependencies = table_rows(&conn, "SELECT id,predecessor_task_id,successor_task_id,dependency_type,lag_minutes,create_time FROM task_dependency", 6)?;
     let members = table_rows(
         &conn,
@@ -55,13 +56,13 @@ fn export_json(db: &DbState) -> Result<Value, String> {
         7,
     )?;
     Ok(
-        json!({"schemaVersion":6,"exportedAt":Local::now().to_rfc3339(),"projects":projects,"tasks":tasks,"dependencies":dependencies,"members":members,"project_members":project_members,"plan_baselines":plan_baselines}),
+        json!({"schemaVersion":7,"exportedAt":Local::now().to_rfc3339(),"projects":projects,"tasks":tasks,"task_statuses":statuses,"dependencies":dependencies,"members":members,"project_members":project_members,"plan_baselines":plan_baselines}),
     )
 }
 
 fn import_json(db: &DbState, payload: &Value) -> Result<(), String> {
     let schema_version = payload.get("schemaVersion").and_then(Value::as_i64);
-    if !matches!(schema_version, Some(1..=6)) {
+    if !matches!(schema_version, Some(1..=7)) {
         return Err("Unsupported or missing schemaVersion".to_string());
     }
     let projects = payload
@@ -99,6 +100,8 @@ fn import_json(db: &DbState, payload: &Value) -> Result<(), String> {
         .map_err(|e| e.to_string())?;
     tx.execute("DELETE FROM task", [])
         .map_err(|e| e.to_string())?;
+    tx.execute("DELETE FROM task_status", [])
+        .map_err(|e| e.to_string())?;
     tx.execute("DELETE FROM project", [])
         .map_err(|e| e.to_string())?;
     tx.execute("DELETE FROM project_member", [])
@@ -132,9 +135,28 @@ fn import_json(db: &DbState, payload: &Value) -> Result<(), String> {
             tx.execute("INSERT INTO project(id,name,version,type,status,owner,calendar_country,calendar_region,weekend_days,calendar_exceptions,creator,create_time,update_time,stateflag) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",params_from_iter(v)).map_err(|e|format!("Invalid project: {e}"))?;
         }
     }
+    if schema_version == Some(7) {
+        for row in payload
+            .get("task_statuses")
+            .and_then(Value::as_array)
+            .ok_or("Missing task_statuses")?
+        {
+            let v = strings(row, 11)?;
+            if !crate::common::id::valid_id(&v[0], "TASK_STATUS") {
+                return Err("Invalid task status ID".into());
+            }
+            tx.execute("INSERT INTO task_status(id,project_id,name,color,sort_order,is_completed,is_default,builtin_key,create_time,update_time,stateflag) VALUES(?,?,?,?,?,?,?,?,?,?,?)",params_from_iter(v)).map_err(|e|format!("Invalid task status: {e}"))?;
+        }
+    }
     for row in tasks {
         let length = row.as_array().map(Vec::len).unwrap_or(0);
-        if length == 18 {
+        if schema_version == Some(7) {
+            let v = strings(row, 21)?;
+            if v[20].is_empty() {
+                return Err("Missing task status reference".into());
+            }
+            tx.execute("INSERT INTO task(id,project_id,sort_order,name,parent,dependence,start_time,end_time,type,priority,status,progress,effort_days,schedule_mode,comment,assignee,creator,create_time,update_time,stateflag,status_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",params_from_iter(v)).map_err(|e|format!("Invalid task: {e}"))?;
+        } else if length == 18 {
             let v = strings(row, 18)?;
             tx.execute("INSERT INTO task(id,project_id,sort_order,name,parent,dependence,start_time,end_time,type,priority,status,progress,comment,assignee,creator,create_time,update_time,stateflag) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",params_from_iter(v)).map_err(|e|format!("Invalid task: {e}"))?;
         } else if length == 19 {
@@ -224,6 +246,12 @@ fn import_json(db: &DbState, payload: &Value) -> Result<(), String> {
         .map_err(|e| format!("Imported identity normalization failed: {e}"))?;
     crate::common::id_migration::save_mapping(&tx, &mappings)
         .map_err(|e| format!("Identity mapping protection failed: {e}"))?;
+    if schema_version == Some(7) {
+        crate::common::task_status::validate_graph(&tx)
+            .map_err(|e| format!("Invalid schema7 status graph: {e}"))?;
+    }
+    crate::common::task_status::migrate_rows(&tx)
+        .map_err(|e| format!("Invalid imported status graph: {e}"))?;
     tx.commit().map_err(|e| e.to_string())
 }
 
@@ -271,7 +299,7 @@ fn database_counts(path: &Path) -> Result<Value, String> {
     let version: i64 = conn
         .query_row("PRAGMA user_version", [], |row| row.get(0))
         .map_err(|error| format!("Cannot read backup schema version: {error}"))?;
-    if version != CURRENT_SCHEMA_VERSION && version != 5 {
+    if version != CURRENT_SCHEMA_VERSION && !matches!(version, 5 | 6) {
         return Err(format!(
             "Backup schema version {version} is incompatible with this application ({CURRENT_SCHEMA_VERSION})"
         ));
@@ -282,7 +310,15 @@ fn database_counts(path: &Path) -> Result<Value, String> {
         })
         .map_err(|error| format!("Backup is missing or cannot read {table}: {error}"))
     };
+    let statuses = if version == 7 {
+        crate::common::task_status::validate_graph(&conn)
+            .map_err(|e| format!("Invalid backup status graph: {e}"))?;
+        count("task_status")?
+    } else {
+        0
+    };
     Ok(json!({
+        "task_statuses": statuses,
         "projects": count("project")?,
         "tasks": count("task")?,
         "members": count("member")?,
@@ -393,6 +429,12 @@ fn restore_backup(db: &DbState, source: &Path) -> Result<Value, String> {
             let version: i64 = conn.query_row("PRAGMA user_version", [], |r| r.get(0))?;
             if version == 5 {
                 crate::common::id_migration::migrate(&conn)?;
+            }
+            if version < 7 {
+                let transaction = conn.unchecked_transaction()?;
+                crate::common::task_status::migrate_rows(&transaction)?;
+                transaction.pragma_update(None, "user_version", 7)?;
+                transaction.commit()?;
             }
             Ok(())
         });
@@ -537,6 +579,7 @@ mod tests {
                 [],
             )
             .expect("task should insert");
+            crate::common::task_status::migrate_rows(&conn).unwrap();
         }
 
         let info = create_backup(&state, "manual").expect("backup should be created");
@@ -550,7 +593,7 @@ mod tests {
     }
 
     #[test]
-    fn round_trips_plan_baselines_in_schema_six() {
+    fn round_trips_plan_baselines_and_statuses_in_schema_seven() {
         let root = std::env::temp_dir().join(format!(
             "easyproject-baseline-export-{}",
             uuid::Uuid::new_v4()
@@ -572,10 +615,11 @@ mod tests {
                 [],
             )
             .expect("baseline should insert");
+            crate::common::task_status::migrate_rows(&conn).unwrap();
         }
 
         let snapshot = export_json(&state).expect("snapshot should export");
-        assert_eq!(snapshot["schemaVersion"], 6);
+        assert_eq!(snapshot["schemaVersion"], 7);
         assert_eq!(snapshot["plan_baselines"].as_array().unwrap().len(), 1);
         import_json(&state, &snapshot).expect("snapshot should import");
         let count: i64 = state
@@ -585,6 +629,28 @@ mod tests {
             .query_row("SELECT COUNT(*) FROM plan_baseline", [], |row| row.get(0))
             .unwrap();
         assert_eq!(count, 1);
+
+        let valid = export_json(&state).unwrap();
+        for case in 0..4 {
+            let mut corrupt = valid.clone();
+            match case {
+                0 => {
+                    for row in corrupt["task_statuses"].as_array_mut().unwrap() {
+                        row[6] = json!("0");
+                    }
+                }
+                1 => corrupt["tasks"][0][20] = json!(crate::common::id::new_id("TASK_STATUS")),
+                2 => corrupt["task_statuses"][0][3] = json!("not-a-color"),
+                _ => corrupt["task_statuses"] = json!([]),
+            }
+            assert!(
+                import_json(&state, &corrupt).is_err(),
+                "corrupt status case {case} must fail"
+            );
+            let after = export_json(&state).unwrap();
+            assert_eq!(after["tasks"], valid["tasks"]);
+            assert_eq!(after["task_statuses"], valid["task_statuses"]);
+        }
 
         drop(state);
         let _ = fs::remove_dir_all(root);
@@ -609,7 +675,7 @@ mod tests {
         assert_eq!(
             db.query_row("PRAGMA user_version", [], |r| r.get::<_, i64>(0))
                 .unwrap(),
-            6
+            CURRENT_SCHEMA_VERSION
         );
         assert_eq!(fs::read(&old_path).unwrap(), original);
     }
@@ -683,6 +749,7 @@ mod tests {
             .unwrap()
             .execute("INSERT INTO project(id,name) VALUES('p1','Original')", [])
             .unwrap();
+        crate::common::task_status::migrate_rows(&state.lock_connection().unwrap()).unwrap();
         let backup = create_backup(&state, "manual").expect("backup should be created");
         state
             .0

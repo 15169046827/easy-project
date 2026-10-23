@@ -13,7 +13,16 @@ describe('demo task reordering parity', () => {
 
     it('does not modify either task for invalid pairs', async () => {
         const { demoAction } = await import('../../api/demo.js')
-        await demoAction('task', 'update', { id: 'demo-2', project_id: 'other-project' })
+        const other = await demoAction('project', 'create_from_template', {
+            project: { name: 'Other project' },
+            tasks: []
+        })
+        const states = await demoAction('task_status', 'get_all', { projectId: other.id })
+        await demoAction('task', 'update', {
+            id: 'demo-2',
+            project_id: other.id,
+            status_id: states.list[0].id
+        })
         const before = await demoAction('task', 'get_all')
         for (const target of ['demo-1', 'demo-2', 'missing']) {
             await expect(

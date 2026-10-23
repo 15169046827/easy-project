@@ -25,11 +25,13 @@ export const routes = [
         component: () => import('../modules/task/components/TaskList/TaskList.vue'),
         props: route => ({
             initialProjectId: route.query.project || '',
-            initialStatus: ['Todo', 'Pending', 'InProgress', 'Done', 'Overdue'].includes(
-                String(route.query.status)
-            )
-                ? String(route.query.status)
-                : ''
+            initialStatus:
+                /^TASK_STATUS:[a-f0-9]{32}$/.test(String(route.query.status)) ||
+                ['Todo', 'Pending', 'InProgress', 'Done', 'Overdue'].includes(
+                    String(route.query.status)
+                )
+                    ? String(route.query.status)
+                    : ''
         })
     },
     {

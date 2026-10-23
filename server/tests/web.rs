@@ -607,7 +607,7 @@ async fn personal_tokens_are_hashed_owned_scoped_expiring_and_revocable() {
     let (server, _) = setup();
     let (id, a) = signup(server.clone(), "signup_a").await;
     let (_, b) = signup(server.clone(), "signup_b").await;
-    for (scope, count) in [("read", 7), ("write", 14), ("delete", 18)] {
+    for (scope, count) in [("read", 9), ("write", 18), ("delete", 23)] {
         let (token_id, secret) = pat(server.clone(), &a, scope).await;
         assert!(auth::authenticate(&server.auth.lock().unwrap(), &secret).is_err());
         assert_eq!(
@@ -728,6 +728,29 @@ async fn remote_mcp_crud_is_account_isolated_and_invalidates_web_revisions() {
     )
     .await;
     let pid = project["record"]["id"].clone();
+    let states = tool(
+        server.clone(),
+        &secret,
+        "easyproject_task_status_list",
+        json!({"projectId":pid}),
+    )
+    .await;
+    assert_eq!(states["list"].as_array().unwrap().len(), 3);
+    let state = tool(
+        server.clone(),
+        &secret,
+        "easyproject_task_status_create",
+        json!({"data":{"project_id":pid,"name":"Testing"}}),
+    )
+    .await;
+    let sid = state["record"]["id"].clone();
+    tool(
+        server.clone(),
+        &secret,
+        "easyproject_task_status_update",
+        json!({"id":sid,"changes":{"name":"Review"}}),
+    )
+    .await;
     let member = tool(
         server.clone(),
         &secret,
@@ -747,10 +770,34 @@ async fn remote_mcp_crud_is_account_isolated_and_invalidates_web_revisions() {
         server.clone(),
         &secret,
         "easyproject_task_create",
-        json!({"data":{"name":"Synthetic task","project_id":pid,"assignee":mid}}),
+        json!({"data":{"name":"Synthetic task","project_id":pid,"assignee":mid,"status_id":sid}}),
     )
     .await;
     let tid = task["record"]["id"].clone();
+    let usage = tool(
+        server.clone(),
+        &secret,
+        "easyproject_task_status_get",
+        json!({"id":sid}),
+    )
+    .await;
+    assert_eq!(usage["usage"]["total"], 1);
+    let (_,blocked)=rpc(server.clone(),&secret,json!({"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"easyproject_task_status_delete","arguments":{"id":sid,"confirm_name":"Review"}}})).await;
+    assert_eq!(blocked["result"]["isError"], true);
+    let empty = tool(
+        server.clone(),
+        &secret,
+        "easyproject_task_status_create",
+        json!({"data":{"project_id":pid,"name":"Unused"}}),
+    )
+    .await;
+    tool(
+        server.clone(),
+        &secret,
+        "easyproject_task_status_delete",
+        json!({"id":empty["record"]["id"],"confirm_name":"Unused"}),
+    )
+    .await;
     for (model, id, name) in [
         ("project", pid.clone(), "Project edited"),
         ("member", mid.clone(), "Member edited"),
@@ -851,12 +898,13 @@ async fn remote_mcp_crud_is_account_isolated_and_invalidates_web_revisions() {
     assert!(audit.contains("committed"));
     assert!(!audit.contains("Secret synthetic"));
     assert!(!audit.contains(&secret));
-    // Four creates, three updates and four deletes each require a recovery point.
+    // Original eleven writes plus two status creates, one update, a rejected
+    // referenced delete and one successful status delete each need a recovery point.
     assert_eq!(
         std::fs::read_dir(directory.join("backups"))
             .unwrap()
             .count(),
-        11
+        16
     );
 }
 

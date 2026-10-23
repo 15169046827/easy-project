@@ -58,6 +58,13 @@
                 <Button :class="{ active: view === 'calendar' }" @click="view = 'calendar'">
                     <i class="pi pi-calendar"></i> {{ $t('project.viewCalendar') }}
                 </Button>
+                <Button
+                    :class="{ active: view === 'statuses' }"
+                    :aria-label="$t('taskStatuses.manage')"
+                    @click="view = 'statuses'"
+                >
+                    <i class="pi pi-tags"></i> {{ $t('taskStatuses.manage') }}
+                </Button>
             </div>
         </header>
 
@@ -70,6 +77,12 @@
                 v-else-if="view === 'board'"
                 :tasks="projectTasks"
                 :members="members"
+                :project-id="projectId"
+                @updated="loadProjectTasks"
+            />
+            <TaskStatusManager
+                v-else-if="view === 'statuses'"
+                :project-id="projectId"
                 @updated="loadProjectTasks"
             />
             <div v-else-if="view === 'team'" class="team-view">
@@ -107,6 +120,7 @@ import { avatarBg, avatarInitial } from '../../../composables/useAvatar'
 import TaskList from '../../task/components/TaskList/TaskList.vue'
 import GanttView from '../../gantt/components/GanttView.vue'
 import TaskBoard from '../../task/components/TaskBoard.vue'
+import TaskStatusManager from '../../../components/TaskStatusManager.vue'
 import ProjectMemberPanel from './ProjectMemberPanel.vue'
 import ResourceLoadPanel from '../../../components/ResourceLoadPanel.vue'
 import WorkCalendarSettings from '../../calendar/components/WorkCalendarSettings.vue'
@@ -281,11 +295,12 @@ onMounted(() => {
 /* 视图切换 */
 .view-switch {
     display: flex;
+    flex-wrap: wrap;
     padding: 0.25rem;
     border: 1px solid var(--color-border);
     border-radius: 0.7rem;
     background: var(--color-surface);
-    flex-shrink: 0;
+    flex-shrink: 1;
 }
 .view-switch .p-button {
     display: flex;

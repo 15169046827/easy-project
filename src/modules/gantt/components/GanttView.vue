@@ -203,7 +203,7 @@
                             :data-task-id="task.id"
                             :class="{
                                 milestone: task.type === 'Milestone',
-                                done: task.status === 'Done',
+                                done: isTaskCompleted(task),
                                 dragging: dragState && dragState.task.id === task.id,
                                 resizing:
                                     dragState &&
@@ -314,6 +314,7 @@
 
         <GanttTaskDialog
             v-model="createForm"
+            :projectId="projectId"
             :visible="creatingTask"
             creating
             :saving="savingTask"
@@ -326,6 +327,7 @@
         />
         <GanttTaskDialog
             v-model="editForm"
+            :projectId="projectId"
             :visible="Boolean(editingTask)"
             :memberIds="projectMemberIds"
             @close="closeEditor"
@@ -341,6 +343,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import Button from 'primevue/button'
 import Select from 'primevue/select'
 import GanttTaskDialog from './GanttTaskDialog.vue'
+import { isTaskCompleted } from '../../../utils/taskStatus.js'
 import { useI18n } from 'vue-i18n'
 import { crudAction } from '../../../api'
 import { useMembers } from '../../../composables/useMembers'

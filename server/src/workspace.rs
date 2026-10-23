@@ -114,12 +114,14 @@ impl Workspace {
             self.current_revision = next;
         }
         let result = match request.model.as_str() {
-            "project" | "task" | "member" | "project_member" => entity_api::dispatch(
-                &self.db,
-                &request.model,
-                &request.action,
-                request.data.clone(),
-            ),
+            "project" | "task" | "member" | "project_member" | "task_status" => {
+                entity_api::dispatch(
+                    &self.db,
+                    &request.model,
+                    &request.action,
+                    request.data.clone(),
+                )
+            }
             "task_dependency" => task_dependency_service::handle_action(
                 &self.db,
                 request.action.clone(),
@@ -216,6 +218,7 @@ pub fn is_mutation(model: &str, action: &str) -> Option<bool> {
     let actions: &[&str] = match model {
         "project" => &["get_all", "add", "create_from_template", "update", "delete"],
         "task" => &["get_all", "add", "update", "delete", "swap_order"],
+        "task_status" => &["get_all", "get_usage", "add", "update", "delete"],
         "member" => &["get_all", "search", "add", "update", "delete"],
         "project_member" => &["get_by_member", "get_by_project", "add", "delete"],
         "task_dependency" => &["get_all", "set_for_task"],
@@ -237,6 +240,7 @@ pub fn is_mutation(model: &str, action: &str) -> Option<bool> {
     Some(!matches!(
         action,
         "get_all"
+            | "get_usage"
             | "search"
             | "get_by_member"
             | "get_by_project"

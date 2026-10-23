@@ -42,7 +42,7 @@
                     <span class="tstat-icon progress"><i class="pi pi-play-circle"></i></span>
                     <div>
                         <strong>{{ taskStats.inProgress }}</strong
-                        ><small>{{ $t('tasks.inProgress') }}</small>
+                        ><small>{{ $t('taskStatuses.unfinished') }}</small>
                     </div>
                 </div>
                 <div class="tstat-card">
@@ -56,7 +56,7 @@
                     <span class="tstat-icon pending"><i class="pi pi-clock"></i></span>
                     <div>
                         <strong>{{ taskStats.pending }}</strong
-                        ><small>{{ $t('tasks.pending') }}</small>
+                        ><small>{{ $t('common.overdue') }}</small>
                     </div>
                 </div>
             </div>
@@ -396,9 +396,26 @@
                     :style="columnStyle('status')"
                 >
                     <template #body="{ data }">
-                        <span :class="['pill', statusPillClass(data.status)]">
+                        <span
+                            :class="[
+                                'pill',
+                                statusPillClass(
+                                    data.status_id
+                                        ? isTaskCompleted(data)
+                                            ? 'Done'
+                                            : data.status_builtin_key
+                                        : data.status
+                                )
+                            ]"
+                        >
                             <span class="pill-dot"></span>
-                            {{ taskStatusLabel(data.status) }}
+                            {{
+                                taskStatusLabel(
+                                    data.status,
+                                    data.status_builtin_key,
+                                    Boolean(data.status_id)
+                                )
+                            }}
                         </span>
                     </template>
                 </Column>
@@ -649,15 +666,11 @@
                 </div>
                 <div class="task-edit-field">
                     <label for="task-edit-status">{{ $t('tasks.columnStatus') }}</label
-                    ><Select
+                    ><TaskStatusSelect
                         inputId="task-edit-status"
-                        v-model="editDraft.status"
-                        :options="taskStatus"
-                        optionLabel="label"
-                        optionValue="value"
-                        :placeholder="$t('tasks.selectStatus')"
-                        showClear
-                        fluid
+                        v-model="editDraft.status_id"
+                        :project-id="editDraft.project_id"
+                        @loaded="onTaskStatusesLoaded"
                     />
                 </div>
                 <div class="task-edit-field">
@@ -735,6 +748,7 @@ import DataTable from 'primevue/datatable'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import ProgressEditor from '../../../../components/ProgressEditor.vue'
+import TaskStatusSelect from '../../../../components/TaskStatusSelect.vue'
 import ProgressBar from 'primevue/progressbar'
 import Select from 'primevue/select'
 import MultiSelect from 'primevue/multiselect'
@@ -742,6 +756,7 @@ import Dialog from 'primevue/dialog'
 import Message from 'primevue/message'
 import { useI18n } from 'vue-i18n'
 import { crudAction } from '../../../../api'
+import { isTaskCompleted } from '../../../../utils/taskStatus.js'
 import DateTimePickerString from './components/DateTimePickerString.vue'
 import MemberSelect from '../../../member/components/MemberSelect.vue'
 import { useMembers } from '../../../../composables/useMembers'
@@ -920,9 +935,43 @@ const taskStatus = computed(() => [
     { label: t('tasks.statusDone'), value: 'Done' }
 ])
 const taskFilterStatus = computed(() => [
-    ...taskStatus.value.filter(item => item.value !== 'Todo'),
+    ...(selectedProjectId.value
+        ? projectStatuses.value.map(state => ({
+              label: taskStatusLabel(state.name, state.builtin_key, true),
+              value: state.id
+          }))
+        : [
+              ...taskStatus.value.filter(item => item.value !== 'Todo'),
+              ...Array.from(
+                  new Map(
+                      tasks.value
+                          .filter(task => task.status_id && !task.status_builtin_key)
+                          .map(task => [
+                              task.status_id,
+                              { label: task.status, value: task.status_id }
+                          ])
+                  ).values()
+              )
+          ]),
     { label: t('common.overdue'), value: 'Overdue' }
 ])
+const projectStatuses = ref([])
+let statusEpoch = 0
+watch(
+    selectedProjectId,
+    async projectId => {
+        const token = ++statusEpoch
+        projectStatuses.value = []
+        if (!projectId) return
+        try {
+            const result = await crudAction('task_status', 'get_all', { projectId })
+            if (token === statusEpoch) projectStatuses.value = result.list || []
+        } catch (error) {
+            if (token === statusEpoch) errorMessage.value = error.message
+        }
+    },
+    { immediate: true }
+)
 
 // 可编辑/远端请求
 const taskPriority = computed(() => [
@@ -953,9 +1002,12 @@ const getPriorityLabel = value => {
 
 const taskStats = computed(() => ({
     total: tasks.value.length,
-    inProgress: tasks.value.filter(t => t.status === 'InProgress').length,
-    done: tasks.value.filter(t => t.status === 'Done').length,
-    pending: tasks.value.filter(t => ['Pending', 'Todo'].includes(t.status)).length
+    inProgress: tasks.value.filter(task => !isTaskCompleted(task)).length,
+    done: tasks.value.filter(isTaskCompleted).length,
+    pending: tasks.value.filter(
+        task =>
+            !isTaskCompleted(task) && new Date(String(task.end_time).replace(' ', 'T')) < new Date()
+    ).length
 }))
 
 function statusPillClass(status) {
@@ -963,8 +1015,11 @@ function statusPillClass(status) {
     return map[status] || 'pill-draft'
 }
 
-function taskStatusLabel(status) {
-    return taskStatus.value.find(item => item.value === status)?.label || status || '-'
+function taskStatusLabel(status, builtinKey = '', hasReference = false) {
+    if (hasReference && !builtinKey) return status || '-'
+    return (
+        taskStatus.value.find(item => item.value === (builtinKey || status))?.label || status || '-'
+    )
 }
 
 function priorityClass(priority) {
@@ -1076,6 +1131,24 @@ function dependencyNames(ids = []) {
 const editDialogVisible = ref(false)
 const editDraft = ref(null)
 const editSaving = ref(false)
+const editorOriginalProject = ref('')
+function onTaskStatusesLoaded(states) {
+    if (editDraft.value?.project_id === selectedProjectId.value) projectStatuses.value = states
+    if (!editDraft.value || editDraft.value.status_id) return
+    if (
+        !editDraft.value.id.startsWith('NEWTASK:') &&
+        editDraft.value.project_id !== editorOriginalProject.value
+    )
+        return
+    const state = editDraft.value.id.startsWith('NEWTASK:')
+        ? states.find(state => state.is_default)
+        : states.find(
+              state =>
+                  state.builtin_key ===
+                  (editDraft.value.status === 'Todo' ? 'Pending' : editDraft.value.status)
+          )
+    if (state) editDraft.value.status_id = state.id
+}
 async function openTaskEditor(task) {
     if (editSaving.value) return
     errorMessage.value = ''
@@ -1083,6 +1156,7 @@ async function openTaskEditor(task) {
     await onRowEditInit({ data: copy })
     if (activeEditingId.value !== copy.id) return
     editDraft.value = copy
+    editorOriginalProject.value = copy.project_id
     editDialogVisible.value = true
 }
 function cancelTaskEditor() {
@@ -1095,6 +1169,10 @@ function cancelTaskEditor() {
 }
 async function saveTaskEditor() {
     if (editSaving.value || !editDraft.value) return
+    if (!editDraft.value.status_id) {
+        errorMessage.value = t('taskStatuses.select')
+        return
+    }
     editSaving.value = true
     try {
         await onRowEditSave({ newData: editDraft.value })
@@ -1127,6 +1205,7 @@ async function addTask() {
         type: '',
         priority: '',
         status: '',
+        status_id: '',
         progress: 0,
         effort_days: 1,
         schedule_mode: 'fixed_effort',
@@ -1162,7 +1241,10 @@ async function confirmDeleteTask() {
     }
 }
 
-watch(selectedProjectId, resetPageAndLoad)
+watch(selectedProjectId, () => {
+    statusFilter.value = ''
+    resetPageAndLoad()
+})
 watch(
     () => props.initialStatus,
     value => {

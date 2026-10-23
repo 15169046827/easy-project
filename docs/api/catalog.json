@@ -1,9 +1,11 @@
 {
-  "sourceCommit": "71ec2c738b2991a6bf5e961c1997a54d89d23b18",
+  "sourceCommit": "536294b385e118522df8566cd0bbcfba4dfd3d20",
   "sourceNote": "Documentation source; unchanged MCP input schemas may be reused only when the previously verified binary digest matches. Binary provenance is separate; this generator does not rebuild or replace it.",
   "mcpBinary": {
-    "sha256": "ec9c6efef361166b25ffd57af48f12886a81aacf4dfca33e9d60047466049420",
-    "sourceCommit": "71ec2c738b2991a6bf5e961c1997a54d89d23b18"
+    "sha256": "d1e994f6f8bd3fb32bf52b5fbee7296d296d1982e17b77929d1bf08f165f278c",
+    "sourceCommit": "536294b385e118522df8566cd0bbcfba4dfd3d20",
+    "worktreeDirty": true,
+    "buildKind": "debug-isolated-candidate"
   },
   "transport": {
     "mcp": "stdio JSON-RPC; no HTTP listener",
@@ -53,9 +55,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "type": "object"
       },
       "name": "easyproject_project_get"
@@ -112,15 +112,11 @@
                 "type": "string"
               }
             },
-            "required": [
-              "name"
-            ],
+            "required": ["name"],
             "type": "object"
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "type": "object"
       },
       "name": "easyproject_project_create"
@@ -191,10 +187,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "changes"
-        ],
+        "required": ["id", "changes"],
         "type": "object"
       },
       "name": "easyproject_project_update"
@@ -221,10 +214,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "confirm_name"
-        ],
+        "required": ["id", "confirm_name"],
         "type": "object"
       },
       "name": "easyproject_project_delete"
@@ -277,9 +267,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "type": "object"
       },
       "name": "easyproject_task_get"
@@ -340,10 +328,7 @@
                 "type": "string"
               },
               "schedule_mode": {
-                "enum": [
-                  "fixed_effort",
-                  "fixed_dates"
-                ],
+                "enum": ["fixed_effort", "fixed_dates"],
                 "type": "string"
               },
               "start_time": {
@@ -351,8 +336,10 @@
                 "maxLength": 10,
                 "type": "string"
               },
-              "status": {
-                "maxLength": 2000,
+              "status_id": {
+                "description": "Existing active TASK_STATUS ID belonging to project_id; list project task statuses or explicitly create one first. Arbitrary labels are rejected.",
+                "maxLength": 128,
+                "minLength": 1,
                 "type": "string"
               },
               "type": {
@@ -360,16 +347,11 @@
                 "type": "string"
               }
             },
-            "required": [
-              "name",
-              "project_id"
-            ],
+            "required": ["name", "project_id", "status_id"],
             "type": "object"
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "type": "object"
       },
       "name": "easyproject_task_create"
@@ -431,10 +413,7 @@
                 "type": "string"
               },
               "schedule_mode": {
-                "enum": [
-                  "fixed_effort",
-                  "fixed_dates"
-                ],
+                "enum": ["fixed_effort", "fixed_dates"],
                 "type": "string"
               },
               "start_time": {
@@ -442,8 +421,10 @@
                 "maxLength": 10,
                 "type": "string"
               },
-              "status": {
-                "maxLength": 2000,
+              "status_id": {
+                "description": "Existing active TASK_STATUS ID belonging to project_id; list project task statuses or explicitly create one first. Arbitrary labels are rejected.",
+                "maxLength": 128,
+                "minLength": 1,
                 "type": "string"
               },
               "type": {
@@ -464,10 +445,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "changes"
-        ],
+        "required": ["id", "changes"],
         "type": "object"
       },
       "name": "easyproject_task_update"
@@ -494,10 +472,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "confirm_name"
-        ],
+        "required": ["id", "confirm_name"],
         "type": "object"
       },
       "name": "easyproject_task_delete"
@@ -545,9 +520,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "type": "object"
       },
       "name": "easyproject_member_get"
@@ -592,15 +565,11 @@
                 "type": "string"
               }
             },
-            "required": [
-              "name"
-            ],
+            "required": ["name"],
             "type": "object"
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "type": "object"
       },
       "name": "easyproject_member_create"
@@ -659,10 +628,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "changes"
-        ],
+        "required": ["id", "changes"],
         "type": "object"
       },
       "name": "easyproject_member_update"
@@ -689,10 +655,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "confirm_name"
-        ],
+        "required": ["id", "confirm_name"],
         "type": "object"
       },
       "name": "easyproject_member_delete"
@@ -714,9 +677,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "projectId"
-        ],
+        "required": ["projectId"],
         "type": "object"
       },
       "name": "easyproject_project_member_list"
@@ -750,16 +711,11 @@
                 "type": "string"
               }
             },
-            "required": [
-              "project_id",
-              "member_id"
-            ],
+            "required": ["project_id", "member_id"],
             "type": "object"
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "type": "object"
       },
       "name": "easyproject_project_member_create"
@@ -785,13 +741,186 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "confirm_member_name"
-        ],
+        "required": ["id", "confirm_member_name"],
         "type": "object"
       },
       "name": "easyproject_project_member_delete"
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "list local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "projectId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": ["projectId"],
+        "type": "object"
+      },
+      "name": "easyproject_task_status_list"
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "get local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": ["id"],
+        "type": "object"
+      },
+      "name": "easyproject_task_status_get"
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false,
+        "readOnlyHint": false
+      },
+      "description": "create local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "additionalProperties": false,
+            "properties": {
+              "color": {
+                "maxLength": 7,
+                "minLength": 7,
+                "type": "string"
+              },
+              "is_completed": {
+                "type": "boolean"
+              },
+              "is_default": {
+                "type": "boolean"
+              },
+              "name": {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              "project_id": {
+                "maxLength": 128,
+                "minLength": 1,
+                "type": "string"
+              },
+              "sort_order": {
+                "maximum": 1000000,
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": ["name", "project_id"],
+            "type": "object"
+          }
+        },
+        "required": ["data"],
+        "type": "object"
+      },
+      "name": "easyproject_task_status_create"
+    },
+    {
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false,
+        "readOnlyHint": false
+      },
+      "description": "update local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "changes": {
+            "additionalProperties": false,
+            "minProperties": 1,
+            "properties": {
+              "color": {
+                "maxLength": 7,
+                "minLength": 7,
+                "type": "string"
+              },
+              "is_completed": {
+                "type": "boolean"
+              },
+              "is_default": {
+                "type": "boolean"
+              },
+              "name": {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              "sort_order": {
+                "maximum": 1000000,
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [],
+            "type": "object"
+          },
+          "expected_update_time": {
+            "description": "Optional stale-edit check against get result; timestamp has second precision",
+            "type": "string"
+          },
+          "id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": ["id", "changes"],
+        "type": "object"
+      },
+      "name": "easyproject_task_status_update"
+    },
+    {
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false,
+        "readOnlyHint": false
+      },
+      "description": "delete local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "confirm_name": {
+            "description": "Exact current name from get; approve deletion in the client",
+            "minLength": 1,
+            "type": "string"
+          },
+          "id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": ["id", "confirm_name"],
+        "type": "object"
+      },
+      "name": "easyproject_task_status_delete"
     }
   ],
   "commands": [
@@ -804,52 +933,14 @@
     "desktop_credentials"
   ],
   "actions": {
-    "project": [
-      "add",
-      "create_from_template",
-      "get_all",
-      "update",
-      "delete"
-    ],
-    "task": [
-      "add",
-      "get_all",
-      "swap_order",
-      "update",
-      "delete"
-    ],
-    "member": [
-      "add",
-      "get_all",
-      "update",
-      "delete",
-      "search"
-    ],
-    "project_member": [
-      "add",
-      "get_by_member",
-      "get_by_project",
-      "delete"
-    ],
-    "task_dependency": [
-      "get_all",
-      "set_for_task"
-    ],
-    "data": [
-      "export_json",
-      "import_json",
-      "backup",
-      "list_backups",
-      "preview_backup",
-      "restore"
-    ],
-    "calendar": [
-      "fetch_ics"
-    ],
-    "plan_baseline": [
-      "save",
-      "get_by_project",
-      "clear"
-    ]
+    "project": ["add", "create_from_template", "get_all", "update", "delete"],
+    "task": ["add", "get_all", "swap_order", "update", "delete"],
+    "member": ["add", "get_all", "update", "delete", "search"],
+    "project_member": ["add", "get_by_member", "get_by_project", "delete"],
+    "task_dependency": ["get_all", "set_for_task"],
+    "data": ["export_json", "import_json", "backup", "list_backups", "preview_backup", "restore"],
+    "calendar": ["fetch_ics"],
+    "plan_baseline": ["save", "get_by_project", "clear"],
+    "task_status": ["get_all", "get_usage", "add", "update", "delete"]
   }
 }

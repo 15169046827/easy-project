@@ -168,6 +168,62 @@ pub fn migrate_rows(conn: &Connection) -> rusqlite::Result<()> {
         return Err(rusqlite::Error::InvalidQuery);
     }
     conn.execute_batch("CREATE INDEX IF NOT EXISTS idx_task_status_reference ON task(status_id);")?;
+    let has_progress = conn
+        .prepare("SELECT name FROM pragma_table_info('task') WHERE name='progress'")?
+        .exists([])?;
+    if has_progress {
+        conn.execute("UPDATE task SET progress=100 WHERE status_id IN (SELECT id FROM task_status WHERE is_completed=1)", [])?;
+    }
+    validate_graph(conn)?;
+    Ok(())
+}
+
+/// Check schema7 exchanges/backups before they can replace the current workspace.
+pub fn validate_graph(conn: &Connection) -> rusqlite::Result<()> {
+    let invalid: bool = conn.query_row(
+        "SELECT EXISTS(SELECT 1 FROM project p WHERE
+            (SELECT count(*) FROM task_status s WHERE s.project_id=p.id AND s.stateflag='0' AND s.is_default=1)<>1)
+         OR EXISTS(SELECT 1 FROM task t LEFT JOIN task_status s ON s.id=t.status_id
+            WHERE s.id IS NULL OR s.project_id<>t.project_id OR s.stateflag<>'0')
+         OR EXISTS(SELECT 1 FROM task_status s LEFT JOIN project p ON p.id=s.project_id WHERE p.id IS NULL)",
+        [], |r| r.get(0))?;
+    if invalid {
+        return Err(rusqlite::Error::InvalidQuery);
+    }
+    let mut statement = conn.prepare(
+        "SELECT id,name,color,sort_order,is_completed,is_default,builtin_key FROM task_status",
+    )?;
+    let rows = statement.query_map([], |r| {
+        Ok((
+            r.get::<_, String>(0)?,
+            r.get::<_, String>(1)?,
+            r.get::<_, String>(2)?,
+            r.get::<_, i64>(3)?,
+            r.get::<_, i64>(4)?,
+            r.get::<_, i64>(5)?,
+            r.get::<_, String>(6)?,
+        ))
+    })?;
+    for row in rows {
+        let (id, name, color, order, complete, default, builtin) = row?;
+        if !super::id::valid_id(&id, "TASK_STATUS")
+            || name.trim() != name
+            || name.is_empty()
+            || name.chars().count() > 64
+            || name.chars().any(char::is_control)
+            || color.len() != 7
+            || !color.starts_with('#')
+            || !color[1..].bytes().all(|b| b.is_ascii_hexdigit())
+            || !(0..=1_000_000).contains(&order)
+            || !matches!(complete, 0 | 1)
+            || !matches!(default, 0 | 1)
+            || (!builtin.is_empty()
+                && (!matches!(builtin.as_str(), "Pending" | "InProgress" | "Done")
+                    || builtin != name))
+        {
+            return Err(rusqlite::Error::InvalidQuery);
+        }
+    }
     Ok(())
 }
 

@@ -79,9 +79,11 @@
                         severity="secondary"
                         v-for="item in statusSummary"
                         :key="item.status"
-                        @click="openTasks(item.status)"
+                        @click="openTasks(item.status, item.projectId)"
                     >
-                        <span><i :class="item.className"></i>{{ item.label }}</span
+                        <span :title="item.label"
+                            ><i :class="item.className"></i
+                            ><span class="status-label">{{ item.label }}</span></span
                         ><strong>{{ item.value }}</strong>
                     </Button>
                 </div>
@@ -159,14 +161,15 @@ import { crudAction } from '../../../api'
 import { useMembers } from '../../../composables/useMembers'
 import { useStatusLabels } from '../../../composables/useStatusLabels'
 import ResourceLoadPanel from '../../../components/ResourceLoadPanel.vue'
+import { isTaskCompleted, taskBuiltinKey } from '../../../utils/taskStatus.js'
 
 const router = useRouter()
 const { t } = useI18n()
 function go(path) {
     router.push(path)
 }
-function openTasks(status) {
-    router.push({ path: '/tasks', query: { status } })
+function openTasks(status, projectId = '') {
+    router.push({ path: '/tasks', query: { status, ...(projectId ? { project: projectId } : {}) } })
 }
 function openProject(id) {
     router.push('/project/' + id)
@@ -181,7 +184,7 @@ const { projectStatusLabel } = useStatusLabels()
 const metrics = computed(() => ({
     projects: projects.value.length,
     tasks: tasks.value.length,
-    completed: tasks.value.filter(task => task.status === 'Done').length,
+    completed: tasks.value.filter(isTaskCompleted).length,
     overdue: tasks.value.filter(isOverdue).length
 }))
 
@@ -189,26 +192,32 @@ const completionRate = computed(() =>
     metrics.value.tasks ? Math.round((metrics.value.completed / metrics.value.tasks) * 100) : 0
 )
 
-const statusSummary = computed(() => [
-    {
-        label: t('common.pending'),
-        status: 'Pending',
-        value: tasks.value.filter(task => ['Pending', 'Todo'].includes(task.status)).length,
-        className: 'dot gray'
-    },
-    {
-        label: t('common.active'),
-        status: 'InProgress',
-        value: tasks.value.filter(task => task.status === 'InProgress').length,
-        className: 'dot blue'
-    },
-    {
-        label: t('common.done'),
-        status: 'Done',
-        value: metrics.value.completed,
-        className: 'dot green'
+const statusSummary = computed(() => {
+    const groups = new Map(),
+        keys = {
+            Pending: 'tasks.statusPending',
+            InProgress: 'tasks.statusInProgress',
+            Done: 'tasks.statusDone'
+        }
+    for (const task of tasks.value) {
+        const status = task.status_id || taskBuiltinKey(task) || task.status || ''
+        if (!groups.has(status)) {
+            const key = taskBuiltinKey(task),
+                name = Object.hasOwn(keys, key)
+                    ? t(keys[key])
+                    : task.status || t('taskStatuses.unnamed')
+            groups.set(status, {
+                status,
+                projectId: task.status_id ? task.project_id : '',
+                label: task.status_id ? `${projectName(task.project_id)} · ${name}` : name,
+                value: 0,
+                className: `dot ${isTaskCompleted(task) ? 'green' : 'gray'}`
+            })
+        }
+        groups.get(status).value++
     }
-])
+    return Array.from(groups.values())
+})
 
 const attentionTasks = computed(() => {
     const now = new Date()
@@ -217,7 +226,7 @@ const attentionTasks = computed(() => {
     return tasks.value
         .filter(task => {
             const end = parseDate(task.end_time)
-            return end && !['Done', 'Archived'].includes(task.status) && end <= horizon
+            return end && !isTaskCompleted(task) && end <= horizon
         })
         .sort(
             (left, right) =>
@@ -245,7 +254,7 @@ function parseDate(value) {
 
 function isOverdue(task) {
     const end = parseDate(task.end_time)
-    return Boolean(end && !['Done', 'Archived'].includes(task.status) && end < new Date())
+    return Boolean(end && !isTaskCompleted(task) && end < new Date())
 }
 
 function formatDate(value) {
@@ -431,6 +440,8 @@ button.metric-card {
     display: grid;
     gap: 0.8rem;
     margin-top: 1.2rem;
+    max-height: 16rem;
+    overflow: auto;
 }
 .dashboard .status-list button.p-button {
     display: flex;
@@ -454,6 +465,16 @@ button.metric-card {
     align-items: center;
     gap: 0.55rem;
     color: var(--color-text-muted);
+    min-width: 0;
+}
+.status-list .status-label {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.status-list .dot {
+    flex-shrink: 0;
 }
 .dot {
     width: 0.55rem;

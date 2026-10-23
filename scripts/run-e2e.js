@@ -43,11 +43,19 @@ async function waitForServer() {
 
 try {
     await waitForServer()
-    const runner = spawn(process.execPath, ['./node_modules/@playwright/test/cli.js', 'test'], {
-        cwd: root,
-        stdio: 'inherit',
-        windowsHide: true
-    })
+    const runner = spawn(
+        process.execPath,
+        [
+            './node_modules/@playwright/test/cli.js',
+            'test',
+            ...process.argv.slice(2).filter(argument => argument !== '--production')
+        ],
+        {
+            cwd: root,
+            stdio: 'inherit',
+            windowsHide: true
+        }
+    )
     const exitCode = await new Promise((resolve, reject) => {
         runner.once('error', reject)
         runner.once('exit', code => resolve(code ?? 1))

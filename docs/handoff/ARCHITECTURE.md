@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-23状态字典源码候选：common/task_status.rs负责schema7播种/隔离迁移/图校验；task_status_service复用entity_api事务 gate，提供get_all/get_usage分页/add/update/delete；MCP新增task_status五工具，Web复用工作区action白名单。task.status_id稳定关联，兼容status文本与返回is_completed/status_builtin_key；所有状态更新通过字典，同项目引用，删除检查包括软删除任务。TaskStatusSelect供任务/甘特弹窗复用、TaskStatusManager为项目独立视图、TaskBoard按字典ID动态列并兜底显示未知数据。taskStatus工具统一完成语义；JSON/CSV/XLSX7含字典与引用，旧格式迁移，恢复5/6需升级但不改原备份。真实schema6未动，最新测试/缺口见专项检查点，不能运行debug迁移真实库。
+
 2026-10-22公开beta发布入口：release.yml手动public_beta=true/beta_number独立预留精确SHA新draft，internal/stable行为保留，不能同时internal+beta；质量/新鲜安全/三平台构建、独立核验后仍需显式公开。Windows validate/普通verify仅进程TEMP/TMP指向workspace/.validation-temp，拒绝C盘workspace以遵守DPAPI存储保护，不删除或改松测试。官网downloadRelease.js为固定本仓库单候选链接/实际公开日期，ready开关须在资产公开核验后才启用；不改业务API/MCP或后端。
 
 2026-10-22官网部署地图：/opt/easyproject/current原子指向releases/cd05e93-landing-20261022，bin为bca2d45原二进制逐字节复制，web为cd05e93构建+37旧assets保留；运行中的服务器assets仍使用current/web路径，不重启即可读到新文件。未改变systemd/Origin/CSP/nonce/Funnel或数据路径，进程与全部DB表逻辑不变。回退须确认无后续部署后仅原子切换current至保留的bca2d4506e33，不自动覆盖DB、不执行旧迁移脚本。该部署模型/限制详见官网检查点。

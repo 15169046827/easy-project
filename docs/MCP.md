@@ -1,5 +1,11 @@
 # EasyProject 本地 MCP
 
+## 2026-10-23项目状态字典候选（未替换已安装程序）
+
+新增`easyproject_task_status_list/get/create/update/delete`，只读9工具、可写18、完整23。list必填projectId；create数据须project_id/name，可选color/sort_order/is_completed/is_default；update变更不允许移动项目。get返回record和首50条usage（含total），更多冲突由IPC get_usage分页读取；delete使用id与精确confirm_name，任何任务引用（含软删除）均拒绝，默认/最后状态也拒绝。写前恢复点、事务、脱敏审计、审批及账号隔离不变。
+
+MCP task_create必须提供`data.status_id`，仅接受当前项目已有且活跃状态ID；文字status不再是MCP参数，不隐式新建。先list发现、需要时显式create状态，再创建任务。跨项目移动任务须显式提供目标项目status_id。重命名不改ID；自定义完成状态通过is_completed布尔控制。默认三项不是固定父分类。新程序只接受schema7且不迁移；当前已安装18工具/schema6与当前客户端目录不因源码更新而变化，须获批迁移及更新后重连。
+
 2026-10-22本机独立程序已按用户批准更新至兼容schema6的新构建，SHA256 EC9C6EFEF361166B25FFD57AF48F12886A81AACF4DFCA33E9D60047466049420；E盘原库已保护迁移，原配置路径和18工具权限不变。须重连/重启Codex后加载；独立进程握手发现18项与真实库SHA不变通过，不等于当前聊天已重连。旧schema5程序不能读取schema6，MCP本身仍不迁移/创建数据库，详见账号资料专项检查点。
 
 第一版提供项目、任务、人员的分页列表/单条查询/新建/修改/软删除，以及项目团队成员列表、加入和退出（18个工具）。独立stdio进程，无HTTP监听、云端账号或自动启动；关闭桌面程序后仍可使用已有数据库。

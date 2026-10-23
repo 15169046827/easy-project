@@ -1,3 +1,4 @@
+import { isTaskCompleted } from '../../utils/taskStatus.js'
 function deadline(task) {
     const value = Date.parse(String(task.end_time || '').replace(' ', 'T'))
     return Number.isFinite(value) ? value : Number.POSITIVE_INFINITY
@@ -5,7 +6,7 @@ function deadline(task) {
 
 export function activeFloatingTasks(tasks) {
     return tasks
-        .filter(task => task.status !== 'Done' && task.status !== 'Archived')
+        .filter(task => !isTaskCompleted(task))
         .sort(
             (left, right) => deadline(left) - deadline(right) || left.name.localeCompare(right.name)
         )

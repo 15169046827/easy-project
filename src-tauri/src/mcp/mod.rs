@@ -51,6 +51,7 @@ pub fn open_database(path: &Path, permissions: Permissions) -> Result<DbState, S
     for table in [
         "project",
         "task",
+        "task_status",
         "member",
         "project_member",
         "task_dependency",

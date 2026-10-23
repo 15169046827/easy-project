@@ -22,6 +22,7 @@ export function useGanttCreateEditor({ projectId, activeProject, message, messag
         type: 'Task',
         priority: '3',
         status: 'Pending',
+        status_id: '',
         assignee: '',
         comment: ''
     })
@@ -57,6 +58,10 @@ export function useGanttCreateEditor({ projectId, activeProject, message, messag
         if (savingTask.value) return
         if (!createForm.value.name.trim()) {
             createError.value = `${t('tasks.columnName')} ${t('common.required')}`
+            return
+        }
+        if (!createForm.value.status_id) {
+            createError.value = t('taskStatuses.select')
             return
         }
         savingTask.value = true

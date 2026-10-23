@@ -92,7 +92,7 @@ fn real_stdio_supports_entity_crud_and_default_permission_denial() {
     let mut client = Client::new(true);
     client.handshake();
     let catalog = client.request(2, "tools/list", json!({}));
-    assert_eq!(catalog["result"]["tools"].as_array().unwrap().len(), 18);
+    assert_eq!(catalog["result"]["tools"].as_array().unwrap().len(), 23);
     let project = client.tool(
         3,
         "easyproject_project_create",
@@ -100,9 +100,15 @@ fn real_stdio_supports_entity_crud_and_default_permission_denial() {
     );
     assert_eq!(project["isError"], false);
     let pid = project["structuredContent"]["record"]["id"].clone();
+    let states = client.tool(4, "easyproject_task_status_list", json!({"projectId":pid}));
+    let status_id = states["structuredContent"]["list"][0]["id"].clone();
     for (offset, model, data) in [
         (10, "member", json!({"name":"Person"})),
-        (20, "task", json!({"name":"Work","project_id":pid})),
+        (
+            20,
+            "task",
+            json!({"name":"Work","project_id":pid,"status_id":status_id}),
+        ),
     ] {
         let created = client.tool(
             offset,

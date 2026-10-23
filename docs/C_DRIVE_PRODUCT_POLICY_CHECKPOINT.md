@@ -2,6 +2,8 @@
 
 ## 2026-10-23新补丁发布进行中
 
+首轮39895304412 validate在lint失败：既有verify-beta2-assets.mjs未列.gitattributes eol=lf，Windows checkout转CRLF后Prettier要求删除CR。本机i/lf、w/lf因此未复现；新增*.mjs text eol=lf，不改Prettier/忽略规则，不删除核验脚本。prepare/构建未达，不生成新draft；待原安全作业结束再派发同tag完整新运行，不公开失败源。
+
 构建入口：候选bd2e403704c421b32f6bc77b0a9ed6b13c860ff3/tree f8b7ec6ccfea9224aff81afb0956a6576caa3916已同SHA非强制推送，Actions39895304412/headSha精确一致。发布metadata0.1.2/10发布脚本测试/lint/diff通过。当前质量、安全进行中，尚无新公开包。下一步只读等待该运行，失败定位不跳门禁；成功后读取新draftID及原六文件摘要，不套用旧beta2的ID/SHA/辅助脚本固定参数。原网站/安装/服务器未改。
 
 用户“更新吧”明确批准把源码修复打成新公开测试补丁并更新官网下载；不覆盖本机安装/真实数据。基线95c238cd2ff50aa2847d7add02555a272f02f0bd，原分支开工干净。目标app0.1.2/tag v0.1.2-beta.1，五版本文件同步；旧beta2资产/官网仍保留至新六包验完公开后切换。Mac构建新增只上传原.app.tar.gz备份，避免上轮展开App无法核验压缩字节；不新增令牌权限、不复用beta2临时授权。额度五小时余80%、周余97%；WACAS未定义，实际AGENTS/交接1.12/UPARS1.1.0。准确下一步本地发布元数据/质量→提交派发原完整门禁→原六包独立核验→发布说明/SHA→显式公开→官网下载测试/安全静态部署→Git/Wolai/交接同步。当前未提交五版本文件、release workflow和本文；服务器未新连接，本机安装/MCP/真实库不动，API无变。

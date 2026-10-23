@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-10-23最终：v0.1.1-beta.2公开预发布/8附件，官网#download六下载已上线，源码6ac13ef/current=beta2-landing-20261023。新root700副本、78旧资产保留，后端同SHA/PID不变、两库全表逻辑不变。最终258单测、82生产UI零重试、12真实HTTP、lint/typecheck/build通过；正常TLS2HTML/62静态SHA/CSP与匿名401边界通过。临时CI写权限已恢复read；旧草稿保留。正式生产未通过，签名/公证/真实设备矩阵与服务器限流配额风险保留，不自动扩展开发。本轮公开测试及官网下载交付完成；完整证据/失败历史/副本/连接状态见[最终回执](../PUBLIC_BETA_1_CHECKPOINT.md)。下方“待部署/待许可”均为历史。
+
 2026-10-23公开beta.2已发布：https://github.com/15169046827/easy-project/releases/tag/v0.1.1-beta.2 ，源34de5f2、成功构建39799550769；六原包本地SHA/容器/版本/架构已核验，两Windows包NotSigned/MSI0.1.1 x64，八附件含校验清单与manifest。用户批准临时CI权限，桥接39885916458成功后已在f9e797d恢复read。官网ready=true候选258单测、lint/typecheck/build、82生产UI（零重试、12专用HTTP跳过）通过，待静态安全部署；服务仍cd05e93/active（本轮SSH只读确认）。不覆盖桌面/MCP/真实库，正式生产未通过。历史“未公开/待许可”已被本段覆盖；最终部署回执见专项检查点。
 
 最新公开测试版待权限确认：产品源34de5f2/Actions39799550769已成功，258单测、9性能、52Rust+stdio1、完整npm0、三平台六资产已生成于受保护草稿420856621/v0.1.1-beta.2，仍未公开；生产UI81直接通过+1重试通过，同用例本地零重试3/3。六份workflow备份已E盘下载，但Mac备份为展开App，不能替代原tar摘要。只读桥接fc6e2c4/39805193677读取草稿HTTP403；拟提升该job至contents:write被自动审批拒绝，已撤回，待用户明确允许，不绕过。官网仍cd05e93/ready=false，正式生产未通过，桌面/MCP/服务器/真实数据未变。本轮未新连home-host；详细续接与全部验证/限制见[公开测试版检查点](../PUBLIC_BETA_1_CHECKPOINT.md)。旧beta.1及其它草稿保留，不公开过时包。

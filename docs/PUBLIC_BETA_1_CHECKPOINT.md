@@ -1,5 +1,14 @@
 # 公开测试版 Beta 1 检查点
 
+## 2026-10-23最终交付回执（覆盖下方历史待办）
+
+- 已公开：https://github.com/15169046827/easy-project/releases/tag/v0.1.1-beta.2 。六原始包+SHA256SUMS.txt+release-manifest.json共8附件，预发布而非latest，产品源34de5f2/成功构建39799550769。所有旧草稿保留。
+- 官网下载已上线：https://home-host.tail2956dd.ts.net/#download 。源码6ac13ef2b3cedc1cb68dcb234379620a15cea45f；current=/opt/easyproject/releases/beta2-landing-20261023，新root700副本/var/backups/easyproject/beta2-landing-20261023。63交付文件核验、78旧资源保留；后端SHA904d2b3a.../PID不变、active，两库全表逻辑不变/integrity ok/FK0，未重启/未改凭据/权限/真实业务数据。首次脚本旧路径替换错误在写入前被守卫中止，修正后部署通过，未绕过守卫。
+- 最终新官网lint/typecheck、258单测/53文件、82生产UI零重试、单独12真实HTTP通过；build通过，原大chunk警告保留。下载区六张截图已生成，375dark实看通过。正常证书HTTPS核对2HTML/62静态SHA/nonce+CSP安全头/4匿名401/health200通过；不将这些宣称macOS真机或原生桌面新安装验收。六包静态核验及临时CI恢复证据见下，未覆盖本机安装/MCP。
+- WACAS未定义/待确认；实际AGENTS、手册1.11、UPARS1.1.0，非重新全库审计。原任务基线8912dda，当前分支codex/audit-release-20261006-api；本轮网站交付基线6ac13ef，保存前未提交仅本文与handoff CURRENT_STATE；功能源码均已推送。API/数据库契约无变，Apifox无需重传，交接规则/架构已复核无新增规则。
+- 剩余风险：未签名/未公证、Mac/MSI干净设备及真实跨版本/混合DPI矩阵未验、服务器共享限流/配额/运维告警待完善；正式生产发布结论仍未通过。本轮公开测试交付完成，不自动开启这些新开发或扩大服务暴露。
+- 已确认设备连接：本轮SSH home-host、既有Funnel HTTPS正常；桌面未重装/未操作登录或真实数据。额度最近五小时余90%、周余98%，未重置/定时唤醒/关机。后续仅按用户反馈；恢复先读本回执与Git状态，不重做已通过验证。Wolai主/交接最终回执本轮同步，完成后另记提交结果。
+
 2026-10-23公开里程碑：Release420856621/v0.1.1-beta.2已显式draft=false/prerelease=true/latest=false，published_at=2026-10-23T01:50:06Z，匿名API八附件可见。六原始文件本机摘要全匹配，Mac tar版本0.1.1/正确ARM与Intel Mach-O、路径安全、DMG koly、PE/MSI容器通过，Windows两包NotSigned/EXE0.1.1/MSI0.1.1 x64。PowerShell COM只读MSI查询适配失败，改系统VBScript同一只读查询通过，不安装；失败不抹去。SHA256SUMS与manifest已附，不覆盖旧文件。官网ready/date/系统要求候选lint/typecheck/258单测/build与82生产UI零重试通过，12专用HTTP本轮单独待验，6张下载区深浅/窄图已产出、375dark实看正常。home-host SSH只读确认current=cd05e93-landing-20261022、active。接续：真实HTTP12复验→新源码提交→E盘唯一包→服务器新root700副本/只切静态、不重启、不改库→HTTPS读回与文档同步。WACAS/范围同上，基线f9e797d；未提交为本文、handoff CURRENT_STATE、release notes和3官网下载文件，API无变，Wolai待本阶段同步。
 
 2026-10-23桥接3180b57/39885916458 completed/success，附件12472502404（49015160 bytes）包含六份原Release字节和bridge-verification.json。已恢复job contents:read，临时授权结束；不再派发需要写权限的桥接。产品源34de5f2、Release420856621仍草稿；原六资产GET/固定SHA成功，本地下载与容器/版本/架构待完成，不提前公开。上一轮附件失败原因与证据保留。

@@ -1,5 +1,11 @@
 # C盘产品限制纠正
 
+## 2026-10-23本机覆盖安装完成
+
+用户明确要求继续覆盖安装、不需要中途汇报。仅本轮安装授权，基线bff4b60cbd23e15d4e09508362e63db87b3dab40/原分支，开工干净，五小时余61%、周余94%；WACAS/标准与下文一致。只读确认原E盘安装且无运行程序，使用本次GitHub原始NSIS（SHA98481DAC789C4469652429A149F4D4536AA4DC04AC2B5B3BD2A94F5D2F815204），不另构建/不依赖旧0.1.0产物。先新受限E盘副本src-tauri/target/audit-tools/c-drive-patch-overwrite-20261023-012-beta1，443文件与数据库在线快照核验，再原路径runtime-current-user/app静默覆盖退出0；440非程序文件逐份SHA不变，数据库全表逻辑一致/integrity ok/FK0，独立MCP文件SHA不变。安装主程序ProductVersion0.1.2，SHA6A8EBAE9014972C9421F317F14345861F39F6EE7611024967FF948A4AC4D3136。该原包已六包独立核验，安装后不套用旧raw EXE的框架marker修改算法。
+
+新桌面已启动（进程12956，EasyProject，Responding=true），WebView均使用安装侧E盘webview；启动后数据库全表逻辑再比对一致。未操作用户登录、项目CRUD或C盘写入；不将进程响应当全部原生UI/用户账号流程通过。不改服务器与MCP配置/权限，不删除原副本。保存前未提交仅本文和handoff CURRENT_STATE；Git/Wolai主与交接本轮同步，API无变无需Apifox。下一步等待用户实际使用反馈，不自动触发更多安装或新功能；正式生产仍未通过。
+
 ## 2026-10-23最终交付（覆盖下方历史进行中状态）
 
 - 公开补丁：https://github.com/15169046827/easy-project/releases/tag/v0.1.2-beta.1 ，Release421426167，published_at=2026-10-23T03:46:47Z；6原包+SHA256SUMS+manifest共8附件，prerelease且非latest。源101720104397e8ed7610eb9a4fe8cee961855f0c/成功运行39895533485。旧beta2及其它草稿/资产保留，未覆盖重传。

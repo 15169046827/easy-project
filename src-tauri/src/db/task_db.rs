@@ -224,7 +224,7 @@ pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec
     let sort_column = match query.sort_by {
         "name" => "name",
         "status" => "status",
-        "priority" => "priority",
+        "priority" => "CASE priority WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN 'High' THEN 2 WHEN '3' THEN 3 WHEN 'Normal' THEN 3 WHEN '4' THEN 4 WHEN 'Low' THEN 4 WHEN '5' THEN 5 ELSE 6 END",
         "start_time" => "start_time",
         "end_time" => "end_time",
         "update_time" => "update_time",
@@ -527,5 +527,13 @@ mod status_query_tests {
         assert_eq!(query_tasks(&db, &query).unwrap().1, 0);
         query.status = None;
         assert_eq!(query_tasks(&db, &query).unwrap().1, 7);
+        db.lock_connection().unwrap().execute_batch("UPDATE task SET priority=CASE id WHEN 'pending' THEN '1' WHEN 'todo' THEN 'High' WHEN 'done' THEN 'Normal' WHEN 'archived' THEN 'Low' WHEN 'future' THEN '5' WHEN 'invalid' THEN '3' ELSE 'legacy-unknown' END").unwrap();
+        query.sort_by = "priority";
+        let sorted = query_tasks(&db, &query).unwrap().0;
+        assert_eq!(sorted.first().unwrap().id, "pending");
+        assert_eq!(sorted[1].id, "todo");
+        assert_eq!(sorted[4].id, "archived");
+        assert_eq!(sorted[5].id, "future");
+        assert_eq!(sorted.last().unwrap().id, "empty");
     }
 }

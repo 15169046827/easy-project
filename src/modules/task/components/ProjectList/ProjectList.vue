@@ -107,9 +107,11 @@
                     <template #body="{ data }">
                         <Button class="project-link" @click="openProject(data.id)">
                             <i class="pi pi-folder"></i>
-                            <span v-tooltip.bottom="data.name || $t('projects.untitled')">{{
-                                data.name || $t('projects.untitled')
-                            }}</span>
+                            <span
+                                :title="data.name || $t('projects.untitled')"
+                                v-tooltip.bottom="data.name || $t('projects.untitled')"
+                                >{{ data.name || $t('projects.untitled') }}</span
+                            >
                         </Button>
                     </template>
                 </Column>
@@ -118,7 +120,12 @@
                         <InputText v-model="data[field]" />
                     </template>
                     <template #body="{ data }">
-                        <span class="version-tag">{{ data.version || '-' }}</span>
+                        <span
+                            class="version-tag"
+                            :title="data.version"
+                            v-tooltip.bottom="data.version"
+                            >{{ data.version || '-' }}</span
+                        >
                     </template>
                 </Column>
                 <Column field="type" :header="$t('projects.columnType')" style="width: 6rem">
@@ -153,7 +160,11 @@
                         />
                     </template>
                     <template #body="{ data }">
-                        <span :class="['pill', statusPillClass(data.status)]">
+                        <span
+                            :class="['pill', statusPillClass(data.status)]"
+                            :title="projectStatusLabel(data.status)"
+                            v-tooltip.bottom="projectStatusLabel(data.status)"
+                        >
                             <span class="pill-dot"></span>
                             {{ projectStatusLabel(data.status) }}
                         </span>
@@ -189,7 +200,12 @@
                     style="width: 8rem"
                 >
                     <template #body="{ data }">
-                        <span class="time-cell">{{ formatTime(data.update_time) }}</span>
+                        <span
+                            class="time-cell"
+                            :title="data.update_time"
+                            v-tooltip.bottom="data.update_time"
+                            >{{ formatTime(data.update_time) }}</span
+                        >
                     </template>
                 </Column>
                 <Column :rowEditor="true" frozen alignFrozen="right" style="width: 8rem" />

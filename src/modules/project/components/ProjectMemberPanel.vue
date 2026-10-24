@@ -49,8 +49,15 @@
                     avatarInitial(pm.member_name)
                 }}</span>
                 <div class="pm-info">
-                    <span class="pm-name">{{ pm.member_name }}</span>
-                    <span class="pm-email">{{ pm.member_email || '—' }}</span>
+                    <span class="pm-name" :title="pm.member_name" v-tooltip.top="pm.member_name">{{
+                        pm.member_name
+                    }}</span>
+                    <span
+                        class="pm-email"
+                        :title="pm.member_email"
+                        v-tooltip.top="pm.member_email"
+                        >{{ pm.member_email || '—' }}</span
+                    >
                 </div>
                 <span class="pm-role-pill">{{ pm.role || $t('common.member') }}</span>
                 <span class="pm-joined">{{ formatJoined(pm.joined_at) }}</span>

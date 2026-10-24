@@ -7,7 +7,7 @@ import TaskStatusSelect from '../../components/TaskStatusSelect.vue'
 import TaskStatusManager from '../../components/TaskStatusManager.vue'
 import TaskBoard from '../../modules/task/components/TaskBoard.vue'
 import { crudAction } from '../../api'
-import { isTaskCompleted } from '../../utils/taskStatus.js'
+import { findStatusNameConflict, isTaskCompleted } from '../../utils/taskStatus.js'
 import en from '../../i18n/locales/task-status-en.js'
 vi.mock('../../api', () => ({ crudAction: vi.fn() }))
 const Dialog = defineComponent({
@@ -101,6 +101,28 @@ beforeEach(() => {
         )
 })
 describe('project status UI logic', () => {
+    it('recognizes case, surrounding whitespace and built-in display aliases without merging identities', () => {
+        expect(findStatusNameConflict(states, ' 待办 ')?.id).toBe('s1')
+        expect(findStatusNameConflict(states, ' PENDING ')?.id).toBe('s1')
+        expect(findStatusNameConflict(states, ' testing ')?.id).toBe('s2')
+        expect(findStatusNameConflict(states, 'Testing', 's2')).toBeUndefined()
+        expect(findStatusNameConflict(states, 'Review')).toBeUndefined()
+    })
+    it('prevents duplicate quick-add writes and keeps the draft open', async () => {
+        const wrapper = setup(TaskStatusSelect, { projectId: 'p', modelValue: 's1' })
+        await flushPromises()
+        await wrapper.find('button').trigger('click')
+        await wrapper.find('input').setValue(' 待办 ')
+        await wrapper
+            .findAll('button')
+            .find(button => button.text() === 'Save')
+            .trigger('click')
+        await flushPromises()
+        expect(wrapper.find('input').element.value).toBe(' 待办 ')
+        expect(wrapper.find('[role="alert"]').text()).toContain(en.duplicateName)
+        expect(vi.mocked(crudAction).mock.calls.every(call => call[1] === 'get_all')).toBe(true)
+        wrapper.unmount()
+    })
     it('cancels quick add without a write or selection change', async () => {
         const wrapper = setup(TaskStatusSelect, { projectId: 'p', modelValue: 's1' })
         await flushPromises()
@@ -125,6 +147,7 @@ describe('project status UI logic', () => {
         expect(crudAction).toHaveBeenCalledWith('task_status', 'add', {
             project_id: 'p',
             name: 'Review',
+            color: '#8b5cf6',
             is_completed: false
         })
         expect(wrapper.emitted('update:modelValue').at(-1)).toEqual(['new-status'])
@@ -192,7 +215,11 @@ describe('project status UI logic', () => {
             tasks: [{ id: 'a', name: 'First', status_id: 's1', status: 'Pending' }]
         })
         await flushPromises()
-        await wrapper.find('.board-card').trigger('dragstart')
+        const setData = vi.fn()
+        const dataTransfer = { effectAllowed: '', setData }
+        await wrapper.find('.board-card').trigger('dragstart', { dataTransfer })
+        expect(setData).toHaveBeenCalledWith('application/x-easyproject-task', 'a')
+        expect(dataTransfer.effectAllowed).toBe('move')
         await wrapper.findAll('.board-column')[1].trigger('drop')
         await flushPromises()
         expect(crudAction).toHaveBeenCalledWith('task', 'update', { id: 'a', status_id: 's2' })

@@ -6,6 +6,79 @@ struct Fixture {
     directory: PathBuf,
     db: DbState,
 }
+
+#[test]
+fn rejects_unknown_dictionary_values_and_localized_status_duplicates() {
+    let f = Fixture::new();
+    let project = f
+        .call(
+            "easyproject_project_create",
+            json!({"data":{"name":"Dictionary checks"}}),
+        )
+        .unwrap();
+    let pid = &project["record"]["id"];
+    for (model, field) in [
+        ("project", "status"),
+        ("project", "type"),
+        ("task", "priority"),
+        ("task", "type"),
+        ("task", "schedule_mode"),
+    ] {
+        let mut data = json!({"name":"Invalid", "project_id":pid});
+        if model == "project" {
+            data.as_object_mut().unwrap().remove("project_id");
+        }
+        data[field] = json!("outside-dictionary");
+        assert!(f
+            .call(&format!("easyproject_{model}_create"), json!({"data":data}))
+            .is_err());
+    }
+    for name in ["Done", "已完成", " done ", "待办", "进行中", "in progress"] {
+        assert!(f
+            .call(
+                "easyproject_task_status_create",
+                json!({"data":{"project_id":pid,"name":name}})
+            )
+            .is_err());
+    }
+    let state = f
+        .call(
+            "easyproject_task_status_create",
+            json!({"data":{"project_id":pid,"name":"Review"}}),
+        )
+        .unwrap();
+    assert!(f
+        .call(
+            "easyproject_task_status_update",
+            json!({"id":state["record"]["id"],"changes":{"name":"已完成"}})
+        )
+        .is_err());
+    assert!(f
+        .call(
+            "easyproject_task_status_create",
+            json!({"data":{"project_id":pid,"name":"review"}})
+        )
+        .is_err());
+    assert!(crate::services::entity_api::dispatch(
+        &f.db,
+        "task",
+        "update",
+        json!({"id":"missing","priority":"urgent"})
+    )
+    .is_err());
+    let other = f
+        .call(
+            "easyproject_project_create",
+            json!({"data":{"name":"Other"}}),
+        )
+        .unwrap();
+    assert!(f
+        .call(
+            "easyproject_task_status_create",
+            json!({"data":{"project_id":other["record"]["id"],"name":"Review"}})
+        )
+        .is_ok());
+}
 impl Fixture {
     fn new() -> Self {
         let directory =

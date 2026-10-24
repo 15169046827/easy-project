@@ -4,6 +4,12 @@ const root = new URL('../', import.meta.url)
 const packageJson = JSON.parse(await readFile(new URL('package.json', root), 'utf8'))
 const tauriConfig = JSON.parse(await readFile(new URL('src-tauri/tauri.conf.json', root), 'utf8'))
 const cargoToml = await readFile(new URL('src-tauri/Cargo.toml', root), 'utf8')
+// Native WebView2 drop interception prevents the board/task HTML5 drag events.
+if (tauriConfig.app.windows[0].dragDropEnabled !== false) {
+    throw new Error(
+        'Main webview must disable native dragDropEnabled for Windows HTML5 task dragging.'
+    )
+}
 const cargoVersion = cargoToml.match(/^version\s*=\s*"([^"]+)"/m)?.[1]
 
 const versions = {

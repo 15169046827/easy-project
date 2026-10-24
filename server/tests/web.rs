@@ -774,6 +774,40 @@ async fn remote_mcp_crud_is_account_isolated_and_invalidates_web_revisions() {
     )
     .await;
     let tid = task["record"]["id"].clone();
+    for (name, arguments) in [
+        (
+            "easyproject_task_update",
+            json!({"id":tid,"changes":{"priority":"Urgent"}}),
+        ),
+        (
+            "easyproject_task_update",
+            json!({"id":tid,"changes":{"type":"Bug"}}),
+        ),
+        (
+            "easyproject_project_update",
+            json!({"id":pid,"changes":{"status":"Waiting"}}),
+        ),
+        (
+            "easyproject_task_status_create",
+            json!({"data":{"project_id":pid,"name":"已完成"}}),
+        ),
+        (
+            "easyproject_task_status_update",
+            json!({"id":sid,"changes":{"name":" pending "}}),
+        ),
+    ] {
+        let (_, rejected) = rpc(server.clone(), &secret, json!({"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":name,"arguments":arguments}})).await;
+        assert_eq!(rejected["result"]["isError"], true);
+    }
+    let unchanged = tool(
+        server.clone(),
+        &secret,
+        "easyproject_task_get",
+        json!({"id":tid}),
+    )
+    .await;
+    assert_eq!(unchanged["record"]["priority"], "Normal");
+    assert_eq!(unchanged["record"]["type"], "Task");
     let usage = tool(
         server.clone(),
         &secret,
@@ -900,11 +934,13 @@ async fn remote_mcp_crud_is_account_isolated_and_invalidates_web_revisions() {
     assert!(!audit.contains(&secret));
     // Original eleven writes plus two status creates, one update, a rejected
     // referenced delete and one successful status delete each need a recovery point.
+    // Two added semantic duplicate rejections also retain their recovery points;
+    // schema-invalid enum calls are rejected before backup/audit creation.
     assert_eq!(
         std::fs::read_dir(directory.join("backups"))
             .unwrap()
             .count(),
-        16
+        18
     );
 }
 

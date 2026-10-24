@@ -129,6 +129,8 @@
                             v-for="m in months"
                             :key="m.key"
                             class="month-cell"
+                            :title="m.label"
+                            v-tooltip.top="m.label"
                             :class="{ today: m.containsToday }"
                             :style="{ width: `${m.count * dayWidth}px` }"
                         >
@@ -164,7 +166,11 @@
                                 paddingLeft: `${12 + task.level * 16}px`
                             }"
                         >
-                            <span class="task-label-text">
+                            <span
+                                class="task-label-text"
+                                :title="task.name"
+                                v-tooltip.top="{ value: task.name, class: 'task-content-tooltip' }"
+                            >
                                 {{ task.type === 'Milestone' ? '◆ ' : '' }}{{ task.name }}
                             </span>
                             <span class="date-actions">

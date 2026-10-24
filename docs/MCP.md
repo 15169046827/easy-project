@@ -42,6 +42,28 @@ MCP客户端需支持本地stdio并允许配置可执行文件与参数。默认
 
 ## 工具契约
 
+### 受控字典与写入校验（2026-10-24源码候选）
+
+以下约束由同一共享Rust边界执行，MCP工具schema也公开枚举；桌面IPC、Web action和显式导入不能绕过。候选不代表当前连接中的旧程序已更新。
+
+| 字段 | 允许值/规则 |
+| --- | --- |
+| task.priority | 字符串`1`、`2`、`3`、`4`、`5`（1最高）；兼容`High`=2、`Normal`=3、`Low`=4。新调用推荐数字字符串；不能传数字或Urgent等任意标签 |
+| task.type | `Task`、`Milestone`、`File` |
+| task.schedule_mode | `fixed_effort`、`fixed_dates` |
+| task.status_id | 必须显式引用本项目已有且有效的完整TASK_STATUS ID；不能写status文字或隐式建状态 |
+| project.type | `private`、`public`（项目展示属性，不是服务端授权） |
+| project.status | `Draft`、`InProgress`、`Paused`、`Done`、`Archived` |
+| task.progress / effort_days | 0—100整数 / 非负有限数值；完成字典属性决定进度100 |
+| task_status | name去首尾空格、同项目忽略大小写查重，默认状态同时保留中英显示别名冲突校验（Pending/待办，InProgress/In Progress/进行中，Done/已完成）；不同项目可同名。color为#RRGGBB，sort_order整数0—1000000，两标记必须布尔值 |
+| project.weekend_days | JSON数组字符串，元素为0—6整数（0星期日）；如`[0,6]` |
+| project.calendar_exceptions | JSON数组字符串，元素含标准`date`和`type=holiday或working`，可选自由文本name |
+| member.availability_exceptions | JSON数组字符串，元素含标准start_date/end_date且起<=止，type为`leave`或`available`；可保留name/source/source_uid等元信息 |
+
+日期为真实且规范的YYYY-MM-DD；成员role/团队role是自由文本标签，不是权限枚举。calendar_country/calendar_region是节日日历库配置而非任务状态字典；不支持的配置不据此产生账号权限。自由文本仍受工具长度/类型限制；未知字段拒绝，ID/人员/父子/团队关系仍须服务端核验。
+
+重复状态新增/重命名失败时保留原状态和任务引用，UI保留草稿。历史重复或字典外值不自动删除、合并、猜测映射；可在管理页逐项重命名，在任务编辑中选择合法值。导入含非法枚举或重复状态时整次回滚；备份与旧库读取不因此被禁止。服务端远端错误保持脱敏，先刷新读取，不盲目重试写入。
+
 ### Codex 本机接入
 
 2026-10-09经用户授权，已在本机Codex新增全局`easyproject`只读stdio配置；2026-10-10用户重启后，本聊天已加载7个查询工具，并完成项目/任务/人员/团队查询、分页和不存在记录错误分支验收。未启用写入/删除，未修改真实项目数据。之前开发交付阶段“不修改客户端配置”的范围已由本次明确授权改变。详细证据：[Codex接入验收](MCP_CODEX_ACCEPTANCE.md)。
@@ -74,7 +96,8 @@ codex mcp get easyproject --json
 {"name":"easyproject_project_create","arguments":{"data":{"name":"新版开发"}}}
 {"name":"easyproject_member_create","arguments":{"data":{"name":"小李","role":"Developer"}}}
 {"name":"easyproject_project_member_create","arguments":{"data":{"project_id":"PROJECT:返回的ID","member_id":"MEMBER:返回的ID"}}}
-{"name":"easyproject_task_create","arguments":{"data":{"name":"实现功能","project_id":"PROJECT:返回的ID","assignee":"MEMBER:返回的ID","end_time":"2026-10-20"}}}
+{"name":"easyproject_task_status_list","arguments":{"projectId":"PROJECT:返回的ID"}}
+{"name":"easyproject_task_create","arguments":{"data":{"name":"实现功能","project_id":"PROJECT:返回的ID","status_id":"TASK_STATUS:查询返回的完整ID","priority":"3","assignee":"MEMBER:返回的ID","end_time":"2026-10-20"}}}
 ```
 
 创建响应的record含实际生成ID；示例ID是占位符。project.owner是人员ID，自动加入项目团队；其它任务负责人须先加入团队。已完成任务保持100%进度。任务日期只接受空值或标准YYYY-MM-DD，不做时区转换。calendar_exceptions、weekend_days、availability_exceptions目前沿用项目原生JSON数组字符串格式。MCP不暴露原始SQL、依赖写入、模板、导入、恢复、文件路径操作或批量删除。

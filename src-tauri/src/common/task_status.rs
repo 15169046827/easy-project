@@ -3,6 +3,47 @@ use super::id::new_id;
 use rusqlite::{params, Connection, OptionalExtension};
 use serde::Serialize;
 
+/// Compare stored names and built-in localized display labels, not completion meaning.
+pub fn display_names(name: &str, builtin: &str) -> Vec<String> {
+    let mut names = vec![name.trim().to_lowercase()];
+    for alias in match builtin {
+        "Pending" => &["Pending", "待办"][..],
+        "InProgress" => &["In Progress", "InProgress", "进行中"][..],
+        "Done" => &["Done", "已完成"][..],
+        _ => &[],
+    } {
+        names.push(alias.to_lowercase());
+    }
+    names
+}
+pub fn validate_display_uniqueness(conn: &Connection) -> Result<(), String> {
+    let mut statement = conn
+        .prepare("SELECT project_id,id,name,builtin_key FROM task_status WHERE stateflag='0'")
+        .map_err(|e| e.to_string())?;
+    let rows = statement
+        .query_map([], |row| {
+            Ok((
+                row.get::<_, String>(0)?,
+                row.get::<_, String>(1)?,
+                row.get::<_, String>(2)?,
+                row.get::<_, String>(3)?,
+            ))
+        })
+        .map_err(|e| e.to_string())?;
+    let mut names = std::collections::HashMap::new();
+    for row in rows {
+        let (project, id, name, builtin) = row.map_err(|e| e.to_string())?;
+        for key in display_names(&name, &builtin) {
+            if let Some(previous) = names.insert((project.clone(), key), id.clone()) {
+                if previous != id {
+                    return Err("Duplicate task status display name in imported project".into());
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
 #[derive(Debug, Serialize)]
 pub struct TaskStatus {
     pub id: String,

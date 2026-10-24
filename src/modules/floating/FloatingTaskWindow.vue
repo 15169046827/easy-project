@@ -29,9 +29,11 @@
                     aria-hidden="true"
                     :data-tauri-drag-region="native ? '' : undefined"
                 />
-                <span :data-tauri-drag-region="native ? '' : undefined">{{
-                    $t('floating.title')
-                }}</span>
+                <span
+                    :title="$t('floating.title')"
+                    :data-tauri-drag-region="native ? '' : undefined"
+                    >{{ $t('floating.title') }}</span
+                >
             </div>
             <Button
                 type="button"
@@ -64,12 +66,13 @@
                 class="floating-task"
                 :data-task-id="task.id"
             >
-                <h2 v-tooltip.bottom="task.name">{{ task.name }}</h2>
+                <h2 :title="task.name" v-tooltip.bottom="task.name">{{ task.name }}</h2>
                 <Button
                     class="floating-project"
                     text
                     size="small"
                     :label="projectNames.get(task.project_id) || $t('floating.noProject')"
+                    :title="projectNames.get(task.project_id) || $t('floating.noProject')"
                     v-tooltip.bottom="projectNames.get(task.project_id) || $t('floating.noProject')"
                     @click="run(() => returnToMain(task.project_id || ''))"
                 />

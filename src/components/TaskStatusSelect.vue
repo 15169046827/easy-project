@@ -40,6 +40,10 @@
             :disabled="saving"
             @keydown.enter.prevent="save"
         />
+        <div class="status-color">
+            <label :for="`${inputId}-color`">{{ t('taskStatuses.color') }}</label>
+            <StatusColorSelect v-model="color" :inputId="`${inputId}-color`" :disabled="saving" />
+        </div>
         <div class="status-complete">
             <Checkbox
                 v-model="completed"
@@ -71,6 +75,9 @@ import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Checkbox from 'primevue/checkbox'
 import { crudAction } from '../api'
+import StatusColorSelect from './StatusColorSelect.vue'
+import { suggestStatusColor } from '../utils/statusColors'
+import { findStatusNameConflict } from '../utils/taskStatus'
 const props = defineProps({
     projectId: { type: String, default: '' },
     modelValue: { type: String, default: '' },
@@ -84,6 +91,7 @@ const states = ref([]),
     error = ref(''),
     adding = ref(false),
     name = ref(''),
+    color = ref(''),
     completed = ref(false),
     saving = ref(false),
     addError = ref('')
@@ -132,12 +140,17 @@ watch(
 function openAdd() {
     selectControl.value?.hide?.()
     name.value = ''
+    color.value = suggestStatusColor(states.value)
     completed.value = false
     addError.value = ''
     adding.value = true
 }
 async function save() {
     if (saving.value || !name.value.trim() || !props.projectId) return
+    if (findStatusNameConflict(states.value, name.value)) {
+        addError.value = t('taskStatuses.duplicateName')
+        return
+    }
     const projectId = props.projectId,
         token = epoch
     saving.value = true
@@ -146,6 +159,7 @@ async function save() {
         const result = await crudAction('task_status', 'add', {
             project_id: projectId,
             name: name.value.trim(),
+            color: color.value,
             is_completed: completed.value
         })
         if (token !== epoch) return
@@ -156,6 +170,7 @@ async function save() {
                 states.value.push({
                     id: result.id,
                     name: name.value.trim(),
+                    color: color.value,
                     builtin_key: '',
                     is_completed: completed.value
                 })
@@ -172,6 +187,11 @@ async function save() {
 }
 </script>
 <style scoped>
+.status-color {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 1rem;
+}
 .status-complete {
     display: flex;
     gap: 0.5rem;

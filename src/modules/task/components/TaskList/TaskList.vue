@@ -301,6 +301,7 @@
                     <template #body="{ data }">
                         <span
                             class="cell-ellipsis"
+                            :title="getProjectName(data.project_id)"
                             v-tooltip.bottom="getProjectName(data.project_id)"
                             >{{ getProjectName(data.project_id) }}</span
                         >
@@ -313,9 +314,12 @@
                     :style="columnStyle('parent')"
                 >
                     <template #body="{ data }">
-                        <span class="cell-ellipsis" v-tooltip.bottom="getTaskName(data.parent)">{{
-                            getTaskName(data.parent) || '-'
-                        }}</span>
+                        <span
+                            class="cell-ellipsis"
+                            :title="getTaskName(data.parent)"
+                            v-tooltip.bottom="getTaskName(data.parent)"
+                            >{{ getTaskName(data.parent) || '-' }}</span
+                        >
                     </template>
                 </Column>
                 <Column
@@ -327,6 +331,7 @@
                     <template #body="{ data }"
                         ><span
                             class="cell-ellipsis"
+                            :title="dependencyNames(data._predecessorIds)"
                             v-tooltip.bottom="dependencyNames(data._predecessorIds)"
                             >{{ dependencyNames(data._predecessorIds) || '-' }}</span
                         ></template
@@ -339,9 +344,12 @@
                     :style="columnStyle('start_time')"
                 >
                     <template #body="{ data }">
-                        <span class="cell-ellipsis" v-tooltip.bottom="data.start_time">{{
-                            formatDisplayDate(data.start_time)
-                        }}</span>
+                        <span
+                            class="cell-ellipsis"
+                            :title="data.start_time"
+                            v-tooltip.bottom="data.start_time"
+                            >{{ formatDisplayDate(data.start_time) }}</span
+                        >
                     </template>
                 </Column>
                 <Column
@@ -371,9 +379,12 @@
                     :style="columnStyle('end_time')"
                 >
                     <template #body="{ data }">
-                        <span class="cell-ellipsis" v-tooltip.bottom="data.end_time">{{
-                            formatDisplayDate(data.end_time)
-                        }}</span>
+                        <span
+                            class="cell-ellipsis"
+                            :title="data.end_time"
+                            v-tooltip.bottom="data.end_time"
+                            >{{ formatDisplayDate(data.end_time) }}</span
+                        >
                     </template>
                 </Column>
                 <Column
@@ -382,6 +393,14 @@
                     :header="$t('tasks.columnType')"
                     :style="columnStyle('type')"
                 >
+                    <template #body="{ data }"
+                        ><span
+                            class="cell-ellipsis"
+                            :title="data.type"
+                            v-tooltip.bottom="data.type"
+                            >{{ data.type }}</span
+                        ></template
+                    >
                 </Column>
                 <Column
                     v-if="columnVisible('priority')"
@@ -390,7 +409,11 @@
                     :style="columnStyle('priority')"
                 >
                     <template #body="{ data }">
-                        <span :class="['priority-badge', priorityClass(data.priority)]">
+                        <span
+                            :class="['priority-badge', priorityClass(data.priority)]"
+                            :title="getPriorityLabel(data.priority)"
+                            v-tooltip.bottom="getPriorityLabel(data.priority)"
+                        >
                             {{ getPriorityLabel(data.priority) || '-' }}
                         </span>
                     </template>
@@ -403,6 +426,20 @@
                 >
                     <template #body="{ data }">
                         <span
+                            :title="
+                                taskStatusLabel(
+                                    data.status,
+                                    data.status_builtin_key,
+                                    Boolean(data.status_id)
+                                )
+                            "
+                            v-tooltip.bottom="
+                                taskStatusLabel(
+                                    data.status,
+                                    data.status_builtin_key,
+                                    Boolean(data.status_id)
+                                )
+                            "
                             :class="[
                                 'pill',
                                 statusPillClass(
@@ -450,9 +487,12 @@
                     :style="columnStyle('comment')"
                 >
                     <template #body="{ data }"
-                        ><span class="cell-ellipsis" v-tooltip.bottom="data.comment">{{
-                            data.comment || '-'
-                        }}</span></template
+                        ><span
+                            class="cell-ellipsis"
+                            :title="data.comment"
+                            v-tooltip.bottom="data.comment"
+                            >{{ data.comment || '-' }}</span
+                        ></template
                     >
                 </Column>
                 <Column
@@ -470,6 +510,7 @@
                             >
                             <span
                                 class="cell-ellipsis"
+                                :title="memberMap[data.assignee].name"
                                 v-tooltip.bottom="memberMap[data.assignee].name"
                                 >{{ memberMap[data.assignee].name }}</span
                             >
@@ -747,6 +788,7 @@
 </template>
 
 <script setup>
+import { priorityRank } from '../../../../utils/taskPriority'
 import { computed, ref, onMounted, watch } from 'vue'
 import Button from 'primevue/button'
 import Column from 'primevue/column'
@@ -1029,7 +1071,7 @@ function taskStatusLabel(status, builtinKey = '', hasReference = false) {
 }
 
 function priorityClass(priority) {
-    return `priority-p${priority || '5'}`
+    return `priority-p${priorityRank(priority) || 'unknown'}`
 }
 
 const visibleTasks = computed(() => flattenTaskTree(tasks.value, expandedTaskIds.value))

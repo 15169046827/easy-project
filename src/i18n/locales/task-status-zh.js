@@ -1,4 +1,5 @@
 export default {
+    existingDuplicates: '现有状态名称冲突：{names}。请逐项重命名，任务关联保持不变。',
     title: '任务状态',
     unfinished: '未完成任务',
     manage: '管理任务状态',
@@ -7,6 +8,19 @@ export default {
     completed: '属于已完成状态',
     default: '新任务默认状态',
     color: '颜色',
+    duplicateName: '本项目已存在同名状态（包括内置状态的中英文显示名），请使用其他名称。',
+    customColor: '自定义色值（可选）',
+    currentColor: '当前颜色 {color}',
+    colors: {
+        blue: '蓝色',
+        violet: '紫色',
+        teal: '青绿',
+        amber: '琥珀',
+        rose: '玫红',
+        cyan: '青蓝',
+        magenta: '品红',
+        green: '绿色'
+    },
     order: '排列顺序',
     select: '请选择当前项目的状态',
     projectFirst: '请先选择项目',

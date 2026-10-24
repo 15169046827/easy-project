@@ -6,6 +6,9 @@
         </header>
         <p>{{ t('taskStatuses.defaultHint') }}</p>
         <p v-if="error" role="alert">{{ error }}</p>
+        <p v-if="duplicateNames.length" role="alert">
+            {{ t('taskStatuses.existingDuplicates', { names: duplicateNames.join(', ') }) }}
+        </p>
         <DataTable :value="states" :loading="loading" dataKey="id" scrollable>
             <Column field="name" :header="t('taskStatuses.name')"
                 ><template #body="{ data }"
@@ -65,8 +68,14 @@
                     :disabled="busy"
                 />
                 <label for="status-manager-color">{{ t('taskStatuses.color') }}</label
+                ><StatusColorSelect
+                    inputId="status-manager-color"
+                    v-model="draft.color"
+                    :disabled="busy"
+                />
+                <label for="status-manager-custom-color">{{ t('taskStatuses.customColor') }}</label
                 ><InputText
-                    id="status-manager-color"
+                    id="status-manager-custom-color"
                     v-model="draft.color"
                     :maxlength="7"
                     :disabled="busy"
@@ -163,7 +172,7 @@
     </section>
 </template>
 <script setup>
-import { onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
@@ -173,6 +182,9 @@ import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import { crudAction } from '../api'
+import StatusColorSelect from './StatusColorSelect.vue'
+import { suggestStatusColor } from '../utils/statusColors'
+import { findStatusNameConflict } from '../utils/taskStatus'
 const props = defineProps({ projectId: { type: String, required: true } })
 const emit = defineEmits(['updated'])
 const { t } = useI18n()
@@ -196,6 +208,13 @@ const blank = () => ({
 })
 const draft = ref(blank()),
     usage = ref({ list: [], total: 0, pageIndex: 1 })
+const duplicateNames = computed(() => [
+    ...new Set(
+        states.value
+            .filter(state => findStatusNameConflict(states.value, state.name, state.id))
+            .map(state => label(state))
+    )
+])
 const dialogStyle = { width: '36rem', maxWidth: 'calc(100vw - 2rem)' }
 const keys = {
     Pending: 'tasks.statusPending',
@@ -242,13 +261,17 @@ function edit(state) {
               is_completed: state.is_completed,
               is_default: state.is_default
           }
-        : blank()
+        : { ...blank(), color: suggestStatusColor(states.value) }
     originalDefault.value = Boolean(state?.is_default)
     editError.value = ''
     editing.value = true
 }
 async function save() {
     if (busy.value || !draft.value.name.trim()) return
+    if (findStatusNameConflict(states.value, draft.value.name, draft.value.id)) {
+        editError.value = t('taskStatuses.duplicateName')
+        return
+    }
     const token = epoch,
         { id, ...fields } = draft.value
     busy.value = true

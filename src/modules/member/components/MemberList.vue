@@ -114,9 +114,12 @@
                                 >
                                     {{ avatarInitial(data.name) }}
                                 </span>
-                                <span class="member-name">{{
-                                    data.name || $t('members.untitled')
-                                }}</span>
+                                <span
+                                    class="member-name"
+                                    :title="data.name || $t('members.untitled')"
+                                    v-tooltip.top="data.name || $t('members.untitled')"
+                                    >{{ data.name || $t('members.untitled') }}</span
+                                >
                             </Button>
                         </div>
                     </template>

@@ -252,6 +252,8 @@ fn import_json(db: &DbState, payload: &Value) -> Result<(), String> {
     }
     crate::common::task_status::migrate_rows(&tx)
         .map_err(|e| format!("Invalid imported status graph: {e}"))?;
+    crate::common::field_dictionary::validate_import(&tx)?;
+    crate::common::task_status::validate_display_uniqueness(&tx)?;
     tx.commit().map_err(|e| e.to_string())
 }
 
@@ -631,7 +633,7 @@ mod tests {
         assert_eq!(count, 1);
 
         let valid = export_json(&state).unwrap();
-        for case in 0..4 {
+        for case in 0..10 {
             let mut corrupt = valid.clone();
             match case {
                 0 => {
@@ -641,7 +643,17 @@ mod tests {
                 }
                 1 => corrupt["tasks"][0][20] = json!(crate::common::id::new_id("TASK_STATUS")),
                 2 => corrupt["task_statuses"][0][3] = json!("not-a-color"),
-                _ => corrupt["task_statuses"] = json!([]),
+                3 => corrupt["task_statuses"] = json!([]),
+                4 => corrupt["tasks"][0][9] = json!("Critical"),
+                5 => corrupt["tasks"][0][8] = json!("Bug"),
+                6 => corrupt["projects"][0][4] = json!("Waiting"),
+                7 => corrupt["tasks"][0][11] = json!(101),
+                8 => corrupt["tasks"][0][13] = json!("automatic"),
+                _ => {
+                    let duplicate_name = corrupt["task_statuses"][0][2].clone();
+                    corrupt["task_statuses"][1][2] = duplicate_name;
+                    corrupt["task_statuses"][1][7] = json!("");
+                }
             }
             assert!(
                 import_json(&state, &corrupt).is_err(),

@@ -172,6 +172,19 @@ pub fn handle_action(
         .filter(|s| s.name == name)
         .map(|s| s.builtin_key.as_str())
         .unwrap_or("");
+    let names = task_status::display_names(name, builtin);
+    for state in task_status::list(&conn, &project_id).map_err(|error| error.to_string())? {
+        if state.id != id
+            && task_status::display_names(&state.name, &state.builtin_key)
+                .iter()
+                .any(|existing| names.contains(existing))
+        {
+            return Err(format!(
+                "Task status name conflicts with an existing status ({})",
+                state.id
+            ));
+        }
+    }
     if default {
         conn.execute(
             "UPDATE task_status SET is_default=0 WHERE project_id=?1 AND stateflag='0'",

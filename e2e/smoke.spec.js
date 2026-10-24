@@ -238,7 +238,22 @@ for (const dark of [false, true])
         await expect(page.locator('#task-edit-name')).toHaveValue('Draft must survive')
         await page.locator('#task-edit-status').click()
         await page.getByRole('button', { name: 'Add status', exact: true }).click()
+        await add.getByLabel('Status name', { exact: true }).fill('已完成')
+        await add.getByRole('button', { name: 'Save', exact: true }).click()
+        await expect(add.getByRole('alert')).toBeVisible()
+        expect(
+            await page.evaluate(() =>
+                window.__EASY_PROJECT_CALLS__.some(
+                    ({ args }) => args?.model === 'task_status' && args.action === 'add'
+                )
+            )
+        ).toBe(false)
         await add.getByLabel('Status name', { exact: true }).fill('Review')
+        await expect(add.getByRole('combobox', { name: 'Color', exact: true })).toContainText(
+            'Blue'
+        )
+        await add.getByRole('combobox', { name: 'Color', exact: true }).click()
+        await page.getByRole('option', { name: 'Teal', exact: true }).click()
         await add.getByRole('button', { name: 'Save', exact: true }).click()
         await expect(add).not.toBeVisible()
         await expect(page.locator('#task-edit-status')).toContainText('Review')
@@ -246,6 +261,15 @@ for (const dark of [false, true])
         await page.keyboard.press('Escape')
         await page.getByRole('button', { name: 'Manage task statuses', exact: true }).click()
         await expect(page.locator('.status-manager')).toContainText('Review')
+        await page.getByRole('button', { name: 'Edit Review', exact: true }).click()
+        const edit = page.getByRole('dialog', { name: 'Task statuses', exact: true })
+        await expect(edit.getByRole('combobox', { name: 'Color', exact: true })).toContainText(
+            'Teal'
+        )
+        await edit.getByRole('combobox', { name: 'Color', exact: true }).click()
+        await page.getByRole('option', { name: 'Amber', exact: true }).click()
+        await edit.getByRole('button', { name: 'Save', exact: true }).click()
+        await expect(edit).not.toBeVisible()
         await page.getByRole('button', { name: 'Delete In Progress', exact: true }).click()
         const conflict = page.getByRole('dialog', { name: 'Task statuses', exact: true })
         await expect(conflict).toContainText('Design milestone')
@@ -263,6 +287,18 @@ for (const dark of [false, true])
         expect(
             calls.filter(call => call.args?.model === 'task_status' && call.args.action === 'add')
         ).toHaveLength(1)
+        expect(
+            calls.find(call => call.args?.model === 'task_status' && call.args.action === 'add')
+                .args.data.color
+        ).toBe('#14b8a6')
+        expect(
+            calls.some(
+                call =>
+                    call.args?.model === 'task_status' &&
+                    call.args.action === 'update' &&
+                    call.args.data.color === '#f59e0b'
+            )
+        ).toBe(true)
         expect(
             calls.some(call => call.args?.model === 'task_status' && call.args.action === 'delete')
         ).toBe(false)
@@ -350,6 +386,9 @@ test('styles PrimeVue in the task window under desktop-like nonce CSP', async ({
 test('shows an accessible warning when automatic backup fails', async ({ page }) => {
     await page.clock.install()
     await page.goto('/#/dashboard')
+    // Module scripts can still be mounting after load under parallel execution;
+    // do not advance the clock before the app registers its backup interval.
+    await expect(page.locator('.dashboard')).toBeVisible()
     await page.evaluate(() => {
         window.__EASY_PROJECT_FAIL_BACKUP__ = true
     })
@@ -458,6 +497,65 @@ test('opens the all-task page without applying a project filter', async ({ page 
     )
     expect(taskCalls.some(({ args }) => !args.data.projectId)).toBe(true)
 })
+
+for (const dark of [false, true])
+    test(`full text remains available for clipped task relationships in ${dark ? 'dark' : 'light'} UI`, async ({
+        page
+    }) => {
+        await page.setViewportSize({ width: 960, height: 720 })
+        await page.addInitScript(
+            ({ task, dark }) => {
+                localStorage.setItem('easyproject-lang', 'en-US')
+                localStorage.setItem('easyproject-theme', dark ? 'dark' : 'light')
+                const invoke = window.__TAURI_INTERNALS__.invoke
+                window.__TAURI_INTERNALS__.invoke = async (command, args) => {
+                    if (args?.model === 'task' && args.action === 'get_all')
+                        return {
+                            success: true,
+                            data: {
+                                list: [
+                                    {
+                                        ...task,
+                                        id: 'long-parent',
+                                        name: 'Parent task full title '.repeat(12)
+                                    },
+                                    {
+                                        ...task,
+                                        id: 'long-child',
+                                        parent: 'long-parent',
+                                        name: 'Child task full title '.repeat(12),
+                                        comment: 'Full detailed comment '.repeat(12)
+                                    }
+                                ],
+                                total: 2
+                            }
+                        }
+                    return invoke(command, args)
+                }
+            },
+            { task: fixtures.task[0], dark }
+        )
+        await page.goto('/#/tasks')
+        await expect(page.locator('.task-name-text').first()).toBeVisible()
+        const toggle = page.getByRole('button', { name: 'Expand task', exact: true })
+        if (await toggle.count()) await toggle.click()
+        const parent = page
+            .locator('.cell-ellipsis[title]')
+            .filter({ hasText: 'Parent task full title' })
+            .first()
+        await parent.scrollIntoViewIfNeeded()
+        await expect(parent).toHaveAttribute('title', 'Parent task full title '.repeat(12))
+        await parent.hover()
+        await expect(page.getByRole('tooltip')).toContainText(
+            'Parent task full title '.repeat(12).trim()
+        )
+        await page.mouse.move(1, 1)
+        const title = page.locator('.task-name-text').last()
+        await title.hover()
+        await expect(page.getByRole('tooltip')).toContainText(
+            'Child task full title '.repeat(12).trim()
+        )
+    })
 
 test('rejects a cross-project drop even when the template prevents dragover defaults', async ({
     page
@@ -921,7 +1019,10 @@ test('creates a complete task from the Gantt timeline form', async ({ page }) =>
     await expect(page.locator('.create-panel')).toBeVisible()
     await page.locator('.create-name').fill('Plan launch')
     await page.locator('#gantt-create-start').fill('2026-07-17')
-    await page.locator('#gantt-create-start').press('Tab')
+    // PrimeVue traps Tab inside an open calendar. Blur explicitly rather than
+    // navigating through a stale focused day while filling the next control.
+    await page.locator('.create-name').click()
+    await expect(page.locator('#gantt-create-start')).toHaveValue('2026-07-17')
     await page.locator('#gantt-create-effort').fill('2')
     await page.locator('#gantt-create-effort').press('Tab')
     await expect(page.locator('#gantt-create-end')).toHaveValue('2026-07-20')

@@ -8,7 +8,7 @@ use uuid::Uuid;
 
 fn fields(model: &str) -> Value {
     if model == "task_status" {
-        return json!({"project_id":{"type":"string","minLength":1,"maxLength":128},"name":{"type":"string","minLength":1,"maxLength":64},"color":{"type":"string","minLength":7,"maxLength":7},"sort_order":{"type":"integer","minimum":0,"maximum":1000000},"is_completed":{"type":"boolean"},"is_default":{"type":"boolean"}});
+        return json!({"project_id":{"type":"string","minLength":1,"maxLength":128},"name":{"type":"string","minLength":1,"maxLength":64,"description":"Unique active name within this project after trimming/case folding; built-in English/Chinese display aliases also conflict. Existing duplicates must be explicitly renamed, never automatically merged."},"color":{"type":"string","minLength":7,"maxLength":7,"description":"#RRGGBB hex color; UI provides named presets, existing colors are not rewritten."},"sort_order":{"type":"integer","minimum":0,"maximum":1000000},"is_completed":{"type":"boolean"},"is_default":{"type":"boolean"}});
     }
     if model == "project_member" {
         return json!({"project_id":{"type":"string","minLength":1,"maxLength":128},"member_id":{"type":"string","minLength":1,"maxLength":128},"role":{"type":"string","maxLength":64}});
@@ -48,9 +48,24 @@ fn fields(model: &str) -> Value {
     };
     for name in names {
         fields[*name] = json!({"type":"string","maxLength":2000});
+        if let Some(values) = crate::common::field_dictionary::allowed(model, name) {
+            fields[*name]["enum"] = json!(values);
+            fields[*name]["description"] = json!(format!(
+                "Allowed values: {}. Other labels are rejected.",
+                values.join(", ")
+            ));
+        }
     }
     if model == "member" {
         fields["name"]["maxLength"] = json!(128);
+        fields["availability_exceptions"]["description"] = json!("JSON array string: start_date/end_date canonical YYYY-MM-DD, start <= end, type leave or available; optional name/source/source_uid metadata.");
+        fields["role"]["description"] =
+            json!("Free-form display role, not an authorization or permission.");
+    }
+    if model == "project" {
+        fields["weekend_days"]["description"] =
+            json!("JSON array string of integer weekdays 0..6, Sunday=0, for example [0,6].");
+        fields["calendar_exceptions"]["description"] = json!("JSON array string: canonical YYYY-MM-DD date, type holiday or working, optional free-form name.");
     }
     if model == "task" {
         fields.as_object_mut().unwrap().remove("status");

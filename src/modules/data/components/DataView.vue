@@ -54,7 +54,11 @@
                 <label class="file-picker" for="project-import-file">
                     <span class="file-icon"><i class="pi pi-upload"></i></span>
                     <span>
-                        <strong>{{ selectedFileName || $t('data.chooseFile') }}</strong>
+                        <strong
+                            :title="selectedFileName || $t('data.chooseFile')"
+                            v-tooltip.top="selectedFileName || $t('data.chooseFile')"
+                            >{{ selectedFileName || $t('data.chooseFile') }}</strong
+                        >
                         <small>{{ $t('data.clickBrowse') }}</small>
                     </span>
                     <span class="browse-button">{{ $t('common.browse') }}</span>
@@ -127,7 +131,9 @@
                                 {{ formatSize(backup.size) }} ·
                                 {{ $t('data.backupCounts', backup.counts || {}) }}
                             </small>
-                            <code :title="backup.path">{{ backup.name }}</code>
+                            <code :title="backup.path" v-tooltip.top="backup.path">{{
+                                backup.name
+                            }}</code>
                         </span>
                         <Button
                             :label="$t('data.restore')"

@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-24源码候选：common/field_dictionary.rs集中枚举/数值/嵌套日历校验，entity_api覆盖桌面与Web，MCP schema复用允许值，导入提交前复验；task_status服务在事务gate内按项目校验trim/case及默认中英别名。旧数据读取/备份不新加字典拦截，不自动改库。statusColors/StatusColorSelect复用PrimeVue色集，taskPriority统一兼容别名展示；主窗tauri dragDropEnabled=false放行WebView2 HTML5拖拽，release:check防回退。全文提示PrimeVue与title后备并行。父子层级统计提案另存待讨论，当前语义未改。
+
 2026-10-24 UI布局：TaskBoard为420px固定CSS Grid轨道自动换行（窄于420时自适应100%），每状态固定上限高度、card-list独立滚动且grid-auto-rows:max-content避免卡片被压缩/内部滚动；标题2行、备注3行/PrimeVue全文提示。全局App导航操作样式限定.app-header直属子级，避免通用header-actions污染页面按钮；<=700的route面板自身滚动，项目内容最小可达高度不依赖被压缩flex。未改API/数据库/权限，原生实际更新状态见看板专项。
 
 2026-10-23部署层已跟进状态字典源码：桌面及home-host业务schema7/账号3、独立MCP23工具版本均已实际安装并逐字段核验原数据。新增scripts/verify-status-migration.py只读核对账号/业务前后映射及状态图，4项隔离测试通过；它不负责执行迁移，真实迁移由Rust完成。精确保护副本、摘要及未验边界见状态专项顶部；下方“真实schema6未动”为阶段历史。

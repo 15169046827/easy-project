@@ -42,6 +42,17 @@ pub fn dispatch_raw(
     action: &str,
     data: Value,
 ) -> Result<ApiResponse<Value>, String> {
+    if matches!(action, "add" | "update") {
+        crate::common::field_dictionary::validate(model, &data)?;
+    }
+    if model == "project" && action == "create_from_template" {
+        crate::common::field_dictionary::validate(model, &data["project"])?;
+        if let Some(tasks) = data["tasks"].as_array() {
+            for task in tasks {
+                crate::common::field_dictionary::validate("task", task)?;
+            }
+        }
+    }
     let result = match model {
         "project" => project_service::handle_action(db, action.into(), data),
         "task" => task_service::handle_action(db, action.into(), data),

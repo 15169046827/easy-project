@@ -17,11 +17,14 @@
                 :class="{ 'drop-active': dragOver === column.status }"
                 @dragover.prevent="dragOver = column.status"
                 @dragleave="dragOver = ''"
-                @drop="dropTask(column.status)"
+                @drop.prevent.stop="dropTask(column.status)"
             >
                 <header>
                     <span class="status-dot" :style="{ background: column.color }"></span>
-                    <h4 v-tooltip.top="{ value: column.label, class: 'task-content-tooltip' }">
+                    <h4
+                        :title="column.label"
+                        v-tooltip.top="{ value: column.label, class: 'task-content-tooltip' }"
+                    >
                         {{ column.label }}
                     </h4>
                     <small>{{ tasksByStatus[column.status].length }}</small>
@@ -32,25 +35,35 @@
                         :key="task.id"
                         class="board-card"
                         draggable="true"
-                        @dragstart="startDrag(task)"
+                        @dragstart="startDrag($event, task)"
                         @dragend="finishDrag"
                         @click="$emit('open', task)"
                     >
-                        <span class="priority" :class="`p${task.priority || 3}`"
-                            >P{{ task.priority || 3 }}</span
+                        <span
+                            class="priority"
+                            :class="`p${priorityRank(task.priority) || 'unknown'}`"
+                            :title="String(task.priority || '')"
+                            >{{
+                                priorityRank(task.priority)
+                                    ? `P${priorityRank(task.priority)}`
+                                    : task.priority || '—'
+                            }}</span
                         >
                         <strong
+                            :title="task.name"
                             v-tooltip.top="{ value: task.name, class: 'task-content-tooltip' }"
                             >{{ task.name }}</strong
                         >
                         <p
                             v-if="task.comment"
+                            :title="task.comment"
                             v-tooltip.top="{ value: task.comment, class: 'task-content-tooltip' }"
                         >
                             {{ task.comment }}
                         </p>
                         <footer>
                             <span
+                                :title="memberName(task.assignee)"
                                 v-tooltip.top="{
                                     value: memberName(task.assignee),
                                     class: 'task-content-tooltip'
@@ -81,6 +94,7 @@
 </template>
 
 <script setup>
+import { priorityRank } from '../../../utils/taskPriority'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import Button from 'primevue/button'
 import ProgressBar from 'primevue/progressbar'
@@ -180,8 +194,12 @@ function memberName(id) {
 function dateOnly(value) {
     return String(value).slice(0, 10)
 }
-function startDrag(task) {
+function startDrag(event, task) {
     dragging.value = task
+    if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = 'move'
+        event.dataTransfer.setData('application/x-easyproject-task', task.id)
+    }
 }
 function finishDrag() {
     dragging.value = null

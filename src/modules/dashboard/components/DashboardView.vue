@@ -81,7 +81,7 @@
                         :key="item.status"
                         @click="openTasks(item.status, item.projectId)"
                     >
-                        <span :title="item.label"
+                        <span :title="item.label" v-tooltip.top="item.label"
                             ><i :class="item.className"></i
                             ><span class="status-label">{{ item.label }}</span></span
                         ><strong>{{ item.value }}</strong>

@@ -1,6 +1,6 @@
 # EasyProject模型与原生请求类型
 
-来源：9e78fc3f41033c32ac784ec299baad9d9009a153
+来源：c74bccaaa33f48917a525b19139050f10d3b7de3
 
 以下为真实Rust类型及serde默认属性。String不代表业务允许任意字符串；业务关系/范围以服务校验为准。MCP另有严格inputSchema和默认补齐，不能与桌面原生请求互换。
 

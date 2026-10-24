@@ -7,194 +7,194 @@
   "documents": {
     "overview": {
       "id": 9567481,
+      "sha256": "19c49bab083be14d0623ea245f97bfbb6648ea6808d250ee882586954170a37b",
       "folderId": 97872382,
-      "sha256": "0f202c1f6c4ef03add6656baf3412bfbbefa96a86ba06da65ef702fe234801f1",
       "name": "EasyProject API / 协议与权限总览"
     },
     "models": {
       "id": 9567484,
+      "sha256": "4638d4a4b49ca62f32aee987265eaf4f86526ef40a159f89e6ddc55011c9b810",
       "folderId": 97872382,
-      "sha256": "e9dfa098b620495a7d612a212c14249136edf412372c9ebba8537703f95ce4b6",
       "name": "EasyProject API / 模型与原生请求类型"
     },
     "easyproject_project_list": {
       "id": 9567485,
+      "sha256": "b25342e195f8f95b3e92a702a93c0dd882bbbecd0efb22d5f2f642fb3cad28f6",
       "folderId": 97872385,
-      "sha256": "4e22ea514dc11b783fc8673e3db30b08d7d69f8ba53b34f0c39eeb1fd6ae2490",
       "name": "MCP / easyproject_project_list"
     },
     "easyproject_project_get": {
       "id": 9567486,
+      "sha256": "5233c7b35a0e741636e022d792a6244e78f36ea43e366641adac660142336345",
       "folderId": 97872385,
-      "sha256": "dd4d01d07da22a11fa30fa5f5c30fbbc248b54ae77d2cf806b8fecb7e3bcaa3c",
       "name": "MCP / easyproject_project_get"
     },
     "easyproject_project_create": {
       "id": 9567487,
+      "sha256": "29ba67adaa2b57a3e4be6864b6c19eae759bd89147120b8dc332fa2356391ed1",
       "folderId": 97872385,
-      "sha256": "23e5cf748e80191a391488f15923418531208e20715debe62788c0e62c8aadeb",
       "name": "MCP / easyproject_project_create"
     },
     "easyproject_project_update": {
       "id": 9567488,
+      "sha256": "c8d63d26233676250fb10106328f43c672305c48ff71c024b5d03c54e98aecb9",
       "folderId": 97872385,
-      "sha256": "82bd8b89a07ec0ad799cb3476510b1eadc77ed1d0c331a99ebfabd6c808f0f9d",
       "name": "MCP / easyproject_project_update"
     },
     "easyproject_project_delete": {
       "id": 9567489,
+      "sha256": "a28767771e9531fc38dab84006fa22f7ecc3aa6053fcce2f4188bfb85e238604",
       "folderId": 97872385,
-      "sha256": "c7dd9801914c11d2146100864ae862e8a4fecdd6dd1f16051f6cf3c6fa302205",
       "name": "MCP / easyproject_project_delete"
     },
     "easyproject_task_list": {
       "id": 9567490,
+      "sha256": "3dcb0b57acfa750b2f2d6ddbc489d25afed99a1b97d8f7046d0db243968c3f12",
       "folderId": 97872385,
-      "sha256": "0ca5918598591b7553bdcacb57e74aac5aaacf046c25882b06dc66672acc7e46",
       "name": "MCP / easyproject_task_list"
     },
     "easyproject_task_get": {
       "id": 9567491,
+      "sha256": "6414bbfb3cc636c789d1dbfbd1c0ef9541883ec1d2435a229ed2138288c708d0",
       "folderId": 97872385,
-      "sha256": "3be93c72d6748303e6fd44d2f171f19c75dceb809515917176543e74299117e9",
       "name": "MCP / easyproject_task_get"
     },
     "easyproject_task_create": {
       "id": 9567492,
+      "sha256": "19ef234132c71f94a260b03265e78cb5e218057b97b77c303777fc35d159f71d",
       "folderId": 97872385,
-      "sha256": "cd0cc012c38e3a214660da0b2e6733a5c4b3ad09daf5308029b674af2ff92b77",
       "name": "MCP / easyproject_task_create"
     },
     "easyproject_task_update": {
       "id": 9567493,
+      "sha256": "ef29a2a463ded83c425ce551d9a26a9dd60c31af55fdbca46ff033a19fca72d6",
       "folderId": 97872385,
-      "sha256": "373ad969817bced21dbcf67f7e09923473ac2ae52f2b6babebc6e6787a7f9b03",
       "name": "MCP / easyproject_task_update"
     },
     "easyproject_task_delete": {
       "id": 9567494,
+      "sha256": "1cbeaa9fbc6518d4eeb53742e6fbd0331a3abc20cb7763c2f37cf17da511a676",
       "folderId": 97872385,
-      "sha256": "dd5e8bf829b1ccb5b3fd14ecafea75257ba35c98f6b8f32976d45b7e4ae3f76e",
       "name": "MCP / easyproject_task_delete"
     },
     "easyproject_member_list": {
       "id": 9567495,
+      "sha256": "8665be204053129518116c61218906b7b3bdca49dce681dee1ac4afc5162b286",
       "folderId": 97872385,
-      "sha256": "568f94636a12d41e867084c2edc45fd2de1875ae9c05c4771a95cf2ffc81f291",
       "name": "MCP / easyproject_member_list"
     },
     "easyproject_member_get": {
       "id": 9567496,
+      "sha256": "6afb2147f835a5138d2b7ae2b870cf3dfc7b0fd4404a6d57baf68ce0125e9292",
       "folderId": 97872385,
-      "sha256": "54b6ae9713130c599379083b6a7de733524c088aad39fc8bcb2c19836cb90f7e",
       "name": "MCP / easyproject_member_get"
     },
     "easyproject_member_create": {
       "id": 9567497,
+      "sha256": "d3905c913ef2899a313c2df6cbdad8ac076ce58aa41986664cd69dbc5c175e93",
       "folderId": 97872385,
-      "sha256": "5b3d8db0c76657c529d6067a06a28880c00fde5bab2422c18b015147abb1433e",
       "name": "MCP / easyproject_member_create"
     },
     "easyproject_member_update": {
       "id": 9567498,
+      "sha256": "d0349bcb95ccfca95be7df73fb7bd6e84d6145c382f22ced10517abb28901aca",
       "folderId": 97872385,
-      "sha256": "ef4178c9b902b298a330af3c51b2f00d3dd42922880105119e3dad0e9d503077",
       "name": "MCP / easyproject_member_update"
     },
     "easyproject_member_delete": {
       "id": 9567499,
+      "sha256": "70b29a5bb8e4626c347b6631b1eefcb26096fa52aec309cc0ed2096266879b34",
       "folderId": 97872385,
-      "sha256": "b2dbbb106f3211cc9dd1e3b170aef704119a322d0d91477eac60689636a30197",
       "name": "MCP / easyproject_member_delete"
     },
     "easyproject_project_member_list": {
       "id": 9567500,
+      "sha256": "a1eeb0c50b64ede748d4b99ae60358139ab2a1648f2a25a2eda799566d1f6054",
       "folderId": 97872385,
-      "sha256": "a6ef31104e66a30c7a900246a8921d613f0a1f171fb14cc77ea5afc8b966e863",
       "name": "MCP / easyproject_project_member_list"
     },
     "easyproject_project_member_create": {
       "id": 9567501,
+      "sha256": "580e4072b7503c458f16cd37d54a70703f173d59b4572d996d952c5af48eddff",
       "folderId": 97872385,
-      "sha256": "1e87ea6c430556d52ab8cb63c6c4755fbd8c06f6fc00e49b72ede320cfb6896e",
       "name": "MCP / easyproject_project_member_create"
     },
     "easyproject_project_member_delete": {
       "id": 9567502,
+      "sha256": "fa4d0790cf2a48bf391663b62148d2639c157137ef8fe4cb85bbcbb71f849a8a",
       "folderId": 97872385,
-      "sha256": "276f1a88b05846b848ae1d94bbc0a55cfd85332655935ef1b39c3f214bc278be",
       "name": "MCP / easyproject_project_member_delete"
     },
     "tauri_crud_action": {
       "id": 9567503,
+      "sha256": "c3dcc03fb6ec6285334a2d6869ec3047a1c7a96c825d831cecbd86d0f6766521",
       "folderId": 97872386,
-      "sha256": "7ffc8a21a1d30746273822c94ea225707fa3476c3d410f5a0b7ef50705dc3508",
       "name": "Tauri IPC / crud_action"
     },
     "tauri_open_task_window": {
       "id": 9567504,
+      "sha256": "d116f5a8debf748f41208c50091d228907c76df16b6dd10a44bdc707089f49e8",
       "folderId": 97872386,
-      "sha256": "361c3bc293cd61f5b875b829477a2b93cb38a48f0ed6cecd870a2c0ba0ed0481",
       "name": "Tauri IPC / open_task_window"
     },
     "tauri_show_main_window": {
       "id": 9567505,
+      "sha256": "34d1c9ce28b6d35fbc2a6211d9966e3fc132183f8ced14f3d99db186df627f18",
       "folderId": 97872386,
-      "sha256": "4493447bdd34025f2cd639fbf9f50ba82eec4594e1d397a79b7141e95460d09f",
       "name": "Tauri IPC / show_main_window"
     },
     "tauri_storage_info": {
       "id": 9567506,
+      "sha256": "a8b89046dab091bf4ce40d0316d4c895ab684b50a99c06e9d53bdcf6515f135b",
       "folderId": 97872386,
-      "sha256": "2164cf471eb0b79bc6dafe531e3b6e599ba1dd25c45ac2560e4a8cbd845fdd5b",
       "name": "Tauri IPC / storage_info"
     },
     "tauri_set_data_directory": {
       "id": 9567507,
+      "sha256": "271e9a2ae972d9fc300b345f1279414721e972661306d543009d27fef1bbae49",
       "folderId": 97872386,
-      "sha256": "a743857b7792c3cb00f612f7508cfa08297779e9bf26d152d75f6b7cce3e3e70",
       "name": "Tauri IPC / set_data_directory"
     },
     "tauri_reveal_backup_directory": {
       "id": 9567508,
+      "sha256": "73fef44a99e2e7582222d02b4fe85497bdbe509e18e21af98540e4bb98287ef2",
       "folderId": 97872386,
-      "sha256": "caefc9cf04ae21fac120db9fee348fc2a9f72f818833498b16cd93dc8ce83139",
       "name": "Tauri IPC / reveal_backup_directory"
     },
     "tauri_desktop_credentials": {
       "id": 9576736,
+      "sha256": "517dcf644ae10c9700a02a510c0af7f905f6149e7b53f016fb1a71ab32ea8e58",
       "folderId": 97872386,
-      "sha256": "cc3491bb1cbe43308479012c8bf6e141d4cfbf33bbe7cac1dce81fd3a62947a2",
       "name": "Tauri IPC / desktop_credentials"
     },
     "easyproject_task_status_list": {
       "id": 9584148,
+      "sha256": "99a7f5253300a3bbb1912391955e8c1caa5a53edcefdfabf2dfd192f277e537b",
       "folderId": 97872385,
-      "sha256": "33d3cbddf16dfd88160982c2a9ba532a9438b34e378d89b36b09b2c9e40fedc4",
       "name": "MCP / easyproject_task_status_list"
     },
     "easyproject_task_status_get": {
       "id": 9584149,
+      "sha256": "d5146c079ea6b70183bea9cdeeca78e809012ff58de919fdbdd204276b5cd935",
       "folderId": 97872385,
-      "sha256": "8398c04e1625dad579d4fbb36155ea8b902f2729a49923d3e390951e3441224b",
       "name": "MCP / easyproject_task_status_get"
     },
     "easyproject_task_status_create": {
       "id": 9584150,
+      "sha256": "53a1bc53333c4d0df9d0f6ce0179d5bfe2aafaffc35e8f396d5a787ca0a091f5",
       "folderId": 97872385,
-      "sha256": "d3309a81f4b66804a245617c8946c754e39b2387d4cbe69d8651b84c4fb0ebba",
       "name": "MCP / easyproject_task_status_create"
     },
     "easyproject_task_status_update": {
       "id": 9584151,
+      "sha256": "e4730faba3200a84c74e1736591db38749643979a0ad38d1744470ba5ce85084",
       "folderId": 97872385,
-      "sha256": "a39572ec537e641e7c62ca66e0be9799684df55aaebeb29f59aace7cc759cfbc",
       "name": "MCP / easyproject_task_status_update"
     },
     "easyproject_task_status_delete": {
       "id": 9584152,
+      "sha256": "4f95a457c8e606bd9a14727649fe2e342b1aed8c525ef0391ca29e2886995cc4",
       "folderId": 97872385,
-      "sha256": "9ea57df8d74c2948ec74d9cf58ccdb7c4accc5ca60f7e1e2446baee092fdb56e",
       "name": "MCP / easyproject_task_status_delete"
     }
   },
@@ -317,399 +317,399 @@
   },
   "interfaces": {
     "easyproject_project_list": {
-      "sha256": "055eef46cb3f9608dc7ee493366d0029884f588873506f9c15eb50849bb3930f",
-      "folderId": 97872359,
       "id": 427194,
+      "sha256": "b25342e195f8f95b3e92a702a93c0dd882bbbecd0efb22d5f2f642fb3cad28f6",
+      "folderId": 97872359,
       "name": "项目列表"
     },
     "easyproject_project_get": {
-      "sha256": "b8f01fa519a71049685def37bd4179b6bf6a073332a3d60b863bfae6824a1acf",
-      "folderId": 97872359,
       "id": 427195,
+      "sha256": "5233c7b35a0e741636e022d792a6244e78f36ea43e366641adac660142336345",
+      "folderId": 97872359,
       "name": "项目详情"
     },
     "easyproject_project_create": {
-      "sha256": "976734177ccc13e32ade70f9f3c0b83a9859e613d912f25b83810afde0e8b798",
-      "folderId": 97872359,
       "id": 427197,
+      "sha256": "29ba67adaa2b57a3e4be6864b6c19eae759bd89147120b8dc332fa2356391ed1",
+      "folderId": 97872359,
       "name": "项目新建"
     },
     "easyproject_project_update": {
-      "sha256": "3b2697cf0492b808eec816b7f10924330611b28ffe216649ba570dae3dabc98b",
-      "folderId": 97872359,
       "id": 427198,
+      "sha256": "c8d63d26233676250fb10106328f43c672305c48ff71c024b5d03c54e98aecb9",
+      "folderId": 97872359,
       "name": "项目修改"
     },
     "easyproject_project_delete": {
-      "sha256": "3607afb3ac6501bf21cf42e8c4e5740f451736fe512d651c9f9ad05773245820",
-      "folderId": 97872359,
       "id": 427199,
+      "sha256": "a28767771e9531fc38dab84006fa22f7ecc3aa6053fcce2f4188bfb85e238604",
+      "folderId": 97872359,
       "name": "项目删除"
     },
     "easyproject_task_list": {
-      "sha256": "3ef57ebc212ebb82f886f8641a4e637cdcff07e0700d4d5da9d18c07ed0026fa",
-      "folderId": 97872360,
       "id": 427200,
+      "sha256": "3dcb0b57acfa750b2f2d6ddbc489d25afed99a1b97d8f7046d0db243968c3f12",
+      "folderId": 97872360,
       "name": "任务列表"
     },
     "easyproject_task_get": {
-      "sha256": "651f55368de5513abadae05a40580cbcf3c94eeb6d80046321a9f4da896cb969",
-      "folderId": 97872360,
       "id": 427201,
+      "sha256": "6414bbfb3cc636c789d1dbfbd1c0ef9541883ec1d2435a229ed2138288c708d0",
+      "folderId": 97872360,
       "name": "任务详情"
     },
     "easyproject_task_create": {
-      "sha256": "acb0cf21da0b1e6757b1f036cfd14a828cd23eac96e8f6ad352e41a5679bed46",
-      "folderId": 97872360,
       "id": 427202,
+      "sha256": "19ef234132c71f94a260b03265e78cb5e218057b97b77c303777fc35d159f71d",
+      "folderId": 97872360,
       "name": "任务新建"
     },
     "easyproject_task_update": {
-      "sha256": "32f424ffa36189f47d2ed4f64dda97d110d598916049e1b6a1317e84bf2f023e",
-      "folderId": 97872360,
       "id": 427203,
+      "sha256": "ef29a2a463ded83c425ce551d9a26a9dd60c31af55fdbca46ff033a19fca72d6",
+      "folderId": 97872360,
       "name": "任务修改"
     },
     "easyproject_task_delete": {
-      "sha256": "e594c367d74381401682a07f6661087e1a007d838613ec0dc798b58d51908e9a",
-      "folderId": 97872360,
       "id": 427204,
+      "sha256": "1cbeaa9fbc6518d4eeb53742e6fbd0331a3abc20cb7763c2f37cf17da511a676",
+      "folderId": 97872360,
       "name": "任务删除"
     },
     "easyproject_member_list": {
-      "sha256": "4a200a4a7e3da56c5dc1ffc708150e48268d7e1176e1a19fb0abe1cb65580ecf",
-      "folderId": 97872362,
       "id": 427205,
+      "sha256": "8665be204053129518116c61218906b7b3bdca49dce681dee1ac4afc5162b286",
+      "folderId": 97872362,
       "name": "人员列表"
     },
     "easyproject_member_get": {
-      "sha256": "080f44a9a0159cd7522f091b9e63eec426f943160df95380c480cf9a42274bc7",
-      "folderId": 97872362,
       "id": 427206,
+      "sha256": "6afb2147f835a5138d2b7ae2b870cf3dfc7b0fd4404a6d57baf68ce0125e9292",
+      "folderId": 97872362,
       "name": "人员详情"
     },
     "easyproject_member_create": {
-      "sha256": "192e105168096e0f26fa64f70e6c913abc2b24780aa15e108d52b9682309faff",
-      "folderId": 97872362,
       "id": 427207,
+      "sha256": "d3905c913ef2899a313c2df6cbdad8ac076ce58aa41986664cd69dbc5c175e93",
+      "folderId": 97872362,
       "name": "人员新建"
     },
     "easyproject_member_update": {
-      "sha256": "cd03ed057b5a702d3e3932ffb5fd3ba93c5f9894ff8d1d54da003ff1bd1132fb",
-      "folderId": 97872362,
       "id": 427208,
+      "sha256": "d0349bcb95ccfca95be7df73fb7bd6e84d6145c382f22ced10517abb28901aca",
+      "folderId": 97872362,
       "name": "人员修改"
     },
     "easyproject_member_delete": {
-      "sha256": "0f4f852b30b5fc10278be6fcbd61349ed1617aa47f9bb744edf0620dfb54456c",
-      "folderId": 97872362,
       "id": 427209,
+      "sha256": "70b29a5bb8e4626c347b6631b1eefcb26096fa52aec309cc0ed2096266879b34",
+      "folderId": 97872362,
       "name": "人员删除"
     },
     "easyproject_project_member_list": {
-      "sha256": "737ea0334b77780dc5c124032758522ebad5de51e2e9de2e925937e830c457c3",
-      "folderId": 97872363,
       "id": 427210,
+      "sha256": "a1eeb0c50b64ede748d4b99ae60358139ab2a1648f2a25a2eda799566d1f6054",
+      "folderId": 97872363,
       "name": "项目团队列表"
     },
     "easyproject_project_member_create": {
-      "sha256": "1bfffcadca39321947c341652b7373a16d7edab491de97c7785b72f4af19e598",
-      "folderId": 97872363,
       "id": 427211,
+      "sha256": "580e4072b7503c458f16cd37d54a70703f173d59b4572d996d952c5af48eddff",
+      "folderId": 97872363,
       "name": "项目团队新建"
     },
     "easyproject_project_member_delete": {
-      "sha256": "9459166ad7f0c965a021e7f12b7821387cad6df355dad8b3e90fd0c555422291",
-      "folderId": 97872363,
       "id": 427212,
+      "sha256": "fa4d0790cf2a48bf391663b62148d2639c157137ef8fe4cb85bbcbb71f849a8a",
+      "folderId": 97872363,
       "name": "项目团队删除"
     },
     "tauri_crud_action": {
-      "sha256": "c94d0be33f641b86b3b09443c8665b3afd27bb044697784fcfb55d782caf10ce",
-      "folderId": 97872364,
       "id": 427213,
+      "sha256": "314263e8436fe5961545bd6cd77c9e6b151c0333648f6aee1cc8c956c62165bb",
+      "folderId": 97872364,
       "name": "统一业务分发"
     },
     "tauri_open_task_window": {
-      "sha256": "5a9360c51b4dc39850e242209db64c1943ca217a47859e52394c4c7515326d53",
-      "folderId": 97872379,
       "id": 427214,
+      "sha256": "1c3d16de0e927986ba86dd28f262bb76b9a3db37d56c0931d72aa347fafa295c",
+      "folderId": 97872379,
       "name": "打开任务悬浮窗"
     },
     "tauri_show_main_window": {
-      "sha256": "69137220038ec2ba76bbdf55815a478cc03496ad96ad7528a70a66c4cc36642b",
-      "folderId": 97872379,
       "id": 427215,
+      "sha256": "1020600d41a294f93fa8645f1e0f8d40c653e4a0570e5f9d28cde0b3e6177e8b",
+      "folderId": 97872379,
       "name": "返回主窗口并打开项目"
     },
     "tauri_storage_info": {
-      "sha256": "b0fc95dc3dfddf73037a067cce8d81cc7ed5bdaa7dc7c1e458f517dc2506ae70",
-      "folderId": 97872381,
       "id": 427216,
+      "sha256": "fc9b5d165bc8342f4fdeb6f4ee638ebe890e13dc4a605746f6d80c2162673278",
+      "folderId": 97872381,
       "name": "查询存储位置"
     },
     "tauri_set_data_directory": {
-      "sha256": "2e9736919a498dbb159b550365b1403b50cba4540aa50df0259d88c1a48ee78a",
-      "folderId": 97872381,
       "id": 427217,
+      "sha256": "43dede669defdb1842874ab37b592ad516df5ccf4066cff8c7e3f19d52f16e47",
+      "folderId": 97872381,
       "name": "设置下次启动的数据目录"
     },
     "tauri_reveal_backup_directory": {
-      "sha256": "2726c35700f7d3392569e4499bf34ce86775ab465603fa89fa80393388bf9a15",
-      "folderId": 97872381,
       "id": 427218,
+      "sha256": "bdd508a7ad0fbd930080de04bf99fdbf2cbe955af49b9585d4a23eebe987dd76",
+      "folderId": 97872381,
       "name": "打开受管备份目录"
     },
     "ipc_project_add": {
-      "sha256": "ba2fa4159266554c3fda4d36938e193dabe7a21ac0681f17d658a2bd8b97b1b7",
-      "folderId": 97872365,
       "id": 427219,
+      "sha256": "3ecbc5354a237ab2b46c2f161dab5c463465b75dde75ab1df7c5cc84f0ff1201",
+      "folderId": 97872365,
       "name": "项目·新建"
     },
     "ipc_project_create_from_template": {
-      "sha256": "850d4f4d624d0246d91374cee3414ebd181c74ff4c4eae3c2b29b5e88497d0c6",
-      "folderId": 97872365,
       "id": 427220,
+      "sha256": "7dffee174c32c814e6b81e830acc8ca8fa5138c1fa79939b8aff37e75159fdda",
+      "folderId": 97872365,
       "name": "项目·从模板创建"
     },
     "ipc_project_get_all": {
-      "sha256": "6bfba85e58ffcabc040e5b2cea0132c0c3fde7ee7605e7c114df855bf5239dd2",
-      "folderId": 97872365,
       "id": 427221,
+      "sha256": "2b36366fb021844a8d4a0fe1306a78dc3234c0dcd22df59d5ea75dfe219af309",
+      "folderId": 97872365,
       "name": "项目·列表"
     },
     "ipc_project_update": {
-      "sha256": "544165bb96f71b9136f8c999a089576bb195ad0fcbbb20ea2da5baba967f53b4",
-      "folderId": 97872365,
       "id": 427222,
+      "sha256": "e0ee91f1078be2b0cb44abeb86e3763dd7ceb7569a16d25ae09c3aeded20844a",
+      "folderId": 97872365,
       "name": "项目·修改"
     },
     "ipc_project_delete": {
-      "sha256": "3e390fb24656414f249c6c2d738b08338f619ebe3f0333cb3ffcd89ab3a4a24f",
-      "folderId": 97872365,
       "id": 427223,
+      "sha256": "a9a531535b31013353fee56580ee3ebe2a29439113488fdc124219e37e00c889",
+      "folderId": 97872365,
       "name": "项目·删除"
     },
     "ipc_task_add": {
-      "sha256": "75bc366643656b7b04c138c034a0d632a3bc846b31973fac5408777c0923148d",
-      "folderId": 97872366,
       "id": 427224,
+      "sha256": "64d277195823d69adf055350b4c1cac872afc177a74a1c3f74b7421fc010c56f",
+      "folderId": 97872366,
       "name": "任务·新建"
     },
     "ipc_task_get_all": {
-      "sha256": "eca660da1818edac31414665ede56523d1794cd9ee23dcacc74efa4795add33e",
-      "folderId": 97872366,
       "id": 427225,
+      "sha256": "09f4428f49af434d24b80731e12df440bca003cb7e95c914f064d643ae5dfa25",
+      "folderId": 97872366,
       "name": "任务·列表"
     },
     "ipc_task_swap_order": {
-      "sha256": "2e3204be3a44c5c54fe08b1aa50108dd29d04b63e3d233d6b7c482987f506783",
-      "folderId": 97872366,
       "id": 427226,
+      "sha256": "562b602c89137c237d9ec30be256c228b9dcf6f3559bc7319c82934e485d44ae",
+      "folderId": 97872366,
       "name": "任务·交换排序"
     },
     "ipc_task_update": {
-      "sha256": "fc98e575d93eb75c91d4bb6d4f68941f90e5b8cf8ac3e74b28446088f457b0bf",
-      "folderId": 97872366,
       "id": 427227,
+      "sha256": "3673242a91c15fc55e3c51b663f9caf173b6c6a97b879dd60f7ccd6bb3138c6b",
+      "folderId": 97872366,
       "name": "任务·修改"
     },
     "ipc_task_delete": {
-      "sha256": "0f7977c05a1c9b89d4ad2393f5899318d25a570703564526b8c24acfff1b2bf2",
-      "folderId": 97872366,
       "id": 427228,
+      "sha256": "80fbe53cf364010de0a7a2e798cfb30d374932feefa4504faae06dc3fd7df2f4",
+      "folderId": 97872366,
       "name": "任务·删除"
     },
     "ipc_member_add": {
-      "sha256": "02ad146145815c5ed84290b4cabf36cea898390bba759630a6c2a4aead169550",
-      "folderId": 97872368,
       "id": 427229,
+      "sha256": "3aa896f8fb969affd3c26a03a7c01ccda383a3211539d03fc7a3818ef122edfc",
+      "folderId": 97872368,
       "name": "人员·新建"
     },
     "ipc_member_get_all": {
-      "sha256": "95886ce6484478b412adbbfdf900698e9aafe14e32584f29ef2a0ec27cf36b44",
-      "folderId": 97872368,
       "id": 427230,
+      "sha256": "2b48d753f76b7490a151eaf0f34719df53c18471d2d88c2794eff2439d13d77b",
+      "folderId": 97872368,
       "name": "人员·列表"
     },
     "ipc_member_update": {
-      "sha256": "042a596afcb7b2e23d6b2b25cc8688de9b89ffe5cb58da8dee0e02c3619d4d32",
-      "folderId": 97872368,
       "id": 427231,
+      "sha256": "147e56525a938aad8d4d56d5a4dca1650e57093a077b95dcc99f097a023c1189",
+      "folderId": 97872368,
       "name": "人员·修改"
     },
     "ipc_member_delete": {
-      "sha256": "5bf8177ae92a32e44f315f5c5f039b6937679b0a58e66c7c35fdbdbb5293335e",
-      "folderId": 97872368,
       "id": 427232,
+      "sha256": "d19dea2438229aaafe0975ba5adc1d2e3548cfe06e34b512a60375f3dd186d13",
+      "folderId": 97872368,
       "name": "人员·删除"
     },
     "ipc_member_search": {
-      "sha256": "b69d7083a21c8c4bcf2b574cd62211c9d340fe021f652a22e51ca23eb3cfb49f",
-      "folderId": 97872368,
       "id": 427233,
+      "sha256": "e0c2303b680bea9ab38845842743eb8da45b7a612db6950ca20e990c4dbd472c",
+      "folderId": 97872368,
       "name": "人员·搜索"
     },
     "ipc_project_member_add": {
-      "sha256": "11961895b4a600a41f572fc4a968b7746f095771d09f5e05971caa8807dc31ca",
-      "folderId": 97872370,
       "id": 427234,
+      "sha256": "f42dc1c0e80640325794e77591d68b5458179b89dc06d32bb661942db39047a2",
+      "folderId": 97872370,
       "name": "项目团队·新建"
     },
     "ipc_project_member_get_by_member": {
-      "sha256": "e3f9c6ab75dd82814786fa9a1df8a5120fc7b04febc5bf09a8f22d0a225a7b16",
-      "folderId": 97872370,
       "id": 427235,
+      "sha256": "c5c1a8916b02b20971d745f77de6c287c8d5b006d0050c0f2ac3e79a3d5b7dac",
+      "folderId": 97872370,
       "name": "项目团队·按人员查询"
     },
     "ipc_project_member_get_by_project": {
-      "sha256": "3a496601e77087faa51b17399491d73bd858eb21cfc5d8632f90bcdfc989f83d",
-      "folderId": 97872370,
       "id": 427236,
+      "sha256": "56fadc1435b282060a66d74c1243f818d91f01543fed519b545b4d1f4bac9eea",
+      "folderId": 97872370,
       "name": "项目团队·按项目查询"
     },
     "ipc_project_member_delete": {
-      "sha256": "37460c171cba4a37ee0d03677ba5906e5b710aa48f948641e080bccabd02582b",
-      "folderId": 97872370,
       "id": 427237,
+      "sha256": "6945fb5df3256c900a0c4046acf84f1b64c711bb46251a1d70fca86ac0e884fa",
+      "folderId": 97872370,
       "name": "项目团队·删除"
     },
     "ipc_task_dependency_get_all": {
-      "sha256": "333c337afaec833e1f3bca24fa186513e89abc090e422ffdd31f0af20c7b0b3a",
-      "folderId": 97872371,
       "id": 427238,
+      "sha256": "7017c15c041fe9374b9fa66196be7f26f97ea419119a2c1d9d35ac8234219189",
+      "folderId": 97872371,
       "name": "任务依赖·列表"
     },
     "ipc_task_dependency_set_for_task": {
-      "sha256": "d7fa99a74d76878e4c579e3338c359144c813c6b0b8bab1443812e47f88e55f3",
-      "folderId": 97872371,
       "id": 427239,
+      "sha256": "0459bd5afa3dfd6be386d5279df0d2646dc12b8b3a5ba720302f84a65b6f7c0b",
+      "folderId": 97872371,
       "name": "任务依赖·设置前置任务"
     },
     "ipc_data_export_json": {
-      "sha256": "521d0e0becfd50e53dc4c3fe1b1b1b08b030f05ed3869648248bcb53dc4a9253",
-      "folderId": 97872373,
       "id": 427240,
+      "sha256": "42fb8ce7a03b27ec2432955b58fdea41ddbd1f81f15c9a8e9b2aef8226ddeb99",
+      "folderId": 97872373,
       "name": "数据与备份·导出JSON"
     },
     "ipc_data_import_json": {
-      "sha256": "8a6f2f978784b559c04db93fcf2f2b4c1a054a077e452f954c6cd75b0376ab1f",
-      "folderId": 97872373,
       "id": 427241,
+      "sha256": "dad973d61d11cae9fdbe68f2a96619816cf2dad515229ba701db0956b5cb7848",
+      "folderId": 97872373,
       "name": "数据与备份·导入JSON"
     },
     "ipc_data_backup": {
-      "sha256": "180f810ecec964afbca985e17358336ac742446ed1bd7143879f47704c8b123e",
-      "folderId": 97872373,
       "id": 427242,
+      "sha256": "918235129fa35e1e4a2cd254da355dae619127ba9220c8589e5f10ce80e63c46",
+      "folderId": 97872373,
       "name": "数据与备份·创建备份"
     },
     "ipc_data_list_backups": {
-      "sha256": "4b47c69c89eaef837a353d9c5394f82e9bfc09bd24dc04db044b4f3c908c224a",
-      "folderId": 97872373,
       "id": 427243,
+      "sha256": "871e8b0a8599181618b59b8946643df5363ea79270dc74a6dc331f78b3406fb0",
+      "folderId": 97872373,
       "name": "数据与备份·备份列表"
     },
     "ipc_data_preview_backup": {
-      "sha256": "afc8729f0c98832674caa575f275c3eceb088dd7fe8899a1b2adce80f803b20a",
-      "folderId": 97872373,
       "id": 427244,
+      "sha256": "f9b5c4af1c67f3809f4bec79a491eed84185e6a542b65bf6f25510498664e871",
+      "folderId": 97872373,
       "name": "数据与备份·预览备份"
     },
     "ipc_data_restore": {
-      "sha256": "26ffb1991b1a80b2e7c394b6db57ca5abba8e8027f9e73a97875a680012952f1",
-      "folderId": 97872373,
       "id": 427245,
+      "sha256": "ec9ff4ac0aea97e2ed9895aeb79cdff7b8377057d12ed950f3c5e386c505e7c0",
+      "folderId": 97872373,
       "name": "数据与备份·恢复备份"
     },
     "ipc_calendar_fetch_ics": {
-      "sha256": "3121e18a62cdd5dbd01720c9fc07e45490efaaf6a0996db0402f26ac3d89ec85",
-      "folderId": 97872375,
       "id": 427246,
+      "sha256": "fa59ff65401fe25f2b05071e3e41955f8d0f3ec07dbf428592b852a7d9bba1a1",
+      "folderId": 97872375,
       "name": "工作日历·获取ICS"
     },
     "ipc_plan_baseline_save": {
-      "sha256": "f32d2fd888f7f67d048352bee6b073d862c9e51eea42a5e69f452e3a06cbe2a6",
-      "folderId": 97872372,
       "id": 427247,
+      "sha256": "ffb0bbf460a72d338c262d40e3c5550db34e88379a38f3b2b9f2835ac7d98d62",
+      "folderId": 97872372,
       "name": "计划基线·保存"
     },
     "ipc_plan_baseline_get_by_project": {
-      "sha256": "cd06bb16703ecd49d6cf3a97d79e28b3df8477849002da5f8a35750de862e117",
-      "folderId": 97872372,
       "id": 427248,
+      "sha256": "b5eac7736783ee5fe949a1baa57689a9780f34f00419394358c2466b0676577d",
+      "folderId": 97872372,
       "name": "计划基线·按项目查询"
     },
     "ipc_plan_baseline_clear": {
-      "sha256": "5d11922b2165213f5a7e5689dfc9cb10e1aa9089b64a7e7356e7c1685a55d97e",
-      "folderId": 97872372,
       "id": 427249,
+      "sha256": "ba9e7c06319c97e4a8c9cbe59c96806d9f63153a255d82fab78f26661f4ab141",
+      "folderId": 97872372,
       "name": "计划基线·清除"
     },
     "tauri_desktop_credentials": {
-      "sha256": "e115c4ab0de074a089e5c1467010a9e910965115f7afb4036034a267ee027b77",
-      "folderId": 98047232,
       "id": 428265,
+      "sha256": "9efdf970a7b9204205cf9ce1889ad59fc3c715f6b2d0837de697cef3e958e7a1",
+      "folderId": 98047232,
       "name": "桌面加密保存密码"
     },
     "easyproject_task_status_list": {
-      "sha256": "102c657ea52a1d4d520b60ad847721527c0d469fa0a861c5d0d51c393ca1139f",
-      "folderId": 98183462,
       "id": 429100,
+      "sha256": "99a7f5253300a3bbb1912391955e8c1caa5a53edcefdfabf2dfd192f277e537b",
+      "folderId": 98183462,
       "name": "任务状态列表"
     },
     "easyproject_task_status_get": {
-      "sha256": "c3576561780e95922a0131c0c4f94b8745967386b8732351e0aeb756026cc2ed",
-      "folderId": 98183462,
       "id": 429101,
+      "sha256": "d5146c079ea6b70183bea9cdeeca78e809012ff58de919fdbdd204276b5cd935",
+      "folderId": 98183462,
       "name": "任务状态详情"
     },
     "easyproject_task_status_create": {
-      "sha256": "e9367e2ec7b3b39dc71f44bf891de1ddc83e5c12fd93ee8f1c5afb08727e81f9",
-      "folderId": 98183462,
       "id": 429102,
+      "sha256": "53a1bc53333c4d0df9d0f6ce0179d5bfe2aafaffc35e8f396d5a787ca0a091f5",
+      "folderId": 98183462,
       "name": "任务状态新建"
     },
     "easyproject_task_status_update": {
-      "sha256": "2d5b4c417a3aa51c56e69f484f347e3952423f8b775075c7aa600700da229ab9",
-      "folderId": 98183462,
       "id": 429103,
+      "sha256": "e4730faba3200a84c74e1736591db38749643979a0ad38d1744470ba5ce85084",
+      "folderId": 98183462,
       "name": "任务状态修改"
     },
     "easyproject_task_status_delete": {
-      "sha256": "749b07524b008899211573853d271fe3997332472921b54f60b78374aa6255b1",
-      "folderId": 98183462,
       "id": 429104,
+      "sha256": "4f95a457c8e606bd9a14727649fe2e342b1aed8c525ef0391ca29e2886995cc4",
+      "folderId": 98183462,
       "name": "任务状态删除"
     },
     "ipc_task_status_get_all": {
-      "sha256": "2603a30dca526bf2f428b1335f3d453124c83fabc964045270ee97b2dbdf8e3d",
-      "folderId": 98183464,
       "id": 429106,
+      "sha256": "b83935750de4c642b69998a4fdfc485a587892634ec5de3ad9aca4430957eece",
+      "folderId": 98183464,
       "name": "任务状态·列表"
     },
     "ipc_task_status_get_usage": {
-      "sha256": "846e49d713f37434e7f11f5953d5cbb1b6938dd6cbdb2f9ebac0715511846e5d",
-      "folderId": 98183464,
       "id": 429107,
+      "sha256": "f406b65d270a0d76560f474db8a32e22c7e2ca2ad3a1b512940bb7beb232fd80",
+      "folderId": 98183464,
       "name": "任务状态·引用冲突"
     },
     "ipc_task_status_add": {
-      "sha256": "93caf4215bb362ed5fd1e88bdd84bda3bbb1bf572c43925cc0892a9aae6432d7",
-      "folderId": 98183464,
       "id": 429108,
+      "sha256": "48904b72e9df2801fd5d3ad4593defcb878fd0823e3b06b000478bfc7643765d",
+      "folderId": 98183464,
       "name": "任务状态·新建"
     },
     "ipc_task_status_update": {
-      "sha256": "f59eaf44e3170a89415c98c47965fe782e634d6712076368cc62f26e0a6813ce",
-      "folderId": 98183464,
       "id": 429109,
+      "sha256": "b658afd15be26855bfcceb8b22befd26a6004f80c42ece1a6e478cddadc5db08",
+      "folderId": 98183464,
       "name": "任务状态·修改"
     },
     "ipc_task_status_delete": {
-      "sha256": "4db3553e288689c03918b23c9082ef9a608e44236ac141cff455013265120dd8",
-      "folderId": 98183464,
       "id": 429110,
+      "sha256": "00d2615e6b4108acbb7709061fac01278c99395b5ce69151536706286a6b0808",
+      "folderId": 98183464,
       "name": "任务状态·删除"
     }
   }

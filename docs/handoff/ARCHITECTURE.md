@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-24最终状态：下方PointerEvent续修已完成并真实Windows验收（Pending→Testing→Ctrl+Z，SQL一致）后交付c74bcca；桌面/独立MCP/服务器均更新，无迁移或真实CRUD。field_dictionary共享枚举/日历结构/数值、taskPriority统一别名呈现、statusColors具名色。275单测/90UI+12HTTP及Rust/静态/上线门禁见专项最终回执；早期HTML5候选失败保留，父子统计提案仍待讨论。
+
 2026-10-24原生门禁续修：仅设置Tauri dragDropEnabled=false的d2e5d41原生候选未成功拖动，未部署。TaskBoard现在使用内部鼠标PointerEvent手势，8px阈值/当前按下任务来源/命中项目状态ID/取消失焦卸载清理/快速事件合并/拖后抑制点击，不依赖宿主HTML5/OLE；外部drop阻止导航且不写数据。仍保留false配置供任务表HTML5。具体原生复验与后续安装状态以专项最新顶部为准。
 
 2026-10-24源码候选：common/field_dictionary.rs集中枚举/数值/嵌套日历校验，entity_api覆盖桌面与Web，MCP schema复用允许值，导入提交前复验；task_status服务在事务gate内按项目校验trim/case及默认中英别名。旧数据读取/备份不新加字典拦截，不自动改库。statusColors/StatusColorSelect复用PrimeVue色集，taskPriority统一兼容别名展示；主窗tauri dragDropEnabled=false放行WebView2 HTML5拖拽，release:check防回退。全文提示PrimeVue与title后备并行。父子层级统计提案另存待讨论，当前语义未改。

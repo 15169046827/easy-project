@@ -1,5 +1,7 @@
 # EasyProject API维护入口（Apifox）
 
+2026-10-24已部署写入字典/重复状态校验：产品c74bcca/后端d2e5d41，独立与伴随release MCP SHA65ABB832…；实际隔离发现23工具、数据库SHA不变，66原生接口/32参考在私有Apifox按实际release来源已逐项读回，既有ID/分组保留。允许值详见`docs/MCP.md`受控字典表与各工具schema；HTTP18契约无语义变化，未机械重传。无schema/权限变化，不操作真实数据；当前Codex需重连才能加载新程序。交付证据见`docs/STATUS_COLORS_DRAG_CHECKPOINT.md`。
+
 用户已授权在私有Apifox **EasyProject / 8948094** 项目维护本项目API；主分支8751742，默认模块8741707。不操作同账户其它项目，不公开分享/发布，不上传令牌或真实业务数据。
 
 ## 当前覆盖

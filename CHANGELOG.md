@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- 2026-10-24: Safely deployed dictionary/color/full-text fixes and application-managed pointer board dragging to the approved desktop, website, backend and independent MCP. Real Windows synthetic drag/undo, 275 unit tests, 90 production UI and 12 isolated HTTP checks passed. Data/relations/schema/permissions preserved; no new public installer release. Earlier configuration-only native drag candidate failed and was not deployed. Evidence: `docs/STATUS_COLORS_DRAG_CHECKPOINT.md`.
+
 - 2026-10-24 (candidate): Add reusable named status-color presets, prevent same-project case/trim/built-in translated-name duplicates, and validate controlled write dictionaries across MCP/IPC/Web/imports. Validate nested calendar values, preserve legacy data, and consistently rank/color legacy priority aliases. Disable Tauri's Windows drop interception for HTML5 board dragging, add internal drag payloads and broaden full-text hover fallbacks across clipped data. No schema migration or MCP permission change. Parent/child statistics redesign is recorded for later discussion, not implemented.
 
 - 2026-10-24: Fixed-width wrapping task-board columns with independent vertical scrolling, left-aligned bounded cards and full PrimeVue hover text. Restored full task-title hover fallback and isolated navigation actions from page actions on narrow screens; kept task controls and tables reachable. No schema, API or MCP permission changes.

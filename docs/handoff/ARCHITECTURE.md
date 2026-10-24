@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-24候选增补：`src-tauri/src/common/task_hierarchy.rs`为共享父子完成约束，entity_api在既有事务内执行写前挂接检查/写后分支检查，状态字典完成属性修改也受保护；data_service导入与project_service模板在提交前校验。server通过共享模块复用，无单独业务规则分叉。业务schema仍7；工作量来源字段/汇总/树分页与抽屉尚未实施，不能将本段当部署状态。最新进度见父子专项。
+
 2026-10-24最终状态：下方PointerEvent续修已完成并真实Windows验收（Pending→Testing→Ctrl+Z，SQL一致）后交付c74bcca；桌面/独立MCP/服务器均更新，无迁移或真实CRUD。field_dictionary共享枚举/日历结构/数值、taskPriority统一别名呈现、statusColors具名色。275单测/90UI+12HTTP及Rust/静态/上线门禁见专项最终回执；早期HTML5候选失败保留，父子统计提案仍待讨论。
 
 2026-10-24原生门禁续修：仅设置Tauri dragDropEnabled=false的d2e5d41原生候选未成功拖动，未部署。TaskBoard现在使用内部鼠标PointerEvent手势，8px阈值/当前按下任务来源/命中项目状态ID/取消失焦卸载清理/快速事件合并/拖后抑制点击，不依赖宿主HTML5/OLE；外部drop阻止导航且不写数据。仍保留false配置供任务表HTML5。具体原生复验与后续安装状态以专项最新顶部为准。

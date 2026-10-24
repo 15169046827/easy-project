@@ -254,6 +254,7 @@ fn import_json(db: &DbState, payload: &Value) -> Result<(), String> {
         .map_err(|e| format!("Invalid imported status graph: {e}"))?;
     crate::common::field_dictionary::validate_import(&tx)?;
     crate::common::task_status::validate_display_uniqueness(&tx)?;
+    crate::common::task_hierarchy::validate_completion(&tx, None)?;
     tx.commit().map_err(|e| e.to_string())
 }
 

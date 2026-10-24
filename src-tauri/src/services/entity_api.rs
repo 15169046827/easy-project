@@ -53,6 +53,14 @@ pub fn dispatch_raw(
             }
         }
     }
+    let hierarchy_data =
+        if matches!(model, "task" | "task_status") && matches!(action, "add" | "update") {
+            let conn = db.lock_connection().map_err(|e| e.to_string())?;
+            crate::common::task_hierarchy::before_write(&conn, model, action, &data)?;
+            Some(data.clone())
+        } else {
+            None
+        };
     let result = match model {
         "project" => project_service::handle_action(db, action.into(), data),
         "task" => task_service::handle_action(db, action.into(), data),
@@ -62,6 +70,16 @@ pub fn dispatch_raw(
         _ => return Err("Unsupported entity".into()),
     }?;
     if result.success {
+        if let Some(data) = hierarchy_data {
+            let conn = db.lock_connection().map_err(|e| e.to_string())?;
+            crate::common::task_hierarchy::after_write(
+                &conn,
+                model,
+                action,
+                &data,
+                result.data.as_ref(),
+            )?;
+        }
         Ok(result)
     } else {
         Err(result.message)

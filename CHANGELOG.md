@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- 2026-10-24: Fixed-width wrapping task-board columns with independent vertical scrolling, left-aligned bounded cards and full PrimeVue hover text. Restored full task-title hover fallback and isolated navigation actions from page actions on narrow screens; kept task controls and tables reachable. No schema, API or MCP permission changes.
+
 - 2026-10-23: Deployed project-owned task statuses to the approved local desktop, independent MCP and private server release. Protected schema 6→7 migration preserves original account/business fields and relationships; no new public installer release. Exact provenance and validation limits: `docs/PROJECT_TASK_STATUS_CHECKPOINT.md`.
 
 ### Project-owned task statuses (2026-10-23, candidate)

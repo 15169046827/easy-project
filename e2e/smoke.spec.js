@@ -667,7 +667,20 @@ test('moves a task across the project board and supports undo', async ({ page })
 
     const card = page.locator('.board-card').filter({ hasText: 'Design milestone' })
     await expect(card).toBeVisible()
-    await card.dragTo(page.locator('.board-column').nth(2))
+    await card.hover()
+    // Start the real native drag before scrolling to a wrapped row. dragTo
+    // pre-scrolls both endpoints, which can move the source out of view first.
+    const source = await card.boundingBox()
+    await page.mouse.move(source.x + source.width / 2, source.y + source.height / 2)
+    await page.mouse.down()
+    await page.mouse.move(source.x + source.width / 2 + 12, source.y + source.height / 2, {
+        steps: 5
+    })
+    const target = page.locator('.board-column').nth(2)
+    await target.scrollIntoViewIfNeeded()
+    const destination = await target.boundingBox()
+    await page.mouse.move(destination.x + destination.width / 2, destination.y + 30, { steps: 20 })
+    await page.mouse.up()
 
     let calls = await page.evaluate(() => window.__EASY_PROJECT_CALLS__)
     expect(

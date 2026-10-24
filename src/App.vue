@@ -656,7 +656,7 @@ nav button.p-button.active {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
-.header-actions {
+.app-header > .header-actions {
     display: flex;
     gap: 0.35rem;
     align-items: center;
@@ -883,7 +883,7 @@ nav button.p-button.active {
     nav button.p-button {
         flex: 0 0 auto;
     }
-    .header-actions {
+    .app-header > .header-actions {
         position: static;
         width: 100%;
         flex-wrap: wrap;

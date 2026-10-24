@@ -335,6 +335,21 @@ for (const dark of [false, true]) {
     test(`board fixed columns wrap and clipped text stays discoverable dark=${dark}`, async ({
         page
     }) => {
+        await page.route('http://127.0.0.1:4173/', async route => {
+            const response = await route.fetch()
+            await route.fulfill({
+                response,
+                body: (await response.text()).replace(
+                    /<style>/g,
+                    '<style nonce="board-response-nonce">'
+                ),
+                headers: {
+                    ...response.headers(),
+                    'content-security-policy':
+                        "default-src 'self'; script-src 'self'; style-src 'self' 'nonce-board-response-nonce'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'"
+                }
+            })
+        })
         const longName = 'LongTaskTitle'.repeat(30)
         const longComment = 'Long task description with full hover details. '.repeat(20)
         await page.addInitScript(
@@ -403,8 +418,8 @@ for (const dark of [false, true]) {
                     titleClamp: getComputedStyle(card.querySelector('strong')).webkitLineClamp
                 }
             })
-                expect(geometry.perRow, JSON.stringify({ width, ...geometry })).toBe(perRow)
-                expect(geometry.width).toBeLessThanOrEqual(421)
+            expect(geometry.perRow, JSON.stringify({ width, ...geometry })).toBe(perRow)
+            expect(geometry.width).toBeLessThanOrEqual(421)
             expect(geometry.overflow).toBe(false)
             expect(geometry.wrapped).toBe(true)
             expect(geometry.scrolls).toBe(true)
@@ -414,11 +429,64 @@ for (const dark of [false, true]) {
         await page.setViewportSize({ width: 1280, height: 800 })
         const card = page.locator('.board-card').filter({ hasText: `${longName}-0` })
         await card.locator('strong').hover()
+        expect(await card.evaluate(node => node.scrollTop)).toBe(0)
         await expect(page.getByRole('tooltip')).toHaveText(`${longName}-0`)
         await card.locator('p').hover()
         await expect(page.getByRole('tooltip')).toHaveText(longComment.trim())
+        expect(
+            await page
+                .locator('style[data-primevue-style-id]')
+                .evaluateAll(
+                    nodes =>
+                        nodes.length > 0 &&
+                        nodes.every(node => node.nonce === 'board-response-nonce')
+                )
+        ).toBe(true)
         await card.focus()
         await expect(card).toBeFocused()
+    })
+}
+
+for (const dark of [false, true]) {
+    test(`narrow project actions stay in their page and task tools remain reachable dark=${dark}`, async ({
+        page
+    }) => {
+        await page.addInitScript(dark => {
+            localStorage.setItem('easyproject-theme', dark ? 'dark' : 'light')
+        }, dark)
+        for (const width of [424, 320]) {
+            await page.setViewportSize({ width, height: 640 })
+            await page.goto('/#/projects')
+            const create = page.getByRole('button', { name: '新建项目', exact: true })
+            await expect(create).toBeVisible()
+            const globalHeader = await page.locator('.app-header').boundingBox()
+            const action = await create.boundingBox()
+            expect(action.y).toBeGreaterThanOrEqual(globalHeader.y + globalHeader.height)
+            expect(action.x).toBeGreaterThanOrEqual(0)
+            expect(action.x + action.width).toBeLessThanOrEqual(width)
+            expect(
+                await page
+                    .locator('.projects-page .header-actions')
+                    .evaluate(node => getComputedStyle(node).position)
+            ).toBe('static')
+            await create.click()
+            await expect(page.getByRole('dialog')).toBeVisible()
+            await page.keyboard.press('Escape')
+            await page.goto('/#/project/p1')
+            const taskCreate = page.getByRole('button', { name: '新建任务', exact: true })
+            await taskCreate.scrollIntoViewIfNeeded()
+            await expect(taskCreate).toBeInViewport()
+            expect(await taskCreate.evaluate(node => getComputedStyle(node).whiteSpace)).toBe(
+                'nowrap'
+            )
+            await page.locator('.task-name-text').first().scrollIntoViewIfNeeded()
+            await expect(page.locator('.task-name-text').first()).toBeInViewport()
+            expect(
+                await page
+                    .locator('.project-workspace')
+                    .evaluate(node => node.scrollWidth <= node.clientWidth + 1)
+            ).toBe(true)
+        }
     })
 }
 

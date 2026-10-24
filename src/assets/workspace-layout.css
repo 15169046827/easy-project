@@ -142,3 +142,17 @@ section.workspace-page > .cards {
         grid-template-columns: 1fr;
     }
 }
+@media (max-width: 700px) {
+    .app-shell > section.workspace-page {
+        overflow-y: auto;
+    }
+    .app-shell .workspace-page .table-card {
+        min-height: 24rem;
+        flex-shrink: 0;
+    }
+    .app-shell > .project-workspace > .workspace-content {
+        height: max(28rem, 60dvh);
+        min-height: 28rem;
+        flex: 0 0 auto;
+    }
+}

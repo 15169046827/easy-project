@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-24 UI布局：TaskBoard为420px固定CSS Grid轨道自动换行（窄于420时自适应100%），每状态固定上限高度、card-list独立滚动且grid-auto-rows:max-content避免卡片被压缩/内部滚动；标题2行、备注3行/PrimeVue全文提示。全局App导航操作样式限定.app-header直属子级，避免通用header-actions污染页面按钮；<=700的route面板自身滚动，项目内容最小可达高度不依赖被压缩flex。未改API/数据库/权限，原生实际更新状态见看板专项。
+
 2026-10-23部署层已跟进状态字典源码：桌面及home-host业务schema7/账号3、独立MCP23工具版本均已实际安装并逐字段核验原数据。新增scripts/verify-status-migration.py只读核对账号/业务前后映射及状态图，4项隔离测试通过；它不负责执行迁移，真实迁移由Rust完成。精确保护副本、摘要及未验边界见状态专项顶部；下方“真实schema6未动”为阶段历史。
 
 2026-10-23状态字典源码候选：common/task_status.rs负责schema7播种/隔离迁移/图校验；task_status_service复用entity_api事务 gate，提供get_all/get_usage分页/add/update/delete；MCP新增task_status五工具，Web复用工作区action白名单。task.status_id稳定关联，兼容status文本与返回is_completed/status_builtin_key；所有状态更新通过字典，同项目引用，删除检查包括软删除任务。TaskStatusSelect供任务/甘特弹窗复用、TaskStatusManager为项目独立视图、TaskBoard按字典ID动态列并兜底显示未知数据。taskStatus工具统一完成语义；JSON/CSV/XLSX7含字典与引用，旧格式迁移，恢复5/6需升级但不改原备份。真实schema6未动，最新测试/缺口见专项检查点，不能运行debug迁移真实库。

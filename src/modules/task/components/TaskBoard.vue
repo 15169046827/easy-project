@@ -323,6 +323,7 @@ async function dropTask(status) {
 .card-list {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: max-content;
     align-content: start;
     gap: 0.6rem;
     min-height: 0;
@@ -338,6 +339,9 @@ async function dropTask(status) {
     justify-content: stretch;
     justify-items: stretch;
     align-items: start;
+    align-self: start;
+    height: auto;
+    overflow: visible;
     min-width: 0;
     gap: 0.55rem;
     width: 100%;
@@ -388,6 +392,7 @@ async function dropTask(status) {
     -webkit-box-orient: vertical;
     overflow: hidden;
     overflow-wrap: anywhere;
+    white-space: normal;
     text-align: left;
 }
 .board-card > p {

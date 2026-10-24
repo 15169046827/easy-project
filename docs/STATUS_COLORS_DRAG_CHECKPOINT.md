@@ -8,7 +8,7 @@
 - 桌面新受限副本`audit-tools/dictionary-overwrite-c74bcca-20261024`：534原文件/531非程序及DB全表一致，启动后DB再核对一致，已启动PID480，未操作登录。NSIS1B79CB65…，安装主exe BFABC9B3…与release979A6C55…仅offset14072768—14072770的Tauri bundle标记UNK→NSS三字节差异，其余完全相同。隔离验收窗已关闭。
 - 独立MCP新受限副本`audit-tools/dictionary-mcp-c74bcca-20261024`；只停止获批且再核对创建时间/路径的24436/46452/8768。独立/伴随MCP均65ABB83278C10DB6BE34958470668C59B78E99FAC18FC4FA5693F53212878165；配置/权限不变，当前Codex须重连，不能把磁盘更新当客户端已加载。release实际23工具/合成DB SHA不变，API已重绑实际来源。
 - 服务器current=`/opt/easyproject/releases/dictionary-c74bcca-20261024`，新root700副本`/var/backups/easyproject/dictionary-c74bcca-20261024`；65文件校验、204旧assets保留、2DB全表一致/integrity ok/FK0。无migrate-storage或真实CRUD，受限easyproject active/enabled/PID1986，后端905E493D…/CI40077325372两job成功。Funnel/Origin/CSP/域名/SSH暴露未变，服务器保持开机，无关机授权。
-- Apifox66原生/32参考已按实际release来源同步并逐项读回，HTTP18无语义变化不机械重传。Wolai/交接最终交付回执及Git文档提交正在收尾；以最终同步回执为准，不声称未完成部分已完成。当前未提交仅收尾文档/生成契约manifest，无产品代码。
+- 同步闭环：Apifox66原生/32参考实际release来源已逐项读回，HTTP18无语义变化不机械重传。Wolai主/交接最终交付回执均读回；最终文档5b723c55bdca1e6599a9f33749ce5406ee0595e1已非强制推送/完整SHA读回，工作区当时干净。本最小同步回执再提交推送，源码/契约/部署不再变化。最后额度五小时余12%、周余71%，不启动新长任务，不重置/唤醒/关机；下一步只等待用户讨论父子任务。
 - 历史非法值/重复状态/旧色不批量改写或合并，用户逐项确认改名/选合法值，任务引用保留。原生全矩阵/macOS/签名/既有公网运营风险仍保留。下一步只讨论`PARENT_CHILD_TASK_DISCUSSION.md`中的定义/统计分页/层级/状态限制，不自动开发。下方候选/未部署/验证中仅为历史，不重复安装或迁移。
 
 ## 2026-10-24扩展范围与续接

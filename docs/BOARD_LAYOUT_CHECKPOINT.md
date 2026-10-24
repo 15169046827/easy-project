@@ -1,5 +1,23 @@
 # 看板固定容器与任务标题提示整改
 
+## 2026-10-24实际交付完成回执
+
+- 源码f8fe4e5c3512dcf1057eaea1061ebd70a81e7461已按本轮批准覆盖两端，非候选未部署状态；不需要再次覆盖或迁移。266单测/54文件、88生产UI零重试+独立真实HTTP12通过，lint/typecheck/build/release:check/diff通过。专项完整nonce CSP、6状态2/4/2/1列矩阵、列内滚动/全文提示、真实鼠标跨行状态更新与撤销、320/424项目动作/表格可达均通过。
+- 桌面：NSIS退出0，副本E:/Project/Project/easy-project/src-tauri/target/audit-tools/board-overwrite-20261024-f8fe4e5新受限目录，503文件保存、500非程序SHA不变，启动前后DB逻辑全表一致/integrity ok/FK0。安装exe C4EE6D5129E1CFD1BF5C5FFA36608FCB77E0D66E0716656DD0478BCC1A916298；包7F3B8A2E9D98695C015D6716FF1F7DF7F58B7D177947F3FED30B08A6607909EA。实时启动PID35324/Responding=true/窗口EasyProject；未代登录/真实业务CRUD，原生新UI完整矩阵仍待用户实用反馈。
+- 本轮不改MCP：安装时把新包附带重新编译的伴随程序还原为保护副本原件，安装侧和独立程序均原765B4C33330442DC947B76DE58747FEFF0EB78181B8738481B980E72C5FC70DF；权限/配置/现有进程未扩大或强停。数据库仍schema7，无迁移/换库/内容修改。
+- 网页：current=/opt/easyproject/releases/board-f8fe4e5-20261024，全新root700副本/var/backups/easyproject/board-f8fe4e5-20261024；64交付文件摘要验证、172旧assets保留，服务active/PID672与后端4730a739…完全不变，2数据库全表逻辑一致/integrity ok/FK0。无服务重启、Origin/CSP/公网/MCP权限变化。
+- 正常TLS上线复验：两HTML入口/nonce安全头、63静态文件与当前dist逐SHA一致、4匿名401边界、health200均通过，证据audit-tools/board-https-verification-f8fe4e5.json；未用真实账号进行线上CRUD。没有公开新版安装包，正式生产发布结论未变。
+- 同步：CHANGELOG/架构/当前状态/入口与本专项同步，长期RULES规则1.13复核未改；API与数据契约未变化，Apifox不需要机械重传。Wolai主/交接最终回执待追加读回；Git源码f8fe4e5本地已存，首次普通push与命令级HTTP/1.1重试均SSL10054，最后确证远端1640e31，不能声称远端更新成功。最后额度五小时余46%，无重置/唤醒/关机。
+- 本最终回执提交前未提交仅本检查点及后续交接/计划/入口回执，精确列表提交前git status核对；保存后应干净。下一步仅补Wolai/Git最终同步（先远端读回再非强制push），不重做已通过测试/部署。设备已确认本机桌面与home-host在线，演示IAB/1420将清理，生产/HTTP测试入口自身清理服务；桌面/服务器保持运行。
+- 外部任务另反馈MCP旧status文字更新失败：仅收到脱敏问题摘要，未对其业务库操作或盲重试；本轮UI范围不扩展此写路径，后续按独立隔离复现/核对实际23工具Schema（状态ID引用）与诊断处理，不能把未复现反馈当已修。
+
+## 2026-10-24交付执行检查点
+
+- 固定源码f8fe4e5c3512dcf1057eaea1061ebd70a81e7461，打包NSIS成功；安装包SHA256 7F3B8A2E9D98695C015D6716FF1F7DF7F58B7D177947F3FED30B08A6607909EA，主程序候选C4EE6D5129E1CFD1BF5C5FFA36608FCB77E0D66E0716656DD0478BCC1A916298。未公开。补充12真实HTTP/登录/头像/多会话回归12/12通过，无真实账号操作。
+- 用户本轮允许两端安全更新后：已只读确认home-host current=status-1640e31、服务active/PID672；已上传64静态文件包board-layout-f8fe4e5.tar.gz（SHA a1075b06d00aa6e1042679864b2e77ad50bc7f57b9bc2385f608c17040542324）和基于完整审阅旧静态流程机械绑定的新部署脚本。目标board-f8fe4e5-20261024，先全新root700副本与只读DB快照，再保留旧assets/后端摘要与PID不变后切换；尚待执行结果，不称已上线。
+- 本机实时核对主程序未运行，仅发现精确artifacts/mcp独立进程；不强停/不替换这些MCP。安装流程已审，新增安装侧MCP原件还原/摘要校验，以满足本轮“不改MCP”；独立MCP也核验原765B4C33…不变。目标新E盘副本board-overwrite-20261024-f8fe4e5，待执行，不复用旧副本。禁止迁移schema7或换库。
+- Git本地f8fe4e5已保存、此前工作区干净；只读远端仍1640e31，常规及命令级HTTP/1.1两次非强制push均SSL10054，远端同步缺口仍在。Wolai最终候选/交付待同步。当前未提交仅本检查点；额度最后五小时余61%，无关机/重置/唤醒。
+
 ## 2026-10-24候选完整验证通过，已获两端安全更新授权
 
 - 最终候选：266单测/54文件、88生产UI零重试通过（12真实HTTP按专用入口跳过），lint/typecheck/build/release:check/diff通过。新增深浅看板矩阵在完整nonce CSP下验证PrimeVue动态style均为当前nonce；320/424项目按钮/弹窗/任务工具及表格可达性通过；真实鼠标跨行拖拽状态修改及撤销通过。最后补CSP测试后重新lint/typecheck也通过。

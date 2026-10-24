@@ -6,196 +6,196 @@
   "transport": "Streamable HTTP https://api.apifox.com/mcp",
   "documents": {
     "overview": {
-      "sha256": "addab004e4abb72d4345f81e4f7ae874b3e495544106ca8bebdb2f0697b23377",
-      "name": "EasyProject API / 协议与权限总览",
       "id": 9567481,
-      "folderId": 97872382
+      "folderId": 97872382,
+      "sha256": "0f202c1f6c4ef03add6656baf3412bfbbefa96a86ba06da65ef702fe234801f1",
+      "name": "EasyProject API / 协议与权限总览"
     },
     "models": {
-      "sha256": "9b79654e54b729d65ce855719558e5e7dafc1a151e2513423bd24cd79be8df8b",
-      "name": "EasyProject API / 模型与原生请求类型",
       "id": 9567484,
-      "folderId": 97872382
+      "folderId": 97872382,
+      "sha256": "e9dfa098b620495a7d612a212c14249136edf412372c9ebba8537703f95ce4b6",
+      "name": "EasyProject API / 模型与原生请求类型"
     },
     "easyproject_project_list": {
-      "sha256": "055eef46cb3f9608dc7ee493366d0029884f588873506f9c15eb50849bb3930f",
-      "name": "MCP / easyproject_project_list",
       "id": 9567485,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "4e22ea514dc11b783fc8673e3db30b08d7d69f8ba53b34f0c39eeb1fd6ae2490",
+      "name": "MCP / easyproject_project_list"
     },
     "easyproject_project_get": {
-      "sha256": "b8f01fa519a71049685def37bd4179b6bf6a073332a3d60b863bfae6824a1acf",
-      "name": "MCP / easyproject_project_get",
       "id": 9567486,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "dd4d01d07da22a11fa30fa5f5c30fbbc248b54ae77d2cf806b8fecb7e3bcaa3c",
+      "name": "MCP / easyproject_project_get"
     },
     "easyproject_project_create": {
-      "sha256": "976734177ccc13e32ade70f9f3c0b83a9859e613d912f25b83810afde0e8b798",
-      "name": "MCP / easyproject_project_create",
       "id": 9567487,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "23e5cf748e80191a391488f15923418531208e20715debe62788c0e62c8aadeb",
+      "name": "MCP / easyproject_project_create"
     },
     "easyproject_project_update": {
-      "sha256": "3b2697cf0492b808eec816b7f10924330611b28ffe216649ba570dae3dabc98b",
-      "name": "MCP / easyproject_project_update",
       "id": 9567488,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "82bd8b89a07ec0ad799cb3476510b1eadc77ed1d0c331a99ebfabd6c808f0f9d",
+      "name": "MCP / easyproject_project_update"
     },
     "easyproject_project_delete": {
-      "sha256": "3607afb3ac6501bf21cf42e8c4e5740f451736fe512d651c9f9ad05773245820",
-      "name": "MCP / easyproject_project_delete",
       "id": 9567489,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "c7dd9801914c11d2146100864ae862e8a4fecdd6dd1f16051f6cf3c6fa302205",
+      "name": "MCP / easyproject_project_delete"
     },
     "easyproject_task_list": {
-      "sha256": "3ef57ebc212ebb82f886f8641a4e637cdcff07e0700d4d5da9d18c07ed0026fa",
-      "name": "MCP / easyproject_task_list",
       "id": 9567490,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "0ca5918598591b7553bdcacb57e74aac5aaacf046c25882b06dc66672acc7e46",
+      "name": "MCP / easyproject_task_list"
     },
     "easyproject_task_get": {
-      "sha256": "651f55368de5513abadae05a40580cbcf3c94eeb6d80046321a9f4da896cb969",
-      "name": "MCP / easyproject_task_get",
       "id": 9567491,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "3be93c72d6748303e6fd44d2f171f19c75dceb809515917176543e74299117e9",
+      "name": "MCP / easyproject_task_get"
     },
     "easyproject_task_create": {
-      "sha256": "acb0cf21da0b1e6757b1f036cfd14a828cd23eac96e8f6ad352e41a5679bed46",
-      "name": "MCP / easyproject_task_create",
       "id": 9567492,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "cd0cc012c38e3a214660da0b2e6733a5c4b3ad09daf5308029b674af2ff92b77",
+      "name": "MCP / easyproject_task_create"
     },
     "easyproject_task_update": {
-      "sha256": "32f424ffa36189f47d2ed4f64dda97d110d598916049e1b6a1317e84bf2f023e",
-      "name": "MCP / easyproject_task_update",
       "id": 9567493,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "373ad969817bced21dbcf67f7e09923473ac2ae52f2b6babebc6e6787a7f9b03",
+      "name": "MCP / easyproject_task_update"
     },
     "easyproject_task_delete": {
-      "sha256": "e594c367d74381401682a07f6661087e1a007d838613ec0dc798b58d51908e9a",
-      "name": "MCP / easyproject_task_delete",
       "id": 9567494,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "dd5e8bf829b1ccb5b3fd14ecafea75257ba35c98f6b8f32976d45b7e4ae3f76e",
+      "name": "MCP / easyproject_task_delete"
     },
     "easyproject_member_list": {
-      "sha256": "4a200a4a7e3da56c5dc1ffc708150e48268d7e1176e1a19fb0abe1cb65580ecf",
-      "name": "MCP / easyproject_member_list",
       "id": 9567495,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "568f94636a12d41e867084c2edc45fd2de1875ae9c05c4771a95cf2ffc81f291",
+      "name": "MCP / easyproject_member_list"
     },
     "easyproject_member_get": {
-      "sha256": "080f44a9a0159cd7522f091b9e63eec426f943160df95380c480cf9a42274bc7",
-      "name": "MCP / easyproject_member_get",
       "id": 9567496,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "54b6ae9713130c599379083b6a7de733524c088aad39fc8bcb2c19836cb90f7e",
+      "name": "MCP / easyproject_member_get"
     },
     "easyproject_member_create": {
-      "sha256": "192e105168096e0f26fa64f70e6c913abc2b24780aa15e108d52b9682309faff",
-      "name": "MCP / easyproject_member_create",
       "id": 9567497,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "5b3d8db0c76657c529d6067a06a28880c00fde5bab2422c18b015147abb1433e",
+      "name": "MCP / easyproject_member_create"
     },
     "easyproject_member_update": {
-      "sha256": "cd03ed057b5a702d3e3932ffb5fd3ba93c5f9894ff8d1d54da003ff1bd1132fb",
-      "name": "MCP / easyproject_member_update",
       "id": 9567498,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "ef4178c9b902b298a330af3c51b2f00d3dd42922880105119e3dad0e9d503077",
+      "name": "MCP / easyproject_member_update"
     },
     "easyproject_member_delete": {
-      "sha256": "0f4f852b30b5fc10278be6fcbd61349ed1617aa47f9bb744edf0620dfb54456c",
-      "name": "MCP / easyproject_member_delete",
       "id": 9567499,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "b2dbbb106f3211cc9dd1e3b170aef704119a322d0d91477eac60689636a30197",
+      "name": "MCP / easyproject_member_delete"
     },
     "easyproject_project_member_list": {
-      "sha256": "737ea0334b77780dc5c124032758522ebad5de51e2e9de2e925937e830c457c3",
-      "name": "MCP / easyproject_project_member_list",
       "id": 9567500,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "a6ef31104e66a30c7a900246a8921d613f0a1f171fb14cc77ea5afc8b966e863",
+      "name": "MCP / easyproject_project_member_list"
     },
     "easyproject_project_member_create": {
-      "sha256": "1bfffcadca39321947c341652b7373a16d7edab491de97c7785b72f4af19e598",
-      "name": "MCP / easyproject_project_member_create",
       "id": 9567501,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "1e87ea6c430556d52ab8cb63c6c4755fbd8c06f6fc00e49b72ede320cfb6896e",
+      "name": "MCP / easyproject_project_member_create"
     },
     "easyproject_project_member_delete": {
-      "sha256": "9459166ad7f0c965a021e7f12b7821387cad6df355dad8b3e90fd0c555422291",
-      "name": "MCP / easyproject_project_member_delete",
       "id": 9567502,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "276f1a88b05846b848ae1d94bbc0a55cfd85332655935ef1b39c3f214bc278be",
+      "name": "MCP / easyproject_project_member_delete"
     },
     "tauri_crud_action": {
-      "sha256": "f40d34498ac7ff6fc3a2b47c6e1e9cdfb238fb9a4e2ee66bea0813afc0d5a2b9",
-      "name": "Tauri IPC / crud_action",
       "id": 9567503,
-      "folderId": 97872386
+      "folderId": 97872386,
+      "sha256": "7ffc8a21a1d30746273822c94ea225707fa3476c3d410f5a0b7ef50705dc3508",
+      "name": "Tauri IPC / crud_action"
     },
     "tauri_open_task_window": {
-      "sha256": "357a6e26e4d3f32e82ac3afc1e9ed1b0d8414d8dbbc60a90194fcc08f47713e0",
-      "name": "Tauri IPC / open_task_window",
       "id": 9567504,
-      "folderId": 97872386
+      "folderId": 97872386,
+      "sha256": "361c3bc293cd61f5b875b829477a2b93cb38a48f0ed6cecd870a2c0ba0ed0481",
+      "name": "Tauri IPC / open_task_window"
     },
     "tauri_show_main_window": {
-      "sha256": "180e41021a4c3d4b78332f60cd16088b19e5c477f5c50d328e492fb2f90b9363",
-      "name": "Tauri IPC / show_main_window",
       "id": 9567505,
-      "folderId": 97872386
+      "folderId": 97872386,
+      "sha256": "4493447bdd34025f2cd639fbf9f50ba82eec4594e1d397a79b7141e95460d09f",
+      "name": "Tauri IPC / show_main_window"
     },
     "tauri_storage_info": {
-      "sha256": "91ec130cbb48f0ed79fde0ff913aed2114de824986a9de66a01a7b3f860e5c91",
-      "name": "Tauri IPC / storage_info",
       "id": 9567506,
-      "folderId": 97872386
+      "folderId": 97872386,
+      "sha256": "2164cf471eb0b79bc6dafe531e3b6e599ba1dd25c45ac2560e4a8cbd845fdd5b",
+      "name": "Tauri IPC / storage_info"
     },
     "tauri_set_data_directory": {
-      "sha256": "b8d92ae8f7f6115b9e3a118ce123a1f028ad9290ff508ea254c3928e64be5747",
-      "name": "Tauri IPC / set_data_directory",
       "id": 9567507,
-      "folderId": 97872386
+      "folderId": 97872386,
+      "sha256": "a743857b7792c3cb00f612f7508cfa08297779e9bf26d152d75f6b7cce3e3e70",
+      "name": "Tauri IPC / set_data_directory"
     },
     "tauri_reveal_backup_directory": {
-      "sha256": "1364d1ef35ebb790750151cfaf37fd39b5b927d85b5a1b0bbd0334e0fb24f4f8",
-      "name": "Tauri IPC / reveal_backup_directory",
       "id": 9567508,
-      "folderId": 97872386
+      "folderId": 97872386,
+      "sha256": "caefc9cf04ae21fac120db9fee348fc2a9f72f818833498b16cd93dc8ce83139",
+      "name": "Tauri IPC / reveal_backup_directory"
     },
     "tauri_desktop_credentials": {
-      "sha256": "0f1f084fb195fa97d926cb285eb61e429a7b9be25a8a95ab2eb882f784b42a50",
-      "name": "Tauri IPC / desktop_credentials",
       "id": 9576736,
-      "folderId": 97872386
+      "folderId": 97872386,
+      "sha256": "cc3491bb1cbe43308479012c8bf6e141d4cfbf33bbe7cac1dce81fd3a62947a2",
+      "name": "Tauri IPC / desktop_credentials"
     },
     "easyproject_task_status_list": {
-      "sha256": "102c657ea52a1d4d520b60ad847721527c0d469fa0a861c5d0d51c393ca1139f",
-      "name": "MCP / easyproject_task_status_list",
       "id": 9584148,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "33d3cbddf16dfd88160982c2a9ba532a9438b34e378d89b36b09b2c9e40fedc4",
+      "name": "MCP / easyproject_task_status_list"
     },
     "easyproject_task_status_get": {
-      "sha256": "c3576561780e95922a0131c0c4f94b8745967386b8732351e0aeb756026cc2ed",
-      "name": "MCP / easyproject_task_status_get",
       "id": 9584149,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "8398c04e1625dad579d4fbb36155ea8b902f2729a49923d3e390951e3441224b",
+      "name": "MCP / easyproject_task_status_get"
     },
     "easyproject_task_status_create": {
-      "sha256": "e9367e2ec7b3b39dc71f44bf891de1ddc83e5c12fd93ee8f1c5afb08727e81f9",
-      "name": "MCP / easyproject_task_status_create",
       "id": 9584150,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "d3309a81f4b66804a245617c8946c754e39b2387d4cbe69d8651b84c4fb0ebba",
+      "name": "MCP / easyproject_task_status_create"
     },
     "easyproject_task_status_update": {
-      "sha256": "2d5b4c417a3aa51c56e69f484f347e3952423f8b775075c7aa600700da229ab9",
-      "name": "MCP / easyproject_task_status_update",
       "id": 9584151,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "a39572ec537e641e7c62ca66e0be9799684df55aaebeb29f59aace7cc759cfbc",
+      "name": "MCP / easyproject_task_status_update"
     },
     "easyproject_task_status_delete": {
-      "sha256": "749b07524b008899211573853d271fe3997332472921b54f60b78374aa6255b1",
-      "name": "MCP / easyproject_task_status_delete",
       "id": 9584152,
-      "folderId": 97872385
+      "folderId": 97872385,
+      "sha256": "9ea57df8d74c2948ec74d9cf58ccdb7c4accc5ca60f7e1e2446baee092fdb56e",
+      "name": "MCP / easyproject_task_status_delete"
     }
   },
   "folders": {

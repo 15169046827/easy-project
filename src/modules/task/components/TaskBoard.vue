@@ -14,10 +14,10 @@
                 v-for="column in columns"
                 :key="column.status"
                 class="board-column"
+                :data-status-id="column.status"
                 :class="{ 'drop-active': dragOver === column.status }"
-                @dragover.prevent="dragOver = column.status"
-                @dragleave="dragOver = ''"
-                @drop.prevent.stop="dropTask(column.status)"
+                @dragover.prevent
+                @drop.prevent.stop
             >
                 <header>
                     <span class="status-dot" :style="{ background: column.color }"></span>
@@ -34,10 +34,10 @@
                         v-for="task in tasksByStatus[column.status]"
                         :key="task.id"
                         class="board-card"
-                        draggable="true"
-                        @dragstart="startDrag($event, task)"
-                        @dragend="finishDrag"
-                        @click="$emit('open', task)"
+                        :class="{ 'is-dragging': dragging?.id === task.id }"
+                        :draggable="false"
+                        @pointerdown="startPointerDrag($event, task)"
+                        @click="openTask(task)"
                     >
                         <span
                             class="priority"
@@ -120,15 +120,21 @@ const dragging = ref(null)
 const dragOver = ref('')
 const message = ref('')
 const messageType = ref('success')
+let pointer = null
+let suppressClick = false
+let clickResetTimer
 
 const states = ref([])
 let epoch = 0
 onBeforeUnmount(() => {
     epoch++
+    finishDrag()
+    clearTimeout(clickResetTimer)
 })
 watch(
     () => props.projectId,
     async projectId => {
+        finishDrag()
         const token = ++epoch
         states.value = []
         if (!projectId) return
@@ -194,14 +200,54 @@ function memberName(id) {
 function dateOnly(value) {
     return String(value).slice(0, 10)
 }
-function startDrag(event, task) {
-    dragging.value = task
-    if (event.dataTransfer) {
-        event.dataTransfer.effectAllowed = 'move'
-        event.dataTransfer.setData('application/x-easyproject-task', task.id)
-    }
+function openTask(task) {
+    if (!suppressClick) emit('open', task)
+}
+function startPointerDrag(event, task) {
+    if (event.button !== 0 || (event.pointerType && event.pointerType !== 'mouse')) return
+    finishDrag()
+    suppressClick = false
+    pointer = { id: event.pointerId, task, x: event.clientX, y: event.clientY }
+    window.addEventListener('pointermove', movePointerDrag)
+    window.addEventListener('pointerup', endPointerDrag)
+    window.addEventListener('pointercancel', finishDrag)
+    window.addEventListener('blur', finishDrag)
+}
+function statusAtPoint(event) {
+    const column = document.elementFromPoint(event.clientX, event.clientY)?.closest('.board-column')
+    return column?.getAttribute('data-status-id') || ''
+}
+function movePointerDrag(event) {
+    if (!pointer || event.pointerId !== pointer.id) return
+    if (!dragging.value && Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) < 8)
+        return
+    dragging.value = pointer.task
+    suppressClick = true
+    dragOver.value = statusAtPoint(event)
+}
+function endPointerDrag(event) {
+    if (!pointer || event.pointerId !== pointer.id) return
+    // A fast native gesture may coalesce move events; still require a real
+    // primary-pointer press on an internal task and an eight-pixel gesture.
+    if (!dragging.value && Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) >= 8)
+        dragging.value = pointer.task
+    const target = dragging.value ? statusAtPoint(event) : ''
+    const moved = Boolean(dragging.value)
+    if (target) void dropTask(target)
+    else finishDrag()
+    suppressClick = moved
+    clearTimeout(clickResetTimer)
+    clickResetTimer = setTimeout(() => {
+        suppressClick = false
+    }, 0)
 }
 function finishDrag() {
+    pointer = null
+    suppressClick = false
+    window.removeEventListener('pointermove', movePointerDrag)
+    window.removeEventListener('pointerup', endPointerDrag)
+    window.removeEventListener('pointercancel', finishDrag)
+    window.removeEventListener('blur', finishDrag)
     dragging.value = null
     dragOver.value = ''
 }
@@ -371,6 +417,10 @@ async function dropTask(status) {
     background: var(--color-surface);
     box-shadow: 0 2px 6px var(--color-card-shadow);
     cursor: grab;
+    user-select: none;
+}
+.board-card.is-dragging {
+    opacity: 0.55;
 }
 .board-card:active {
     cursor: grabbing;

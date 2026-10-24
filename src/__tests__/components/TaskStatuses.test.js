@@ -3,6 +3,7 @@ import { defineComponent, h } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createI18n } from 'vue-i18n'
 import PrimeVue from 'primevue/config'
+import Tooltip from 'primevue/tooltip'
 import TaskStatusSelect from '../../components/TaskStatusSelect.vue'
 import TaskStatusManager from '../../components/TaskStatusManager.vue'
 import TaskBoard from '../../modules/task/components/TaskBoard.vue'
@@ -50,6 +51,7 @@ function setup(component, props) {
     return mount(component, {
         props,
         global: {
+            directives: { tooltip: Tooltip },
             plugins: [
                 PrimeVue,
                 createI18n({
@@ -215,19 +217,102 @@ describe('project status UI logic', () => {
             tasks: [{ id: 'a', name: 'First', status_id: 's1', status: 'Pending' }]
         })
         await flushPromises()
-        const setData = vi.fn()
-        const dataTransfer = { effectAllowed: '', setData }
-        await wrapper.find('.board-card').trigger('dragstart', { dataTransfer })
-        expect(setData).toHaveBeenCalledWith('application/x-easyproject-task', 'a')
-        expect(dataTransfer.effectAllowed).toBe('move')
-        await wrapper.findAll('.board-column')[1].trigger('drop')
+        const original = document.elementFromPoint
+        document.elementFromPoint = vi.fn(() => wrapper.findAll('.board-column')[1].element)
+        wrapper.find('.board-card').element.dispatchEvent(
+            new PointerEvent('pointerdown', {
+                bubbles: true,
+                button: 0,
+                pointerType: 'mouse',
+                pointerId: 1,
+                clientX: 10,
+                clientY: 10
+            })
+        )
+        window.dispatchEvent(
+            new PointerEvent('pointermove', { pointerId: 1, clientX: 100, clientY: 20 })
+        )
+        window.dispatchEvent(
+            new PointerEvent('pointerup', { pointerId: 1, clientX: 100, clientY: 20 })
+        )
         await flushPromises()
         expect(crudAction).toHaveBeenCalledWith('task', 'update', { id: 'a', status_id: 's2' })
+        document.elementFromPoint = original
         wrapper.unmount()
     })
     it('explicit completion overrides labels for renamed/custom states', () => {
         expect(isTaskCompleted({ status: 'Testing', is_completed: true })).toBe(true)
         expect(isTaskCompleted({ status: 'Done', is_completed: false })).toBe(false)
         expect(isTaskCompleted({ status: 'Done' })).toBe(true)
+    })
+    it('ignores external, cancelled and stationary pointer gestures', async () => {
+        const wrapper = setup(TaskBoard, {
+            projectId: 'p',
+            tasks: [{ id: 'a', name: 'First', status_id: 's1' }]
+        })
+        await flushPromises()
+        window.dispatchEvent(
+            new PointerEvent('pointerup', { pointerId: 2, clientX: 100, clientY: 20 })
+        )
+        const card = wrapper.find('.board-card')
+        card.element.dispatchEvent(
+            new PointerEvent('pointerdown', {
+                bubbles: true,
+                button: 0,
+                pointerType: 'mouse',
+                pointerId: 2,
+                clientX: 10,
+                clientY: 10
+            })
+        )
+        window.dispatchEvent(new PointerEvent('pointercancel', { pointerId: 2 }))
+        window.dispatchEvent(
+            new PointerEvent('pointerup', { pointerId: 2, clientX: 100, clientY: 20 })
+        )
+        card.element.dispatchEvent(
+            new PointerEvent('pointerdown', {
+                bubbles: true,
+                button: 0,
+                pointerType: 'mouse',
+                pointerId: 3,
+                clientX: 10,
+                clientY: 10
+            })
+        )
+        window.dispatchEvent(
+            new PointerEvent('pointerup', { pointerId: 3, clientX: 11, clientY: 10 })
+        )
+        await card.trigger('click')
+        expect(wrapper.emitted('open')).toHaveLength(1)
+        expect(vi.mocked(crudAction).mock.calls.every(call => call[1] === 'get_all')).toBe(true)
+        wrapper.unmount()
+    })
+    it('supports coalesced native movements and never opens the editor after a drag', async () => {
+        const wrapper = setup(TaskBoard, {
+            projectId: 'p',
+            tasks: [{ id: 'a', name: 'First', status_id: 's1' }]
+        })
+        await flushPromises()
+        const original = document.elementFromPoint
+        document.elementFromPoint = vi.fn(() => wrapper.findAll('.board-column')[1].element)
+        wrapper.find('.board-card').element.dispatchEvent(
+            new PointerEvent('pointerdown', {
+                bubbles: true,
+                button: 0,
+                pointerType: 'mouse',
+                pointerId: 4,
+                clientX: 10,
+                clientY: 10
+            })
+        )
+        window.dispatchEvent(
+            new PointerEvent('pointerup', { pointerId: 4, clientX: 100, clientY: 20 })
+        )
+        await wrapper.find('.board-card').trigger('click')
+        await flushPromises()
+        expect(crudAction).toHaveBeenCalledWith('task', 'update', { id: 'a', status_id: 's2' })
+        expect(wrapper.emitted('open')).toBeUndefined()
+        document.elementFromPoint = original
+        wrapper.unmount()
     })
 })

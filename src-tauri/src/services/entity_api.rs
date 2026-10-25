@@ -79,6 +79,7 @@ pub fn dispatch_raw(
                 &data,
                 result.data.as_ref(),
             )?;
+            crate::common::task_rollup::calculate(&conn)?;
         }
         Ok(result)
     } else {

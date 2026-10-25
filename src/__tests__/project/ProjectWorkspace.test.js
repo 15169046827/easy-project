@@ -66,7 +66,9 @@ describe('ProjectWorkspace', () => {
 
         expect(crudAction).toHaveBeenCalledWith('task', 'get_all', {
             projectId: 'project-1',
-            pageSize: 1000
+            pageSize: 1000,
+            pageIndex: 1,
+            hierarchy: false
         })
         expect(wrapper.text()).toContain('Alpha')
 
@@ -99,7 +101,9 @@ describe('ProjectWorkspace', () => {
 
         expect(crudAction).toHaveBeenCalledWith('task', 'get_all', {
             projectId: 'project-1',
-            pageSize: 1000
+            pageSize: 1000,
+            pageIndex: 1,
+            hierarchy: false
         })
         expect(wrapper.findComponent({ name: 'TaskBoard' }).exists()).toBe(true)
     })
@@ -114,7 +118,9 @@ describe('ProjectWorkspace', () => {
 
         expect(crudAction).toHaveBeenCalledWith('task', 'get_all', {
             projectId: 'project-2',
-            pageSize: 1000
+            pageSize: 1000,
+            pageIndex: 1,
+            hierarchy: false
         })
         expect(wrapper.text()).toContain('Beta')
     })

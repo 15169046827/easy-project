@@ -1,6 +1,6 @@
 # EasyProject模型与原生请求类型
 
-来源：c74bccaaa33f48917a525b19139050f10d3b7de3
+来源：3f467ac63802399a6f57f13d3257f6a80ccc0b40
 
 以下为真实Rust类型及serde默认属性。String不代表业务允许任意字符串；业务关系/范围以服务校验为准。MCP另有严格inputSchema和默认补齐，不能与桌面原生请求互换。
 
@@ -112,6 +112,9 @@ pub struct Task {
     pub status_builtin_key: String,
     pub progress: i64,
     pub effort_days: f64,
+    pub effort_state: String,
+    #[serde(default)]
+    pub summary: Option<crate::common::task_rollup::TaskSummary>,
     pub schedule_mode: String,
     pub comment: String,
     pub assignee: String,
@@ -142,6 +145,8 @@ pub struct TaskCreateRequest {
     pub progress: i64,
     #[serde(default)]
     pub effort_days: f64,
+    #[serde(default)]
+    pub effort_state: Option<String>,
     #[serde(default = "default_schedule_mode")]
     pub schedule_mode: String,
     pub comment: String,
@@ -183,6 +188,24 @@ pub struct TaskStatus {
     pub is_completed: bool,
     pub is_default: bool,
     pub builtin_key: String,
+}
+```
+
+## task_rollup
+
+```rust
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct TaskSummary {
+    pub has_children: bool,
+    pub direct_child_count: usize,
+    pub completed_child_count: usize,
+    pub effort_days: f64,
+    pub progress: Option<f64>,
+    pub unestimated_count: usize,
+    pub legacy_unknown_count: usize,
+    pub start_time: String,
+    pub end_time: String,
+    pub schedule_incomplete: bool,
 }
 ```
 

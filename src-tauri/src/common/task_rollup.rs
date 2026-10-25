@@ -23,6 +23,22 @@ struct Node {
     summary: TaskSummary,
 }
 
+pub fn is_overdue(task: &crate::models::task::Task) -> bool {
+    let completed = task.is_completed
+        || (task.status_id.is_empty() && matches!(task.status.as_str(), "Done" | "Archived"));
+    if completed {
+        return false;
+    }
+    let due = chrono::NaiveDateTime::parse_from_str(&task.end_time, "%Y-%m-%d %H:%M:%S")
+        .ok()
+        .or_else(|| {
+            chrono::NaiveDate::parse_from_str(&task.end_time, "%Y-%m-%d")
+                .ok()?
+                .and_hms_opt(0, 0, 0)
+        });
+    due.is_some_and(|date| date < chrono::Local::now().naive_local())
+}
+
 pub fn calculate(conn: &Connection) -> Result<HashMap<String, TaskSummary>, String> {
     let mut query = conn.prepare(
         "SELECT t.id,COALESCE(t.parent,''),COALESCE(t.project_id,''),COALESCE(t.effort_days,0),t.effort_state,COALESCE(t.progress,0),
@@ -95,12 +111,18 @@ pub fn calculate(conn: &Connection) -> Result<HashMap<String, TaskSummary>, Stri
                 direct_child_count: ids.len(),
                 ..TaskSummary::default()
             };
-            let mut weighted = 0.0;
+            let mut weighted_mean = 0.0;
             for child_id in ids {
                 let child = result.get(child_id).ok_or("Child rollup missing")?;
                 summary.completed_child_count += usize::from(nodes[child_id].completed);
                 summary.effort_days += child.effort_days;
-                weighted += child.effort_days * child.progress.unwrap_or(0.0);
+                if !summary.effort_days.is_finite() {
+                    return Err("Task effort rollup exceeds numeric range".into());
+                }
+                if child.effort_days > 0.0 {
+                    weighted_mean += (child.progress.unwrap_or(0.0) - weighted_mean)
+                        * (child.effort_days / summary.effort_days);
+                }
                 summary.unestimated_count += child.unestimated_count;
                 summary.legacy_unknown_count += child.legacy_unknown_count;
                 summary.schedule_incomplete |= child.schedule_incomplete;
@@ -113,10 +135,10 @@ pub fn calculate(conn: &Connection) -> Result<HashMap<String, TaskSummary>, Stri
                     summary.end_time = child.end_time.clone();
                 }
             }
-            if !summary.effort_days.is_finite() || !weighted.is_finite() {
+            if !weighted_mean.is_finite() {
                 return Err("Task effort rollup exceeds numeric range".into());
             }
-            summary.progress = (summary.effort_days > 0.0).then(|| weighted / summary.effort_days);
+            summary.progress = (summary.effort_days > 0.0).then_some(weighted_mean);
         }
         result.insert(id, summary);
         if let Some(count) = remaining.get_mut(&parent) {

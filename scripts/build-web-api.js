@@ -192,7 +192,7 @@ const groups = {
             '/api/workspace/action': {
                 post: {
                     summary: '执行账号工作区业务动作',
-                    description: `服务端按登录账号选择独立数据库，请求不能指定账号/路径。原生参数/返回复用DESKTOP_IPC.md与MODELS.md，不套用MCP默认值。严格model/action白名单：${JSON.stringify(catalog.actions)}。读返回data/revision；写须携带精确X-Workspace-Revision，旧值409且不写业务。写前UUID快照、持久失效旧epoch；传输中断先读回，禁止盲重试。JSON导入/恢复替换本账号全工作区，不是双向同步；远端不提供全库撤销。ICS沿用SSRF边界。`,
+                    description: `服务端按登录账号选择独立数据库，请求不能指定账号/路径。原生参数/返回复用DESKTOP_IPC.md与MODELS.md，不套用MCP默认值。严格model/action白名单：${JSON.stringify(catalog.actions)}。读返回data/revision；写须携带精确X-Workspace-Revision，旧值409且不写业务。写前UUID快照、持久失效旧epoch；传输中断先读回，禁止盲重试。task读含effort_state和summary，父进度/工作量/日期只读汇总；hierarchy:true按根分页并返回context_only和statistics.top_level/all_tasks。父子完成约束和估算来源共享后端校验，限定层级冲突可含本人工作区ID/名称，其它内部错误仍脱敏。JSON8导入兼容1—7，旧0为legacy_unknown；导入/恢复替换本账号全工作区，不是双向同步；远端不提供全库撤销。ICS沿用SSRF边界。`,
                     requestBody: {
                         required: true,
                         content: jsonContent({

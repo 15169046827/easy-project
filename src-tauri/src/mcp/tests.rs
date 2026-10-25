@@ -150,6 +150,45 @@ fn rejects_unknown_dictionary_values_and_localized_status_duplicates() {
         )
         .is_ok());
 }
+
+#[test]
+fn finite_large_estimates_have_stable_means_and_aggregate_overflow_rolls_back() {
+    let f = Fixture::new();
+    let project = f
+        .call(
+            "easyproject_project_create",
+            json!({"data":{"name":"Large estimate fixture"}}),
+        )
+        .unwrap()["record"]["id"]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    let parent = f
+        .call(
+            "easyproject_task_create",
+            json!({"data":{"project_id":project,"name":"Goal"}}),
+        )
+        .unwrap()["record"]["id"]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    f.call("easyproject_task_create",json!({"data":{"project_id":project,"name":"Large finite","parent":parent,"effort_days":1e308,"progress":100}})).unwrap();
+    assert_eq!(
+        entity_api::get(&f.db, "task", &parent).unwrap()["summary"]["progress"],
+        100.0
+    );
+    assert!(f.call("easyproject_task_create",json!({"data":{"project_id":project,"name":"Would overflow","parent":parent,"effort_days":1e308}})).is_err());
+    let count: i64 =
+        f.db.lock_connection()
+            .unwrap()
+            .query_row("SELECT count(*) FROM task", [], |r| r.get(0))
+            .unwrap();
+    assert_eq!(count, 2);
+    assert_eq!(
+        entity_api::get(&f.db, "task", &parent).unwrap()["summary"]["effort_days"],
+        1e308
+    );
+}
 impl Fixture {
     fn new() -> Self {
         let directory =

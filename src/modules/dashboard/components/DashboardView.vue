@@ -158,6 +158,7 @@ import ProgressBar from 'primevue/progressbar'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { crudAction } from '../../../api'
+import { loadAllTasks } from '../../../api/taskCatalog.js'
 import { useMembers } from '../../../composables/useMembers'
 import { useStatusLabels } from '../../../composables/useStatusLabels'
 import ResourceLoadPanel from '../../../components/ResourceLoadPanel.vue'
@@ -276,10 +277,10 @@ async function loadDashboard() {
     try {
         const [projectResult, taskResult] = await Promise.all([
             crudAction('project', 'get_all', { pageIndex: 1, pageSize: 1000 }),
-            crudAction('task', 'get_all', { pageIndex: 1, pageSize: 1000 })
+            loadAllTasks()
         ])
         projects.value = projectResult?.list || []
-        tasks.value = taskResult?.list || []
+        tasks.value = taskResult
         await loadMembers()
     } catch (error) {
         errorMessage.value = error.message

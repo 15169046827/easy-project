@@ -19,10 +19,10 @@
 | project         | get_all              | pageIndex默认1/pageSize默认20，页大小1–1000；返回list/total/pageIndex/pageSize/totalPage                                               |
 | project         | update               | id及待修改项目字段；负责人必须存在且自动加入团队                                                                                       |
 | project         | delete               | `{ids:string[]}`非空；软删除，有活跃任务拒绝                                                                                           |
-| task            | add                  | TaskCreateRequest；project_id必须有效；负责人属于团队，parent可空，排期有效，Done进度100                                               |
-| task            | get_all              | 分页默认1/20，pageSize1–1000；可选projectId/keyword/status/priority/assignee/sortBy/sortDirection，默认sort_order/asc                  |
+| task            | add                  | TaskCreateRequest；有效项目/团队负责人及项目状态引用；parent可空，完成祖先下新增须先重开；effort_state只可unestimated/estimated，省略工作量为未估算、显式0为无工作量；聚合超范围拒绝并回滚 |
+| task            | get_all              | 默认平铺1/20，pageSize1–1000；projectId/keyword/status/priority/assignee/sortBy/sortDirection；hierarchy:true按根分页、返回匹配子项及context_only祖先、statistics.top_level/all_tasks；读含effort_state/summary，派生日期排序/逾期在分页前计算 |
 | task            | swap_order           | `{source_id,target_id}`，限定同项目同层级，两次排序写入事务原子交换                                                                    |
-| task            | update               | id及待修改字段；保留项目/父子/依赖/基线边界，不能让任务跨项目后关系悬空                                                                |
+| task            | update               | id及修改字段；父progress/effort_days/effort_state/start_time/end_time只读派生，零权重summary.progress=null；状态不自动随100%完成；完成父需全部后代完成，重开子项需先重开所有完成祖先；估算来源不能写legacy_unknown；越界汇总和失败整体回滚 |
 | task            | delete               | `{ids:string[]}`非空，软删除，活跃子任务等关联会阻止                                                                                   |
 | task_status     | get_all              | `{projectId}`必填，返回`{list:TaskStatus[]}`，按sort_order/id排序，项目隔离                                                            |
 | task_status     | get_usage            | `{id,pageIndex?:1}`，返回`{list:[{id,name,project_id,deleted}],total,pageIndex,pageSize:50}`，含软删除任务                             |

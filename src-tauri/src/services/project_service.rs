@@ -218,6 +218,7 @@ pub fn handle_action(
             }
             let task_ids = tasks.iter().map(|task| task.id.clone()).collect::<Vec<_>>();
             crate::common::task_hierarchy::validate_completion(&transaction, Some(&task_ids))?;
+            crate::common::task_rollup::calculate(&transaction)?;
             if let Err(e) = transaction.commit() {
                 return ApiResponse::err(&format!("DB error: {e}"));
             }

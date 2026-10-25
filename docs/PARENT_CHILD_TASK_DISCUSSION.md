@@ -1,5 +1,28 @@
 # 父子任务体验：已批准，开发进行中
 
+## 2026-10-25候选收尾检查点（最新）
+
+- 目标/范围仍为8项批准父子方案；WACAS未定义/待确认，适用AGENTS、交接1.15、维护skill与UPARS1.1.0。功能基线db7e149，本轮基线3f467ac63802399a6f57f13d3257f6a80ccc0b40，分支codex/audit-release-20261006-api。本节点5h余31%/周89%，非额度暂停；上次关机授权永久失效，无重置/定时唤醒。
+- 完成：候选功能及本轮3项P2整改均已复验；283前端/59文件、桌面Rust72+stdio1、server50+16、10项Python迁移工具、10项Apifox契约测试、类型/lint/双fmt/双严格Clippy/build/release:check通过。最终生产90项和真实HTTP13项串行通过。初次生产88/2导航错误恰逢另一构建重写dist，构建结束后全量90通过，未改断言/重试。日志parent-child-{tests-4,rust-4,server-final-3,production-5,http-4,nsis-5}.log均在target/audit-tools。
+- NSIS成功，SHA524CD1C9F9B12B3E5DE1160B75CA9C78BA39D18AB8D05AF2303567624FEF6302；首次受限makensis系统DLL623失败、正常宿主重试成功，无系统设置修改。只生成候选，未安装。隔离原生app路径见上阶段，已实际启动合成schema7→8并用核验器确认3项目/3任务/9状态和全部原字段/ID/关联保留、integrity=ok/外键0。
+- 原生证据：1280×800浅/深任务汇总、行下抽屉、真实PrimeVue编辑弹窗显示通过。用户先自行退出候选里的远端登录、明确确认本地使用后才继续；未读写真实业务数据。原生960及完整键盘矩阵仍待，不能把失败缩放/未生效键盘当通过；本机Alt+Space被快捷工具截获，未改全局设置。用户可手动缩窄后补验。浏览器1280/960深浅矩阵已通过但不替代原生。
+- API：候选debug实际23工具/合成DB SHA不变，66原生/32参考及18HTTP已同步Apifox并读回；来源3f467ac+dirty=true，不替换已安装MCP。分组同步网络HTTP0中断发生于66接口全部读回之后；两个同步流程并发共用manifest的本地摘要风险已通过只读逐份32参考等于目标后校准，随后串行全量只读计划66接口UNCHANGED且参考分组核对通过，18HTTP均VERIFIED。以后共用manifest写流程必须串行，读回不匹配先停不盲重试。
+- 专项审计：docs/audit/PARENT_CHILD_AUDIT_2026-10-25.md，范围取数80文件/64代码配置，P0/P1=0、P2三项均闭环、P3=0。专项代码层通过，正式生产仍未通过；无新通用标准条款，既有规则已覆盖数值/分页/一致性。未做本轮全仓库/全依赖新扫描，不延长旧例外。
+- 同步：CHANGELOG/规划/发布与交接入口已更新；Wolai主页面/完整交接增补本轮结果及未验边界并读回。代码/API/报告待本轮明确Git提交/推送后补SHA回执，不能先称Git已同步。
+- 全部未提交：.github/workflows/ci.yml、CHANGELOG.md；docs/{PARENT_CHILD_TASK_DISCUSSION,PROJECT_PLAN,RELEASING}.md、api/{DESKTOP_IPC,MODELS}.md、api/{catalog,apifox-documents,apifox-layout,apifox-manifest,web-apifox-manifest,web-openapi}.json、handoff/{README,CURRENT_STATE,CHECKPOINT}.md、audit/PARENT_CHILD_AUDIT_2026-10-25.md；scripts/{build-api-catalog,build-web-api}.js、{verify-effort-migration,test_effort_migration}.py；src-tauri/src/common/{task_effort,task_rollup}.rs、db/task_db.rs、mcp/tests.rs、services/{data_service,entity_api,project_service,task_tree_service}.rs；src/api/taskCatalog.js、src/__tests__/api/taskCatalog.test.js、components/ResourceLoadHierarchy.test.js、project/ProjectWorkspace.test.js；src/modules/dashboard/components/DashboardView.vue、gantt/composables/useGanttProjectData.js、member/components/MemberList.vue、project/components/ProjectWorkspace.vue、task/composables/useTaskListQuery.js。提交后以Git为准。
+- 下一步：补原生窄窗口/键盘并保存实际结果；最终Git/Wolai SHA闭环。之后另请用户授权新保护副本、真实schema7→8、桌面覆盖、服务器及独立MCP更新/客户端断开协调；不直接升级。真实库/当前安装/服务器schema7保持，未SSH home-host、未部署，没有本轮服务器在线证明。候选窗口暂保持以供窄屏复验，测试runner已自动关闭合成回环服务。
+
+## 2026-10-25续接里程碑三（候选复验，未部署）
+
+- 目标仍为下方8项批准方案；WACAS未定义/待确认，实际适用AGENTS、维护skill、交接规则1.15、UPARS1.1.0。基线3f467ac63802399a6f57f13d3257f6a80ccc0b40，分支codex/audit-release-20261006-api。开工工作区干净，本轮改动均属本任务；关机授权已失效，不重放。
+- 额度开工5h余97%/周100%，本节点余68%/95%，未触门禁。没有额度重置或定时唤醒。
+- 已完成整改：派生父日期参与排序/逾期判断后再分页；共享完整任务目录消除各视图1000条截断；稳定加权均值避免有限大数相乘溢出，聚合溢出在写事务/导入/模板提交前拒绝。新增完整schema7→8字段/ID保留只读核验器与6项测试、完整数据库迁移及资源负载不重复统计回归，CI加入迁移核验器测试。
+- 最新验证：前端283/59文件通过；桌面Rust72+真实stdio1通过；server50+16通过；类型/lint、两个工程严格Clippy及生产构建/release:check通过。Python迁移核验器6项通过。格式最终复核、完整生产90/真实HTTP13与原生严格CSP/候选NSIS尚在收尾；不将运行中视为通过。大块构建与增量硬链接复制环境警告保留。
+- 契约：隔离schema8合成库实际发现23工具，前后DB SHA不变；66原生/23目录/18HTTP已重新生成，TaskSummary纳入模型。候选debug MCP来源3f467ac+dirty=true、SHA8E1112121B545B0DFFFAD5B788ECD3FC30C3D8E73FF70C7CF21EA639D09A1DF7，不是已安装MCP。Apifox尚未同步新生成契约。
+- 准确下一步：完成串行生产/HTTP全量复验；隔离E盘原生候选启动合成schema7副本，核验迁移保留和严格nonce下1280/960、深浅/键盘。完成专项UPARS报告、API/Apifox读回、Git/Wolai/交接闭环；真实迁移、覆盖安装、服务器部署及独立MCP替换仍须另外确认。
+- 本节点全部未提交：.github/workflows/ci.yml；docs/api/{DESKTOP_IPC,MODELS}.md、{catalog,apifox-documents,apifox-layout,web-openapi}.json；scripts/{build-api-catalog,build-web-api}.js、{verify-effort-migration,test_effort_migration}.py；src-tauri/src/common/{task_effort,task_rollup}.rs、db/task_db.rs、mcp/tests.rs、services/{data_service,entity_api,project_service,task_tree_service}.rs；src/api/taskCatalog.js、src/__tests__/api/taskCatalog.test.js、components/ResourceLoadHierarchy.test.js、project/ProjectWorkspace.test.js；src/modules/dashboard/components/DashboardView.vue、gantt/composables/useGanttProjectData.js、member/components/MemberList.vue、project/components/ProjectWorkspace.vue、task/composables/useTaskListQuery.js；本检查点与交接入口。后续新增以Git为准。
+- 同步：本轮代码尚未提交，Wolai/Apifox仍待，不能声称同步完成。设备仅本机E盘合成测试，未SSH home-host、未修改真实账号/项目库、安装或MCP。隔离候选目录src-tauri/target/audit-tools/parent-child-native-20261025，原生尚未启动；测试runner会自行关闭它的隔离回环服务。
+
 ## 2026-10-25额度暂停检查点（最新，从这里继续）
 
 最终封存：候选e3c77601b43e1284b53e1b8eef699dba2e3cab33已本地提交/非强制推送并完整远端SHA读回。首次push SSL重置，核远端仍db7e149后一次有界重试成功，未改TLS/代理配置。提交后Git干净；Wolai主/交接已同步该SHA、阶段验证、准确缺口并读回。最新5h余5%硬门槛/周53%，仅保存此最小回执即停止；不做代码/API/外部接口修改，不关机或重置。真实HTTP串行13/13最终通过；其余未完成项如下，不能称完整候选验收通过。本最小文档回执另提交保存。

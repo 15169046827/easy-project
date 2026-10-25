@@ -114,6 +114,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { crudAction } from '../../../api'
+import { loadAllTasks } from '../../../api/taskCatalog.js'
 import { useMembers } from '../../../composables/useMembers'
 import { useStatusLabels } from '../../../composables/useStatusLabels'
 import { avatarBg, avatarInitial } from '../../../composables/useAvatar'
@@ -164,13 +165,10 @@ async function loadProject() {
 
 async function loadProjectTasks() {
     try {
-        const result = await crudAction('task', 'get_all', {
-            projectId: props.projectId,
-            pageSize: 1000
-        })
-        projectTasks.value = result?.list || []
+        projectTasks.value = await loadAllTasks({ projectId: props.projectId })
     } catch (error) {
         projectTasks.value = []
+        errorMessage.value = error.message
     }
 }
 

@@ -33,14 +33,7 @@ fn matches(task: &Task, query: &TaskQuery<'_>) -> bool {
         "" => true,
         "Done" => task.is_completed,
         "Pending" => task.status_builtin_key == "Pending",
-        "Overdue" => {
-            !task.is_completed
-                && chrono::NaiveDate::parse_from_str(
-                    task.end_time.get(..10).unwrap_or(""),
-                    "%Y-%m-%d",
-                )
-                .is_ok_and(|date| date < chrono::Local::now().date_naive())
-        }
+        "Overdue" => crate::common::task_rollup::is_overdue(task),
         status => task.status_id == status || task.status == status,
     }
 }
@@ -125,6 +118,20 @@ pub fn query(db: &DbState, query: &TaskQuery<'_>) -> Result<Value, String> {
             Ok(row)
         })
         .collect::<Result<Vec<_>, String>>()?;
+    let statistics = status_statistics(db, &tasks, &roots, &matched, query.project_id)?;
+    Ok(
+        json!({"list":list,"total":total,"pageIndex":query.page_index,"pageSize":query.page_size,
+        "totalPage":total.div_ceil(query.page_size),"statistics":statistics}),
+    )
+}
+
+fn status_statistics(
+    db: &DbState,
+    tasks: &[Task],
+    roots: &[&Task],
+    matched: &HashSet<&str>,
+    project_id: Option<&str>,
+) -> Result<Value, String> {
     let conn = db.lock_connection().map_err(|e| e.to_string())?;
     let mut statement = conn.prepare("SELECT id,project_id,name,builtin_key,color FROM task_status WHERE stateflag='0' ORDER BY project_id,sort_order,id").map_err(|e| e.to_string())?;
     let statuses = statement
@@ -142,8 +149,7 @@ pub fn query(db: &DbState, query: &TaskQuery<'_>) -> Result<Value, String> {
     let mut all = Vec::new();
     for status in statuses {
         let (id, project, name, builtin, color) = status.map_err(|e| e.to_string())?;
-        if query
-            .project_id
+        if project_id
             .filter(|v| !v.is_empty())
             .is_some_and(|v| project != v)
         {
@@ -162,8 +168,7 @@ pub fn query(db: &DbState, query: &TaskQuery<'_>) -> Result<Value, String> {
         all.push(each);
     }
     Ok(
-        json!({"list":list,"total":total,"pageIndex":query.page_index,"pageSize":query.page_size,"totalPage":total.div_ceil(query.page_size),
-        "statistics":{"top_level":{"total":total,"statuses":top},"all_tasks":{"total":matched.len(),"statuses":all}}}),
+        json!({"top_level":{"total":roots.len(),"statuses":top},"all_tasks":{"total":matched.len(),"statuses":all}}),
     )
 }
 
@@ -219,6 +224,14 @@ mod tests {
         assert_eq!(filtered["list"][2]["context_only"], false);
         assert_eq!(filtered["statistics"]["all_tasks"]["total"], 1);
         assert_eq!(filtered["statistics"]["top_level"]["total"], 1);
+        db.lock_connection().unwrap().execute_batch("UPDATE task SET start_time='2000-01-01',end_time='2000-01-02' WHERE id='root'; UPDATE task SET start_time='2060-01-01',end_time='2060-01-03' WHERE id='grandchild'; UPDATE task SET start_time='2050-01-01',end_time='2050-01-02' WHERE id='other';").unwrap();
+        query.keyword = None;
+        query.sort_by = "end_time";
+        assert_eq!(super::query(&db, &query).unwrap()["list"][0]["id"], "other");
+        assert_eq!(task_db::query_tasks(&db, &query).unwrap().0[0].id, "other");
+        query.status = Some("Overdue");
+        assert_eq!(super::query(&db, &query).unwrap()["total"], 0);
+        assert_eq!(task_db::query_tasks(&db, &query).unwrap().1, 0);
         drop(db);
         std::fs::remove_dir_all(root).unwrap();
     }

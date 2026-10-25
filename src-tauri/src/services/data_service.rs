@@ -265,6 +265,7 @@ fn import_json(db: &DbState, payload: &Value) -> Result<(), String> {
     crate::common::task_effort::validate_import(&tx)?;
     crate::common::task_status::validate_display_uniqueness(&tx)?;
     crate::common::task_hierarchy::validate_completion(&tx, None)?;
+    crate::common::task_rollup::calculate(&tx)?;
     tx.commit().map_err(|e| e.to_string())
 }
 

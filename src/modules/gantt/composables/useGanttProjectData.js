@@ -1,15 +1,16 @@
 import { ref } from 'vue'
 import { crudAction } from '../../../api'
+import { loadAllTasks } from '../../../api/taskCatalog.js'
 
 async function projectSnapshot(projectId) {
     const [tasks, dependencies, projects, team] = await Promise.all([
-        crudAction('task', 'get_all', { pageIndex: 1, pageSize: 1000, projectId }),
+        loadAllTasks({ projectId }),
         crudAction('task_dependency', 'get_all', { projectId }),
         crudAction('project', 'get_all', { pageIndex: 1, pageSize: 1000 }),
         crudAction('project_member', 'get_by_project', { projectId })
     ])
     return {
-        tasks: tasks?.list || [],
+        tasks,
         dependencies: dependencies?.list || [],
         projects: projects?.list,
         team: (team?.list || []).map(member => member.member_id)

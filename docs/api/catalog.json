@@ -1,1132 +1,995 @@
 {
-  "sourceCommit": "c74bccaaa33f48917a525b19139050f10d3b7de3",
-  "sourceNote": "Documentation source; unchanged MCP input schemas may be reused only when the previously verified binary digest matches. Binary provenance is separate; this generator does not rebuild or replace it.",
-  "mcpBinary": {
-    "sha256": "65abb83278c10db6be34958470668c59b78e99fac18fc4fa5693f53212878165",
-    "sourceCommit": "c74bccaaa33f48917a525b19139050f10d3b7de3",
-    "worktreeDirty": true,
-    "buildKind": "release"
-  },
-  "transport": {
-    "mcp": "stdio JSON-RPC; no HTTP listener",
-    "desktop": "Tauri invoke; internal desktop only"
-  },
-  "tools": [
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
-      },
-      "description": "list local EasyProject project. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "pageIndex": {
-            "minimum": 1,
-            "type": "integer"
-          },
-          "pageSize": {
-            "maximum": 100,
-            "minimum": 1,
-            "type": "integer"
-          }
-        },
-        "required": [],
-        "type": "object"
-      },
-      "name": "easyproject_project_list"
+    "sourceCommit": "3f467ac63802399a6f57f13d3257f6a80ccc0b40",
+    "sourceNote": "Documentation source; unchanged MCP input schemas may be reused only when the previously verified binary digest matches. Binary provenance is separate; this generator does not rebuild or replace it.",
+    "mcpBinary": {
+        "sha256": "8e1112121b545b0dfffad5b788ecd3fc30c3d8e73ff70c7cf21ea639d09a1df7",
+        "sourceCommit": "3f467ac63802399a6f57f13d3257f6a80ccc0b40",
+        "worktreeDirty": true,
+        "buildKind": "debug-isolated-candidate"
     },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
-      },
-      "description": "get local EasyProject project. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_project_get"
+    "transport": {
+        "mcp": "stdio JSON-RPC; no HTTP listener",
+        "desktop": "Tauri invoke; internal desktop only"
     },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "create local EasyProject project. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "data": {
-            "additionalProperties": false,
-            "properties": {
-              "calendar_country": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "calendar_exceptions": {
-                "description": "JSON array string: canonical YYYY-MM-DD date, type holiday or working, optional free-form name.",
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "calendar_region": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "name": {
-                "maxLength": 256,
-                "minLength": 1,
-                "type": "string"
-              },
-              "owner": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "status": {
-                "description": "Allowed values: Draft, InProgress, Paused, Done, Archived. Other labels are rejected.",
-                "enum": [
-                  "Draft",
-                  "InProgress",
-                  "Paused",
-                  "Done",
-                  "Archived"
-                ],
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "type": {
-                "description": "Allowed values: private, public. Other labels are rejected.",
-                "enum": [
-                  "private",
-                  "public"
-                ],
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "version": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "weekend_days": {
-                "description": "JSON array string of integer weekdays 0..6, Sunday=0, for example [0,6].",
-                "maxLength": 2000,
-                "type": "string"
-              }
+    "tools": [
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
             },
-            "required": [
-              "name"
-            ],
-            "type": "object"
-          }
-        },
-        "required": [
-          "data"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_project_create"
-    },
-    {
-      "annotations": {
-        "destructiveHint": true,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "update local EasyProject project. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "changes": {
-            "additionalProperties": false,
-            "minProperties": 1,
-            "properties": {
-              "calendar_country": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "calendar_exceptions": {
-                "description": "JSON array string: canonical YYYY-MM-DD date, type holiday or working, optional free-form name.",
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "calendar_region": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "name": {
-                "maxLength": 256,
-                "minLength": 1,
-                "type": "string"
-              },
-              "owner": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "status": {
-                "description": "Allowed values: Draft, InProgress, Paused, Done, Archived. Other labels are rejected.",
-                "enum": [
-                  "Draft",
-                  "InProgress",
-                  "Paused",
-                  "Done",
-                  "Archived"
-                ],
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "type": {
-                "description": "Allowed values: private, public. Other labels are rejected.",
-                "enum": [
-                  "private",
-                  "public"
-                ],
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "version": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "weekend_days": {
-                "description": "JSON array string of integer weekdays 0..6, Sunday=0, for example [0,6].",
-                "maxLength": 2000,
-                "type": "string"
-              }
+            "description": "list local EasyProject project. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "pageIndex": {
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "pageSize": {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer"
+                    }
+                },
+                "required": [],
+                "type": "object"
             },
-            "required": [],
-            "type": "object"
-          },
-          "expected_update_time": {
-            "description": "Optional stale-edit check against get result; timestamp has second precision",
-            "type": "string"
-          },
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
+            "name": "easyproject_project_list"
         },
-        "required": [
-          "id",
-          "changes"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_project_update"
-    },
-    {
-      "annotations": {
-        "destructiveHint": true,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "delete local EasyProject project. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "confirm_name": {
-            "description": "Exact current name from get; approve deletion in the client",
-            "minLength": 1,
-            "type": "string"
-          },
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "confirm_name"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_project_delete"
-    },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
-      },
-      "description": "list local EasyProject task. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "pageIndex": {
-            "minimum": 1,
-            "type": "integer"
-          },
-          "pageSize": {
-            "maximum": 100,
-            "minimum": 1,
-            "type": "integer"
-          },
-          "projectId": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "required": [],
-        "type": "object"
-      },
-      "name": "easyproject_task_list"
-    },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
-      },
-      "description": "get local EasyProject task. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_task_get"
-    },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "create local EasyProject task. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "data": {
-            "additionalProperties": false,
-            "properties": {
-              "assignee": {
-                "description": "Empty or active member ID already in this project's team",
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "comment": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "effort_days": {
-                "minimum": 0,
-                "type": "number"
-              },
-              "end_time": {
-                "description": "Empty or YYYY-MM-DD; no timezone conversion",
-                "maxLength": 10,
-                "type": "string"
-              },
-              "name": {
-                "maxLength": 256,
-                "minLength": 1,
-                "type": "string"
-              },
-              "parent": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "priority": {
-                "description": "Allowed values: 1, 2, 3, 4, 5, High, Normal, Low. Other labels are rejected.",
-                "enum": [
-                  "1",
-                  "2",
-                  "3",
-                  "4",
-                  "5",
-                  "High",
-                  "Normal",
-                  "Low"
-                ],
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "progress": {
-                "maximum": 100,
-                "minimum": 0,
-                "type": "integer"
-              },
-              "project_id": {
-                "description": "Existing active project ID; required for creation",
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "schedule_mode": {
-                "enum": [
-                  "fixed_effort",
-                  "fixed_dates"
-                ],
-                "type": "string"
-              },
-              "start_time": {
-                "description": "Empty or YYYY-MM-DD; no timezone conversion",
-                "maxLength": 10,
-                "type": "string"
-              },
-              "status_id": {
-                "description": "Existing active TASK_STATUS ID belonging to project_id; list project task statuses or explicitly create one first. Arbitrary labels are rejected.",
-                "maxLength": 128,
-                "minLength": 1,
-                "type": "string"
-              },
-              "type": {
-                "description": "Allowed values: Task, Milestone, File. Other labels are rejected.",
-                "enum": [
-                  "Task",
-                  "Milestone",
-                  "File"
-                ],
-                "maxLength": 2000,
-                "type": "string"
-              }
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
             },
-            "required": [
-              "name",
-              "project_id",
-              "status_id"
-            ],
-            "type": "object"
-          }
-        },
-        "required": [
-          "data"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_task_create"
-    },
-    {
-      "annotations": {
-        "destructiveHint": true,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "update local EasyProject task. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "changes": {
-            "additionalProperties": false,
-            "minProperties": 1,
-            "properties": {
-              "assignee": {
-                "description": "Empty or active member ID already in this project's team",
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "comment": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "effort_days": {
-                "minimum": 0,
-                "type": "number"
-              },
-              "end_time": {
-                "description": "Empty or YYYY-MM-DD; no timezone conversion",
-                "maxLength": 10,
-                "type": "string"
-              },
-              "name": {
-                "maxLength": 256,
-                "minLength": 1,
-                "type": "string"
-              },
-              "parent": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "priority": {
-                "description": "Allowed values: 1, 2, 3, 4, 5, High, Normal, Low. Other labels are rejected.",
-                "enum": [
-                  "1",
-                  "2",
-                  "3",
-                  "4",
-                  "5",
-                  "High",
-                  "Normal",
-                  "Low"
-                ],
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "progress": {
-                "maximum": 100,
-                "minimum": 0,
-                "type": "integer"
-              },
-              "project_id": {
-                "description": "Existing active project ID; required for creation",
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "schedule_mode": {
-                "enum": [
-                  "fixed_effort",
-                  "fixed_dates"
-                ],
-                "type": "string"
-              },
-              "start_time": {
-                "description": "Empty or YYYY-MM-DD; no timezone conversion",
-                "maxLength": 10,
-                "type": "string"
-              },
-              "status_id": {
-                "description": "Existing active TASK_STATUS ID belonging to project_id; list project task statuses or explicitly create one first. Arbitrary labels are rejected.",
-                "maxLength": 128,
-                "minLength": 1,
-                "type": "string"
-              },
-              "type": {
-                "description": "Allowed values: Task, Milestone, File. Other labels are rejected.",
-                "enum": [
-                  "Task",
-                  "Milestone",
-                  "File"
-                ],
-                "maxLength": 2000,
-                "type": "string"
-              }
+            "description": "get local EasyProject project. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id"],
+                "type": "object"
             },
-            "required": [],
-            "type": "object"
-          },
-          "expected_update_time": {
-            "description": "Optional stale-edit check against get result; timestamp has second precision",
-            "type": "string"
-          },
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
+            "name": "easyproject_project_get"
         },
-        "required": [
-          "id",
-          "changes"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_task_update"
-    },
-    {
-      "annotations": {
-        "destructiveHint": true,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "delete local EasyProject task. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "confirm_name": {
-            "description": "Exact current name from get; approve deletion in the client",
-            "minLength": 1,
-            "type": "string"
-          },
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "confirm_name"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_task_delete"
-    },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
-      },
-      "description": "list local EasyProject member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "pageIndex": {
-            "minimum": 1,
-            "type": "integer"
-          },
-          "pageSize": {
-            "maximum": 100,
-            "minimum": 1,
-            "type": "integer"
-          }
-        },
-        "required": [],
-        "type": "object"
-      },
-      "name": "easyproject_member_list"
-    },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
-      },
-      "description": "get local EasyProject member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_member_get"
-    },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "create local EasyProject member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "data": {
-            "additionalProperties": false,
-            "properties": {
-              "availability_exceptions": {
-                "description": "JSON array string: start_date/end_date canonical YYYY-MM-DD, start <= end, type leave or available; optional name/source/source_uid metadata.",
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "avatar": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "email": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "name": {
-                "maxLength": 128,
-                "minLength": 1,
-                "type": "string"
-              },
-              "phone": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "role": {
-                "description": "Free-form display role, not an authorization or permission.",
-                "maxLength": 2000,
-                "type": "string"
-              }
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
             },
-            "required": [
-              "name"
-            ],
-            "type": "object"
-          }
-        },
-        "required": [
-          "data"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_member_create"
-    },
-    {
-      "annotations": {
-        "destructiveHint": true,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "update local EasyProject member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "changes": {
-            "additionalProperties": false,
-            "minProperties": 1,
-            "properties": {
-              "availability_exceptions": {
-                "description": "JSON array string: start_date/end_date canonical YYYY-MM-DD, start <= end, type leave or available; optional name/source/source_uid metadata.",
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "avatar": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "email": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "name": {
-                "maxLength": 128,
-                "minLength": 1,
-                "type": "string"
-              },
-              "phone": {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              "role": {
-                "description": "Free-form display role, not an authorization or permission.",
-                "maxLength": 2000,
-                "type": "string"
-              }
+            "description": "create local EasyProject project. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "data": {
+                        "additionalProperties": false,
+                        "properties": {
+                            "calendar_country": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "calendar_exceptions": {
+                                "description": "JSON array string: canonical YYYY-MM-DD date, type holiday or working, optional free-form name.",
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "calendar_region": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "name": {
+                                "maxLength": 256,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "owner": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "status": {
+                                "description": "Allowed values: Draft, InProgress, Paused, Done, Archived. Other labels are rejected.",
+                                "enum": ["Draft", "InProgress", "Paused", "Done", "Archived"],
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "type": {
+                                "description": "Allowed values: private, public. Other labels are rejected.",
+                                "enum": ["private", "public"],
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "version": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "weekend_days": {
+                                "description": "JSON array string of integer weekdays 0..6, Sunday=0, for example [0,6].",
+                                "maxLength": 2000,
+                                "type": "string"
+                            }
+                        },
+                        "required": ["name"],
+                        "type": "object"
+                    }
+                },
+                "required": ["data"],
+                "type": "object"
             },
-            "required": [],
-            "type": "object"
-          },
-          "expected_update_time": {
-            "description": "Optional stale-edit check against get result; timestamp has second precision",
-            "type": "string"
-          },
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
+            "name": "easyproject_project_create"
         },
-        "required": [
-          "id",
-          "changes"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_member_update"
-    },
-    {
-      "annotations": {
-        "destructiveHint": true,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "delete local EasyProject member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "confirm_name": {
-            "description": "Exact current name from get; approve deletion in the client",
-            "minLength": 1,
-            "type": "string"
-          },
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "confirm_name"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_member_delete"
-    },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
-      },
-      "description": "list local EasyProject project_member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "projectId": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "required": [
-          "projectId"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_project_member_list"
-    },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "create local EasyProject project_member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "data": {
-            "additionalProperties": false,
-            "properties": {
-              "member_id": {
-                "maxLength": 128,
-                "minLength": 1,
-                "type": "string"
-              },
-              "project_id": {
-                "maxLength": 128,
-                "minLength": 1,
-                "type": "string"
-              },
-              "role": {
-                "maxLength": 64,
-                "type": "string"
-              }
+        {
+            "annotations": {
+                "destructiveHint": true,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
             },
-            "required": [
-              "project_id",
-              "member_id"
-            ],
-            "type": "object"
-          }
-        },
-        "required": [
-          "data"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_project_member_create"
-    },
-    {
-      "annotations": {
-        "destructiveHint": true,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "delete local EasyProject project_member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "confirm_member_name": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "confirm_member_name"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_project_member_delete"
-    },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
-      },
-      "description": "list local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "projectId": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "required": [
-          "projectId"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_task_status_list"
-    },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
-      },
-      "description": "get local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_task_status_get"
-    },
-    {
-      "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "create local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "data": {
-            "additionalProperties": false,
-            "properties": {
-              "color": {
-                "description": "#RRGGBB hex color; UI provides named presets, existing colors are not rewritten.",
-                "maxLength": 7,
-                "minLength": 7,
-                "type": "string"
-              },
-              "is_completed": {
-                "type": "boolean"
-              },
-              "is_default": {
-                "type": "boolean"
-              },
-              "name": {
-                "description": "Unique active name within this project after trimming/case folding; built-in English/Chinese display aliases also conflict. Existing duplicates must be explicitly renamed, never automatically merged.",
-                "maxLength": 64,
-                "minLength": 1,
-                "type": "string"
-              },
-              "project_id": {
-                "maxLength": 128,
-                "minLength": 1,
-                "type": "string"
-              },
-              "sort_order": {
-                "maximum": 1000000,
-                "minimum": 0,
-                "type": "integer"
-              }
+            "description": "update local EasyProject project. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "changes": {
+                        "additionalProperties": false,
+                        "minProperties": 1,
+                        "properties": {
+                            "calendar_country": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "calendar_exceptions": {
+                                "description": "JSON array string: canonical YYYY-MM-DD date, type holiday or working, optional free-form name.",
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "calendar_region": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "name": {
+                                "maxLength": 256,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "owner": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "status": {
+                                "description": "Allowed values: Draft, InProgress, Paused, Done, Archived. Other labels are rejected.",
+                                "enum": ["Draft", "InProgress", "Paused", "Done", "Archived"],
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "type": {
+                                "description": "Allowed values: private, public. Other labels are rejected.",
+                                "enum": ["private", "public"],
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "version": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "weekend_days": {
+                                "description": "JSON array string of integer weekdays 0..6, Sunday=0, for example [0,6].",
+                                "maxLength": 2000,
+                                "type": "string"
+                            }
+                        },
+                        "required": [],
+                        "type": "object"
+                    },
+                    "expected_update_time": {
+                        "description": "Optional stale-edit check against get result; timestamp has second precision",
+                        "type": "string"
+                    },
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id", "changes"],
+                "type": "object"
             },
-            "required": [
-              "name",
-              "project_id"
-            ],
-            "type": "object"
-          }
+            "name": "easyproject_project_update"
         },
-        "required": [
-          "data"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_task_status_create"
-    },
-    {
-      "annotations": {
-        "destructiveHint": true,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "update local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "changes": {
-            "additionalProperties": false,
-            "minProperties": 1,
-            "properties": {
-              "color": {
-                "description": "#RRGGBB hex color; UI provides named presets, existing colors are not rewritten.",
-                "maxLength": 7,
-                "minLength": 7,
-                "type": "string"
-              },
-              "is_completed": {
-                "type": "boolean"
-              },
-              "is_default": {
-                "type": "boolean"
-              },
-              "name": {
-                "description": "Unique active name within this project after trimming/case folding; built-in English/Chinese display aliases also conflict. Existing duplicates must be explicitly renamed, never automatically merged.",
-                "maxLength": 64,
-                "minLength": 1,
-                "type": "string"
-              },
-              "sort_order": {
-                "maximum": 1000000,
-                "minimum": 0,
-                "type": "integer"
-              }
+        {
+            "annotations": {
+                "destructiveHint": true,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
             },
-            "required": [],
-            "type": "object"
-          },
-          "expected_update_time": {
-            "description": "Optional stale-edit check against get result; timestamp has second precision",
-            "type": "string"
-          },
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
+            "description": "delete local EasyProject project. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "confirm_name": {
+                        "description": "Exact current name from get; approve deletion in the client",
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id", "confirm_name"],
+                "type": "object"
+            },
+            "name": "easyproject_project_delete"
         },
-        "required": [
-          "id",
-          "changes"
-        ],
-        "type": "object"
-      },
-      "name": "easyproject_task_status_update"
-    },
-    {
-      "annotations": {
-        "destructiveHint": true,
-        "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
-      },
-      "description": "delete local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
-      "inputSchema": {
-        "additionalProperties": false,
-        "properties": {
-          "confirm_name": {
-            "description": "Exact current name from get; approve deletion in the client",
-            "minLength": 1,
-            "type": "string"
-          },
-          "id": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          }
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
+            },
+            "description": "list local EasyProject task. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "hierarchy": {
+                        "description": "True: paginate roots, include matching descendants and ancestor context, return explicit top-level/all-task statistics. Default false preserves flat task pagination.",
+                        "type": "boolean"
+                    },
+                    "pageIndex": {
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "pageSize": {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "projectId": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": [],
+                "type": "object"
+            },
+            "name": "easyproject_task_list"
         },
-        "required": [
-          "id",
-          "confirm_name"
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
+            },
+            "description": "get local EasyProject task. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id"],
+                "type": "object"
+            },
+            "name": "easyproject_task_get"
+        },
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
+            },
+            "description": "create local EasyProject task. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "data": {
+                        "additionalProperties": false,
+                        "properties": {
+                            "assignee": {
+                                "description": "Empty or active member ID already in this project's team",
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "comment": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "effort_days": {
+                                "minimum": 0,
+                                "type": "number"
+                            },
+                            "effort_state": {
+                                "description": "Omitted effort stays unestimated; explicit effort_days (including 0) is estimated. legacy_unknown is migration-only. Parent progress/effort/dates are read-only rollups; reopen completed ancestors before adding/reopening descendants.",
+                                "enum": ["unestimated", "estimated"],
+                                "type": "string"
+                            },
+                            "end_time": {
+                                "description": "Empty or YYYY-MM-DD; no timezone conversion",
+                                "maxLength": 10,
+                                "type": "string"
+                            },
+                            "name": {
+                                "maxLength": 256,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "parent": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "priority": {
+                                "description": "Allowed values: 1, 2, 3, 4, 5, High, Normal, Low. Other labels are rejected.",
+                                "enum": ["1", "2", "3", "4", "5", "High", "Normal", "Low"],
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "progress": {
+                                "maximum": 100,
+                                "minimum": 0,
+                                "type": "integer"
+                            },
+                            "project_id": {
+                                "description": "Existing active project ID; required for creation",
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "schedule_mode": {
+                                "enum": ["fixed_effort", "fixed_dates"],
+                                "type": "string"
+                            },
+                            "start_time": {
+                                "description": "Empty or YYYY-MM-DD; no timezone conversion",
+                                "maxLength": 10,
+                                "type": "string"
+                            },
+                            "status_id": {
+                                "description": "Existing active TASK_STATUS ID belonging to project_id; list project task statuses or explicitly create one first. Arbitrary labels are rejected.",
+                                "maxLength": 128,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "type": {
+                                "description": "Allowed values: Task, Milestone, File. Other labels are rejected.",
+                                "enum": ["Task", "Milestone", "File"],
+                                "maxLength": 2000,
+                                "type": "string"
+                            }
+                        },
+                        "required": ["name", "project_id", "status_id"],
+                        "type": "object"
+                    }
+                },
+                "required": ["data"],
+                "type": "object"
+            },
+            "name": "easyproject_task_create"
+        },
+        {
+            "annotations": {
+                "destructiveHint": true,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
+            },
+            "description": "update local EasyProject task. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "changes": {
+                        "additionalProperties": false,
+                        "minProperties": 1,
+                        "properties": {
+                            "assignee": {
+                                "description": "Empty or active member ID already in this project's team",
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "comment": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "effort_days": {
+                                "minimum": 0,
+                                "type": "number"
+                            },
+                            "effort_state": {
+                                "description": "Omitted effort stays unestimated; explicit effort_days (including 0) is estimated. legacy_unknown is migration-only. Parent progress/effort/dates are read-only rollups; reopen completed ancestors before adding/reopening descendants.",
+                                "enum": ["unestimated", "estimated"],
+                                "type": "string"
+                            },
+                            "end_time": {
+                                "description": "Empty or YYYY-MM-DD; no timezone conversion",
+                                "maxLength": 10,
+                                "type": "string"
+                            },
+                            "name": {
+                                "maxLength": 256,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "parent": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "priority": {
+                                "description": "Allowed values: 1, 2, 3, 4, 5, High, Normal, Low. Other labels are rejected.",
+                                "enum": ["1", "2", "3", "4", "5", "High", "Normal", "Low"],
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "progress": {
+                                "maximum": 100,
+                                "minimum": 0,
+                                "type": "integer"
+                            },
+                            "project_id": {
+                                "description": "Existing active project ID; required for creation",
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "schedule_mode": {
+                                "enum": ["fixed_effort", "fixed_dates"],
+                                "type": "string"
+                            },
+                            "start_time": {
+                                "description": "Empty or YYYY-MM-DD; no timezone conversion",
+                                "maxLength": 10,
+                                "type": "string"
+                            },
+                            "status_id": {
+                                "description": "Existing active TASK_STATUS ID belonging to project_id; list project task statuses or explicitly create one first. Arbitrary labels are rejected.",
+                                "maxLength": 128,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "type": {
+                                "description": "Allowed values: Task, Milestone, File. Other labels are rejected.",
+                                "enum": ["Task", "Milestone", "File"],
+                                "maxLength": 2000,
+                                "type": "string"
+                            }
+                        },
+                        "required": [],
+                        "type": "object"
+                    },
+                    "expected_update_time": {
+                        "description": "Optional stale-edit check against get result; timestamp has second precision",
+                        "type": "string"
+                    },
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id", "changes"],
+                "type": "object"
+            },
+            "name": "easyproject_task_update"
+        },
+        {
+            "annotations": {
+                "destructiveHint": true,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
+            },
+            "description": "delete local EasyProject task. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "confirm_name": {
+                        "description": "Exact current name from get; approve deletion in the client",
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id", "confirm_name"],
+                "type": "object"
+            },
+            "name": "easyproject_task_delete"
+        },
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
+            },
+            "description": "list local EasyProject member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "pageIndex": {
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "pageSize": {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer"
+                    }
+                },
+                "required": [],
+                "type": "object"
+            },
+            "name": "easyproject_member_list"
+        },
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
+            },
+            "description": "get local EasyProject member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id"],
+                "type": "object"
+            },
+            "name": "easyproject_member_get"
+        },
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
+            },
+            "description": "create local EasyProject member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "data": {
+                        "additionalProperties": false,
+                        "properties": {
+                            "availability_exceptions": {
+                                "description": "JSON array string: start_date/end_date canonical YYYY-MM-DD, start <= end, type leave or available; optional name/source/source_uid metadata.",
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "avatar": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "email": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "name": {
+                                "maxLength": 128,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "phone": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "role": {
+                                "description": "Free-form display role, not an authorization or permission.",
+                                "maxLength": 2000,
+                                "type": "string"
+                            }
+                        },
+                        "required": ["name"],
+                        "type": "object"
+                    }
+                },
+                "required": ["data"],
+                "type": "object"
+            },
+            "name": "easyproject_member_create"
+        },
+        {
+            "annotations": {
+                "destructiveHint": true,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
+            },
+            "description": "update local EasyProject member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "changes": {
+                        "additionalProperties": false,
+                        "minProperties": 1,
+                        "properties": {
+                            "availability_exceptions": {
+                                "description": "JSON array string: start_date/end_date canonical YYYY-MM-DD, start <= end, type leave or available; optional name/source/source_uid metadata.",
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "avatar": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "email": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "name": {
+                                "maxLength": 128,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "phone": {
+                                "maxLength": 2000,
+                                "type": "string"
+                            },
+                            "role": {
+                                "description": "Free-form display role, not an authorization or permission.",
+                                "maxLength": 2000,
+                                "type": "string"
+                            }
+                        },
+                        "required": [],
+                        "type": "object"
+                    },
+                    "expected_update_time": {
+                        "description": "Optional stale-edit check against get result; timestamp has second precision",
+                        "type": "string"
+                    },
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id", "changes"],
+                "type": "object"
+            },
+            "name": "easyproject_member_update"
+        },
+        {
+            "annotations": {
+                "destructiveHint": true,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
+            },
+            "description": "delete local EasyProject member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "confirm_name": {
+                        "description": "Exact current name from get; approve deletion in the client",
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id", "confirm_name"],
+                "type": "object"
+            },
+            "name": "easyproject_member_delete"
+        },
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
+            },
+            "description": "list local EasyProject project_member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "projectId": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["projectId"],
+                "type": "object"
+            },
+            "name": "easyproject_project_member_list"
+        },
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
+            },
+            "description": "create local EasyProject project_member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "data": {
+                        "additionalProperties": false,
+                        "properties": {
+                            "member_id": {
+                                "maxLength": 128,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "project_id": {
+                                "maxLength": 128,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "role": {
+                                "maxLength": 64,
+                                "type": "string"
+                            }
+                        },
+                        "required": ["project_id", "member_id"],
+                        "type": "object"
+                    }
+                },
+                "required": ["data"],
+                "type": "object"
+            },
+            "name": "easyproject_project_member_create"
+        },
+        {
+            "annotations": {
+                "destructiveHint": true,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
+            },
+            "description": "delete local EasyProject project_member. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "confirm_member_name": {
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id", "confirm_member_name"],
+                "type": "object"
+            },
+            "name": "easyproject_project_member_delete"
+        },
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
+            },
+            "description": "list local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "projectId": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["projectId"],
+                "type": "object"
+            },
+            "name": "easyproject_task_status_list"
+        },
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
+            },
+            "description": "get local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id"],
+                "type": "object"
+            },
+            "name": "easyproject_task_status_get"
+        },
+        {
+            "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
+            },
+            "description": "create local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "data": {
+                        "additionalProperties": false,
+                        "properties": {
+                            "color": {
+                                "description": "#RRGGBB hex color; UI provides named presets, existing colors are not rewritten.",
+                                "maxLength": 7,
+                                "minLength": 7,
+                                "type": "string"
+                            },
+                            "is_completed": {
+                                "type": "boolean"
+                            },
+                            "is_default": {
+                                "type": "boolean"
+                            },
+                            "name": {
+                                "description": "Unique active name within this project after trimming/case folding; built-in English/Chinese display aliases also conflict. Existing duplicates must be explicitly renamed, never automatically merged.",
+                                "maxLength": 64,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "project_id": {
+                                "maxLength": 128,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "sort_order": {
+                                "maximum": 1000000,
+                                "minimum": 0,
+                                "type": "integer"
+                            }
+                        },
+                        "required": ["name", "project_id"],
+                        "type": "object"
+                    }
+                },
+                "required": ["data"],
+                "type": "object"
+            },
+            "name": "easyproject_task_status_create"
+        },
+        {
+            "annotations": {
+                "destructiveHint": true,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
+            },
+            "description": "update local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "changes": {
+                        "additionalProperties": false,
+                        "minProperties": 1,
+                        "properties": {
+                            "color": {
+                                "description": "#RRGGBB hex color; UI provides named presets, existing colors are not rewritten.",
+                                "maxLength": 7,
+                                "minLength": 7,
+                                "type": "string"
+                            },
+                            "is_completed": {
+                                "type": "boolean"
+                            },
+                            "is_default": {
+                                "type": "boolean"
+                            },
+                            "name": {
+                                "description": "Unique active name within this project after trimming/case folding; built-in English/Chinese display aliases also conflict. Existing duplicates must be explicitly renamed, never automatically merged.",
+                                "maxLength": 64,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "sort_order": {
+                                "maximum": 1000000,
+                                "minimum": 0,
+                                "type": "integer"
+                            }
+                        },
+                        "required": [],
+                        "type": "object"
+                    },
+                    "expected_update_time": {
+                        "description": "Optional stale-edit check against get result; timestamp has second precision",
+                        "type": "string"
+                    },
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id", "changes"],
+                "type": "object"
+            },
+            "name": "easyproject_task_status_update"
+        },
+        {
+            "annotations": {
+                "destructiveHint": true,
+                "idempotentHint": false,
+                "openWorldHint": false,
+                "readOnlyHint": false
+            },
+            "description": "delete local EasyProject task_status. Delete is soft deletion, never cascades active children/assignments. Write tools require client approval; do not automatically retry.",
+            "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                    "confirm_name": {
+                        "description": "Exact current name from get; approve deletion in the client",
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "id": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": ["id", "confirm_name"],
+                "type": "object"
+            },
+            "name": "easyproject_task_status_delete"
+        }
+    ],
+    "commands": [
+        "crud_action",
+        "open_task_window",
+        "show_main_window",
+        "storage_info",
+        "set_data_directory",
+        "reveal_backup_directory",
+        "desktop_credentials"
+    ],
+    "actions": {
+        "project": ["add", "create_from_template", "get_all", "update", "delete"],
+        "task": ["add", "get_all", "swap_order", "update", "delete"],
+        "member": ["add", "get_all", "update", "delete", "search"],
+        "project_member": ["add", "get_by_member", "get_by_project", "delete"],
+        "task_dependency": ["get_all", "set_for_task"],
+        "data": [
+            "export_json",
+            "import_json",
+            "backup",
+            "list_backups",
+            "preview_backup",
+            "restore"
         ],
-        "type": "object"
-      },
-      "name": "easyproject_task_status_delete"
+        "calendar": ["fetch_ics"],
+        "plan_baseline": ["save", "get_by_project", "clear"],
+        "task_status": ["get_all", "get_usage", "add", "update", "delete"]
     }
-  ],
-  "commands": [
-    "crud_action",
-    "open_task_window",
-    "show_main_window",
-    "storage_info",
-    "set_data_directory",
-    "reveal_backup_directory",
-    "desktop_credentials"
-  ],
-  "actions": {
-    "project": [
-      "add",
-      "create_from_template",
-      "get_all",
-      "update",
-      "delete"
-    ],
-    "task": [
-      "add",
-      "get_all",
-      "swap_order",
-      "update",
-      "delete"
-    ],
-    "member": [
-      "add",
-      "get_all",
-      "update",
-      "delete",
-      "search"
-    ],
-    "project_member": [
-      "add",
-      "get_by_member",
-      "get_by_project",
-      "delete"
-    ],
-    "task_dependency": [
-      "get_all",
-      "set_for_task"
-    ],
-    "data": [
-      "export_json",
-      "import_json",
-      "backup",
-      "list_backups",
-      "preview_backup",
-      "restore"
-    ],
-    "calendar": [
-      "fetch_ics"
-    ],
-    "plan_baseline": [
-      "save",
-      "get_by_project",
-      "clear"
-    ],
-    "task_status": [
-      "get_all",
-      "get_usage",
-      "add",
-      "update",
-      "delete"
-    ]
-  }
 }

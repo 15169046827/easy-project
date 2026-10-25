@@ -89,4 +89,76 @@ mod tests {
         );
         assert!(conn.prepare("SELECT effort_state FROM task").is_err());
     }
+
+    #[test]
+    fn full_schema_seven_upgrade_preserves_relations_and_original_snapshot() {
+        use crate::common::{db_state::init_db, id::new_id};
+        let root = std::env::temp_dir().join(format!(
+            "easyproject-effort-upgrade-{}",
+            uuid::Uuid::new_v4()
+        ));
+        std::fs::create_dir(&root).unwrap();
+        let path = root.join("workspace.db");
+        let state = init_db(&path).unwrap();
+        let project = new_id("PROJECT");
+        let parent = new_id("TASK");
+        let child = new_id("TASK");
+        {
+            let conn = state.lock_connection().unwrap();
+            conn.execute(
+                "INSERT INTO project(id,name) VALUES(?1,'Synthetic migration')",
+                [&project],
+            )
+            .unwrap();
+            crate::common::task_status::seed_project(&conn, &project).unwrap();
+            let status = crate::common::task_status::list(&conn, &project)
+                .unwrap()
+                .remove(0)
+                .id;
+            for (id, ancestor, effort) in [(&parent, "", 0.0), (&child, parent.as_str(), 2.5)] {
+                conn.execute("INSERT INTO task(id,project_id,parent,name,status_id,effort_days) VALUES(?1,?2,?3,'Synthetic',?4,?5)",rusqlite::params![id,project,ancestor,status,effort]).unwrap();
+            }
+            conn.execute_batch("ALTER TABLE task DROP COLUMN effort_state; PRAGMA user_version=7;")
+                .unwrap();
+        }
+        drop(state);
+        let before = root.join("before-schema7.db");
+        std::fs::copy(&path, &before).unwrap();
+        let upgraded = init_db(&path).unwrap();
+        let conn = upgraded.lock_connection().unwrap();
+        assert_eq!(
+            conn.query_row(
+                "SELECT effort_state FROM task WHERE id=?1",
+                [&parent],
+                |r| r.get::<_, String>(0)
+            )
+            .unwrap(),
+            "legacy_unknown"
+        );
+        assert_eq!(
+            conn.query_row("SELECT parent FROM task WHERE id=?1", [&child], |r| r
+                .get::<_, String>(0))
+                .unwrap(),
+            parent
+        );
+        let original = Connection::open(&before).unwrap();
+        assert_eq!(
+            original
+                .query_row("PRAGMA user_version", [], |r| r.get::<_, i64>(0))
+                .unwrap(),
+            7
+        );
+        assert!(original.prepare("SELECT effort_state FROM task").is_err());
+        assert!(std::fs::read_dir(root.join("backups"))
+            .unwrap()
+            .any(|entry| entry
+                .unwrap()
+                .file_name()
+                .to_string_lossy()
+                .starts_with("pre-schema8-")));
+        drop(original);
+        drop(conn);
+        drop(upgraded);
+        std::fs::remove_dir_all(root).unwrap();
+    }
 }

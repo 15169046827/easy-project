@@ -1,5 +1,6 @@
 import { reactive, ref } from 'vue'
 import { crudAction } from '../../../api'
+import { loadAllTasks } from '../../../api/taskCatalog.js'
 
 async function loadTaskSnapshot(query) {
     const result = await crudAction('task', 'get_all', query)
@@ -18,7 +19,7 @@ async function loadTaskSnapshot(query) {
                 !query.status &&
                 !query.priority &&
                 rows.length >= (result?.total || 0)
-            const related = completeProject ? rows : await loadProjectTasks(projectId)
+            const related = completeProject ? rows : await loadAllTasks({ projectId })
             return { related, dependencies: relations?.list || [] }
         })
     )
@@ -37,21 +38,6 @@ async function loadTaskSnapshot(query) {
         total: result?.total || 0,
         statistics: result?.statistics || null
     }
-}
-
-async function loadProjectTasks(projectId) {
-    const list = []
-    let pageIndex = 1
-    let total = 0
-    do {
-        const result = await crudAction('task', 'get_all', { projectId, pageIndex, pageSize: 1000 })
-        const page = result?.list || []
-        list.push(...page)
-        total = result?.total || 0
-        if (!page.length) break
-        pageIndex += 1
-    } while (list.length < total)
-    return list
 }
 
 function createPageOption() {

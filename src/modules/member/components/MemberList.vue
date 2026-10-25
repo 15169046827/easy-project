@@ -353,6 +353,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useDelayedBusy } from '../../../composables/useDelayedBusy.js'
 import { crudAction } from '../../../api'
+import { loadAllTasks } from '../../../api/taskCatalog.js'
 import { useMembers } from '../../../composables/useMembers'
 import Button from 'primevue/button'
 import { usePrimeConfirmation } from '../../../composables/usePrimeConfirmation'
@@ -621,11 +622,11 @@ async function openDetail(member) {
     ownedProjects.value = []
     try {
         const [taskRes, pmRes, projectRes] = await Promise.all([
-            crudAction('task', 'get_all', { assignee: member.id, pageSize: 1000 }),
+            loadAllTasks({ assignee: member.id }),
             crudAction('project_member', 'get_by_member', { memberId: member.id }),
             crudAction('project', 'get_all', { pageIndex: 1, pageSize: 1000 })
         ])
-        detailTasks.value = taskRes?.list || []
+        detailTasks.value = taskRes
         detailProjects.value = pmRes?.list || []
         ownedProjects.value = (projectRes?.list || []).filter(p => p.owner === member.id)
     } catch (e) {

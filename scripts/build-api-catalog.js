@@ -122,6 +122,7 @@ const modelNames = [
     'project',
     'task',
     'task_status',
+    'task_rollup',
     'member',
     'project_member',
     'task_dependency',
@@ -137,7 +138,7 @@ const models =
             const text = readFileSync(
                 resolve(
                     root,
-                    `src-tauri/src/${name === 'task_status' ? 'common' : 'models'}/${name}.rs`
+                    `src-tauri/src/${['task_status', 'task_rollup'].includes(name) ? 'common' : 'models'}/${name}.rs`
                 ),
                 'utf8'
             )

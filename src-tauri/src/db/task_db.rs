@@ -178,6 +178,8 @@ pub fn get_all_task(
 pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec<Task>, u64)> {
     let conn = db.lock_connection()?;
     let offset = super::pagination_offset(query.page_index, query.page_size);
+    let derived_query =
+        matches!(query.sort_by, "start_time" | "end_time") || query.status == Some("Overdue");
     let select_sql = "SELECT id, COALESCE(project_id, ''), COALESCE(sort_order, 0), name,
         COALESCE(parent, ''), COALESCE(dependence, ''), COALESCE(start_time, ''),
         COALESCE(end_time, ''), type, priority, status, COALESCE(progress, 0),
@@ -204,7 +206,7 @@ pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec
     if let Some(status) = query.status.filter(|value| !value.is_empty()) {
         match status {
             "Pending" => conditions.push("COALESCE((SELECT builtin_key FROM task_status s WHERE s.id=task.status_id),CASE WHEN status IN ('Pending','Todo') THEN 'Pending' ELSE '' END)='Pending'".to_string()),
-            "Overdue" => conditions.push("COALESCE((SELECT is_completed FROM task_status s WHERE s.id=task.status_id),CASE WHEN status IN ('Done','Archived') THEN 1 ELSE 0 END)=0 AND datetime(end_time) < datetime('now', 'localtime')".to_string()),
+            "Overdue" => {},
             "Done" => conditions.push("COALESCE((SELECT is_completed FROM task_status s WHERE s.id=task.status_id),CASE WHEN status='Done' THEN 1 ELSE 0 END)=1".to_string()),
             _ => {
                 conditions.push("(status_id = ? OR status = ?)".to_string());
@@ -245,8 +247,16 @@ pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec
         select_sql, where_suffix, sort_column, sort_direction
     );
     let mut list_values = values.clone();
-    list_values.push(query.page_size.to_string());
-    list_values.push(offset.to_string());
+    list_values.push(if derived_query {
+        i64::MAX.to_string()
+    } else {
+        query.page_size.to_string()
+    });
+    list_values.push(if derived_query {
+        "0".into()
+    } else {
+        offset.to_string()
+    });
     let mut statement = conn.prepare(&sql)?;
     let rows = statement.query_map(params_from_iter(&list_values), map_task)?;
     let list = rows.collect::<rusqlite::Result<Vec<_>>>()?;
@@ -256,7 +266,38 @@ pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec
         where_suffix
     );
     let total = conn.query_row(&count_sql, params_from_iter(&values), |row| row.get(0))?;
-    Ok((with_rollups(&conn, list)?, total))
+    let mut list = with_rollups(&conn, list)?;
+    if derived_query {
+        if query.status == Some("Overdue") {
+            list.retain(crate::common::task_rollup::is_overdue);
+        }
+        if matches!(query.sort_by, "start_time" | "end_time") {
+            list.sort_by(|left, right| {
+                let order = if query.sort_by == "start_time" {
+                    left.start_time.cmp(&right.start_time)
+                } else {
+                    left.end_time.cmp(&right.end_time)
+                };
+                let order = if sort_direction == "DESC" {
+                    order.reverse()
+                } else {
+                    order
+                };
+                order
+                    .then_with(|| left.create_time.cmp(&right.create_time))
+                    .then_with(|| left.id.cmp(&right.id))
+            });
+        }
+        let total = list.len() as u64;
+        return Ok((
+            list.into_iter()
+                .skip(usize::try_from(offset).unwrap_or(usize::MAX))
+                .take(query.page_size as usize)
+                .collect(),
+            total,
+        ));
+    }
+    Ok((list, total))
 }
 
 fn with_rollups(conn: &Connection, mut tasks: Vec<Task>) -> rusqlite::Result<Vec<Task>> {

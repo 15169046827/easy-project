@@ -61,6 +61,14 @@ jobs:
             - name: Run frontend tests
               run: npm test
 
+            - name: Set up Python for read-only migration verifiers
+              uses: actions/setup-python@v6
+              with:
+                  python-version: '3.12'
+
+            - name: Test migration preservation verifiers
+              run: python -B -m unittest discover -s scripts -p "test_*migration.py"
+
             - name: Run 1000-task performance baseline
               run: npm run test:performance
 

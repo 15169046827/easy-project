@@ -1,5 +1,7 @@
 # EasyProject API维护入口（Apifox）
 
+2026-10-25升级阶段：服务器已部署父子schema8候选（后端CI40171340228/a5aa958，前端47b981d），本机独立MCP仍旧schema7程序。新的release MCP1E8840C2...尚待实际发现/本机替换，catalog/Apifox仍绑定此前debug候选；暂不冒称实际release已重绑。恢复按父子专项顶部完成真实交付后再增量更新读回，不能用旧程序读新schema8真实库。
+
 2026-10-25父子改造候选进行中：MCP/IPC已新增估算来源、summary派生读字段与hierarchy根分页/双维统计，说明已补MCP.md/DESKTOP_IPC.md/数据库设计。catalog/MODELS/分组与私有Apifox尚未重新绑定候选二进制生成同步；这是明确待办，不声称旧已部署接口已经更新。后续用隔离schema8合成库发现23工具并核对数据库SHA不变，再增量更新并读回；不得替换当前独立MCP或迁移真实库。
 
 2026-10-24已部署写入字典/重复状态校验：产品c74bcca/后端d2e5d41，独立与伴随release MCP SHA65ABB832…；实际隔离发现23工具、数据库SHA不变，66原生接口/32参考在私有Apifox按实际release来源已逐项读回，既有ID/分组保留。允许值详见`docs/MCP.md`受控字典表与各工具schema；HTTP18契约无语义变化，未机械重传。无schema/权限变化，不操作真实数据；当前Codex需重连才能加载新程序。交付证据见`docs/STATUS_COLORS_DRAG_CHECKPOINT.md`。

@@ -1,5 +1,24 @@
 # 父子任务体验：候选开发与复验完成，待授权升级
 
+## 2026-10-25升级阶段额度暂停：服务器已上线，本机尚未更新（最新）
+
+- 最新5h剩9%/周71%，触10%长阶段门禁，仅保存同步后暂停，不启动本机安装/迁移，不重置/唤醒/关机。WACAS未定义/待确认，AGENTS/规则1.15/UPARS1.1.0适用；基线47b981d6cb9fdf24a5a0eb88a6c175f2e39a111f、分支codex/audit-release-20261006-api。用户已批准整个安全升级及下段限定4进程停止，但当前一个都未停止；恢复时重新核PID/启动时间，新增进程另批。
+- 已完成服务器交付，准确current/root700副本、CI/产物/2DB保留核验见下段。额外正常TLS直连外验：官网200、health200、匿名session401，不绕证书、不登录真实账号、不改变Funnel/域名/权限。服务器继续active/enabled，不关机。账号schema3、服务器业务schema8；本机仍schema7/旧安装/旧独立MCP。
+- 本机仅准备产物：新release MCP SHA1E8840C23FAE2D209E13395D676EB91AB3D3F94B241950CECFC6152A16663D39，配套候选manifest在audit-tools/hierarchy-release-mcp-manifest.json（47b981d clean源码构建）；最新含新伴随MCP的NSIS SHA FA8BC7FF1D3B59FD3D15FD08B52B56621D65642D8464384732A78245EEAAF863。不得再使用旧1B3737包。当前artifacts/mcp及其manifest尚未替换，也未重绑API/Apifox。
+- 新release工具发现尝试尚未通过：audit-tools/verify-hierarchy-mcp.cjs以相对binary/database参数运行返回MCP discovery failed，未执行实体写入、未指向真实库。下一步先用完整绝对路径、宿主执行环境重试，失败时只打印status/error code及脱敏stderr定位，不盲换真实库。先核合成DB SHA/23工具，再真实升级；不能把旧debug23工具当新release已验证。
+- 精确下一步：恢复读本段/查额度/Git；先验证新release/新捆绑包；制作E盘受限全安装/DB/独立MCP新副本；再复核/停止仅获批4连接，覆盖安装后验证原文件及DB尚未迁移保持，再受控7→8迁移、verify-effort-migration全字段/ID/来源校验；独立MCP替换并manifest更新/真实只读23发现且DB SHA不变，启动桌面及数据复核。随后按实际release重绑API/Apifox、Git/Wolai/交接收尾。可参考已读的install-dictionary-c74bcca.ps1，但它只验证安装前后DB不变，不自带schema8迁移验证，不能盲套旧回滚。
+- 当前未提交：本专项、docs/handoff/{README,CURRENT_STATE}.md、docs/api/README.md及docs/audit/PARENT_CHILD_AUDIT_2026-10-25.md（本次同步保存后）；产品代码未改。Git/Wolai本阶段即将同步，不称本机已交付。设备home-host已SSH核验/迁移/外验，连接均已正常退出；本机无EasyProject桌面窗口、4MCP仍保持原进程，用户已暂停其它读写。所有本地写入/下载仍在E盘。
+
+## 2026-10-25已授权安全升级：服务器完成，本机待执行（最新）
+
+- 用户已明确批准新保护副本、真实迁移、桌面/服务器/独立MCP更新；随后确认其它EasyProject读写已暂停，并批准仅停止4个已核对本机旧MCP：3356(21:48:55)、35212(21:49:05)、5736/35524(21:49:07)，日期均2026-10-25，路径artifacts/mcp/easyproject-mcp.exe。必须替换前再核对，新进程不在授权内。
+- 基线47b981d6cb9fdf24a5a0eb88a6c175f2e39a111f，分支不变，WACAS未定义/待确认，适用AGENTS/规则1.15/UPARS1.1.0；Git开工干净。阶段开工5h余38%/周76%，不重置/唤醒/关机。原一次性关机授权失效。
+- 服务器已实际完成：home-host重新SSH核对在线，原current dictionary-c74bcca，受限easyproject active/enabled；新root700副本/var/backups/easyproject/hierarchy-47b981d-20261025，旧release/data保留。新current=/opt/easyproject/releases/hierarchy-47b981d-20261025；离线migrate-storage迁移1工作区，账号3/业务8。2DB原字段/ID/关联和估算来源逐项核验通过（仅允许启动epoch变动），integrity ok/FK0；服务active/enabled、身份easyproject，首页/index/health回环200。未真实业务CRUD或改变域名/Funnel/权限，远端正常TLS外验仍待。
+- 产物：Linux后端CI40171340228/a5aa958两job成功，已确认与HEAD共享后端源码无差异；下载SHA00D0AAC32DB2C451AB2E9C55C960E30D008AF515C64C3FAE21AABBCAEA0DFF1C。67文件部署包SHA45bf1c04533302ca3882cad5e8fce740f3d04330984469eb9273ad2d58e94ac3，旧assets全保留。部署脚本E盘audit-tools/deploy-parent-child-47b.py（语法已验），SHA BCBDBBD1FC589BF37A80328DFDEC1D348CD7873AE2D53D62C9AA399D9DB9F95A；失败不自动旧程序读新库/恢复旧数据。SSH/SCP用既有账号，无免密配置改动，无新依赖安装。
+- 本机实际安装路径已核注册表和配置为audit-tools/runtime-current-user/app，data在安装侧；4个MCP均指向此库，桌面未运行。release MCP新编译完成SHA1E8840C23FAE2D209E13395D676EB91AB3D3F94B241950CECFC6152A16663D39；为捆绑新伴随MCP已重新bundle，最新NSIS SHA FA8BC7FF1D3B59FD3D15FD08B52B56621D65642D8464384732A78245EEAAF863，旧1B3737不再是待安装包。主UI代码/既有验证不变。尚未停止4进程、制作本机新副本、安装/迁移本地库或替换独立MCP，不把构建当本机已交付。
+- 下一步：查额度，核对4PID/启动时间/无新连接与候选摘要；先本机受限新副本，再停止获批旧进程、覆盖安装（安装前后原文件/旧DB核对），用新程序受控迁移本地7→8、核验全部原字段/ID/估算来源，再替换独立MCP并只读发现23工具、DB SHA不变；启动桌面/正常TLS服务器外验，重绑实际release API/Apifox/Git/Wolai/交接。账号/权限/配置不改，需客户端重连。真实数据不得自动清理或丢弃。
+- 文档同步：本最新段先保存；Git/Wolai/交接本阶段尚待同步，API绑定仍旧候选，不称已重绑部署。当前未提交本专项（后续同步文件以Git为准）。所有本机写入/下载在E盘；服务器保持开机运行，未关机。
+
 ## 2026-10-25候选开发与复验完成（最新，未部署）
 
 最终同步回执：产品/报告源6cb66dcf726b13d26596b8ab3b07d7ce4d3721fb已非强制推送并完整远端SHA读回，工作区干净；Wolai主页面/完整交接的来源SHA、4项P2闭环、最新默认包及真实升级未授权边界均读回通过。隔离测试窗口已确认0个，所有测试回环服务已结束，未改真实数据或设备服务。最终额度5h余44%/周77%，非额度暂停；本阶段完成，下一步仅等待真实升级单独授权。本最小文档回执另提交，不重复构建/测试、Apifox同步或关机。

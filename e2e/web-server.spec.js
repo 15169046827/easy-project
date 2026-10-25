@@ -66,6 +66,11 @@ test('real hierarchy keeps roots, weighted estimates, drawer edits and filter co
     const states = (await action('task_status', 'get_all', { projectId: project })).data.list
     const pending = states.find(state => state.is_default).id,
         done = states.find(state => state.is_completed).id
+    for (let index = 0; index < 6; index++)
+        await action('task_status', 'add', {
+            project_id: project,
+            name: `Synthetic review ${index}`
+        })
     const data = {
         project_id: project,
         parent: '',
@@ -106,7 +111,7 @@ test('real hierarchy keeps roots, weighted estimates, drawer edits and filter co
     await login(page)
     for (const width of [1280, 960])
         for (const dark of [false, true]) {
-            await page.setViewportSize({ width, height: 800 })
+            await page.setViewportSize({ width, height: width === 960 ? 640 : 800 })
             await page.addInitScript(
                 dark => localStorage.setItem('easyproject-theme', dark ? 'dark' : 'light'),
                 dark
@@ -117,6 +122,12 @@ test('real hierarchy keeps roots, weighted estimates, drawer edits and filter co
             await page.reload()
             const root = page.locator('.task-name-text').filter({ hasText: 'Delivery goal' })
             await expect(root).toBeVisible()
+            if (width === 960) {
+                const statistics = await page.locator('.hierarchy-statistics').boundingBox()
+                const table = await page.locator('.p-datatable-table-container').boundingBox()
+                expect(statistics.height).toBeLessThanOrEqual(80)
+                expect(table.height).toBeGreaterThanOrEqual(120)
+            }
             await page.getByRole('button', { name: /^(展开任务|Expand task)$/ }).click()
             const drawer = page.locator('.child-drawer').first()
             await expect(drawer).toContainText('Execution needle')

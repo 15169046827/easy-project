@@ -1419,6 +1419,19 @@ onMounted(async () => {
     flex-direction: column;
     overflow: hidden;
 }
+@media (max-height: 720px) {
+    .panel,
+    .panel.embedded {
+        overflow-y: auto;
+    }
+    .panel .table-card {
+        min-height: 20rem;
+        flex-shrink: 0;
+    }
+    .panel :deep(.hierarchy-statistics) {
+        flex-shrink: 0;
+    }
+}
 .view-summary {
     display: flex;
     align-items: baseline;

@@ -69,4 +69,9 @@ const scopes = computed(() => [
     white-space: nowrap;
     color: var(--p-text-muted-color);
 }
+@media (max-height: 720px) {
+    .hierarchy-statistics {
+        max-height: var(--workspace-stat-height, 76px);
+    }
+}
 </style>

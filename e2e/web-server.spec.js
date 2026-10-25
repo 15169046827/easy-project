@@ -147,6 +147,20 @@ test('real hierarchy keeps roots, weighted estimates, drawer edits and filter co
             await expect(page.locator('.child-drawer')).toContainText('Execution needle')
             await expect(page.locator('.child-drawer')).not.toContainText('Unestimated execution')
             await expect(page.locator('.pi-filter[title]')).toBeVisible()
+            if (width === 960) {
+                await page.goto(origin + '/index.html#/tasks')
+                await page.reload()
+                await expect(
+                    page.locator('.task-name-text').filter({ hasText: 'Delivery goal' })
+                ).toBeVisible()
+                await page.locator('.p-paginator').scrollIntoViewIfNeeded()
+                const footer = await page.locator('.p-paginator').boundingBox()
+                expect(footer.y).toBeGreaterThanOrEqual(0)
+                expect(footer.y + footer.height).toBeLessThanOrEqual(640)
+                await expect(
+                    page.getByRole('button', { name: /^(仪表盘|Dashboard)$/ })
+                ).toBeVisible()
+            }
         }
 })
 

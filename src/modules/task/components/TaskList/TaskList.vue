@@ -1420,7 +1420,7 @@ onMounted(async () => {
     overflow: hidden;
 }
 @media (max-height: 720px) {
-    .panel,
+    .panel.workspace-page,
     .panel.embedded {
         overflow-y: auto;
     }

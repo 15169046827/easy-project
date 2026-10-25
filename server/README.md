@@ -77,6 +77,6 @@ sudo systemctl restart easyproject
 
 部署时一次性配置开机自启：`sudo systemctl enable --now easyproject`。查看日志：`sudo journalctl -u easyproject -n 50 --no-pager`。初始密码仅在自己的SSH终端使用`sudo cat /etc/easyproject/initial-admin-password`查看，不复制到代码或云文档。登录地址仍是`https://home-host.tail2956dd.ts.net`，只在Tailnet可用。
 
-# 运维候选补充（2026-10-26）
+# 运维部署补充（2026-10-26）
 
-备份/健康工具与systemd候选手册见[ops/README.md](ops/README.md)，实际部署/进度见[后续阶段检查点](../docs/NEXT_PHASE_CHECKPOINT.md)。20本地/20Linux及原生只读WAL/恢复/锁/超时已验，当前候选未启用定时器；不自动删除备份、不跨库原子保证、不恢复覆盖生产数据、无站外通知。主应用/API/MCP权限不因运维模板变化。下方旧“仅Tailnet”属于历史，当前公网Funnel及schema8部署看最新专项。
+备份/健康工具与systemd手册见[ops/README.md](ops/README.md)，实际部署/进度见[后续阶段检查点](../docs/NEXT_PHASE_CHECKPOINT.md)。20本地/20Linux及原生只读WAL/恢复/锁/超时、CI40245676939通过，日备份/15分钟健康作业已启用，真实2DB只读备份及隔离恢复通过、主程序PID未变；不自动删除备份、不跨库原子保证、不恢复覆盖生产数据、无站外通知。主应用/API/MCP权限不因运维作业变化。旧“仅Tailnet”属于历史，当前公网Funnel及schema8部署看最新专项。

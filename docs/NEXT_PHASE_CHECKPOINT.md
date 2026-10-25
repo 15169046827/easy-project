@@ -1,5 +1,15 @@
 # 后续阶段：公网稳定性、更新体验与国际化
 
+## 2026-10-26运维备份/容量监测已部署（最新）
+
+- 源d9fe3ac9225302d1a2fc033defc796bb9a8a50c8已推送，CI40245676939/server与security两job成功，包含20Python/原生隔离systemd及原Rust检查/安全扫描；不扩展为桌面全依赖新扫描。Wolai主/交接候选里程碑已读回；本段实际部署回执随后同步。
+- root新保护目录/var/backups/easyproject/ops-install-d9fe3ac-20261026保存主unit原件/原PID和current/安装结果，既有运维目录与同名unit先确认不存在；root只读代码/opt/easyproject/ops/safety.py与0644 unit已安装。受限作业源/var/lib/easyproject只读、仅ops副本目录可写、无网络，flock/超时保护保持。
+- 首次真实数据**只读**备份及隔离恢复通过2DB，bundle=/var/backups/easyproject/ops/snapshots/snapshot-e8348bf22ecca4db49b846413a470eace；逐库一致、不是跨库原子，不恢复覆盖在线库/调用业务CRUD。原主程序PID680未变/active，正常TLS官网与health200，没有重启主程序、迁移数据库或删历史副本。
+- easyproject-backup.timer及easyproject-health.timer均enabled/active；run和health作业Result=success/ExecMainStatus=0。日备份03:00按服务器UTC加随机15分钟（首次下次时间2026-10-26 03:11:08 UTC，即上海11:11:08），健康每15分钟；并非Codex定时唤醒。仅本地journal/受限回执告警，没有站外通知或自动清理/硬存储配额/异地备份。
+- 安装辅助脚本audit-tools/install-ops-d9fe3ac.py语法通过，root副本实际SHA92388357662641AB95AF0FDC13978FE8A6E2D4863081A1350A7C9040A8C8068B，最终候选包97F4BC17...已在root私有目录再次比对来源字节。新systemd timer文件补LF约束，未改变应用权限。
+- 下一步继续第一阶段：核对可信Funnel转发边界后改善共享登录/注册限流，再补工作区写入预算及可见告警，不信任任意转发头、不改Funnel/域名/来源授权。目前home-host实际Tailscale1.104.1；官方同版本serve.go表明代理覆盖为单一X-Forwarded-For，后续仍需显式受信回环配置、单值/格式/Host/Proto校验、默认不信任及全局预算，不能只读Header就放宽。此前方案来源只为研究，不代表已改限流。
+- 基线d9fe3ac，分支不变；WACAS未定义/实际UPARS1.1.0/交接1.15；最新额度上节点五小时剩76%/周66%，下一长阶段前重新查询。当前未提交.gitattributes、本文与后续交接/服务文档部署回执，无未提交产品代码。SSH维护连接仍开，本机桌面已关闭，MCP需客户端重连；不关机。
+
 ## 2026-10-26运维安全候选本地与Linux复验通过（最新，未部署）
 
 - 候选补齐备份/恢复空间预算：完整bundle及最大恢复副本预算、复制中剩余页容量检查，额外保留至少1GiB和10%空间；并发系统写入仍可能耗空间，不冒称硬配额。20项Windows测试、20项home-host Python3.10测试、真实systemd只读源写入拒绝/WAL快照/实际恢复/缺源/锁冲突/硬超时均通过。最终包97F4BC176FA41F429AFC3292715C9DEE05D9EA1EB21B37480C17D5192115CD5F，隔离代码/var/tmp/easyproject-ops-candidate-20261026-d，隔离证据/var/lib/easyproject-safety-check-o5kbhmuj。

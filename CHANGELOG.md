@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- 2026-10-25 (candidate): Keep global and embedded task drawers usable in low-height windows with one-row scrollable status statistics, a bounded minimum task area, precise local scrolling and keyboard scroll padding. Verified both scopes at 960×640 and in an isolated native release window; no real-data deployment yet.
+
 - 2026-10-25 (candidate, not deployed): Project-owned statuses now work with root-level pagination, dual-scope statistics, inline child drawers and ancestor filter context. Schema/JSON8 preserves unestimated, explicit zero and legacy-unknown effort; parents derive weighted progress, effort and dates without double-counting. Shared write boundaries protect completion across ancestors and descendants. Complete task catalogs, derived-date queries and finite-number aggregation are covered by new regressions. Migration/deployment and independent MCP replacement require separate approval; see `docs/PARENT_CHILD_TASK_DISCUSSION.md`.
 
 - 2026-10-24: Safely deployed dictionary/color/full-text fixes and application-managed pointer board dragging to the approved desktop, website, backend and independent MCP. Real Windows synthetic drag/undo, 275 unit tests, 90 production UI and 12 isolated HTTP checks passed. Data/relations/schema/permissions preserved; no new public installer release. Earlier configuration-only native drag candidate failed and was not deployed. Evidence: `docs/STATUS_COLORS_DRAG_CHECKPOINT.md`.

@@ -1,4 +1,17 @@
-# 父子任务体验：已批准，开发进行中
+# 父子任务体验：候选开发与复验完成，待授权升级
+
+## 2026-10-25候选开发与复验完成（最新，未部署）
+
+默认产物封存：最终NSIS已按产品默认Windows配置重新构建，SHA1B3737E50D9ADCE9E1ECC633600ABC8FD2FF21468EA1B0C08CC8E9CAAF928EA9，路径src-tauri/target/release/bundle/nsis/EasyProject_0.1.2_x64-setup.exe；此前619C24/5084CA67为过程产物，不混用摘要。target/release主程序也已恢复默认配置，SHA966F48645662522CADB9F3733D5B6F2572D03D500ADFDE060207B752A605CE9B，不再是960测试副本。正确隔离窄窗复验通过后已正常关闭；本轮真实库/安装/服务器/独立MCP仍未变。源码和文档提交、远端SHA与Wolai回执随后补齐。
+
+- 目标：下方8项批准父子改造及EP-PC-001—004整改；候选功能完成，真实升级未执行。WACAS未定义/待确认；实际适用AGENTS、交接1.15、维护skill和UPARS1.1.0。续接基线3ea19e87bbefacfb2875bc278a32908e61a1029c，分支codex/audit-release-20261006-api，开工干净。
+- 本轮完成EP-PC-004：全局低高度`.panel.workspace-page`正确赢过公共overflow规则，滚动留白0.5rem；首次续接HTTP分页底640.078125失败，修产品留白而非降≤640断言。最终13HTTP含全局/项目、额外6状态、960×640浅深任务区/分页/导航可达通过；90生产UI串行通过；283前端/59文件通过，最终类型/lint/build/release:check/diff通过。日志parent-child-resume-{http2,production,vitest,build2}.log。Rust代码未动，既有72+stdio1/server50+16与fmt/严格Clippy、10迁移工具/10契约测试继续有效，不冒称本轮重新运行它们。
+- 原生最终证据：仅初始尺寸为960×640的release隔离副本，Windows标签main、decorations=false、相同CSP/权限/前端；截图含边框962×642。深浅主题下两条子任务、底部分页均可滚动到达，应用导航和窗口标题栏保持；子项编辑弹窗内容可滚、取消/保存固定可达；名称Shift+Tab到Close、Space取消并回列表通过，没有提交草稿。原生1280浅深既有结果保持。再次只读核验合成7→8全部原字段/ID/关联保持、integrity=ok/外键0。
+- 原生构建过程保留：首个尺寸覆盖配置遗漏decorations=false，立即丢弃，不算最终证明；旧exe锁定导致复制失败/误开第二个旧副本，两个旧窗口均正常关闭后以ErrorActionPreference=Stop重新复制。最终隔离副本SHA BF58A1F28BBB413E2FE820FF6B12AB7D5791A22117CFD0D7A18505968877CCD4，非产品安装来源。正确窄副本验证后正常关闭，正在将target/release输出恢复为默认1280×800配置，不能把960验证exe用于真实覆盖。
+- 审计现状：80文件范围/64源码配置，P0=0/P1=0/P2四项均闭环/P3=0；专项代码审计通过，正式生产仍未通过。已在报告正文更新最终结论，不只头部覆盖历史。没有新增UPARS规则，现有一致性/UI覆盖规则已适用；交接规则1.15/架构规范复核不变，未扩新功能。
+- API/MCP schema没有本轮新变动，既有23工具/66原生/32参考/18HTTP及Apifox读回保持，不重复改远端契约。文档将同步Git/Wolai/交接最新结论与来源SHA；最终提交/默认包SHA另补回执。当前全部未提交：src/modules/task/components/TaskList/TaskList.vue、本专项、docs/audit/PARENT_CHILD_AUDIT_2026-10-25.md、docs/handoff/{README,CURRENT_STATE,CHECKPOINT}.md、CHANGELOG.md、docs/{PROJECT_PLAN,RELEASING}.md（后续以Git为准）。
+- 额度：开工5h余100%/周85%，原生里程碑余53%/78%，未触门禁；不重置、不定时唤醒、不关机。所有测试/构建/副本/缓存在E盘；本轮未SSH home-host，无新的服务器在线证明，真实业务schema7/账号3、桌面安装和独立MCP都未变。当前客户端权限不扩大。
+- 准确下一步：默认产品配置产物封存、Git/Wolai/交接SHA闭环后，请用户另行批准新的E盘/服务器安全副本、真实7→8迁移、桌面覆盖、服务器及独立MCP安全更新；独立MCP替换前另协调活跃连接，不自动停止其它任务。候选验证不是安装/迁移授权，不公开Release。旧5084CA67及测试960exe均不得用于覆盖。
 
 ## 2026-10-25最终原生复验与额度暂停（最新，从这里续接）
 

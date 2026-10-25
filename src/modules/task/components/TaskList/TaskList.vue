@@ -1423,6 +1423,7 @@ onMounted(async () => {
     .panel.workspace-page,
     .panel.embedded {
         overflow-y: auto;
+        scroll-padding-block: 0.5rem;
     }
     .panel .table-card {
         min-height: 20rem;

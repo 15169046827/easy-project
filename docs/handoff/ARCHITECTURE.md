@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-26部署层跟进：桌面与home-host业务schema8、账号3，独立/伴随release MCP已实际更新；逐字段/ID/关联/来源保护核验通过。schema8由新桌面/服务器迁移入口执行，独立MCP仅接受已有schema8，不负责迁移；旧schema7程序不能读新库。客户端加载与磁盘交付分开，需重连。准确来源/副本见父子专项，架构与规则1.15复核不变。
+
 2026-10-25候选地图：common/task_effort.rs负责schema8事务估算来源；task_rollup.rs负责迭代共享派生，Task及entity_api读结果携带summary；task_tree_service.rs先筛选/补祖先/根分页再返回双维统计。Vue TaskList使用DataTable展开槽与TaskChildrenDrawer/TaskStatusStatistics，TaskEffortInput复用真实PrimeVue数字输入；甘特派生父项只读，开始单日期补当天展示，未排期列表独立。ResourceLoadPanel不重复计派生父项。Web/MCP限定层级冲突响应仍限本人工作区，不放宽其它内部错误脱敏。源码候选不是已部署状态，确切验证/缺口见父子检查点。
 
 2026-10-24候选增补：`src-tauri/src/common/task_hierarchy.rs`为共享父子完成约束，entity_api在既有事务内执行写前挂接检查/写后分支检查，状态字典完成属性修改也受保护；data_service导入与project_service模板在提交前校验。server通过共享模块复用，无单独业务规则分叉。业务schema仍7；工作量来源字段/汇总/树分页与抽屉尚未实施，不能将本段当部署状态。最新进度见父子专项。

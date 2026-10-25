@@ -1,5 +1,7 @@
 # EasyProject API维护入口（Apifox）
 
+2026-10-26实际release已重绑：本机/服务器业务schema8，独立MCP源47b981d6cb9fdf24a5a0eb88a6c175f2e39a111f（clean/release），SHA1E8840C23FAE2D209E13395D676EB91AB3D3F94B241950CECFC6152A16663D39。合成库及实际库各23唯一工具仅发现、DB SHA不变；catalog/MODELS/32参考/66原生协议接口按该程序更新私有Apifox并读回，分组保留，后续只读66 unchanged/0计划。同步在66接口已验证后读取参考分组时曾HTTP0中断，未盲目重写，只读全流程复核闭环。HTTP18契约本轮无新变化，不机械重传；当前Codex客户端须重连，不冒称当前聊天已加载。准确安装/迁移/保护副本见父子专项。
+
 2026-10-25升级阶段：服务器已部署父子schema8候选（后端CI40171340228/a5aa958，前端47b981d），本机独立MCP仍旧schema7程序。新的release MCP1E8840C2...尚待实际发现/本机替换，catalog/Apifox仍绑定此前debug候选；暂不冒称实际release已重绑。恢复按父子专项顶部完成真实交付后再增量更新读回，不能用旧程序读新schema8真实库。
 
 2026-10-25父子改造候选进行中：MCP/IPC已新增估算来源、summary派生读字段与hierarchy根分页/双维统计，说明已补MCP.md/DESKTOP_IPC.md/数据库设计。catalog/MODELS/分组与私有Apifox尚未重新绑定候选二进制生成同步；这是明确待办，不声称旧已部署接口已经更新。后续用隔离schema8合成库发现23工具并核对数据库SHA不变，再增量更新并读回；不得替换当前独立MCP或迁移真实库。
@@ -14,7 +16,7 @@
 
 2026-10-23真实交付来源已重绑：桌面/服务器/独立MCP已schema7，release MCP源1640e31、SHA765B4C33…，Linux源53d664e。接口仍66原生+18HTTP；本轮部署回执与实际release来源的Apifox同步正在收尾，完成状态见专项检查点顶部。历史debug候选来源不再代表当前安装；当前Codex客户端需重连。
 
-2026-10-23本轮最终契约读回：66原生接口/32参考、HTTP18操作全部同步私有Apifox，2个新状态分组与旧ID保留；共84接口。原生中断经只读摘要计划核对后续接，HTTP中断准确从post__api_account_mcp_tokens续接，verify-web-apifox18项全通过。源码契约为未部署schema7候选，不能当现有客户端已加载23工具；具体生成二进制/dirty来源及真实部署边界仍以下段与专项检查点为准。未来发布构建须重绑实际交付源与二进制摘要，不以debug目录作为安装交付。
+2026-10-23本轮最终契约读回：66原生接口/32参考、HTTP18操作全部同步私有Apifox，2个新状态分组与旧ID保留；共84接口。原生中断经只读摘要计划核对后续接，HTTP中断准确从post\_\_api_account_mcp_tokens续接，verify-web-apifox18项全通过。源码契约为未部署schema7候选，不能当现有客户端已加载23工具；具体生成二进制/dirty来源及真实部署边界仍以下段与专项检查点为准。未来发布构建须重绑实际交付源与二进制摘要，不以debug目录作为安装交付。
 
 2026-10-23项目状态字典候选：本地实际隔离发现23 MCP工具、7注册IPC/36动作，生成66原生接口/23目录与32参考；私有Apifox上述原生项已增量同步并逐项读回、旧ID保留，新增MCP/IPC“任务状态”分组。新定义标testing，不等于已部署。HTTP仍18操作15路径，工作区新增task_status动作与9/18/23范围说明的同步遭网络中断，已保存manifest，需先运行verify-web-apifox.ps1核对再以准确ResumeFrom续接，不盲重试。当前catalog来自E盘隔离合成库+debug候选D1E994F6...，源536294b+dirty=true，非已安装exe；真实schema6/18工具未改变。准确回执/缺口见状态专项检查点。下面旧56/27为历史覆盖。
 
@@ -38,6 +40,7 @@
     04 Web HTTP 接口：认证与会话 / 账号管理 / 工作区 / 运行状态
     99 历史文档快照：MCP 原文快照 / IPC 原文快照
     ```
+
 - [catalog.json](catalog.json)：从实际交付MCP的tools/list及Rust分发器生成，包含严格inputSchema、权限注解、二进制源SHA/摘要和接口基线。不会因为生成文档就替换旧独立exe。
 - [OVERVIEW.md](OVERVIEW.md)：握手、返回/错误、审批、恢复点、审计、关系/隐私与重试边界。
 - [DESKTOP_IPC.md](DESKTOP_IPC.md)：内部31动作参数表、其它窗口/存储命令、响应及调用边界。

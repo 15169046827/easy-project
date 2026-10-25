@@ -1,11 +1,11 @@
 {
-    "sourceCommit": "3f467ac63802399a6f57f13d3257f6a80ccc0b40",
+    "sourceCommit": "d8792c80a6e7ab1d6d741b33e2ca67e69c2aadc7",
     "sourceNote": "Documentation source; unchanged MCP input schemas may be reused only when the previously verified binary digest matches. Binary provenance is separate; this generator does not rebuild or replace it.",
     "mcpBinary": {
-        "sha256": "8e1112121b545b0dfffad5b788ecd3fc30c3d8e73ff70c7cf21ea639d09a1df7",
-        "sourceCommit": "3f467ac63802399a6f57f13d3257f6a80ccc0b40",
-        "worktreeDirty": true,
-        "buildKind": "debug-isolated-candidate"
+        "sha256": "1e8840c23fae2d209e13395d676eb91ab3d3f94b241950cecfc6152a16663d39",
+        "sourceCommit": "47b981d6cb9fdf24a5a0eb88a6c175f2e39a111f",
+        "worktreeDirty": false,
+        "buildKind": "release"
     },
     "transport": {
         "mcp": "stdio JSON-RPC; no HTTP listener",

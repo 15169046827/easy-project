@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- 2026-10-26: Safely activated the approved hierarchy update on the existing desktop, server and independent MCP. Schema7→8 preserves all original fields, IDs, relationships and estimate provenance; protected snapshots retained. MCP clients must reconnect. No new public release or production-ready claim.
+
 - 2026-10-25 (candidate): Keep global and embedded task drawers usable in low-height windows with one-row scrollable status statistics, a bounded minimum task area, precise local scrolling and keyboard scroll padding. Verified both scopes at 960×640 and in an isolated native release window; no real-data deployment yet.
 
 - 2026-10-25 (candidate, not deployed): Project-owned statuses now work with root-level pagination, dual-scope statistics, inline child drawers and ancestor filter context. Schema/JSON8 preserves unestimated, explicit zero and legacy-unknown effort; parents derive weighted progress, effort and dates without double-counting. Shared write boundaries protect completion across ancestors and descendants. Complete task catalogs, derived-date queries and finite-number aggregation are covered by new regressions. Migration/deployment and independent MCP replacement require separate approval; see `docs/PARENT_CHILD_TASK_DISCUSSION.md`.

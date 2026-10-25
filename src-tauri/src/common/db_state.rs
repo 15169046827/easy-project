@@ -14,7 +14,7 @@ impl DbState {
     }
 }
 
-pub(crate) const CURRENT_SCHEMA_VERSION: i64 = 7;
+pub(crate) const CURRENT_SCHEMA_VERSION: i64 = 8;
 
 pub fn init_db(database_path: &Path) -> Result<DbState, String> {
     let conn = Connection::open(database_path)
@@ -50,7 +50,8 @@ pub fn init_db(database_path: &Path) -> Result<DbState, String> {
         }
         std::fs::create_dir_all(&backups).map_err(|e| e.to_string())?;
         let snapshot = backups.join(format!(
-            "pre-status-schema7-{}.db",
+            "pre-schema{}-{}.db",
+            CURRENT_SCHEMA_VERSION,
             uuid::Uuid::new_v4().simple()
         ));
         conn.backup(
@@ -321,6 +322,11 @@ pub fn init_db(database_path: &Path) -> Result<DbState, String> {
         transaction.commit().map_err(|e| e.to_string())?;
     }
 
+    if existing_version < 8 {
+        super::task_effort::migrate(&conn).map_err(|e| {
+            format!("Estimate provenance migration failed; original snapshot preserved: {e}")
+        })?;
+    }
     Ok(DbState(Mutex::new(conn), database_path.to_path_buf()))
 }
 

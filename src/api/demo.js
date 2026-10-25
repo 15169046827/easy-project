@@ -1,3 +1,4 @@
+import { decorateDemoTasks, demoTreePage } from './demoHierarchy.js'
 const projects = [
     {
         id: 'demo-project',
@@ -239,7 +240,19 @@ export async function demoAction(model, action, data = {}) {
         }
     }
     if (action === 'get_all') {
-        let list = data.projectId ? items.filter(item => item.project_id === data.projectId) : items
+        const source = model === 'task' ? decorateDemoTasks(items) : items
+        const scope = data.projectId
+            ? source.filter(item => item.project_id === data.projectId)
+            : source
+        let list = scope
+        if (model === 'task' && data.keyword)
+            list = list.filter(task =>
+                `${task.name} ${task.comment || ''}`
+                    .toLowerCase()
+                    .includes(data.keyword.toLowerCase())
+            )
+        if (model === 'task' && data.priority)
+            list = list.filter(task => task.priority === data.priority)
         if (model === 'task' && data.status)
             list = list.filter(item => {
                 if (data.status === 'Pending') return item.status_builtin_key === 'Pending'
@@ -252,6 +265,7 @@ export async function demoAction(model, action, data = {}) {
                     )
                 return item.status_id === data.status || item.status === data.status
             })
+        if (model === 'task' && data.hierarchy) return demoTreePage(scope, list, statuses, data)
         return { list: structuredClone(list), total: list.length }
     }
     if (model === 'project_member' && action === 'get_by_project') {

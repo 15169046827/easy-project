@@ -3,6 +3,7 @@ use crate::models::task::{NewTask, Task};
 use rusqlite::params_from_iter;
 use rusqlite::{params, Connection, Row};
 
+#[derive(Clone, Copy)]
 pub struct TaskQuery<'a> {
     pub page_index: u64,
     pub page_size: u64,
@@ -108,6 +109,10 @@ pub(crate) fn insert_task_transaction(
             state.id
         ],
     )?;
+    transaction.execute(
+        "UPDATE task SET effort_state='estimated' WHERE id=?1",
+        [&p.id],
+    )?;
     Ok(())
 }
 
@@ -130,7 +135,7 @@ pub fn get_all_task(
                 COALESCE(comment, ''), COALESCE(assignee, ''),
                 COALESCE(creator, ''), create_time, update_time, stateflag,status_id,
                 COALESCE((SELECT is_completed FROM task_status s WHERE s.id=task.status_id),0),
-                COALESCE((SELECT builtin_key FROM task_status s WHERE s.id=task.status_id),'')
+                COALESCE((SELECT builtin_key FROM task_status s WHERE s.id=task.status_id),''),effort_state
          FROM task
          WHERE stateflag = '0'";
 
@@ -167,7 +172,7 @@ pub fn get_all_task(
         )?
     };
 
-    Ok((list, total))
+    Ok((with_rollups(&conn, list)?, total))
 }
 
 pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec<Task>, u64)> {
@@ -179,7 +184,7 @@ pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec
         COALESCE(effort_days, 0), COALESCE(schedule_mode, 'fixed_dates'), COALESCE(comment, ''),
         COALESCE(assignee, ''), COALESCE(creator, ''), create_time, update_time, stateflag,status_id,
         COALESCE((SELECT is_completed FROM task_status s WHERE s.id=task.status_id),0),
-        COALESCE((SELECT builtin_key FROM task_status s WHERE s.id=task.status_id),'')
+        COALESCE((SELECT builtin_key FROM task_status s WHERE s.id=task.status_id),''),effort_state
         FROM task WHERE stateflag = '0'";
 
     let mut conditions = Vec::new();
@@ -251,7 +256,23 @@ pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec
         where_suffix
     );
     let total = conn.query_row(&count_sql, params_from_iter(&values), |row| row.get(0))?;
-    Ok((list, total))
+    Ok((with_rollups(&conn, list)?, total))
+}
+
+fn with_rollups(conn: &Connection, mut tasks: Vec<Task>) -> rusqlite::Result<Vec<Task>> {
+    let summaries = crate::common::task_rollup::calculate(conn).map_err(|message| {
+        rusqlite::Error::ToSqlConversionFailure(Box::new(std::io::Error::other(message)))
+    })?;
+    for task in &mut tasks {
+        task.summary = summaries.get(&task.id).cloned();
+        if let Some(summary) = task.summary.as_ref().filter(|s| s.has_children) {
+            task.effort_days = summary.effort_days;
+            task.progress = summary.progress.unwrap_or(0.0).round() as i64;
+            task.start_time = summary.start_time.clone();
+            task.end_time = summary.end_time.clone();
+        }
+    }
+    Ok(tasks)
 }
 
 pub fn update_task(
@@ -295,6 +316,8 @@ fn map_task(row: &Row<'_>) -> rusqlite::Result<Task> {
         status_builtin_key: row.get(22)?,
         progress: row.get(11)?,
         effort_days: row.get(12)?,
+        effort_state: row.get(23)?,
+        summary: None,
         schedule_mode: row.get(13)?,
         comment: row.get(14)?,
         assignee: row.get(15)?,
@@ -483,7 +506,7 @@ mod status_query_tests {
             "CREATE TABLE task (
             id TEXT, project_id TEXT, sort_order INTEGER, name TEXT, parent TEXT, dependence TEXT,
             start_time TEXT, end_time TEXT, type TEXT DEFAULT 'Task', priority TEXT DEFAULT '3',
-            status TEXT, progress INTEGER, effort_days REAL, schedule_mode TEXT, comment TEXT,
+            status TEXT, progress INTEGER, effort_days REAL, effort_state TEXT DEFAULT 'legacy_unknown', schedule_mode TEXT, comment TEXT,
             assignee TEXT, creator TEXT, create_time TEXT DEFAULT '', update_time TEXT DEFAULT '',
             stateflag TEXT DEFAULT '0');
             INSERT INTO task (id,name,status,end_time) VALUES

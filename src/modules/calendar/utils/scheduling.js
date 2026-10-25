@@ -45,6 +45,7 @@ export function calculateDependencySchedule(tasks = [], dependencies = [], proje
     const conflicts = []
     ordered.forEach(taskId => {
         const task = taskMap.get(taskId)
+        if (task.summary?.has_children) return
         const constraints = incoming.get(taskId)
         if (!constraints.length) return
 

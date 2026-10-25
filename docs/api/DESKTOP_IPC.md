@@ -1,5 +1,7 @@
 # EasyProject桌面内部IPC契约
 
+2026-10-25父子候选增补：task/get_all可传hierarchy:true，按根分页并附匹配后代/祖先context_only及statistics.top_level/all_tasks；普通平铺模式不变。task读结果新增effort_state与summary，父进度/工作量/日期派生只读；零权重summary.progress=null。task/add/update显式估算与清空规则、完成祖先/后代保护及schema8/JSON8见docs/MCP.md、DATABASE_DESIGN.md。Web共用同一服务，已认证账号可收到限定的层级冲突ID/名称说明，不返回SQL或路径，不写审计值。候选未部署；下方旧schema7候选文案为历史，真实安装状态看父子检查点。
+
 只供受控Tauri窗口调用，不是HTTP接口，也不是对外MCP工具。应用来源提交见catalog.json；候选schema版本7（旧schema5/6须受保护迁移），真实环境尚未部署。IPC不可通过浏览器地址直接调用。
 
 新增`desktop_credentials`：仅Windows主窗口，`{action:'read'|'save'|'clear',credentials:{username,password}|null}`；读取返回凭据/null，保存/清除返回null。仅安装侧非C盘受控DPAPI文件，不接受路径/服务器地址，默认关闭/不自动登录，不进入业务导出。不记录参数/响应/密码，失败不伪装成功或登出。不是HTTP/MCP接口，浮窗不能调用。

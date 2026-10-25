@@ -1,4 +1,20 @@
 export default {
+    taskHierarchy: {
+        unscheduled: '未排期任务',
+        unestimated: '待估算',
+        legacyUnknown: '工作量待确认',
+        zeroEffort: '无工作量',
+        derived: '进度、工作量及日期由子任务汇总，不重复计入父任务。',
+        missingEstimates: '{count} 个叶子任务尚待估算或确认',
+        incompleteSchedule: '部分子任务尚未排期',
+        topLevel: '顶层任务',
+        allTasks: '全部任务',
+        statisticsScope: '统计口径',
+        contextOnly: '父级上下文（未命中筛选）',
+        children: '子任务',
+        completedChildren: '直属子任务已完成 {done} / {total}',
+        addChild: '新增子任务'
+    },
     remote: {
         accountMenu: '用户菜单',
         copyToken: '复制 Token',

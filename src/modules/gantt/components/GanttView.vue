@@ -318,6 +318,17 @@
             }}</span>
         </div>
 
+        <section v-if="unscheduledTasks.length" class="unscheduled-tasks">
+            <h3>{{ $t('taskHierarchy.unscheduled') }}</h3>
+            <Button
+                v-for="task in unscheduledTasks"
+                :key="task.id"
+                :label="task.name"
+                text
+                :title="task.name"
+                @click="openEditor(task)"
+            />
+        </section>
         <GanttTaskDialog
             v-model="createForm"
             :projectId="projectId"
@@ -479,6 +490,7 @@ const { dragState, dragCursorX, onBarMouseDown } = useGanttTaskDragging({
 })
 const {
     datedTasks,
+    unscheduledTasks,
     fmtShortRange,
     barStyle,
     dependencyPaths,

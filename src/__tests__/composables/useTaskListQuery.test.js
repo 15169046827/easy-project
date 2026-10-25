@@ -13,12 +13,14 @@ describe('task query state ownership', () => {
         crudAction
             .mockResolvedValueOnce({ list: [task('a')], total: 1 })
             .mockResolvedValueOnce({ list: [{ successor_task_id: 'a', predecessor_task_id: 'b' }] })
+            .mockResolvedValueOnce({ list: [task('a')], total: 1 })
         const state = useTaskListQuery('p1')
         expect(await state.init()).toBe(true)
         expect(state.tasks.value[0]._predecessorIds).toEqual(['b'])
         expect(crudAction.mock.calls[0][2]).toMatchObject({
             pageIndex: 1,
-            pageSize: 1000,
+            pageSize: 20,
+            hierarchy: true,
             projectId: 'p1'
         })
         expect(state.totalRecords.value).toBe(1)

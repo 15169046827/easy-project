@@ -104,7 +104,7 @@ pub fn get(db: &DbState, model: &str, id: &str) -> Result<Value, String> {
     let (table, fields) = match model {
         "task_status" => ("task_status", "id,project_id,name,color,sort_order,is_completed,is_default,builtin_key,create_time,update_time,stateflag"),
         "project" => ("project", "id,name,version,type,status,owner,calendar_country,calendar_region,weekend_days,calendar_exceptions,creator,create_time,update_time,stateflag"),
-        "task" => ("task", "id,project_id,sort_order,name,parent,dependence,start_time,end_time,type,priority,status,status_id,COALESCE((SELECT is_completed FROM task_status s WHERE s.id=task.status_id),0) AS is_completed,COALESCE((SELECT builtin_key FROM task_status s WHERE s.id=task.status_id),'') AS status_builtin_key,progress,effort_days,schedule_mode,comment,assignee,creator,create_time,update_time,stateflag"),
+        "task" => ("task", "id,project_id,sort_order,name,parent,dependence,start_time,end_time,type,priority,status,status_id,COALESCE((SELECT is_completed FROM task_status s WHERE s.id=task.status_id),0) AS is_completed,COALESCE((SELECT builtin_key FROM task_status s WHERE s.id=task.status_id),'') AS status_builtin_key,progress,effort_days,effort_state,schedule_mode,comment,assignee,creator,create_time,update_time,stateflag"),
         "member" => ("member", "id,name,email,phone,role,avatar,availability_exceptions,create_time,update_time,stateflag"),
         "project_member" => ("project_member", "id,project_id,member_id,role,joined_at,stateflag"),
         _ => return Err("Unsupported entity".into()),
@@ -121,7 +121,7 @@ pub fn get(db: &DbState, model: &str, id: &str) -> Result<Value, String> {
         .iter()
         .map(|name| name.to_string())
         .collect::<Vec<_>>();
-    statement
+    let mut record = statement
         .query_row([id], |row| {
             let mut record = Map::new();
             for (index, name) in columns.iter().enumerate() {
@@ -149,5 +149,18 @@ pub fn get(db: &DbState, model: &str, id: &str) -> Result<Value, String> {
         })
         .optional()
         .map_err(|e| e.to_string())?
-        .ok_or_else(|| "Active record not found".into())
+        .ok_or_else(|| "Active record not found".to_string())?;
+    if model == "task" {
+        let summaries = crate::common::task_rollup::calculate(&connection)?;
+        if let Some(summary) = summaries.get(id) {
+            record["summary"] = serde_json::to_value(summary).map_err(|e| e.to_string())?;
+            if summary.has_children {
+                record["progress"] = json!(summary.progress.unwrap_or(0.0).round() as i64);
+                record["effort_days"] = json!(summary.effort_days);
+                record["start_time"] = json!(summary.start_time);
+                record["end_time"] = json!(summary.end_time);
+            }
+        }
+    }
+    Ok(record)
 }

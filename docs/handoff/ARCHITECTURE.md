@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-25候选地图：common/task_effort.rs负责schema8事务估算来源；task_rollup.rs负责迭代共享派生，Task及entity_api读结果携带summary；task_tree_service.rs先筛选/补祖先/根分页再返回双维统计。Vue TaskList使用DataTable展开槽与TaskChildrenDrawer/TaskStatusStatistics，TaskEffortInput复用真实PrimeVue数字输入；甘特派生父项只读，开始单日期补当天展示，未排期列表独立。ResourceLoadPanel不重复计派生父项。Web/MCP限定层级冲突响应仍限本人工作区，不放宽其它内部错误脱敏。源码候选不是已部署状态，确切验证/缺口见父子检查点。
+
 2026-10-24候选增补：`src-tauri/src/common/task_hierarchy.rs`为共享父子完成约束，entity_api在既有事务内执行写前挂接检查/写后分支检查，状态字典完成属性修改也受保护；data_service导入与project_service模板在提交前校验。server通过共享模块复用，无单独业务规则分叉。业务schema仍7；工作量来源字段/汇总/树分页与抽屉尚未实施，不能将本段当部署状态。最新进度见父子专项。
 
 2026-10-24最终状态：下方PointerEvent续修已完成并真实Windows验收（Pending→Testing→Ctrl+Z，SQL一致）后交付c74bcca；桌面/独立MCP/服务器均更新，无迁移或真实CRUD。field_dictionary共享枚举/日历结构/数值、taskPriority统一别名呈现、statusColors具名色。275单测/90UI+12HTTP及Rust/静态/上线门禁见专项最终回执；早期HTML5候选失败保留，父子统计提案仍待讨论。

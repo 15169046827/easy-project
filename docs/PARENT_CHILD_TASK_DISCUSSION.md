@@ -1,5 +1,28 @@
 # 父子任务体验：已批准，开发进行中
 
+## 2026-10-25额度暂停检查点（最新，从这里继续）
+
+- 目标/范围仍为8项批准父子改造；WACAS未定义/待确认，实际适用AGENTS、维护skill、交接规则1.15、UPARS1.1.0。基线db7e149dae18948a9e96846ac279a68a0dbb9314，分支codex/audit-release-20261006-api。恢复时Git干净，本轮全部修改由本任务产生，无他人重叠修改。
+- 额度：开工5h余96%/周67%，里程碑余68%/63%、45%/59%、19%/55%，最新5h余9%/周54%，触发10%长任务门禁。保存后暂停，不启动新长任务、不重置、不定时唤醒、不关机。上次一次性关机已执行且用户明确失效。
+- 已完成候选主体：schema8/JSON8估算来源事务迁移及旧0待确认、备份5—7恢复升级、XLSX按版本字段；共享迭代工作量/进度/日期汇总和零权重null；父派生字段只读；hierarchy=true根分页、祖先context_only、两维字典统计；PrimeVue估算输入/统计口径/多层行下抽屉（子项选择、编辑、新增、全文提示）；甘特零工作量日期独立、单开始日期当天短条、未排期列表；资源负载不重复计算派生父项。账号仍schema3。UI/Web/本地与远端MCP共用完成约束，远端仅放行限定层级冲突说明，内部SQL/路径仍脱敏。
+- 结果：279前端单测/57文件通过（之后新增1项开始单日期Gantt测试尚未再次全量运行）；桌面Rust70+真实stdio1通过；server49单元+16集成通过；构建/release:check通过；类型/lint及桌面严格Clippy通过。server严格Clippy曾通过，但其后新增远端层级错误白名单及远端MCP回复，仍需最终全量fmt/Clippy/Rust重验；不得把此前检查当最终候选全部验证。已有holiday/XLSX大块、Rust增量硬链接复制环境警告保留，未降低阈值或关检查。
+- UI证据：生产完整首轮88通过/2失败/13 Web专用跳过；两处失败为旧控件定位（前置选择器隐藏input和已替换旧统计class），按真实新控件定位修正后定向2/2通过，不删测试。真实HTTP首轮12通过/1失败：四场景矩阵同hash导航保留前一场筛选/展开，第二场等待“展开”超时；每场显式reload后串行13/13通过，未增重试或超时。真实HTTP新用例含1280/960浅深四矩阵、根计数/工作量/拒绝完成冲突/抽屉编辑/筛选父上下文；截图test-results/hierarchy-{1280,960}-{light,dark}.png。两套runner曾并行共享test-results，失败输出可能覆盖；已改最后串行运行，之后完整生产+HTTP应保持串行。
+- 浏览器手工：本机隔离demo已确认空工作量DOM值为空/placeholder待估算；新增演示子项后根总数不增加、父零权重显示待估算，并正常展开抽屉。仅演示数据，不是业务后端CRUD证明。IAB新标签2（已核实URL127.0.0.1:1420/?demo=1#/tasks）；第一次沙箱预览不可达，提升为宿主回环预览后成功，不改代理/证书。
+- 准确下一步：恢复先读此段、额度/Git/diff；先补最终fmt/类型/lint、280项预期单测及全量Rust/Clippy复验，再将生产90项和HTTP13项串行跑一次（不能冒称已有单次90通过）。补ResourceLoad排除父项的专项回归、估算来源/真实副本7→8保留核验器与测试；检查全量task read/date排序、各视图分页边界。再进行隔离原生桌面严格nonce/1280/960/键盘验证及候选打包；未做的原生CSP不能拿浏览器代替。
+- API/文档缺口：MCP.md、数据库设计、IPC/协议总览和API入口已写候选语义；catalog/MODELS/apifox-documents/layout/HTTP契约及私有Apifox尚未生成同步。需扩展build-api-catalog模型清单包含common/task_rollup.rs的TaskSummary，使用新编译隔离候选MCP+相匹配manifest及不再写入的schema8合成库，只读发现23工具且数据库SHA不变；不要覆盖artifacts/mcp或当前客户端。然后增量同步私有Apifox/读回、Git/Wolai/交接闭环。下方旧API已部署来源不是新候选能力。尚未专项代码审计/最终验收，不是完整交付或正式发布通过。
+- 设备/数据：本轮未SSH home-host、未读写真实库、未覆盖桌面/独立MCP、未部署服务器或扩大权限；仅E盘隔离测试/缓存/产物。维护预览进程会正常停止；测试runner结束会自行关闭其隔离服务器。无实体设备/服务器新连接证明。真实schema7与账号3不变，候选真实升级仍须另外确认。
+- 当前全部未提交（提交保存后以Git为准）：docs/{DATABASE_DESIGN,MCP,PARENT_CHILD_TASK_DISCUSSION}.md、docs/api/{DESKTOP_IPC,OVERVIEW,README}.md、docs/handoff/{ARCHITECTURE,CURRENT_STATE,README}.md；e2e/{smoke,ui-consistency,web-server}.spec.js；server/src/{maintenance,mcp,workspace}.rs；src-tauri/src/common/{db_state,field_dictionary,mod,task_hierarchy,task_effort,task_rollup}.rs、db/task_db.rs、mcp/{tests,tools}.rs、models/task.rs、services/{data_service,entity_api,mod,task_service,task_tree_service}.rs；src/__tests__/components/TaskHierarchy.test.js、composables/{useGanttPresentation,useGanttTaskEditors,useTaskListQuery}.test.js、data/xlsx.test.js、gantt/{interaction,taskFormSchedule}.test.js；src/api/{demo,demoHierarchy}.js；src/components/{ResourceLoadPanel,TaskEffortInput}.vue；src/i18n/locales/{en-US,zh-CN}.js；src/modules/calendar/utils/scheduling.js、data/utils/xlsx.js、gantt/components/{GanttTaskDialog,GanttView}.vue、gantt/composables/{useGanttCreateEditor,useGanttEditEditor,useGanttPresentation,useGanttTaskDragging}.js、gantt/utils/{interaction,taskFormSchedule}.js、task/components/TaskList/TaskList.vue、task/components/{TaskChildrenDrawer,TaskStatusStatistics}.vue、task/composables/useTaskListQuery.js、task/utils/taskRowPersistence.js；src/utils/taskEffort.js。
+- 同步状态：本段与交接/候选说明已本地保存；代码与检查点即将做明确范围Git候选提交，Wolai主/交接同步本阶段及缺口并读回，最终SHA/远端状态另补最小回执。API/Apifox缺口如上，不称全部同步。
+
+## 2026-10-25里程碑二（开发中，不是交付）
+
+- 目标仍为下方8项批准方案；WACAS未定义，适用AGENTS/维护skill/规则1.15/UPARS1.1.0。基线db7e149dae18948a9e96846ac279a68a0dbb9314，分支codex/audit-release-20261006-api，开工干净。开工5h余96%/周67%，本节点余68%/63%，未触门禁。
+- 已实现候选：schema8事务估算来源迁移（保留旧值，旧0=legacy_unknown，正值=estimated）；JSON8与1—7兼容导入、旧备份恢复升级；共享迭代汇总（1万层测试不递归）、父只读工作量/进度/日期，零权重progress=null；读接口summary元数据，任务/甘特估算输入PrimeVue组件、空值/明确0提示。没有真实库/服务器/安装/MCP替换。
+- 当前验证：server48单元通过（新增6迁移/聚合测试），原有事务保护测试已改查原始存储验证回滚，不把只读汇总当手填进度。首轮schema兼容/测试fixture问题已整改。前端类型检查发现Gantt估算/summary/derived类型声明未补齐，尚未通过；lint在运行，完整Rust/stdio/Web/E2E/构建及UI/CSP尚未执行，不能交付。
+- 准确下一步：补Gantt类型与未填写默认、清理未用导入；接共享根分页/筛选上下文/动态双维统计；以根DataTable展开槽实现行下紧凑多层抽屉，替换同级flatten展开。然后补契约/迁移/写入/MCP/UI测试，完整门禁、API/Apifox/Wolai/Git同步。真实升级仍须另确认。
+- 本节点全部未提交（均本轮）：server/src/maintenance.rs；src-tauri/src/common/{db_state,field_dictionary,mod,task_hierarchy,task_effort,task_rollup}.rs、db/task_db.rs、mcp/tools.rs、models/task.rs、services/{data_service,entity_api,task_service}.rs；src/i18n/locales/{en-US,zh-CN}.js；src/modules/calendar/utils/scheduling.js；src/modules/data/utils/xlsx.js；src/modules/gantt/components/GanttTaskDialog.vue、composables/{useGanttEditEditor,useGanttPresentation,useGanttTaskDragging}.js、utils/{interaction,taskFormSchedule}.js；src/modules/task/components/TaskList/TaskList.vue、utils/taskRowPersistence.js；src/components/TaskEffortInput.vue、src/utils/taskEffort.js；本检查点。后续新增以Git为准。
+- 文档：本检查点先保存；阶段二Wolai/Apifox/交接与Git尚未同步，不能声称闭环。设备：仅本Windows本地隔离测试，未重新连接home-host，无真实数据操作；所有本机写入在E盘。上次关机授权已执行并失效，禁止重放。
+
 ## 2026-10-24续接里程碑一：共享完成约束候选
 
 最终静态回执：server与桌面`cargo fmt --check`均通过，两个工程`cargo clippy --all-targets -- -D warnings`均通过；本阶段server42+16、桌面62单元均通过。Wolai主页面与交接副本已增补批准方案和候选边界，等待本阶段提交SHA读回。按用户本轮关机要求保存本阶段，不声称额度耗尽或整个功能完成。

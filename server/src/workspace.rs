@@ -157,10 +157,12 @@ impl Workspace {
                     )
                 })?;
         }
-        let result = result.map_err(|_| {
+        let result = result.map_err(|message| {
             (
                 400,
-                "Operation failed; verify fields and relationships".into(),
+                crate::common::task_hierarchy::public_message(&message)
+                    .unwrap_or("Operation failed; verify fields and relationships")
+                    .to_owned(),
             )
         })?;
         if !result.success {

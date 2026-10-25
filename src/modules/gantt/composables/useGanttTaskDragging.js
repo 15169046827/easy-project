@@ -42,7 +42,7 @@ async function finishTaskDrag(context, state, cursorX) {
     }
 }
 
-/** @typedef {{task: {id: string, name: string, start_time: string, end_time: string},
+/** @typedef {{task: {id: string, name: string, start_time: string, end_time: string, summary?: {has_children?: boolean}},
  * mode: string, startX: number, origStart: Date, origEnd: Date}} TaskDrag */
 export function useGanttTaskDragging(context) {
     /** @type {import('vue').Ref<TaskDrag | null>} */
@@ -62,6 +62,10 @@ export function useGanttTaskDragging(context) {
     /** @param {TaskDrag['task']} task @param {MouseEvent} event */
     function onBarMouseDown(task, event, mode = 'move') {
         if (event.button !== 0) return
+        if (task.summary?.has_children) {
+            context.openEditor(task)
+            return
+        }
         event.preventDefault()
         event.stopPropagation()
         const start = context.parse(task.start_time)

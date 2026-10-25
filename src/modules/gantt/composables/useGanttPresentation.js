@@ -2,6 +2,7 @@ import { computed } from 'vue'
 import { calculateCriticalPath } from '../utils/criticalPath.js'
 import { taskAvailabilityConflict } from '../../calendar/utils/memberAvailability.js'
 import { calculateDragDelta, calculateDragUpdate } from '../utils/interaction.js'
+import { summaryHint } from '../../../utils/taskEffort.js'
 
 function taskBarStyle(task, context) {
     const { dragState, dragCursorX, dayWidth, parse, dayStart, nameWidth, offset } = context
@@ -53,7 +54,12 @@ function taskBarStyle(task, context) {
 
 /** @returns {Array<{id: string, name: string, parent: string, start_time: string, end_time: string, type: string, status: string, level: number, progress?: number, assignee?: string}>} */
 function datedTaskRows(tasks, parse) {
-    const source = tasks.filter(task => parse(task.start_time) && parse(task.end_time))
+    const source = tasks
+        .filter(task => parse(task.start_time))
+        .map(task => ({
+            ...task,
+            end_time: parse(task.end_time) ? task.end_time : task.start_time
+        }))
     const ids = new Set(source.map(task => task.id))
     const level = task => {
         let count = 0
@@ -148,7 +154,7 @@ export function useGanttPresentation(context) {
     }
 
     function taskTip(task) {
-        const base = criticalTip(task)
+        const base = [criticalTip(task), summaryHint(task, t)].filter(Boolean).join('\n')
         const availability = availabilityInfo(task)
         if (!availability.conflict) return base
         return `${base}\n${t('gantt.availabilityConflict', {
@@ -159,6 +165,7 @@ export function useGanttPresentation(context) {
     }
     return {
         datedTasks,
+        unscheduledTasks: computed(() => tasks.value.filter(task => !parse(task.start_time))),
         fmtShortRange,
         barStyle,
         dependencyPaths,

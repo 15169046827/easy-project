@@ -11,6 +11,16 @@ struct Node {
     completed: bool,
 }
 
+/// Only these domain-generated messages may cross the remote error redaction
+/// boundary. They describe the authenticated workspace, never SQL or paths.
+pub fn public_message(message: &str) -> Option<&str> {
+    if message.starts_with("Completed parents cannot contain unfinished descendants. Reopen the parent explicitly or complete its descendants first: ")
+        || message.starts_with("Reopen the completed ancestor with an explicit non-completed status before adding or moving a child: ")
+        || message == "Parent progress, effort and dates are derived from children and cannot be edited" {
+        Some(message)
+    } else { None }
+}
+
 fn active_nodes(conn: &Connection) -> Result<HashMap<String, Node>, String> {
     let mut query = conn
         .prepare(
@@ -264,7 +274,15 @@ mod tests {
         assert!(error.contains(&child) && error.contains(&grandchild));
         let record = entity_api::get(f.db(), "task", &root).unwrap();
         assert_eq!(record["status_id"], f.pending);
-        assert_eq!(record["progress"], 25);
+        let stored: i64 = f
+            .db()
+            .lock_connection()
+            .unwrap()
+            .query_row("SELECT progress FROM task WHERE id=?1", [&root], |row| {
+                row.get(0)
+            })
+            .unwrap();
+        assert_eq!(stored, 25);
         f.update(&grandchild, &f.done).unwrap();
         f.update(&child, &f.done).unwrap();
         f.update(&root, &f.done).unwrap();
@@ -367,10 +385,17 @@ mod tests {
             entity_api::get(f.db(), "task_status", &f.pending).unwrap()["is_completed"],
             false
         );
-        assert_eq!(
-            entity_api::get(f.db(), "task", &open_root).unwrap()["progress"],
-            25
-        );
+        let stored: i64 = f
+            .db()
+            .lock_connection()
+            .unwrap()
+            .query_row(
+                "SELECT progress FROM task WHERE id=?1",
+                [&open_root],
+                |row| row.get(0),
+            )
+            .unwrap();
+        assert_eq!(stored, 25);
     }
 
     #[test]

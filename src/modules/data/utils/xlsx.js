@@ -36,7 +36,8 @@ const SHEETS = {
         'create_time',
         'update_time',
         'stateflag',
-        'status_id'
+        'status_id',
+        'effort_state'
     ],
     TaskStatuses: [
         'id',
@@ -95,8 +96,12 @@ function sheetsForVersion(version) {
         .filter(([name]) => version >= 7 || name !== 'TaskStatuses')
         .map(([name, headers]) => [
             name,
-            version < 7 && name === 'Tasks'
-                ? headers.filter(header => header !== 'status_id')
+            name === 'Tasks'
+                ? headers.filter(
+                      header =>
+                          (version >= 7 || header !== 'status_id') &&
+                          (version >= 8 || header !== 'effort_state')
+                  )
                 : headers
         ])
 }

@@ -6,7 +6,10 @@
                 <div class="header-info">
                     <span class="eyebrow">{{ $t('tasks.eyebrow') }}</span>
                     <h2>{{ $t('tasks.title') }}</h2>
-                    <p>{{ $t('tasks.viewCount', { count: tasks.length }) }}</p>
+                    <p>
+                        {{ $t('tasks.viewCount', { count: totalRecords }) }} ·
+                        {{ $t('taskHierarchy.topLevel') }}
+                    </p>
                 </div>
                 <div class="toolbar-actions">
                     <Select
@@ -30,36 +33,12 @@
                 </div>
             </header>
 
-            <div class="task-stats workspace-stats">
-                <div class="tstat-card">
-                    <span class="tstat-icon total"><i class="pi pi-list"></i></span>
-                    <div>
-                        <strong>{{ taskStats.total }}</strong
-                        ><small>{{ $t('tasks.total') }}</small>
-                    </div>
-                </div>
-                <div class="tstat-card">
-                    <span class="tstat-icon progress"><i class="pi pi-play-circle"></i></span>
-                    <div>
-                        <strong>{{ taskStats.inProgress }}</strong
-                        ><small>{{ $t('taskStatuses.unfinished') }}</small>
-                    </div>
-                </div>
-                <div class="tstat-card">
-                    <span class="tstat-icon done"><i class="pi pi-check-circle"></i></span>
-                    <div>
-                        <strong>{{ taskStats.done }}</strong
-                        ><small>{{ $t('tasks.done') }}</small>
-                    </div>
-                </div>
-                <div class="tstat-card">
-                    <span class="tstat-icon pending"><i class="pi pi-clock"></i></span>
-                    <div>
-                        <strong>{{ taskStats.pending }}</strong
-                        ><small>{{ $t('common.overdue') }}</small>
-                    </div>
-                </div>
-            </div>
+            <TaskStatusStatistics
+                v-model="statisticsScope"
+                :data="scopedStatistics"
+                :label="statisticsLabel"
+                inputId="task-statistics-scope"
+            />
 
             <div class="filter-card workspace-toolbar">
                 <div class="filter-bar">
@@ -134,7 +113,7 @@
             <header class="embedded-toolbar">
                 <div class="embedded-toolbar-left">
                     <div class="view-summary">
-                        <strong>{{ tasks.length }}</strong>
+                        <strong>{{ totalRecords }}</strong>
                         <span>{{ $t('tasks.unit') }}</span>
                     </div>
                     <div class="clearable-search embedded-search">
@@ -183,6 +162,13 @@
                 </div>
             </header>
         </template>
+        <TaskStatusStatistics
+            v-if="embedded"
+            v-model="statisticsScope"
+            :data="scopedStatistics"
+            :label="statisticsLabel"
+            inputId="project-task-statistics-scope"
+        />
         <div v-if="embedded" class="column-toolbar">
             <span>{{ $t('tasks.columnHint') }}</span>
             <MultiSelect
@@ -212,13 +198,14 @@
             <DataTable
                 v-model:selection="selectedTasks"
                 :value="visibleTasks"
+                :expandedRows="expandedRows"
                 :loading="showLoading"
                 :aria-busy="loading"
                 stripedRows
                 paginator
-                :lazy="!selectedProjectId"
-                :totalRecords="selectedProjectId ? visibleTasks.length : totalRecords"
-                :first="selectedProjectId ? 0 : (pageOption.pageIndex - 1) * pageOption.pageSize"
+                lazy
+                :totalRecords="totalRecords"
+                :first="(pageOption.pageIndex - 1) * pageOption.pageSize"
                 scrollable
                 scrollHeight="flex"
                 :rows="pageOption.pageSize"
@@ -265,6 +252,7 @@
                             <Button
                                 v-if="data._hasChildren"
                                 class="tree-toggle"
+                                :aria-expanded="isExpanded(data.id)"
                                 :aria-label="
                                     isExpanded(data.id)
                                         ? $t('tasks.collapseTask')
@@ -289,6 +277,20 @@
                                 }"
                                 >{{ data.name }}</span
                             >
+                            <i
+                                v-if="data.summary?.has_children"
+                                class="pi pi-info-circle"
+                                tabindex="0"
+                                :aria-label="summaryHint(data, t)"
+                                :title="summaryHint(data, t)"
+                                v-tooltip.bottom="summaryHint(data, t)"
+                            />
+                            <i
+                                v-if="data.context_only"
+                                class="pi pi-filter"
+                                :title="$t('taskHierarchy.contextOnly')"
+                                v-tooltip.bottom="$t('taskHierarchy.contextOnly')"
+                            />
                         </div>
                     </template>
                 </Column>
@@ -359,7 +361,7 @@
                     :style="columnStyle('effort_days')"
                 >
                     <template #body="{ data }">
-                        {{ data.effort_days > 0 ? data.effort_days : '-' }}
+                        <span :title="effortLabel(data, t)">{{ effortLabel(data, t) }}</span>
                     </template>
                 </Column>
                 <Column
@@ -469,7 +471,10 @@
                     :style="columnStyle('progress')"
                 >
                     <template #body="{ data }">
-                        <div class="mini-progress">
+                        <span v-if="data.summary?.has_children && data.summary.progress == null">{{
+                            effortLabel(data, t)
+                        }}</span>
+                        <div v-else class="mini-progress">
                             <ProgressBar
                                 class="mini-progress-bar"
                                 :value="data.progress || 0"
@@ -559,6 +564,18 @@
                         />
                     </template>
                 </Column>
+                <template #expansion="{ data }">
+                    <TaskChildrenDrawer
+                        :parent="data"
+                        :tasks="tasks"
+                        :filtering="filteringHierarchy"
+                        :labelStatus="taskStatusLabel"
+                        :selectedTasks="selectedTasks"
+                        @edit="openTaskEditor"
+                        @add-child="addChildTask"
+                        @select="toggleChildSelection"
+                    />
+                </template>
             </DataTable>
         </div>
         <Dialog
@@ -646,22 +663,19 @@
                     ><DateTimePickerString
                         inputId="task-edit-start_time"
                         v-model="editDraft.start_time"
+                        :disabled="Boolean(editDraft.summary?.has_children)"
                         :placeholder="$t('tasks.selectStart')"
                         @update:model-value="recalculateEnd(editDraft)"
                     />
                 </div>
                 <div class="task-edit-field">
                     <label for="task-edit-effort_days">{{ $t('tasks.columnEffort') }}</label
-                    ><InputNumber
+                    ><TaskEffortInput
                         inputId="task-edit-effort_days"
                         v-model="editDraft.effort_days"
-                        :min="0"
-                        :step="0.5"
-                        :maxFractionDigits="2"
-                        :useGrouping="false"
-                        fluid
-                        v-tooltip.bottom="$t('tasks.effortHint')"
-                        @update:modelValue="recalculateEnd(editDraft)"
+                        v-model:state="editDraft.effort_state"
+                        :disabled="Boolean(editDraft.summary?.has_children)"
+                        @change="recalculateEnd(editDraft)"
                     />
                 </div>
                 <div class="task-edit-field">
@@ -681,6 +695,7 @@
                     ><DateTimePickerString
                         inputId="task-edit-end_time"
                         v-model="editDraft.end_time"
+                        :disabled="Boolean(editDraft.summary?.has_children)"
                         :placeholder="$t('tasks.selectEnd')"
                         @update:model-value="recalculateEffort(editDraft)"
                     />
@@ -723,10 +738,12 @@
                 <div class="task-edit-field">
                     <label for="task-edit-progress">{{ $t('tasks.columnProgress') }}</label
                     ><ProgressEditor
+                        v-if="!editDraft.summary?.has_children"
                         inputId="task-edit-progress"
                         v-model="editDraft.progress"
                         :label="$t('tasks.columnProgress')"
                     />
+                    <p v-else>{{ $t('taskHierarchy.derived') }}</p>
                 </div>
                 <div class="task-edit-field">
                     <label for="task-edit-comment">{{ $t('tasks.columnComment') }}</label
@@ -794,7 +811,10 @@ import Button from 'primevue/button'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
+import TaskEffortInput from '../../../../components/TaskEffortInput.vue'
+import TaskChildrenDrawer from '../TaskChildrenDrawer.vue'
+import TaskStatusStatistics from '../TaskStatusStatistics.vue'
+import { effortLabel, summaryHint } from '../../../../utils/taskEffort.js'
 import ProgressEditor from '../../../../components/ProgressEditor.vue'
 import TaskStatusSelect from '../../../../components/TaskStatusSelect.vue'
 import ProgressBar from 'primevue/progressbar'
@@ -819,11 +839,7 @@ import {
 } from '../../utils/taskColumns.js'
 import { useTaskRowEditor } from '../../composables/useTaskRowEditor.js'
 import { avatarBg, avatarInitial } from '../../../../composables/useAvatar'
-import {
-    calculateEndDate,
-    countWorkingDays,
-    dateKey
-} from '../../../calendar/utils/workCalendar.js'
+import { calculateEndDate, dateKey } from '../../../calendar/utils/workCalendar.js'
 import { calculateDependencySchedule } from '../../../calendar/utils/scheduling.js'
 import { flattenTaskTree, getParentOptions } from '../../utils/taskTree.js'
 
@@ -843,6 +859,7 @@ const {
     loading,
     errorMessage,
     totalRecords,
+    statistics,
     keywordInput,
     appliedKeyword,
     statusFilter,
@@ -1048,15 +1065,38 @@ const getPriorityLabel = value => {
     return match ? match.label : value
 }
 
-const taskStats = computed(() => ({
-    total: tasks.value.length,
-    inProgress: tasks.value.filter(task => !isTaskCompleted(task)).length,
-    done: tasks.value.filter(isTaskCompleted).length,
-    pending: tasks.value.filter(
-        task =>
-            !isTaskCompleted(task) && new Date(String(task.end_time).replace(' ', 'T')) < new Date()
-    ).length
-}))
+const statisticsScope = ref('top_level')
+const scopedStatistics = computed(() => {
+    if (statistics.value?.[statisticsScope.value]) return statistics.value[statisticsScope.value]
+    const source =
+        statisticsScope.value === 'top_level'
+            ? tasks.value.filter(task => !task.parent)
+            : tasks.value
+    const states = projectStatuses.value.length
+        ? projectStatuses.value
+        : [
+              ...new Map(
+                  tasks.value.map(task => [
+                      task.status_id || task.status,
+                      {
+                          id: task.status_id || task.status,
+                          project_id: task.project_id,
+                          name: task.status,
+                          builtin_key: task.status_builtin_key
+                      }
+                  ])
+              ).values()
+          ]
+    return {
+        total: source.length,
+        statuses: states.map(state => ({
+            ...state,
+            count: source.filter(task => (task.status_id || task.status) === state.id).length
+        }))
+    }
+})
+const statisticsLabel = state =>
+    `${selectedProjectId.value ? '' : getProjectName(state.project_id) + ' · '}${taskStatusLabel(state.name, state.builtin_key, true)}`
 
 function statusPillClass(status) {
     const map = { Pending: 'pill-draft', InProgress: 'pill-inprogress', Done: 'pill-done' }
@@ -1074,7 +1114,19 @@ function priorityClass(priority) {
     return `priority-p${priorityRank(priority) || 'unknown'}`
 }
 
-const visibleTasks = computed(() => flattenTaskTree(tasks.value, expandedTaskIds.value))
+const visibleTasks = computed(() => flattenTaskTree(tasks.value, new Set()))
+const expandedRows = computed(() =>
+    Object.fromEntries([...expandedTaskIds.value].map(id => [id, true]))
+)
+const filteringHierarchy = computed(() =>
+    Boolean(appliedKeyword.value || statusFilter.value || priorityFilter.value)
+)
+watch(tasks, () => {
+    if (filteringHierarchy.value)
+        expandedTaskIds.value = new Set(
+            visibleTasks.value.filter(task => task._hasChildren).map(task => task.id)
+        )
+})
 
 function toggleTask(taskId) {
     const next = new Set(expandedTaskIds.value)
@@ -1085,6 +1137,11 @@ function toggleTask(taskId) {
 
 function isExpanded(taskId) {
     return expandedTaskIds.value.has(taskId)
+}
+function toggleChildSelection(task) {
+    selectedTasks.value = selectedTasks.value.some(item => item.id === task.id)
+        ? selectedTasks.value.filter(item => item.id !== task.id)
+        : [...selectedTasks.value, task]
 }
 
 function getTaskName(taskId) {
@@ -1115,6 +1172,7 @@ function onDateChange(val, data, field) {
 }
 
 function recalculateEnd(task) {
+    if (task.summary?.has_children) return
     const project = projects.value.find(item => item.id === task.project_id) || {}
     if ((task.schedule_mode || 'fixed_dates') === 'fixed_dates') {
         recalculateEffort(task)
@@ -1126,11 +1184,7 @@ function recalculateEnd(task) {
 }
 
 function recalculateEffort(task) {
-    if ((task.schedule_mode || 'fixed_dates') !== 'fixed_dates') return
-    const project = projects.value.find(item => item.id === task.project_id) || {}
-    if (task.start_time && task.end_time) {
-        task.effort_days = countWorkingDays(task.start_time, task.end_time, project)
-    }
+    return task.effort_days
 }
 
 function scheduleModeLabel(mode) {
@@ -1234,8 +1288,9 @@ async function saveTaskEditor() {
     }
 }
 
-async function addTask() {
-    if (!selectedProjectId.value) {
+async function addTask(parent = null) {
+    const projectId = parent?.project_id || selectedProjectId.value
+    if (!projectId) {
         errorMessage.value = t('tasks.selectProjectFirst')
         return
     }
@@ -1244,8 +1299,8 @@ async function addTask() {
     const newRow = {
         id: 'NEWTASK:' + Date.now(),
         name: '',
-        project_id: selectedProjectId.value,
-        parent: '',
+        project_id: projectId,
+        parent: parent?.id || '',
         dependence: '',
         _predecessorIds: [],
         start_time: '',
@@ -1255,7 +1310,8 @@ async function addTask() {
         status: '',
         status_id: '',
         progress: 0,
-        effort_days: 1,
+        effort_days: null,
+        effort_state: 'unestimated',
         schedule_mode: 'fixed_effort',
         comment: '',
         assignee: '',
@@ -1263,6 +1319,9 @@ async function addTask() {
     }
 
     await openTaskEditor(newRow)
+}
+function addChildTask(parent) {
+    return addTask(parent)
 }
 
 function deleteTask() {

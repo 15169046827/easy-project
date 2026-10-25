@@ -104,6 +104,7 @@ describe('Gantt task editing', () => {
             status: 'Pending',
             progress: 0,
             effort_days: 3,
+            effort_state: 'estimated',
             schedule_mode: 'fixed_effort',
             comment: 'Coordinate the launch',
             assignee: 'member-1'
@@ -131,6 +132,7 @@ describe('Gantt task editing', () => {
             status: 'InProgress',
             progress: 40,
             effort_days: 3,
+            effort_state: 'estimated',
             schedule_mode: 'fixed_effort',
             assignee: 'member-1'
         })

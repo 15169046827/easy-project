@@ -1,5 +1,7 @@
 # EasyProject API：协议、权限与错误
 
+2026-10-25未部署父子候选：schema8、估算来源、summary派生字段和根分页层级模式详见MCP.md/DESKTOP_IPC.md。父子完成保护在共享事务内，Web和远端MCP只放行明确列举的层级冲突说明（限当前账号工作区ID/名称），其它内部错误仍脱敏；权限、Origin、revision和审计边界不变。新catalog/Apifox读回尚待完成，不能把已部署旧release目录当候选客户端能力。
+
 2026-10-23实际部署回执：桌面、服务器与独立MCP均已升级业务schema7，账号库仍schema3；原生66条（23MCP/7注册IPC/36动作）、HTTP18操作，权限范围9/18/23。安装侧及独立MCP release摘要765B4C33…，实际构建源1640e31；Linux源53d664e/CI39964991851。当前Codex旧会话仍须重连，不能将独立进程发现23工具等同本聊天已加载。下方“候选/尚未部署”为阶段历史，精确迁移/备份/未验边界见PROJECT_TASK_STATUS_CHECKPOINT。
 
 2026-10-23项目状态字典候选：业务schema7，原生66条=23MCP+7注册IPC+36动作；只读/可写/删除范围9/18/23。HTTP操作数量仍18（15路径），工作区action新增task_status白名单而不是伪造五条REST路径。任务MCP创建必填同项目已有status_id，状态五工具CRUD；状态get含首50引用任务，引用（含软删除）阻止删除，不自动替换。旧桌面/服务器/独立MCP仍schema6/18工具，部署与客户端加载未发生；下方schema6为历史部署事实。详状态专项检查点。

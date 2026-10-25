@@ -26,6 +26,119 @@ async function accountAction(page, name) {
     await page.getByRole('menuitem', { name, exact: true }).click()
 }
 
+test('real hierarchy keeps roots, weighted estimates, drawer edits and filter context consistent', async ({
+    page
+}) => {
+    const session = await page.request.post(origin + '/api/auth/login', {
+        headers: {
+            Origin: origin,
+            'X-EasyProject-Request': '1',
+            'X-EasyProject-Client': 'desktop'
+        },
+        data: { username: 'test_admin', password: 'Synthetic-changed-456!' }
+    })
+    const { token } = await session.json()
+    const headers = {
+        Origin: origin,
+        'X-EasyProject-Request': '1',
+        Authorization: `Bearer ${token}`
+    }
+    async function action(model, operation, data, expected = 200) {
+        const revision = (
+            await (await page.request.get(origin + '/api/workspace/revision', { headers })).json()
+        ).revision
+        const response = await page.request.post(origin + '/api/workspace/action', {
+            headers: { ...headers, 'X-Workspace-Revision': String(revision) },
+            data: { model, action: operation, data }
+        })
+        expect(response.status()).toBe(expected)
+        return response.json()
+    }
+    const project = (
+        await action('project', 'add', {
+            name: `Hierarchy acceptance ${Date.now()}`,
+            version: 'v1.0',
+            type: 'private',
+            status: 'InProgress',
+            owner: ''
+        })
+    ).data.id
+    const states = (await action('task_status', 'get_all', { projectId: project })).data.list
+    const pending = states.find(state => state.is_default).id,
+        done = states.find(state => state.is_completed).id
+    const data = {
+        project_id: project,
+        parent: '',
+        dependence: '',
+        start_time: '',
+        end_time: '',
+        type: 'Task',
+        priority: '3',
+        status_id: pending,
+        comment: '',
+        assignee: ''
+    }
+    const parent = (await action('task', 'add', { ...data, name: 'Delivery goal' })).data.id
+    const leaf = (
+        await action('task', 'add', {
+            ...data,
+            name: 'Execution needle',
+            parent,
+            effort_days: 2,
+            progress: 50,
+            start_time: '2026-10-25',
+            end_time: '2026-10-28'
+        })
+    ).data.id
+    await action('task', 'add', { ...data, name: 'Unestimated execution', parent })
+    const snapshot = (
+        await action('task', 'get_all', { projectId: project, hierarchy: true, pageSize: 1 })
+    ).data
+    expect(snapshot.total).toBe(1)
+    expect(snapshot.list).toHaveLength(3)
+    expect(snapshot.list.find(task => task.id === parent).summary).toMatchObject({
+        effort_days: 2,
+        progress: 50,
+        unestimated_count: 1
+    })
+    const rejected = await action('task', 'update', { id: parent, status_id: done }, 400)
+    expect(JSON.stringify(rejected)).toContain(leaf)
+    await login(page)
+    for (const width of [1280, 960])
+        for (const dark of [false, true]) {
+            await page.setViewportSize({ width, height: 800 })
+            await page.addInitScript(
+                dark => localStorage.setItem('easyproject-theme', dark ? 'dark' : 'light'),
+                dark
+            )
+            await page.goto(origin + '/index.html#/project/' + project)
+            // Same hash navigation preserves Vue filter/expanded state. Start
+            // each viewport/theme case with a fresh document and nonce.
+            await page.reload()
+            const root = page.locator('.task-name-text').filter({ hasText: 'Delivery goal' })
+            await expect(root).toBeVisible()
+            await page.getByRole('button', { name: /^(展开任务|Expand task)$/ }).click()
+            const drawer = page.locator('.child-drawer').first()
+            await expect(drawer).toContainText('Execution needle')
+            await expect(drawer.locator('table')).toHaveCount(0)
+            await drawer.getByRole('button', { name: /^(编辑|Edit): Execution needle$/ }).click()
+            await expect(page.locator('#task-edit-parent')).toContainText('Delivery goal')
+            await expect(page.locator('#task-edit-effort_days')).toHaveValue('2')
+            await page
+                .getByRole('dialog')
+                .getByRole('button', { name: /^(取消|Cancel)$/ })
+                .click()
+            await page.screenshot({
+                path: `test-results/hierarchy-${width}-${dark ? 'dark' : 'light'}.png`
+            })
+            await page.getByPlaceholder(/搜索任务|Search tasks/).fill('needle')
+            await page.getByPlaceholder(/搜索任务|Search tasks/).press('Enter')
+            await expect(page.locator('.child-drawer')).toContainText('Execution needle')
+            await expect(page.locator('.child-drawer')).not.toContainText('Unestimated execution')
+            await expect(page.locator('.pi-filter[title]')).toBeVisible()
+        }
+})
+
 test('real HTTP homepage is public and online entry retains same-origin login', async ({
     page
 }) => {

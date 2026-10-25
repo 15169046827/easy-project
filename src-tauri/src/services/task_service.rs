@@ -37,6 +37,15 @@ pub fn handle_action(
     match action.as_str() {
         "add" => {
             info!("Adding task");
+            let effort_state = data
+                .get("effort_state")
+                .and_then(Value::as_str)
+                .unwrap_or(if data.get("effort_days").is_some() {
+                    "estimated"
+                } else {
+                    "unestimated"
+                })
+                .to_owned();
             // 解析前端传入数据
             let task_create_request: TaskCreateRequest =
                 serde_json::from_value(data).map_err(|e| format!("JSON parse error: {}", e))?;
@@ -139,6 +148,13 @@ pub fn handle_action(
             if let Err(e) = task_db::insert_task(db, &new_task) {
                 return ApiResponse::err(&format!("DB error: {}", e));
             }
+            db.lock_connection()
+                .map_err(|e| e.to_string())?
+                .execute(
+                    "UPDATE task SET effort_state=?1 WHERE id=?2",
+                    rusqlite::params![effort_state, new_task.id],
+                )
+                .map_err(|e| e.to_string())?;
 
             ApiResponse::ok(Some(serde_json::json!({ "id": new_task.id })))
         }
@@ -179,6 +195,9 @@ pub fn handle_action(
                 sort_direction,
             };
 
+            if data["hierarchy"].as_bool() == Some(true) {
+                return ApiResponse::ok(Some(super::task_tree_service::query(db, &query)?));
+            }
             match task_db::query_tasks(db, &query) {
                 Ok((list, total)) => {
                     let total_page = if total == 0 {
@@ -305,12 +324,29 @@ pub fn handle_action(
                 "status_id",
                 "progress",
                 "effort_days",
+                "effort_state",
                 "schedule_mode",
                 "comment",
                 "assignee",
                 "sort_order",
             ];
             let current = crate::services::entity_api::get(db, "task", id)?;
+            let derived = current["summary"]["has_children"]
+                .as_bool()
+                .unwrap_or(false);
+            if derived
+                && [
+                    "progress",
+                    "effort_days",
+                    "effort_state",
+                    "start_time",
+                    "end_time",
+                ]
+                .iter()
+                .any(|key| data.get(key).is_some())
+            {
+                return ApiResponse::err("Parent progress, effort and dates are derived from children and cannot be edited");
+            }
             if target_project_id != current_project_id && data.get("status_id").is_none() {
                 return ApiResponse::err(
                     "Moving a task requires an explicit status_id from the destination project",
@@ -360,6 +396,17 @@ pub fn handle_action(
                         .map(str::to_string)
                         .unwrap_or_else(|| value.to_string())
                 });
+            }
+            if !derived && (data.get("effort_days").is_some() || data.get("effort_state").is_some())
+            {
+                if data.get("effort_state").is_none() {
+                    param_set.push("effort_state = ?".into());
+                    value_set.push("estimated".into());
+                }
+                if data["effort_state"] == "unestimated" && data.get("effort_days").is_none() {
+                    param_set.push("effort_days = ?".into());
+                    value_set.push("0".into());
+                }
             }
             param_set.push("status = ?".into());
             value_set.push(selected_status.name);

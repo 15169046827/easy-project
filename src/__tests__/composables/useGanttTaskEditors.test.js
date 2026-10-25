@@ -41,7 +41,8 @@ describe('Gantt task editor responsibilities', () => {
             name: '',
             start_time: '2026-11-02',
             end_time: '2026-11-03',
-            effort_days: 2
+            effort_days: null,
+            effort_state: 'unestimated'
         })
         expect(state.creatingTask.value).toBe(true)
     })

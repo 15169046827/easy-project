@@ -176,6 +176,38 @@ test.beforeEach(async ({ page }) => {
                         if (args.data.status === 'Done') return row.is_completed
                         return row.status_id === args.data.status || row.status === args.data.status
                     })
+                if (args.model === 'task' && args.data.hierarchy) {
+                    const scope = data.task.filter(
+                        task => !args.data.projectId || task.project_id === args.data.projectId
+                    )
+                    const matched = new Set(list.map(task => task.id)),
+                        included = new Set(matched)
+                    for (const task of list) {
+                        let parent = scope.find(row => row.id === task.parent)
+                        while (parent) {
+                            included.add(parent.id)
+                            parent = scope.find(row => row.id === parent.parent)
+                        }
+                    }
+                    const roots = scope.filter(task => !task.parent && included.has(task.id))
+                    const stats = rows => ({
+                        total: rows.length,
+                        statuses: data.task_status.map(state => ({
+                            ...state,
+                            count: rows.filter(task => task.status_id === state.id).length
+                        }))
+                    })
+                    return {
+                        success: true,
+                        data: {
+                            list: scope
+                                .filter(task => included.has(task.id))
+                                .map(task => ({ ...task, context_only: !matched.has(task.id) })),
+                            total: roots.length,
+                            statistics: { top_level: stats(roots), all_tasks: stats(list) }
+                        }
+                    }
+                }
                 return { success: true, data: { list, total: list.length } }
             }
         }
@@ -545,10 +577,12 @@ test('edits in a modal without expanding hidden columns and cancels its draft at
 test('shows relationship names and saves an empty predecessor selection', async ({ page }) => {
     await page.goto('/#/tasks')
     await page.getByRole('button', { name: '展开任务', exact: true }).click()
-    const child = page.getByRole('row').filter({ hasText: 'Child task' })
-    await expect(child.locator('.cell-ellipsis').filter({ hasText: taskName })).toHaveCount(2)
-    await child.getByRole('button', { name: '编辑', exact: true }).click()
+    const child = page.locator('.child-row').filter({ hasText: 'Child task' })
+    await expect(child.locator('.truncate').first()).toHaveAttribute('title', 'Child task')
+    await child.getByRole('button', { name: '编辑: Child task', exact: true }).click()
     const dialog = page.getByRole('dialog')
+    await expect(dialog.locator('#task-edit-parent')).toHaveText(taskName)
+    await expect(dialog.locator('.p-multiselect-label')).toContainText(taskName)
     await expect(dialog.locator('#task-edit-status')).toHaveText('待办')
     await expect(dialog.locator('select[multiple]')).toHaveCount(0)
     await dialog.locator('.p-multiselect-clear-icon').click()
@@ -573,7 +607,7 @@ test('uses an application delete dialog with cancel and clears the search inline
     await page.getByRole('button', { name: '清空任务搜索', exact: true }).click()
     await expect(page.getByPlaceholder('搜索任务名称或备注')).toHaveValue('')
     await page.getByRole('button', { name: '展开任务', exact: true }).click()
-    const child = page.getByRole('row').filter({ hasText: 'Child task' })
+    const child = page.locator('.child-row').filter({ hasText: 'Child task' })
     await child.getByRole('checkbox').check()
     await page.getByRole('button', { name: '删除', exact: true }).click()
     await expect(page.getByRole('dialog', { name: '删除任务' })).toBeVisible()
@@ -734,7 +768,7 @@ test('dashboard status and overdue cards navigate to an effective, clearable tas
         )
         if (status === 'Pending') {
             await expect(
-                page.locator('.task-stats .tstat-card').last().locator('strong')
+                page.locator('.hierarchy-statistics .status-stat').first().locator('strong')
             ).toHaveText('1')
         }
     }

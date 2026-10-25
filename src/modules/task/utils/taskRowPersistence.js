@@ -1,4 +1,5 @@
 import { crudAction } from '../../../api'
+import { effortPayload } from '../../../utils/taskEffort.js'
 
 const editableFields = [
     'project_id',
@@ -13,6 +14,7 @@ const editableFields = [
     'status_id',
     'progress',
     'effort_days',
+    'effort_state',
     'schedule_mode',
     'comment',
     'assignee',
@@ -21,7 +23,10 @@ const editableFields = [
 
 export async function persistTaskRow(newData, oldData, onCreated) {
     if (newData.id.startsWith('NEWTASK:')) {
-        const { id, _predecessorIds, ...payload } = newData
+        const payload = Object.fromEntries(
+            editableFields.filter(key => newData[key] !== undefined).map(key => [key, newData[key]])
+        )
+        Object.assign(payload, effortPayload(newData))
         const result = await crudAction('task', 'add', payload)
         if (!result?.id || typeof result.id !== 'string')
             throw new Error('Task creation returned no ID')
@@ -35,8 +40,15 @@ export async function persistTaskRow(newData, oldData, onCreated) {
 
     const changedFields = {}
     for (const key of editableFields) {
+        if (
+            oldData.summary?.has_children &&
+            ['progress', 'effort_days', 'effort_state', 'start_time', 'end_time'].includes(key)
+        )
+            continue
         if (newData[key] !== oldData[key]) changedFields[key] = newData[key] ?? ''
     }
+    if ('effort_days' in changedFields || 'effort_state' in changedFields)
+        Object.assign(changedFields, effortPayload(newData))
     if (Object.keys(changedFields).length) {
         await crudAction('task', 'update', { ...changedFields, id: newData.id })
     }

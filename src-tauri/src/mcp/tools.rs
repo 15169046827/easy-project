@@ -72,6 +72,7 @@ fn fields(model: &str) -> Value {
         fields["status_id"] = json!({"type":"string","minLength":1,"maxLength":128,"description":"Existing active TASK_STATUS ID belonging to project_id; list project task statuses or explicitly create one first. Arbitrary labels are rejected."});
         fields["progress"] = json!({"type":"integer","minimum":0,"maximum":100});
         fields["effort_days"] = json!({"type":"number","minimum":0});
+        fields["effort_state"] = json!({"type":"string","enum":["unestimated","estimated"],"description":"Omitted effort stays unestimated; explicit effort_days (including 0) is estimated. legacy_unknown is migration-only. Parent progress/effort/dates are read-only rollups; reopen completed ancestors before adding/reopening descendants."});
         fields["schedule_mode"] = json!({"type":"string","enum":["fixed_effort","fixed_dates"]});
         for name in ["start_time", "end_time"] {
             fields[name] = json!({"type":"string","description":"Empty or YYYY-MM-DD; no timezone conversion","maxLength":10});
@@ -111,6 +112,7 @@ fn schema(model: &str, action: &str) -> Value {
             let mut properties = json!({"pageIndex":{"type":"integer","minimum":1},"pageSize":{"type":"integer","minimum":1,"maximum":100}});
             if model == "task" {
                 properties["projectId"] = id;
+                properties["hierarchy"] = json!({"type":"boolean","description":"True: paginate roots, include matching descendants and ancestor context, return explicit top-level/all-task statistics. Default false preserves flat task pagination."});
             }
             object(properties, &[])
         }
@@ -276,7 +278,7 @@ fn defaults(model: &str) -> Value {
             json!({"version":"v1.0","type":"private","status":"Draft","owner":"","calendar_country":"CN","calendar_region":"","weekend_days":"[0,6]","calendar_exceptions":"[]"})
         }
         "task" => {
-            json!({"parent":"","dependence":"","start_time":"","end_time":"","type":"Task","priority":"Normal","progress":0,"effort_days":0,"schedule_mode":"fixed_effort","comment":"","assignee":""})
+            json!({"parent":"","dependence":"","start_time":"","end_time":"","type":"Task","priority":"Normal","progress":0,"schedule_mode":"fixed_effort","comment":"","assignee":""})
         }
         _ => {
             json!({"email":"","phone":"","role":"Developer","avatar":"","availability_exceptions":"[]"})

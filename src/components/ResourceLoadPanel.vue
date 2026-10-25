@@ -69,7 +69,7 @@ import { availabilityConflictDates } from '../modules/calendar/utils/memberAvail
 
 const props = defineProps({
     tasks: {
-        type: /** @type {import('vue').PropType<Array<{assignee?: string, start_time?: string, end_time?: string}>>} */ (
+        type: /** @type {import('vue').PropType<Array<{assignee?: string, start_time?: string, end_time?: string, summary?: {has_children?: boolean}}>>} */ (
             Array
         ),
         default: () => []
@@ -108,6 +108,7 @@ const analysis = computed(() => {
     let globalMax = -Infinity
 
     for (const task of props.tasks) {
+        if (task.summary?.has_children) continue
         const id = task.assignee
         if (!id) continue
         if (!byMember.has(id)) {

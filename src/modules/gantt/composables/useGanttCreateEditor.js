@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { crudAction } from '../../../api'
-import { countWorkingDays, dateKey } from '../../calendar/utils/workCalendar.js'
+import { dateKey } from '../../calendar/utils/workCalendar.js'
 import { createTaskCreatePayload } from '../utils/interaction.js'
 import { recalculateFormEnd, recalculateFormEffort } from '../utils/taskFormSchedule.js'
 
@@ -17,7 +17,8 @@ export function useGanttCreateEditor({ projectId, activeProject, message, messag
         name: '',
         start_time: '',
         end_time: '',
-        effort_days: 1,
+        effort_days: null,
+        effort_state: 'unestimated',
         schedule_mode: 'fixed_effort',
         type: 'Task',
         priority: '3',
@@ -36,7 +37,7 @@ export function useGanttCreateEditor({ projectId, activeProject, message, messag
             ...defaults(),
             start_time: dateKey(startDate),
             end_time: dateKey(endDate),
-            effort_days: Math.max(1, countWorkingDays(startDate, endDate, activeProject.value))
+            effort_days: null
         }
         creatingTask.value = true
     }

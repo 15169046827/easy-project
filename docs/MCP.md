@@ -1,5 +1,15 @@
 # EasyProject 本地 MCP
 
+## 2026-10-25父子任务与估算来源候选（未部署）
+
+业务schema8、JSON8；独立MCP不自行迁移，schema7真实库与现有程序不变，须另获升级授权。新增task参数`effort_state`仅允许`unestimated`/`estimated`；不传工作量为待估算，显式`effort_days:0`为已估算且无工作量，清除可传`effort_state:unestimated`。`legacy_unknown`只用于保留旧0来源，不接受普通写入。所有字段仍共享服务端校验。
+
+task get/list返回`effort_state`及`summary`：has_children/direct_child_count/completed_child_count/effort_days/progress（可null）/unestimated_count/legacy_unknown_count/start_time/end_time/schedule_incomplete。父任务顶层progress、effort_days、日期由后代递归汇总，不重复计父手填值；零权重summary.progress=null，不应把兼容整数progress=0当成真实0%。父进度/工作量/日期为只读，不可传入update；状态仍人工确认，100%不自动完成。父完成须所有后代完成；完成祖先下新增/移动/重开子项须先显式重开祖先，不自动猜状态；状态字典完成属性更改同样受约束，拒绝会回滚。
+
+task_list可选`hierarchy:true`，缺省false保持平铺分页；true按顶层分页，list含当页根的匹配后代和必要祖先，context_only标识未命中的父级上下文。total/totalPage按根计算，statistics.top_level/all_tasks分别返回total及带项目ID/状态ID/name/builtin_key/color/count的statuses；全部任务只计命中项。模板/导入也检查完成约束，JSON1—7导入保留旧值并标记历史0待确认。权限工具数仍9/18/23，不扩大权限。
+
+当前契约说明为开发候选；catalog、原生接口分组和私有Apifox尚待绑定新隔离二进制生成/同步/读回，不能把旧release来源当本候选已同步。真实安装和客户端配置未变。
+
 2026-10-23实际更新：业务schema7已在保护副本及逐字段核验后迁移，独立与安装侧MCP均为release 765B4C33330442DC947B76DE58747FEFF0EB78181B8738481B980E72C5FC70DF（构建源1640e31）。新进程tools/list实际发现23工具且真实库SHA不变；原有write/delete开关未扩大。当前Codex需要重连/重启重新发现；MCP仍不自行迁移。下方18工具/schema6为历史，当前语义以本段及状态专项为准。
 
 ## 2026-10-23项目状态字典候选（未替换已安装程序）

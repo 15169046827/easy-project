@@ -5,11 +5,13 @@ pub const TASK_TYPES: &[&str] = &["Task", "Milestone", "File"];
 pub const PROJECT_TYPES: &[&str] = &["private", "public"];
 pub const PROJECT_STATUSES: &[&str] = &["Draft", "InProgress", "Paused", "Done", "Archived"];
 pub const SCHEDULE_MODES: &[&str] = &["fixed_effort", "fixed_dates"];
+pub const EFFORT_STATES: &[&str] = &["unestimated", "estimated"];
 pub fn allowed(model: &str, field: &str) -> Option<&'static [&'static str]> {
     match (model, field) {
         ("task", "priority") => Some(PRIORITIES),
         ("task", "type") => Some(TASK_TYPES),
         ("task", "schedule_mode") => Some(SCHEDULE_MODES),
+        ("task", "effort_state") => Some(EFFORT_STATES),
         ("project", "type") => Some(PROJECT_TYPES),
         ("project", "status") => Some(PROJECT_STATUSES),
         _ => None,
@@ -17,7 +19,13 @@ pub fn allowed(model: &str, field: &str) -> Option<&'static [&'static str]> {
 }
 pub fn validate(model: &str, data: &Value) -> Result<(), String> {
     validate_calendar(model, data)?;
-    for field in ["priority", "type", "status", "schedule_mode"] {
+    for field in [
+        "priority",
+        "type",
+        "status",
+        "schedule_mode",
+        "effort_state",
+    ] {
         if let (Some(value), Some(values)) = (data.get(field), allowed(model, field)) {
             if !value.as_str().is_some_and(|text| values.contains(&text)) {
                 return Err(format!(
@@ -28,6 +36,14 @@ pub fn validate(model: &str, data: &Value) -> Result<(), String> {
         }
     }
     if model == "task" {
+        if data["effort_state"] == "unestimated"
+            && data
+                .get("effort_days")
+                .and_then(Value::as_f64)
+                .is_some_and(|days| days != 0.0)
+        {
+            return Err("Unestimated tasks must have zero effort_days".into());
+        }
         if let Some(value) = data.get("progress") {
             if !value
                 .as_i64()

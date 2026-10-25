@@ -1,4 +1,20 @@
 export default {
+    taskHierarchy: {
+        unscheduled: 'Unscheduled tasks',
+        unestimated: 'Not estimated',
+        legacyUnknown: 'Estimate needs confirmation',
+        zeroEffort: 'No effort',
+        derived: 'Progress, effort and dates are calculated from child tasks.',
+        missingEstimates: '{count} leaf tasks need an estimate or confirmation',
+        incompleteSchedule: 'Some child tasks are not scheduled',
+        topLevel: 'Top-level tasks',
+        allTasks: 'All tasks',
+        statisticsScope: 'Statistics scope',
+        contextOnly: 'Ancestor context (not a filter match)',
+        children: 'Child tasks',
+        completedChildren: '{done} / {total} direct children completed',
+        addChild: 'Add child task'
+    },
     remote: {
         accountMenu: 'User menu',
         copyToken: 'Copy token',

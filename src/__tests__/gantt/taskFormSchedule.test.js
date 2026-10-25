@@ -19,11 +19,11 @@ describe('shared task form workday recalculation', () => {
         recalculateFormEnd(value, project)
         expect(value.end_time).toBe('2026-11-09')
     })
-    it('keeps fixed dates and derives effort instead', () => {
+    it('keeps fixed dates independent of effort estimates', () => {
         const value = { ...form(), schedule_mode: 'fixed_dates', effort_days: 100 }
         recalculateFormEnd(value, project)
         expect(value.end_time).toBe('2026-11-09')
-        expect(value.effort_days).toBe(2)
+        expect(value.effort_days).toBe(100)
     })
     it('does not overwrite effort for the fixed-effort mode', () => {
         const value = form()

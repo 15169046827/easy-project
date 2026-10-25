@@ -52,6 +52,18 @@ describe('Gantt presentation boundary', () => {
         })
         expect(view.fmtShortRange(first)).toBe('7/1 – 7/3')
     })
+    it('renders a start-only zero-effort task as a normal one-day bar and lists unscheduled tasks', () => {
+        const { context, view } = setup()
+        context.tasks.value = [
+            { ...first, end_time: '', effort_days: 0 },
+            { ...first, id: 'missing', start_time: '', end_time: '' }
+        ]
+        const task = view.datedTasks.value[0]
+        expect(task.type).toBe('Task')
+        expect(task.end_time).toBe(first.start_time)
+        expect(view.barStyle(task).width).toBe('32px')
+        expect(view.unscheduledTasks.value.map(task => task.id)).toEqual(['missing'])
+    })
     it('updates the task preview during a move without mutating task data', () => {
         const { context, view } = setup()
         context.dragState.value = {

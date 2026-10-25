@@ -29,19 +29,18 @@
                 ><DatePickerDateString
                     :inputId="prefix + '-start'"
                     v-model="form.start_time"
+                    :disabled="form.derived"
                     @update:modelValue="$emit('recalculate-end')"
                 />
             </div>
             <div class="edit-field">
                 <label :for="prefix + '-effort'">{{ $t('tasks.columnEffort') }}</label
-                ><InputNumber
+                ><TaskEffortInput
                     :inputId="prefix + '-effort'"
                     v-model="form.effort_days"
-                    :min="0"
-                    :step="0.5"
-                    :maxFractionDigits="2"
-                    fluid
-                    @update:modelValue="$emit('recalculate-end')"
+                    v-model:state="form.effort_state"
+                    :disabled="form.derived"
+                    @change="$emit('recalculate-end')"
                 />
             </div>
             <div class="edit-field">
@@ -49,6 +48,7 @@
                 ><DatePickerDateString
                     :inputId="prefix + '-end'"
                     v-model="form.end_time"
+                    :disabled="form.derived"
                     @update:modelValue="$emit('recalculate-effort')"
                 />
             </div>
@@ -112,10 +112,12 @@
             <div v-else class="edit-field full">
                 <label :for="prefix + '-progress'">{{ $t('gantt.labelProgress') }}</label
                 ><ProgressEditor
+                    v-if="!form.derived"
                     :inputId="prefix + '-progress'"
                     v-model="form.progress"
                     :label="$t('gantt.labelProgress')"
                 />
+                <p v-else>{{ $t('taskHierarchy.derived') }}</p>
             </div>
         </form>
         <template #footer
@@ -140,7 +142,7 @@ import { useI18n } from 'vue-i18n'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
+import TaskEffortInput from '../../../components/TaskEffortInput.vue'
 import Select from 'primevue/select'
 import Message from 'primevue/message'
 import DatePickerDateString from '../../../components/DatePickerDateString.vue'

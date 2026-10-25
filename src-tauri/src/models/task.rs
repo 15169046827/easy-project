@@ -21,6 +21,9 @@ pub struct Task {
     pub status_builtin_key: String,
     pub progress: i64,
     pub effort_days: f64,
+    pub effort_state: String,
+    #[serde(default)]
+    pub summary: Option<crate::common::task_rollup::TaskSummary>,
     pub schedule_mode: String,
     pub comment: String,
     pub assignee: String,
@@ -51,6 +54,8 @@ pub struct TaskCreateRequest {
     pub progress: i64,
     #[serde(default)]
     pub effort_days: f64,
+    #[serde(default)]
+    pub effort_state: Option<String>,
     #[serde(default = "default_schedule_mode")]
     pub schedule_mode: String,
     pub comment: String,

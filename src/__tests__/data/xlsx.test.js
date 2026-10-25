@@ -2,6 +2,45 @@ import { describe, expect, it } from 'vitest'
 import { snapshotToXlsx, xlsxToSnapshot } from '../../modules/data/utils/xlsx.js'
 
 describe('XLSX data exchange', () => {
+    it('preserves schema8 estimate provenance including explicit zero', async () => {
+        const row = [
+            'TASK:zero',
+            'PROJECT:p',
+            0,
+            'Zero',
+            '',
+            '',
+            '',
+            '',
+            'Task',
+            '3',
+            'Pending',
+            0,
+            0,
+            'fixed_dates',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '0',
+            'TASK_STATUS:s',
+            'estimated'
+        ]
+        const snapshot = {
+            schemaVersion: 8,
+            projects: [],
+            tasks: [row],
+            task_statuses: [],
+            dependencies: [],
+            members: [],
+            project_members: [],
+            plan_baselines: []
+        }
+        expect((await xlsxToSnapshot(await snapshotToXlsx(snapshot))).payload).toMatchObject(
+            snapshot
+        )
+    }, 20000)
     it('preserves schema7 status definitions and stable task references', async () => {
         const snapshot = {
             schemaVersion: 7,

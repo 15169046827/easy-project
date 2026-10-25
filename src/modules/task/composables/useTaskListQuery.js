@@ -12,6 +12,7 @@ async function loadTaskSnapshot(query) {
             const relations = await crudAction('task_dependency', 'get_all', { projectId })
             // Related names and edit options must not disappear across filters or pages.
             const completeProject =
+                !query.hierarchy &&
                 query.projectId &&
                 !query.keyword &&
                 !query.status &&
@@ -29,7 +30,13 @@ async function loadTaskSnapshot(query) {
             .filter(item => item.successor_task_id === task.id)
             .map(item => item.predecessor_task_id)
     }))
-    return { tasks, dependencies, relatedTasks, total: result?.total || 0 }
+    return {
+        tasks,
+        dependencies,
+        relatedTasks,
+        total: result?.total || 0,
+        statistics: result?.statistics || null
+    }
 }
 
 async function loadProjectTasks(projectId) {
@@ -54,6 +61,9 @@ function createPageOption() {
 async function requireTaskRefresh(init, errorMessage) {
     if (!(await init())) throw new Error(errorMessage.value || 'Task refresh was superseded')
 }
+function clearFilterValues(fields) {
+    for (const field of fields) field.value = ''
+}
 
 export function useTaskListQuery(initialProjectId = '') {
     const tasks = ref([])
@@ -64,6 +74,7 @@ export function useTaskListQuery(initialProjectId = '') {
     const loading = ref(false)
     const errorMessage = ref('')
     const totalRecords = ref(0)
+    const statistics = ref(null)
     const keywordInput = ref('')
     const appliedKeyword = ref('')
     const statusFilter = ref('')
@@ -79,8 +90,9 @@ export function useTaskListQuery(initialProjectId = '') {
         errorMessage.value = ''
         try {
             const result = await loadTaskSnapshot({
-                pageIndex: projectId ? 1 : pageOption.pageIndex,
-                pageSize: projectId ? pageOption.fetchSize : pageOption.pageSize,
+                pageIndex: pageOption.pageIndex,
+                pageSize: pageOption.pageSize,
+                hierarchy: true,
                 projectId,
                 keyword: appliedKeyword.value,
                 status: statusFilter.value,
@@ -93,6 +105,7 @@ export function useTaskListQuery(initialProjectId = '') {
             relatedTasks.value = result.relatedTasks
             tasks.value = result.tasks
             totalRecords.value = result.total
+            statistics.value = result.statistics
             return true
         } catch (error) {
             if (request === requestSequence) {
@@ -116,10 +129,7 @@ export function useTaskListQuery(initialProjectId = '') {
         return resetPageAndLoad()
     }
     function clearFilters() {
-        keywordInput.value = ''
-        appliedKeyword.value = ''
-        statusFilter.value = ''
-        priorityFilter.value = ''
+        clearFilterValues([keywordInput, appliedKeyword, statusFilter, priorityFilter])
         sortBy.value = 'sort_order'
         return resetPageAndLoad()
     }
@@ -129,7 +139,6 @@ export function useTaskListQuery(initialProjectId = '') {
     }
     /** @param {{page: number, rows: number}} event */
     function onPage(event) {
-        if (selectedProjectId.value) return
         pageOption.pageIndex = event.page + 1
         pageOption.pageSize = event.rows
         return init()
@@ -143,6 +152,7 @@ export function useTaskListQuery(initialProjectId = '') {
         loading,
         errorMessage,
         totalRecords,
+        statistics,
         keywordInput,
         appliedKeyword,
         statusFilter,

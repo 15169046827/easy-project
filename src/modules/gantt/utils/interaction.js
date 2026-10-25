@@ -43,12 +43,13 @@ export function createTaskEditPayload(taskId, form) {
     return {
         id: taskId,
         name: form.name,
-        start_time: `${form.start_time} 00:00:00`,
-        end_time: `${form.end_time} 00:00:00`,
+        start_time: form.start_time ? `${form.start_time} 00:00:00` : '',
+        end_time: form.end_time ? `${form.end_time} 00:00:00` : '',
         type: form.type,
         ...(form.status_id ? { status_id: form.status_id } : { status: form.status }),
         progress: Number(form.progress),
         effort_days: Number(form.effort_days) || 0,
+        effort_state: form.effort_days == null ? 'unestimated' : form.effort_state || 'estimated',
         schedule_mode: form.schedule_mode || 'fixed_effort',
         assignee: form.assignee || ''
     }
@@ -60,13 +61,14 @@ export function createTaskCreatePayload(projectId, form) {
         name: form.name.trim(),
         parent: '',
         dependence: '',
-        start_time: `${form.start_time} 00:00:00`,
-        end_time: `${form.end_time} 00:00:00`,
+        start_time: form.start_time ? `${form.start_time} 00:00:00` : '',
+        end_time: form.end_time ? `${form.end_time} 00:00:00` : '',
         type: form.type,
         priority: form.priority,
         ...(form.status_id ? { status_id: form.status_id } : { status: form.status }),
         progress: 0,
         effort_days: Number(form.effort_days) || 0,
+        effort_state: form.effort_days == null ? 'unestimated' : form.effort_state || 'estimated',
         schedule_mode: form.schedule_mode || 'fixed_effort',
         comment: form.comment.trim(),
         assignee: form.assignee || ''

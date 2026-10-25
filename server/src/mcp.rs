@@ -75,8 +75,9 @@ pub fn handle(workspace: &mut Workspace, permissions: Permissions, input: Value)
                 Ok(value) => {
                     json!({"content":[{"type":"text","text":value.to_string()}],"structuredContent":value,"isError":false})
                 }
-                Err(_) => {
-                    json!({"content":[{"type":"text","text":"Operation failed; verify fields, relationships and current data before retrying."}],"isError":true})
+                Err(message) => {
+                    let text = crate::common::task_hierarchy::public_message(&message).unwrap_or("Operation failed; verify fields, relationships and current data before retrying.");
+                    json!({"content":[{"type":"text","text":text}],"isError":true})
                 }
             }
         }

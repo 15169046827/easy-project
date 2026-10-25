@@ -8,6 +8,77 @@ struct Fixture {
 }
 
 #[test]
+fn estimate_provenance_and_parent_rollups_are_consistent_over_mcp() {
+    let f = Fixture::new();
+    let project = f
+        .call(
+            "easyproject_project_create",
+            json!({"data":{"name":"Estimate fixture"}}),
+        )
+        .unwrap()["record"]["id"]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    let parent = f
+        .call(
+            "easyproject_task_create",
+            json!({"data":{"name":"Goal","project_id":project}}),
+        )
+        .unwrap()["record"]["id"]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    assert_eq!(
+        entity_api::get(&f.db, "task", &parent).unwrap()["effort_state"],
+        "unestimated"
+    );
+    let child = f.call("easyproject_task_create", json!({"data":{"name":"Execution","project_id":project,"parent":parent,"effort_days":0}})).unwrap()["record"]["id"].as_str().unwrap().to_owned();
+    assert_eq!(
+        entity_api::get(&f.db, "task", &child).unwrap()["effort_state"],
+        "estimated"
+    );
+    assert!(f
+        .call(
+            "easyproject_task_update",
+            json!({"id":parent,"changes":{"progress":20}})
+        )
+        .unwrap_err()
+        .contains("derived"));
+    f.call(
+        "easyproject_task_update",
+        json!({"id":child,"changes":{"effort_days":2,"progress":35}}),
+    )
+    .unwrap();
+    let record = entity_api::get(&f.db, "task", &parent).unwrap();
+    assert_eq!(record["effort_days"], 2.0);
+    assert_eq!(record["summary"]["progress"], 35.0);
+    assert_eq!(record["is_completed"], false);
+    let page = f
+        .call(
+            "easyproject_task_list",
+            json!({"hierarchy":true,"pageSize":1}),
+        )
+        .unwrap();
+    assert_eq!(page["total"], 1);
+    assert_eq!(page["list"].as_array().unwrap().len(), 2);
+    assert!(f
+        .call(
+            "easyproject_task_update",
+            json!({"id":child,"changes":{"effort_state":"legacy_unknown"}})
+        )
+        .is_err());
+    f.call(
+        "easyproject_task_update",
+        json!({"id":child,"changes":{"effort_state":"unestimated"}}),
+    )
+    .unwrap();
+    assert_eq!(
+        entity_api::get(&f.db, "task", &child).unwrap()["effort_days"],
+        0.0
+    );
+}
+
+#[test]
 fn rejects_unknown_dictionary_values_and_localized_status_duplicates() {
     let f = Fixture::new();
     let project = f

@@ -2,6 +2,8 @@
 
 ## 2026-10-25升级阶段额度暂停：服务器已上线，本机尚未更新（最新）
 
+封存回执：93d9fa8d010d861a055ea9fa7e386f6609b5b93b已提交/推送并完整远端SHA读回；Wolai主页面/完整交接的服务器已交付、本机未开始、release发现缺口及下一步均已读回。本最小回执另存，不继续构建、安装、迁移或关机。4个获批旧MCP仍未停止；服务器保持正常服务。
+
 - 最新5h剩9%/周71%，触10%长阶段门禁，仅保存同步后暂停，不启动本机安装/迁移，不重置/唤醒/关机。WACAS未定义/待确认，AGENTS/规则1.15/UPARS1.1.0适用；基线47b981d6cb9fdf24a5a0eb88a6c175f2e39a111f、分支codex/audit-release-20261006-api。用户已批准整个安全升级及下段限定4进程停止，但当前一个都未停止；恢复时重新核PID/启动时间，新增进程另批。
 - 已完成服务器交付，准确current/root700副本、CI/产物/2DB保留核验见下段。额外正常TLS直连外验：官网200、health200、匿名session401，不绕证书、不登录真实账号、不改变Funnel/域名/权限。服务器继续active/enabled，不关机。账号schema3、服务器业务schema8；本机仍schema7/旧安装/旧独立MCP。
 - 本机仅准备产物：新release MCP SHA1E8840C23FAE2D209E13395D676EB91AB3D3F94B241950CECFC6152A16663D39，配套候选manifest在audit-tools/hierarchy-release-mcp-manifest.json（47b981d clean源码构建）；最新含新伴随MCP的NSIS SHA FA8BC7FF1D3B59FD3D15FD08B52B56621D65642D8464384732A78245EEAAF863。不得再使用旧1B3737包。当前artifacts/mcp及其manifest尚未替换，也未重绑API/Apifox。

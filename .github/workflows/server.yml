@@ -67,6 +67,17 @@ jobs:
               run: cargo clippy --manifest-path server/Cargo.toml --locked --all-targets -- -D warnings
             - name: Domain and authentication tests
               run: cargo test --manifest-path server/Cargo.toml --locked
+            - uses: actions/setup-python@v6
+              with:
+                  python-version: '3.12'
+            - name: Operator backup and isolated restore tests
+              env:
+                  PYTHONDONTWRITEBYTECODE: '1'
+              run: python -m unittest discover -s server/ops -p 'test_*.py' -v
+            - name: Operator safety unit syntax
+              run: systemd-analyze verify server/deploy/easyproject-safety@.service server/deploy/easyproject-backup.timer server/deploy/easyproject-health.timer
+            - name: Isolated systemd backup and timeout verification
+              run: sudo /usr/bin/python3 server/ops/verify_linux_safety.py
             - name: Build headless Linux server
               run: cargo build --manifest-path server/Cargo.toml --release --locked
             - uses: actions/upload-artifact@v4

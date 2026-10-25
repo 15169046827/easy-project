@@ -10,7 +10,7 @@
 
 唯一应用管理员也忘记密码时，服务器维护者可在自己的SSH终端执行`sudo -u easyproject env EASYPROJECT_DATA_DIR=/var/lib/easyproject /opt/easyproject/current/bin/easyproject-server issue-reset-code <应用用户名>`。只在新候选已部署后使用，输出是敏感一次性码，不发到聊天/日志/云文档。此命令依赖对账号库的系统文件权限，不能给普通网页用户开放；不是重用SSH密码。正常界面优先由已登录应用管理员发码。
 
-升级必须停服务新安全副本、迁移映射/密码哈希/会话/Token/工作区引用核验；旧schema2/5程序不能直接回退读取新库。业务备份原件保留，schema5恢复受控迁移，JSON导入1—6/导出6。受控backups/id-map-schema6-*.json记录预期旧→新ID映射，需核对实际schema/新ID确认提交，文件存在不等于迁移成功。旧ID和深链/外部脚本需重新查询，不自动使用旧独立stdio exe读schema6。精确状态见[当前检查点](../docs/ACCOUNT_PROFILE_DATABASE_CHECKPOINT.md)，本段不代表已更新实际服务器。
+升级必须停服务新安全副本、迁移映射/密码哈希/会话/Token/工作区引用核验；旧schema2/5程序不能直接回退读取新库。业务备份原件保留，schema5恢复受控迁移，JSON导入1—6/导出6。受控backups/id-map-schema6-\*.json记录预期旧→新ID映射，需核对实际schema/新ID确认提交，文件存在不等于迁移成功。旧ID和深链/外部脚本需重新查询，不自动使用旧独立stdio exe读schema6。精确状态见[当前检查点](../docs/ACCOUNT_PROFILE_DATABASE_CHECKPOINT.md)，本段不代表已更新实际服务器。
 
 2026-10-21新增开放注册与用户MCP：`POST /api/auth/register`仅注册普通账号、自设密码无需首次改密（管理员分配账号仍须改密）；10次/小时/socket IP且总账号上限1000，反代共享限额。不提供邮箱验证/自助找回。账号库事务升级schema2，原身份/密码/会话保留。升级前须备份，旧schema1程序不能直接读取schema2；回滚不能仅切旧二进制，更不能未经核对恢复旧库丢失新用户记录。
 
@@ -76,3 +76,7 @@ sudo systemctl restart easyproject
 ```
 
 部署时一次性配置开机自启：`sudo systemctl enable --now easyproject`。查看日志：`sudo journalctl -u easyproject -n 50 --no-pager`。初始密码仅在自己的SSH终端使用`sudo cat /etc/easyproject/initial-admin-password`查看，不复制到代码或云文档。登录地址仍是`https://home-host.tail2956dd.ts.net`，只在Tailnet可用。
+
+# 运维候选补充（2026-10-26）
+
+备份/健康工具与systemd候选手册见[ops/README.md](ops/README.md)，实际部署/进度见[后续阶段检查点](../docs/NEXT_PHASE_CHECKPOINT.md)。20本地/20Linux及原生只读WAL/恢复/锁/超时已验，当前候选未启用定时器；不自动删除备份、不跨库原子保证、不恢复覆盖生产数据、无站外通知。主应用/API/MCP权限不因运维模板变化。下方旧“仅Tailnet”属于历史，当前公网Funnel及schema8部署看最新专项。

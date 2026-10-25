@@ -1,0 +1,23 @@
+[Unit]
+Description=EasyProject operator safety check (%i)
+After=local-fs.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+UMask=0077
+ExecStart=/usr/bin/flock --nonblock /var/backups/easyproject/ops/operation.lock /usr/bin/python3 /opt/easyproject/ops/safety.py %i --data-dir /var/lib/easyproject --output-dir /var/backups/easyproject/ops/snapshots --receipt-dir /var/backups/easyproject/ops/runs --timeout-seconds 300
+TimeoutStartSec=360
+TimeoutStopSec=10
+KillMode=control-group
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadOnlyPaths=/var/lib/easyproject
+ReadWritePaths=/var/backups/easyproject/ops
+RestrictAddressFamilies=AF_UNIX
+RestrictSUIDSGID=yes
+MemoryMax=256M
+TasksMax=16

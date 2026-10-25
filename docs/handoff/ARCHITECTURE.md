@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-26运维候选：server/ops/safety.py提供backup/verify/health/run，共享协作截止时间、磁盘预留、私有唯一回执；verify_linux_safety.py只在新合成目录验证真实systemd只读挂载/WAL快照/锁/硬超时。server/deploy/easyproject-safety@.service及backup/health.timer为受限运维作业模板，非业务API；当前是否启用只以NEXT_PHASE_CHECKPOINT回执为准。副本逐库一致、不自动清理或在线恢复，没有站外通知。
+
 2026-10-26部署层跟进：桌面与home-host业务schema8、账号3，独立/伴随release MCP已实际更新；逐字段/ID/关联/来源保护核验通过。schema8由新桌面/服务器迁移入口执行，独立MCP仅接受已有schema8，不负责迁移；旧schema7程序不能读新库。客户端加载与磁盘交付分开，需重连。准确来源/副本见父子专项，架构与规则1.15复核不变。
 
 2026-10-25候选地图：common/task_effort.rs负责schema8事务估算来源；task_rollup.rs负责迭代共享派生，Task及entity_api读结果携带summary；task_tree_service.rs先筛选/补祖先/根分页再返回双维统计。Vue TaskList使用DataTable展开槽与TaskChildrenDrawer/TaskStatusStatistics，TaskEffortInput复用真实PrimeVue数字输入；甘特派生父项只读，开始单日期补当天展示，未排期列表独立。ResourceLoadPanel不重复计派生父项。Web/MCP限定层级冲突响应仍限本人工作区，不放宽其它内部错误脱敏。源码候选不是已部署状态，确切验证/缺口见父子检查点。

@@ -1,0 +1,11 @@
+[Unit]
+Description=EasyProject daily verified operator backup
+
+[Timer]
+OnCalendar=*-*-* 03:00:00
+RandomizedDelaySec=15m
+Persistent=true
+Unit=easyproject-safety@run.service
+
+[Install]
+WantedBy=timers.target

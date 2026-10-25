@@ -2,6 +2,8 @@
 
 ## 2026-10-25候选收尾检查点（最新）
 
+源码封存：a5aa95810e1849dd4d3eac1e42efdb0182c0bde5已提交并非强制推送，远端完整SHA读回一致，提交后Git干净。Wolai主/交接SHA及边界回执读回通过；本最小文档回执另存。隔离原生编辑草稿已取消，未保存业务改动；原生仍1280×800（含系统边框1282×802），窄窗口/完整键盘待补，不虚报完成。用户已收到手工缩窄请求，等待确认；无真实升级或关机。
+
 - 目标/范围仍为8项批准父子方案；WACAS未定义/待确认，适用AGENTS、交接1.15、维护skill与UPARS1.1.0。功能基线db7e149，本轮基线3f467ac63802399a6f57f13d3257f6a80ccc0b40，分支codex/audit-release-20261006-api。本节点5h余31%/周89%，非额度暂停；上次关机授权永久失效，无重置/定时唤醒。
 - 完成：候选功能及本轮3项P2整改均已复验；283前端/59文件、桌面Rust72+stdio1、server50+16、10项Python迁移工具、10项Apifox契约测试、类型/lint/双fmt/双严格Clippy/build/release:check通过。最终生产90项和真实HTTP13项串行通过。初次生产88/2导航错误恰逢另一构建重写dist，构建结束后全量90通过，未改断言/重试。日志parent-child-{tests-4,rust-4,server-final-3,production-5,http-4,nsis-5}.log均在target/audit-tools。
 - NSIS成功，SHA524CD1C9F9B12B3E5DE1160B75CA9C78BA39D18AB8D05AF2303567624FEF6302；首次受限makensis系统DLL623失败、正常宿主重试成功，无系统设置修改。只生成候选，未安装。隔离原生app路径见上阶段，已实际启动合成schema7→8并用核验器确认3项目/3任务/9状态和全部原字段/ID/关联保留、integrity=ok/外键0。

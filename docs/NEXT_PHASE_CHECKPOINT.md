@@ -1,5 +1,20 @@
 # 后续阶段：公网稳定性、更新体验与国际化
 
+2026-10-26最新续接转[版本检查专项](VERSION_CHECK_CHECKPOINT.md)：源码/主要门禁已完成，当前5h余10%边界保存，不启动原生打包新阶段。308前端/94生产UI、桌面72+stdio1通过，最后小补丁21定向+4严格CSP/静态构建复验通过；原生/NSIS/clean封存/API资源同步及真实交付尚待。旧后端31d9b7c已安全交付，不重复；无本阶段新安装/前端部署/公开Release授权。
+
+## 2026-10-26桌面版本检查候选开发中（最新，未部署）
+
+验证里程碑：18工具规则/请求测试+3真实PrimeVue组件测试均通过；新延迟回调测试曾类型失败（undefined/never），已用显式函数类型修正，最终类型/lint通过。生产构建/release:check及4个1280/960×640深浅严格nonce CSP/手动无凭据请求/Escape焦点恢复通过。当前dist来源8173740+dirty（内部候选），未封存安装包；提交后须按clean source重建，不能用它冒称最终构建。最新五小时余15%/周56%，将完成当前完整前端/生产/Rust复验后再次查询，低于10%不再启动原生打包新阶段；无关机/重置/唤醒。文档/API指南/交接与Wolai候选同步、原生真实CSP/包/交付仍待。
+
+- 上一后端安全交付回执8173740e9dcda6a9d35ed249de0faaf0b792e349已推送/完整SHA读回，Wolai主/交接实际交付读回通过；线上31d9b7c、主PID2608/easyproject/两timer正常、2DB保持，不重复迁移/覆盖。当前基线8173740，分支不变，WACAS未定义/实际UPARS1.1.0/规则1.15。
+- 继续原批准第2阶段：手动版本检查，不自动下载/安装，不自动访问网络。只GET官网同源/桌面受控Origin的release-info.json，不发送cookie或Bearer，不用可编辑旧缓存地址；16KiB上限/8秒UI截止/取消及5分钟内存缓存。元数据从既有已公开验证的landing downloadRelease单源生成，严格schema/tag/SemVer/日期，发布页只能派生本仓库GitHub tag地址；不直接信任远端URL。GitHub只读确认最新公开仍v0.1.2-beta.1（旧beta.1 draft保留），不公开新Release。
+- 新App工具栏真实PrimeVue版本按钮/Dialog，显示本机构建与公开版、明确内部构建不能仅凭版本号升级、签名需另验；中英文词条齐备，西语仍后续未做。Vite注入源SHA/dirty/受保护发布tag，release工作流仅传既有prepare tag，不自动发布。新public静态metadata文件不是业务API/无新增CRUD工具。
+- 初始化已有opener插件但关闭自动链接接管，只给主窗限定本仓库/releases/tag/\*默认浏览器权限；无任意URL/文件打开权限，浮窗及MCP不扩。源码核实2.7.0的OpenerExt使用已管理状态，而原Builder未初始化；同时补足原受控备份目录打开的状态依赖。真实原生行为/严格CSP尚待验证，不冒称已修复实机问题。
+- 首轮类型/lint通过；2个新增工具测试首试未进入断言，进程未显式带E盘TEMP时被执行环境引到C盘沙盒临时缓存并EPERM，非产品通过/失败。已明确所有后续测试TEMP/TMP/npm缓存E盘并宿主上下文复验；不改系统策略、不过度忽略、不安装工具。该次临时写尝试不符合维护约束，准确保留，不能称全程没有C盘尝试；不删除未知/宽泛C目录。
+- 准确下一步：工具测试/组件取消与错误反例，最终类型/lint/完整前端/build及UI深浅/1280/960/键盘/严格CSP复验；桌面Rust fmt/Clippy/测试/隔离原生及NSIS候选、源/权限/文档同步随后做。新前端/桌面安装/公开版本均未部署，上一后端许可不跨用于此；metadata线上尚404，新功能未交付，不制造“已经最新”的离线假象。
+- 开工五小时余32%/周59%，本节点余22%/周58%，未触门禁；进入昂贵验证前再次查询。当前全部未提交：.github/workflows/release.yml、package.json、vite.config.js、src-tauri/{src/lib.rs,capabilities/default.json}、src/App.vue、src/i18n/locales/{zh-CN,en-US}.js、public/release-info.json、scripts/build-release-info.js、src/utils/{releaseVersion,releaseCheck}.js、src/components/VersionCheck.vue、src/**tests**/utils/{releaseVersion,releaseCheck}.test.js、本检查点（后续以Git为准）。无他人修改，候选未Git/Wolai/交接同步；设备本机仅代码/测试，home-host SSH已正常退出，仍运行，无关机/重置/唤醒。
+- UI后续复核记录：App历史快捷键浮层和DataView历史恢复浮层仍为自绘，DataView可见browse span也需在后续UI一致性范围按PrimeVue约束整改；本次版本弹窗不复用这些自绘控件，不将历史遗留说成新实现或已全局合规。
+
 ## 2026-10-26限流及逻辑写入预算已安全上线（最新）
 
 - 用户已明确批准新受限副本、仅更新home-host后端及受控配置（每工作区512MiB/池8GiB，短重启，不迁移/清理、不改桌面/本地MCP/域名/权限）。基线54bb2d57d291c1a2320f53428f591f9874e768a0，原分支，开工五小时剩40%/周60%；WACAS未定义，实际AGENTS/维护skill/交接1.15/UPARS1.1.0。

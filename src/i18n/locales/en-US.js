@@ -1,4 +1,29 @@
 export default {
+    updates: {
+        title: 'Version and updates',
+        installed: 'Current version',
+        build: 'Build',
+        manualOnly:
+            'Checks the product website only when requested. Never downloads or installs automatically.',
+        internalHint:
+            'This is a development or internal build. A version number alone does not establish upgrade compatibility.',
+        checking: 'Checking public releases…',
+        check: 'Check public release',
+        latest: 'Latest public release: {version} ({date})',
+        internal:
+            'For reference only on internal builds. Do not overwrite with an older public package.',
+        available:
+            'A newer public version is available. Read its release notes and upgrade requirements first.',
+        current: 'This version matches the public release on the product website.',
+        ahead: 'This version is newer than the public release. Downgrading is not recommended.',
+        noRelease: 'No public release is currently available on the product website.',
+        signatureHint:
+            'Version checks do not verify package signatures. Test packages may be unsigned; verify them independently.',
+        openRelease: 'View release notes',
+        checkFailed:
+            'Unable to check now. Your sign-in and local data are unchanged. Try again later.',
+        openFailed: 'Unable to open the release page. Please try again later.'
+    },
     taskHierarchy: {
         unscheduled: 'Unscheduled tasks',
         unestimated: 'Not estimated',

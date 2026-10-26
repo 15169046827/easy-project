@@ -29,6 +29,7 @@ pub fn run() {
         .try_init();
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_opener::Builder::new().open_js_links_on_click(false).build())
         .setup(|app| {
             let root = storage::installation_directory(&std::env::current_exe()?)?;
             storage::validate_directory(&root)?;

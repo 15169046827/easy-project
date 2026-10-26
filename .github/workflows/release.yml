@@ -228,6 +228,7 @@ jobs:
               uses: tauri-apps/tauri-action@v1
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  VITE_RELEASE_TAG: ${{ needs.prepare.outputs.release_tag }}
               with:
                   releaseId: ${{ needs.prepare.outputs.release_id }}
                   tagName: ${{ needs.prepare.outputs.release_tag }}

@@ -2,6 +2,76 @@ import { expect, test } from '@playwright/test'
 
 for (const width of [1280, 960]) {
     for (const dark of [false, true]) {
+        test(`manual version check keeps credentials and nonce styles isolated at ${width}px dark=${dark}`, async ({
+            page
+        }) => {
+            await page.setViewportSize({ width, height: 640 })
+            await page.addInitScript(
+                dark => localStorage.setItem('easyproject-theme', dark ? 'dark' : 'light'),
+                dark
+            )
+            await page.route('http://127.0.0.1:4173/', async route => {
+                const response = await route.fetch()
+                await route.fulfill({
+                    response,
+                    body: (await response.text()).replace(
+                        /<style>/g,
+                        '<style nonce="version-response-nonce">'
+                    ),
+                    headers: {
+                        ...response.headers(),
+                        'content-security-policy':
+                            "default-src 'self'; script-src 'self'; style-src 'self' 'nonce-version-response-nonce'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://home-host.tail2956dd.ts.net"
+                    }
+                })
+            })
+            let requests = 0
+            await page.route('**/release-info.json', async route => {
+                requests++
+                expect(route.request().headers().authorization).toBeUndefined()
+                expect(route.request().headers().cookie).toBeUndefined()
+                await route.fulfill({
+                    json: {
+                        schemaVersion: 1,
+                        ready: true,
+                        version: '0.1.3-beta.1',
+                        tag: 'v0.1.3-beta.1',
+                        publishedDate: '2026-10-26'
+                    }
+                })
+            })
+            await page.goto('/#/dashboard')
+            const entry = page.getByRole('button', { name: '版本与更新', exact: true })
+            await entry.focus()
+            await page.keyboard.press('Enter')
+            const dialog = page.getByRole('dialog', { name: '版本与更新', exact: true })
+            await expect(dialog).toBeVisible()
+            expect(requests).toBe(0)
+            await dialog.getByRole('button', { name: '检查公开版本', exact: true }).click()
+            await expect(dialog).toContainText('0.1.3-beta.1')
+            await expect(dialog).toContainText('内部构建')
+            expect(requests).toBe(1)
+            const box = await dialog.boundingBox()
+            expect(box.x).toBeGreaterThanOrEqual(0)
+            expect(box.x + box.width).toBeLessThanOrEqual(width)
+            expect(
+                await page
+                    .locator('style[data-primevue-style-id]')
+                    .evaluateAll(
+                        styles =>
+                            styles.length > 0 &&
+                            styles.every(style => style.nonce === 'version-response-nonce')
+                    )
+            ).toBe(true)
+            await page.keyboard.press('Escape')
+            await expect(dialog).toBeHidden()
+            await expect(entry).toBeFocused()
+        })
+    }
+}
+
+for (const width of [1280, 960]) {
+    for (const dark of [false, true]) {
         test(`keeps opt-in remote entry compact at ${width}px dark=${dark}`, async ({ page }) => {
             await page.setViewportSize({ width, height: 800 })
             await page.addInitScript(dark => {

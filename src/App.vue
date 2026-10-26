@@ -85,6 +85,7 @@
                 >
                     <i class="pi pi-question-circle"></i>
                 </Button>
+                <VersionCheck />
             </div>
         </header>
 
@@ -153,6 +154,7 @@ import { openFloatingWindow } from './modules/floating/windowActions'
 import { listen } from '@tauri-apps/api/event'
 import { isTauri } from '@tauri-apps/api/core'
 import RemoteConnect from './components/RemoteConnect.vue'
+import VersionCheck from './components/VersionCheck.vue'
 import WorkspaceRouteView from './components/WorkspaceRouteView.vue'
 import { remoteActive } from './api/remote'
 

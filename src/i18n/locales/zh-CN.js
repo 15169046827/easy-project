@@ -1,4 +1,23 @@
 export default {
+    updates: {
+        title: '版本与更新',
+        installed: '当前版本',
+        build: '构建标识',
+        manualOnly: '仅在点击时检查官网发布信息，不会自动下载或安装。',
+        internalHint: '当前是开发或内部构建，不能仅凭版本号确认可覆盖升级。',
+        checking: '正在检查公开版本…',
+        check: '检查公开版本',
+        latest: '最新公开版本：{version}（{date}）',
+        internal: '内部构建仅供核对公开发布信息，不建议用旧公开包覆盖。',
+        available: '有较新的公开版本。请先查看发布说明和升级要求。',
+        current: '当前版本与官网公开版本一致。',
+        ahead: '当前版本比官网公开版本新，不建议降级。',
+        noRelease: '官网暂未提供可用的公开版本。',
+        signatureHint: '版本检查不验证安装包签名。测试版可能未签名，请按发布说明独立核验。',
+        openRelease: '查看发布说明',
+        checkFailed: '暂时无法检查版本；登录和本地数据不受影响，可稍后重试。',
+        openFailed: '无法打开发布页面，请稍后重试。'
+    },
     taskHierarchy: {
         unscheduled: '未排期任务',
         unestimated: '待估算',

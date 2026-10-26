@@ -2,7 +2,7 @@
 
 2026-10-26实际交付：本机及服务器业务schema8/账号3，独立及伴随release MCP源47b981d clean、SHA1E8840C2...已安全更新并完成真实23工具只读发现/DB SHA不变；当前客户端须重连。下方“父子候选未部署”是历史，实际保护副本/原字段与ID核验见PARENT_CHILD_TASK_DISCUSSION顶部。
 
-2026-10-26远端安全候选：远端HTTP MCP的业务变更将受共享工作区/服务池写入准入预算约束，超限在恢复点/审计/revision及业务写入之前拒绝，并保留查询能力；`isError=true`返回安全容量说明，不扩大权限或返回他人用量。默认512MiB工作区/8GiB服务池包含副本及恢复余量，非OS硬配额、无自动清理；详见server/deploy/STORAGE_BUDGET.md。该候选不改变本地stdio工具schema或引入本地配额；部署状态以NEXT_PHASE_CHECKPOINT为准。
+2026-10-26远端安全已启用（后端31d9b7c）：远端HTTP MCP的业务变更受共享工作区/服务池写入准入预算约束，超限在恢复点/审计/revision及业务写入之前拒绝，并保留查询能力；`isError=true`返回安全容量说明，不扩大权限或返回他人用量。默认512MiB工作区/8GiB服务池包含副本及恢复余量，非OS硬配额、无自动清理；详见server/deploy/STORAGE_BUDGET.md。不改变本地stdio工具schema或引入本地配额；精确部署/核验以NEXT_PHASE_CHECKPOINT为准。
 
 ## 2026-10-25父子任务与估算来源候选（未部署）
 

@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- 2026-10-26: Activated the approved backend authentication/storage admission protections after an existing-data preflight and fresh protected snapshots. Both databases retain original fields and IDs; no schema migration, automatic cleanup, desktop overwrite or new public release.
+
 - Candidate: Separate authentication rate buckets only behind an explicitly trusted, strictly validated loopback Tailscale proxy, retaining per-client/global budgets and existing authentication boundaries. Add shared remote Web/MCP logical write-admission storage budgets, recovery headroom and read-only deployment preflight; preserve reads and local offline/stdio behavior. No automatic data cleanup, hard-quota claim or schema migration.
 
 - 2026-10-26: Safely activated the approved hierarchy update on the existing desktop, server and independent MCP. Schema7→8 preserves all original fields, IDs, relationships and estimate provenance; protected snapshots retained. MCP clients must reconnect. No new public release or production-ready claim.

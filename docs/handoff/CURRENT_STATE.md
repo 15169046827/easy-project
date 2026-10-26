@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-10-26最新实际交付：home-host current=public-safety-31d9b7c-20261026，原数据2DB全部字段/ID/关联/账号摘要保持且schema3/8未迁移；root700新副本保留。新可信回环认证桶与全局预算、工作区512MiB/池8GiB逻辑准入已通过受控drop-in启用，查询不封禁，无自动清理。282前端、主unit及Funnel配置保持；受限服务/两timer、TLS200/匿名401正常。桌面/MCP不变，下一步版本检查；准确许可/失败过程与副本见NEXT_PHASE_CHECKPOINT。
+
 2026-10-26安全候选门禁闭环：源31d9b7c/CI40249270452 server+security成功，Linux62+19、Windows61+19、287前端/11契约、13HTTP及元数据预检不写通过；6HTTP接口增量更新及全18读回，ELF产物/官方zip digest核验完成。候选后端/逻辑预算实际未部署，单独请求的新服务器更新许可仍待；主服务、已部署备份/健康timer和桌面/独立MCP保持原交付状态。继续须先看NEXT_PHASE_CHECKPOINT的授权与准确下一步，不把旧父子升级/停止38944授权跨用。
 
 2026-10-26安全候选最终本地验证：server61+19/287前端/11契约、严格检查、最终13真实HTTP通过；新增真实507/MCP工具错误与读保留、前端429/503/507不登出/不重试写入。check-storage预检4合成工作区/19原文件SHA不变。下一步候选CI、6HTTP接口增量同步与新副本后只更后端/限定配置，线上尚未启用新限流和逻辑预算；不重复schema8迁移/桌面/MCP替换。准确检查点仍NEXT_PHASE_CHECKPOINT。

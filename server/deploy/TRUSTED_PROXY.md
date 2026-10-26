@@ -1,6 +1,6 @@
 # 受信Tailscale代理与认证限流
 
-候选实现：`server/src/rate_limit.rs`。是否已部署以`docs/NEXT_PHASE_CHECKPOINT.md`最新回执为准，不能只凭本文判断线上已启用。
+实现：`server/src/rate_limit.rs`。2026-10-26源31d9b7c已按单独授权启用，实际副本/配置及后续变化以`docs/NEXT_PHASE_CHECKPOINT.md`最新回执为准，不能只凭源码判断其它环境已启用。
 
 默认无`EASYPROJECT_TRUSTED_PROXY`或值`none`时，始终使用真实socket IP，忽略所有转发头。仅维护者确认机器上Tailscale HTTP反向代理后可设`tailscale-loopback`；其它值启动失败，且该模式要求HTTPS origin，主程序仍强制只监听回环，不改Funnel入口或认证授权。
 

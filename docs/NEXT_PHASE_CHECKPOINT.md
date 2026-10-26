@@ -1,5 +1,15 @@
 # 后续阶段：公网稳定性、更新体验与国际化
 
+## 2026-10-26限流及逻辑写入预算已安全上线（最新）
+
+- 用户已明确批准新受限副本、仅更新home-host后端及受控配置（每工作区512MiB/池8GiB，短重启，不迁移/清理、不改桌面/本地MCP/域名/权限）。基线54bb2d57d291c1a2320f53428f591f9874e768a0，原分支，开工五小时剩40%/周60%；WACAS未定义，实际AGENTS/维护skill/交接1.15/UPARS1.1.0。
+- 服务器实际current=/opt/easyproject/releases/public-safety-31d9b7c-20261026，后端源31d9b7c/CI40249270452、ELF SHA9D0D7D0A7F1F91743AF8F87A21ADB2802BA8D4A2728895DA0E2C7E44AC5BC358；前端沿用原47b981d，282个Web文件SHA逐一保持。新root700副本/var/backups/easyproject/public-safety-31d9b7c-20261026保存完整旧程序/数据/主unit及原drop-ins。
+- 以原easyproject身份check-storage对1个现有工作区预检通过后才停主服务；2DB所有原字段/ID/关联/账号行摘要和完整schema对象保持，账号3/业务8，integrity ok/FK0。只允许启动epoch值变化、不改其ID；未调用迁移、业务CRUD/清理/恢复覆盖。仅新public-safety.conf增3项环境配置，主unit字节与原件不变、受限身份active/enabled、原Funnel配置JSON完全一致，两个运维timer仍active/enabled。
+- 正常TLS外验官网200、health200、匿名session401。没有登录真实账号/压力测试/多公网客户端人工验证，不把代码/隔离测试冒称公网全矩阵。桌面/独立MCP/新连接均未更换或停止，仍需此前客户端重连。
+- 首次部署预检在停服前因私有umask使新版本/bin目录0700而失败，原服务和数据未动；stat与受限身份执行明确Permission denied。修正仅本次不可变版本目录为0755、数据库/副本/root暂存继续0700，逐SHA验证复用本任务暂存；未关保护或换用root运行主应用。最终辅助脚本audit-tools/deploy-safety-31d9b7c.py及root deploy-v2.py SHA111A1C2DADC832055A2204C0E39A5ACA57B01A218604D8E7860A77C4EFD4032B，首次失败脚本及现场保留。
+- 本阶段核心交付闭环：认证每客户端与全局预算、逻辑写入预算、定时备份/隔离恢复、磁盘本地告警已实现并实际启用；不是OS硬配额、站外告警/异地备份/自动清理或正式生产验收通过。后续按批准顺序继续桌面版本检查，再官网当前合成截图/下载与es-ES等；新桌面安装、前端部署及新公开Release届时须相应授权，不跨用本次后端许可。
+- 当前未提交为本回执与随后Git/Wolai/交接/API/计划说明，无产品源码改动；服务器部署动作不改本地源码。SSH已发正常退出，不关机；主服务和监测保持运行，所有本机下载/脚本/副本在E盘。文档最终同步及下一阶段开工额度见后续回执。
+
 ## 2026-10-26安全候选全量门禁/契约已闭环，等待后端更新许可（最新）
 
 - 源码31d9b7c676da7b16abbc252d0ea309fc800f0f63已提交/推送并完整SHA读回；CI40249270452/server与security两job成功，Linux62单元+19集成（含Unix链接拒绝）、20运维及原生systemd保护测试通过。Windows最终61+19、287前端/11契约、13真实HTTP、类型/lint/严格Clippy/格式/CLI4工作区19文件SHA不变均已完成，日志见下段。

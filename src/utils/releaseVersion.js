@@ -60,7 +60,11 @@ export function validateReleaseInfo(value) {
         )
     )
         throw new Error('Unknown release metadata fields')
-    if (!value.ready) return null
+    if (!value.ready) {
+        if (Object.keys(value).length !== 2)
+            throw new Error('Unpublished metadata has release fields')
+        return null
+    }
     if (
         !parseVersion(value.version) ||
         value.tag !== `v${value.version}` ||

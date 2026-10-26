@@ -3,7 +3,13 @@ param([switch]$AcceptExpectedUpdate)
 $webPath = Join-Path $repository 'docs/api/web-apifox-manifest.json'
 $web = Get-Content $webPath -Raw | ConvertFrom-Json -AsHashtable -Depth 100
 $spec = Get-Content (Join-Path $repository 'docs/api/web-openapi.json') -Raw | ConvertFrom-Json -AsHashtable -Depth 100
-if ($web.projectId -ne 8948094 -or $web.branchId -ne 8751742 -or $web.interfaces.Count -ne 18) { throw 'Unexpected web API binding or inventory' }
+$expectedIds = @($spec.paths.Values | ForEach-Object { $_.Values } | ForEach-Object { $_.operationId })
+if ($web.projectId -ne 8948094 -or $web.branchId -ne 8751742 -or
+    $web.interfaces.Count -ne $expectedIds.Count -or
+    @($expectedIds | Select-Object -Unique).Count -ne $expectedIds.Count -or
+    @($expectedIds | Where-Object { -not $_ -or -not $web.interfaces.Contains($_) }).Count) {
+    throw 'Unexpected web API binding or inventory'
+}
 function Normalize-Schema($Value) {
     if ($Value -is [System.Collections.IDictionary]) {
         $result = [ordered]@{}

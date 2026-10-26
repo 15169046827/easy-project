@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-26版本检查候选：VersionCheck.vue复用PrimeVue弹窗，releaseCheck.js为独立无凭据手动请求，releaseVersion.js严格验证受限SemVer/日期/tag并固定仓库URL。scripts/build-identity.js纯函数决定构建身份，Vite读取真实Git元数据，发布tag拒绝未知/dirty源；build-release-info.js从官网下载唯一入口生成静态release-info.json并在build检查一致性。Tauri主窗仅增受限open-url能力，注册opener状态但不接管所有链接；不新增invoke/业务API/MCP。静态资源列入Web契约运行状态（19操作），实际部署仍见专项检查点。
+
 2026-10-26安全候选入口：server/rate_limit.rs仅将显式受信回环代理的单值地址用于频次桶，绝不用于认证/账号归属；AuthLimiter有单客户端和全局预算、1024键界限。storage_budget.rs用元数据检查工作区/服务池含恢复点的写入准入，Workspace在Web和远端MCP的revision/审计/恢复点之前复用；check-storage为部署只读预检。没有新DB表/schema或本地stdio限制，是否实际启用看NEXT_PHASE_CHECKPOINT，不据源码推定部署。
 
 2026-10-26运维候选：server/ops/safety.py提供backup/verify/health/run，共享协作截止时间、磁盘预留、私有唯一回执；verify_linux_safety.py只在新合成目录验证真实systemd只读挂载/WAL快照/锁/硬超时。server/deploy/easyproject-safety@.service及backup/health.timer为受限运维作业模板，非业务API；当前是否启用只以NEXT_PHASE_CHECKPOINT回执为准。副本逐库一致、不自动清理或在线恢复，没有站外通知。

@@ -5,7 +5,8 @@ $webPath = Join-Path $repository 'docs/api/web-apifox-manifest.json'
 $web = Get-Content $webPath -Raw | ConvertFrom-Json -AsHashtable -Depth 100
 $spec = Get-Content (Join-Path $repository 'docs/api/web-openapi.json') -Raw | ConvertFrom-Json -AsHashtable -Depth 100
 if ($web.projectId -ne 8948094 -or $web.branchId -ne 8751742 -or $web.rootFolderId -ne 97929320) { throw 'Unexpected Web project binding.' }
-if ($OnlyOperations | Where-Object { -not $web.interfaces.Contains($_) }) { throw 'Unknown targeted Web operation.' }
+$specOperationIds = @($spec.paths.Values | ForEach-Object { $_.Values } | ForEach-Object { $_.operationId })
+if ($OnlyOperations | Where-Object { $_ -notin $specOperationIds }) { throw 'Unknown targeted Web operation.' }
 function Save-WebManifest {
     $pending = "$webPath.pending"
     [IO.File]::WriteAllText($pending, ($web | ConvertTo-Json -Depth 100) + "`n", [Text.UTF8Encoding]::new($false))
@@ -26,6 +27,7 @@ if ($ResumeFrom -and -not $web.interfaces.Contains($ResumeFrom)) { throw 'Unknow
 foreach ($path in $spec.paths.Keys) {
     foreach ($method in $spec.paths[$path].Keys) {
         $op = $spec.paths[$path][$method]
+        if ($OnlyOperations.Count -and $op.operationId -notin $OnlyOperations) { continue }
         if (-not $web.interfaces[$op.operationId]) {
             if ($existing | Where-Object { $_.path -eq $path -and $_.method -eq $method }) { throw "Unmanaged HTTP collision: $method $path" }
             if (-not $missing[$path]) { $missing[$path] = [ordered]@{} }
@@ -34,7 +36,6 @@ foreach ($path in $spec.paths.Keys) {
     }
 }
 if (-not $applyWeb) { Write-Output "PLAN Web new paths=$($missing.Count); managed=$($web.interfaces.Count)"; return }
-if ($OnlyOperations.Count -and $missing.Count) { throw 'Targeted updates cannot import new endpoints.' }
 if (-not $web.folders.profile) {
     $folders = (Call-Apifox 'executeOpenApi' @{id='00a468815ec90da0';pathParams=@{};queryParams=@{};headers=@{'X-Project-Id'='8948094'}}).data
     if ($folders | Where-Object { $_.name -eq '用户资料' -and $_.parentId -eq $web.rootFolderId }) { throw 'Unmanaged profile folder collision.' }

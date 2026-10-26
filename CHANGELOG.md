@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- Candidate: Add opt-in manual version checks with a bounded, credential-free public release index, explicit internal-build identity and scoped release-page opening. Enforce clean identified source for tagged builds; document the static resource separately from business APIs. Not yet installed or deployed; no automatic updater or new public release.
+
 - 2026-10-26: Activated the approved backend authentication/storage admission protections after an existing-data preflight and fresh protected snapshots. Both databases retain original fields and IDs; no schema migration, automatic cleanup, desktop overwrite or new public release.
 
 - Candidate: Separate authentication rate buckets only behind an explicitly trusted, strictly validated loopback Tailscale proxy, retaining per-client/global budgets and existing authentication boundaries. Add shared remote Web/MCP logical write-admission storage budgets, recovery headroom and read-only deployment preflight; preserve reads and local offline/stdio behavior. No automatic data cleanup, hard-quota claim or schema migration.

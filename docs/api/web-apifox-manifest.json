@@ -176,6 +176,14 @@
             "name": "修改本人的头像和登录用户名",
             "sha256": "70913483586dfdfb22b9a3234b58e199ac7930bf126d9cc067df48a39761e84e",
             "folderId": 98047242
+        },
+        "get__release_info_json": {
+            "name": "公开版本索引（静态资源）",
+            "id": 528731814,
+            "folderId": 97929355,
+            "path": "/release-info.json",
+            "sha256": "2c011b2209a400b277db50904904bf3e1a03e493dbf2cd47edbe48e10f754699",
+            "method": "get"
         }
     }
 }

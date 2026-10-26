@@ -32,6 +32,67 @@
         }
     },
     "paths": {
+        "/release-info.json": {
+            "get": {
+                "operationId": "get__release_info_json",
+                "summary": "公开版本索引（静态资源）",
+                "x-easyproject-group": "运行状态",
+                "description": "官网静态JSON资源，候选待部署，不是业务API/MCP/IPC。无需登录且客户端不发送Cookie/Bearer；固定同源或受控官网，拒绝重定向，最多16KiB，8秒界面截止，5分钟内存缓存。源自已公开核验的官网下载入口，不自动枚举GitHub草稿；无自动更新安装。未知字段/非法日期或版本拒绝；URL仅由客户端固定仓库与tag构造。未带公开tag的内部构建不声称最新或建议降级。",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "公开版本元数据；ready=false不代表网络失败或当前版本最新",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "additionalProperties": false,
+                                            "required": ["schemaVersion", "ready"],
+                                            "properties": {
+                                                "schemaVersion": { "type": "integer", "enum": [1] },
+                                                "ready": { "type": "boolean", "enum": [false] }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "additionalProperties": false,
+                                            "required": [
+                                                "schemaVersion",
+                                                "ready",
+                                                "version",
+                                                "tag",
+                                                "publishedDate"
+                                            ],
+                                            "properties": {
+                                                "schemaVersion": { "type": "integer", "enum": [1] },
+                                                "ready": { "type": "boolean", "enum": [true] },
+                                                "version": {
+                                                    "type": "string",
+                                                    "maxLength": 80,
+                                                    "description": "受限SemVer，不含build metadata；详见VERSION_CHECK.md"
+                                                },
+                                                "tag": {
+                                                    "type": "string",
+                                                    "maxLength": 81,
+                                                    "description": "严格等于v+version"
+                                                },
+                                                "publishedDate": {
+                                                    "type": "string",
+                                                    "format": "date"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": { "description": "索引尚未部署；客户端显示检查失败，不能显示已是最新" }
+                }
+            }
+        },
         "/api/auth/register": {
             "post": {
                 "summary": "自助注册普通账号",

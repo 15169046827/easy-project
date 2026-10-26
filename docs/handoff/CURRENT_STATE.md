@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-10-26版本检查恢复：完整323前端/63文件及类型/lint/build/release门禁通过；构建身份15正反例、ready=false契约收紧。新增公开静态索引契约Apifox528731814，全19HTTP/16路径读回，原18摘要不变；仍66原生/23MCP工具不变。清洁源构建、原生CSP/NSIS与实际安装/官网静态部署未完成，准确下一步/失败历史见VERSION_CHECK_CHECKPOINT。后续按截图/下载、es-ES顺序，不继承旧安装/关机授权。
+
 2026-10-26当前候选：App版本按钮/真实PrimeVue弹窗、官网受控公开索引/无凭据手动检查/内部版区分、受限发布页URL及opener状态初始化；未安装/部署。308/94生产、Rust72+stdio1通过，最后小补丁21单测+4严格nonce矩阵通过；清洁源重建、原生/包、静态JSON/API说明同步仍待。额度10%边界续接见VERSION_CHECK_CHECKPOINT，上一后端/数据/监测保持，不假称新功能已上线。
 
 2026-10-26最新实际交付：home-host current=public-safety-31d9b7c-20261026，原数据2DB全部字段/ID/关联/账号摘要保持且schema3/8未迁移；root700新副本保留。新可信回环认证桶与全局预算、工作区512MiB/池8GiB逻辑准入已通过受控drop-in启用，查询不封禁，无自动清理。282前端、主unit及Funnel配置保持；受限服务/两timer、TLS200/匿名401正常。桌面/MCP不变，下一步版本检查；准确许可/失败过程与副本见NEXT_PHASE_CHECKPOINT。

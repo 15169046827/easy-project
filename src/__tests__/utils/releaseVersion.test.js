@@ -49,5 +49,6 @@ describe('verified public release metadata', () => {
             expect(() => validateReleaseInfo({ ...info, ...changed })).toThrow()
         }
         expect(validateReleaseInfo({ schemaVersion: 1, ready: false })).toBeNull()
+        expect(() => validateReleaseInfo({ ...info, ready: false })).toThrow()
     })
 })

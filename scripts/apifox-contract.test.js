@@ -31,8 +31,13 @@ describe('Apifox API documentation boundary', () => {
     )
     it('documents the real authenticated HTTP server separately from native protocols', () => {
         const api = JSON.parse(readFileSync('docs/api/web-openapi.json', 'utf8'))
-        expect(Object.keys(api.paths)).toHaveLength(15)
-        expect(Object.values(api.paths).flatMap(methods => Object.values(methods))).toHaveLength(18)
+        expect(Object.keys(api.paths)).toHaveLength(16)
+        expect(Object.values(api.paths).flatMap(methods => Object.values(methods))).toHaveLength(19)
+        const releaseIndex = api.paths['/release-info.json'].get
+        expect(releaseIndex.security).toEqual([])
+        expect(releaseIndex['x-easyproject-group']).toBe('运行状态')
+        expect(releaseIndex.responses[200].content['application/json'].schema.oneOf).toHaveLength(2)
+        expect(releaseIndex.responses[404]).toBeTruthy()
         expect(api.paths['/api/auth/reset-password'].post.security).toEqual([])
         expect(
             api.paths['/api/auth/register'].post.requestBody.content['application/json'].schema

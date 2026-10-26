@@ -2,6 +2,12 @@
 
 ## 当前结论
 
+2026-10-26恢复里程碑：额度5h余90%/周53%，基线04d679804149cca5ccfd829bb34206741c0824fa，原分支且开工干净。用户授权完成后顺序推进后续开发，不授权新公开Release/本阶段真实安装部署。新增纯构建身份gate及15正反例，收紧ready=false无发布字段契约；最新完整323测试/63文件、typecheck/lint/build/release:check通过。首次全量因契约数量断言仍15路径/18操作失败1项（其余322通过），改为真实16/19及静态资源schema断言后定向26通过、最终全量323通过；未删除/忽略测试。两原有大资源警告保留。
+
+新增VERSION_CHECK.md说明手动/无凭据/取消/内部版/索引发布流程，公开静态GET /release-info.json已独立记为运行状态资源，不冒充业务或MCP。Apifox仅新增528731814并全19项schema/分组/摘要读回通过，原18项ID/内容SHA保持不变；首次受限网络HTTP0发生在读前置，无写入，提升到允许联网环境后成功。目标选择器允许仅新增指定的已知spec操作，仍全量旧SHA冲突保护/同path碰撞拒绝/未知操作网络前拒绝。主窗opener能力说明见专项使用文档，无新增invoke或MCP权限。
+
+尚未清洁源重建/原生/新NSIS/部署。全部本轮文件：docs/RELEASING.md、CHANGELOG.md、docs/VERSION_CHECK.md、docs/api/README.md、web-openapi.json、web-apifox-manifest.json、scripts/build-identity.js、apifox-contract.test.js、sync-web-apifox.ps1、verify-web-apifox.ps1、src/__tests__/utils/buildIdentity.test.js、releaseVersion.test.js、src/utils/releaseVersion.js、vite.config.js及本专项/handoff对应更新（提交后以git status为准）。WACAS未定义/待确认，UPARS1.1.0/交接1.15不变；Wolai本轮里程碑尚待同步。设备未新连home-host/未启动候选，不重复上一部署或关机。下一步：保存候选并清洁源完整构建/生产UI，再默认NSIS及新E盘合成目录原生验证；成功后另批覆盖/静态部署，依序截图/es-ES。
+
 最终封存：4d6fa8d7c16944c48ebf6f3b68032e653a9b692d已提交/推送并完整远端SHA读回，提交后Git干净。最新5h余8%/周55%，已触10%长阶段门禁，暂停等待用户额度恢复提醒；未新启动原生/包构建。Wolai主/交接已同步源SHA、验证/失败历史、未部署/API缺口和准确下一步并读回。本最小同步回执另保存，不修改产品代码，不关机/重置/自动唤醒。
 
 源码候选已实现，未打包/安装/部署，不是正式发布通过。五小时剩10%边界保存，不启动新的原生构建/长阶段；恢复须先核本检查点、额度、Git及文件。上阶段后端31d9b7c与运维作业已经安全交付，不重复迁移/安装/部署；精确服务器副本见NEXT_PHASE_CHECKPOINT顶部。

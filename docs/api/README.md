@@ -1,5 +1,7 @@
 # EasyProject API维护入口（Apifox）
 
+2026-10-26版本检查契约候选：公开静态GET /release-info.json新增于运行状态分组，私有Apifox528731814及全19HTTP操作/16路径Schema、摘要、分组读回通过，原18接口内容SHA不变。它不是业务CRUD、MCP或IPC；线上尚未部署此文件。主窗opener仅本仓库release tag URL，插件状态初始化，无新增自有invoke/MCP权限；使用及发布索引流程见docs/VERSION_CHECK.md。原生66协议接口和实际MCP程序不变，不重传未变契约。
+
 2026-10-26安全后端已部署31d9b7c，与此前6HTTP增量/全18读回契约一致；仅受控限流/预算配置启用，无schema/权限/域名变化。2DB字段/ID保持与正常TLS200/匿名401通过，真实压力/多公网客户端仍未验。原生MCP/桌面程序和接口不变，确切服务器副本及当前状态见NEXT_PHASE_CHECKPOINT。
 
 2026-10-26安全候选HTTP契约已同步：源31d9b7c（CI40249270452已通过），只定向更新认证3项、workspace action/revision及MCP post共6项，全18操作Schema/内容/分组/摘要读回通过。新增工作区507/测量503、MCP安全工具错误及严格受信代理/全局认证预算说明；实际新后端部署等待用户单独许可，仍为testing候选，不声称线上新限制已启用。原生23工具/66接口/实际release47b981d不变；准确产物及授权见NEXT_PHASE_CHECKPOINT。

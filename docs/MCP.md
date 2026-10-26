@@ -1,5 +1,9 @@
 # EasyProject 本地 MCP
 
+2026-10-26实际交付：本机及服务器业务schema8/账号3，独立及伴随release MCP源47b981d clean、SHA1E8840C2...已安全更新并完成真实23工具只读发现/DB SHA不变；当前客户端须重连。下方“父子候选未部署”是历史，实际保护副本/原字段与ID核验见PARENT_CHILD_TASK_DISCUSSION顶部。
+
+2026-10-26远端安全候选：远端HTTP MCP的业务变更将受共享工作区/服务池写入准入预算约束，超限在恢复点/审计/revision及业务写入之前拒绝，并保留查询能力；`isError=true`返回安全容量说明，不扩大权限或返回他人用量。默认512MiB工作区/8GiB服务池包含副本及恢复余量，非OS硬配额、无自动清理；详见server/deploy/STORAGE_BUDGET.md。该候选不改变本地stdio工具schema或引入本地配额；部署状态以NEXT_PHASE_CHECKPOINT为准。
+
 ## 2026-10-25父子任务与估算来源候选（未部署）
 
 业务schema8、JSON8；独立MCP不自行迁移，schema7真实库与现有程序不变，须另获升级授权。新增task参数`effort_state`仅允许`unestimated`/`estimated`；不传工作量为待估算，显式`effort_days:0`为已估算且无工作量，清除可传`effort_state:unestimated`。`legacy_unknown`只用于保留旧0来源，不接受普通写入。所有字段仍共享服务端校验。
@@ -56,19 +60,19 @@ MCP客户端需支持本地stdio并允许配置可执行文件与参数。默认
 
 以下约束由同一共享Rust边界执行，MCP工具schema也公开枚举；桌面IPC、Web action和显式导入不能绕过。候选不代表当前连接中的旧程序已更新。
 
-| 字段 | 允许值/规则 |
-| --- | --- |
-| task.priority | 字符串`1`、`2`、`3`、`4`、`5`（1最高）；兼容`High`=2、`Normal`=3、`Low`=4。新调用推荐数字字符串；不能传数字或Urgent等任意标签 |
-| task.type | `Task`、`Milestone`、`File` |
-| task.schedule_mode | `fixed_effort`、`fixed_dates` |
-| task.status_id | 必须显式引用本项目已有且有效的完整TASK_STATUS ID；不能写status文字或隐式建状态 |
-| project.type | `private`、`public`（项目展示属性，不是服务端授权） |
-| project.status | `Draft`、`InProgress`、`Paused`、`Done`、`Archived` |
-| task.progress / effort_days | 0—100整数 / 非负有限数值；完成字典属性决定进度100 |
-| task_status | name去首尾空格、同项目忽略大小写查重，默认状态同时保留中英显示别名冲突校验（Pending/待办，InProgress/In Progress/进行中，Done/已完成）；不同项目可同名。color为#RRGGBB，sort_order整数0—1000000，两标记必须布尔值 |
-| project.weekend_days | JSON数组字符串，元素为0—6整数（0星期日）；如`[0,6]` |
-| project.calendar_exceptions | JSON数组字符串，元素含标准`date`和`type=holiday或working`，可选自由文本name |
-| member.availability_exceptions | JSON数组字符串，元素含标准start_date/end_date且起<=止，type为`leave`或`available`；可保留name/source/source_uid等元信息 |
+| 字段                           | 允许值/规则                                                                                                                                                                                                       |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| task.priority                  | 字符串`1`、`2`、`3`、`4`、`5`（1最高）；兼容`High`=2、`Normal`=3、`Low`=4。新调用推荐数字字符串；不能传数字或Urgent等任意标签                                                                                     |
+| task.type                      | `Task`、`Milestone`、`File`                                                                                                                                                                                       |
+| task.schedule_mode             | `fixed_effort`、`fixed_dates`                                                                                                                                                                                     |
+| task.status_id                 | 必须显式引用本项目已有且有效的完整TASK_STATUS ID；不能写status文字或隐式建状态                                                                                                                                    |
+| project.type                   | `private`、`public`（项目展示属性，不是服务端授权）                                                                                                                                                               |
+| project.status                 | `Draft`、`InProgress`、`Paused`、`Done`、`Archived`                                                                                                                                                               |
+| task.progress / effort_days    | 0—100整数 / 非负有限数值；完成字典属性决定进度100                                                                                                                                                                 |
+| task_status                    | name去首尾空格、同项目忽略大小写查重，默认状态同时保留中英显示别名冲突校验（Pending/待办，InProgress/In Progress/进行中，Done/已完成）；不同项目可同名。color为#RRGGBB，sort_order整数0—1000000，两标记必须布尔值 |
+| project.weekend_days           | JSON数组字符串，元素为0—6整数（0星期日）；如`[0,6]`                                                                                                                                                               |
+| project.calendar_exceptions    | JSON数组字符串，元素含标准`date`和`type=holiday或working`，可选自由文本name                                                                                                                                       |
+| member.availability_exceptions | JSON数组字符串，元素含标准start_date/end_date且起<=止，type为`leave`或`available`；可保留name/source/source_uid等元信息                                                                                           |
 
 日期为真实且规范的YYYY-MM-DD；成员role/团队role是自由文本标签，不是权限枚举。calendar_country/calendar_region是节日日历库配置而非任务状态字典；不支持的配置不据此产生账号权限。自由文本仍受工具长度/类型限制；未知字段拒绝，ID/人员/父子/团队关系仍须服务端核验。
 

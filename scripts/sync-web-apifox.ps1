@@ -1,10 +1,11 @@
-param([switch]$Apply, [string]$ResumeFrom)
+param([switch]$Apply, [string]$ResumeFrom, [string[]]$OnlyOperations)
 $applyWeb = $Apply
 . (Join-Path $PSScriptRoot 'sync-apifox-api.ps1') -Library
 $webPath = Join-Path $repository 'docs/api/web-apifox-manifest.json'
 $web = Get-Content $webPath -Raw | ConvertFrom-Json -AsHashtable -Depth 100
 $spec = Get-Content (Join-Path $repository 'docs/api/web-openapi.json') -Raw | ConvertFrom-Json -AsHashtable -Depth 100
 if ($web.projectId -ne 8948094 -or $web.branchId -ne 8751742 -or $web.rootFolderId -ne 97929320) { throw 'Unexpected Web project binding.' }
+if ($OnlyOperations | Where-Object { -not $web.interfaces.Contains($_) }) { throw 'Unknown targeted Web operation.' }
 function Save-WebManifest {
     $pending = "$webPath.pending"
     [IO.File]::WriteAllText($pending, ($web | ConvertTo-Json -Depth 100) + "`n", [Text.UTF8Encoding]::new($false))
@@ -33,6 +34,7 @@ foreach ($path in $spec.paths.Keys) {
     }
 }
 if (-not $applyWeb) { Write-Output "PLAN Web new paths=$($missing.Count); managed=$($web.interfaces.Count)"; return }
+if ($OnlyOperations.Count -and $missing.Count) { throw 'Targeted updates cannot import new endpoints.' }
 if (-not $web.folders.profile) {
     $folders = (Call-Apifox 'executeOpenApi' @{id='00a468815ec90da0';pathParams=@{};queryParams=@{};headers=@{'X-Project-Id'='8948094'}}).data
     if ($folders | Where-Object { $_.name -eq '用户资料' -and $_.parentId -eq $web.rootFolderId }) { throw 'Unmanaged profile folder collision.' }
@@ -60,6 +62,7 @@ foreach ($path in $spec.paths.Keys) {
     foreach ($method in $spec.paths[$path].Keys) {
         $op = $spec.paths[$path][$method]
         $state = $web.interfaces[$op.operationId]
+        if ($OnlyOperations.Count -and $op.operationId -notin $OnlyOperations) { continue }
         if ($op.operationId -eq $ResumeFrom) { $resumeReached = $true }
         if (-not $resumeReached) { continue }
         $raw = (Call-Apifox 'getHttpEndpoint' @{headers=@{'X-Project-Id'='8948094'};pathParams=@{projectId=8948094;httpApiId=$state.id}}).data
@@ -81,7 +84,10 @@ foreach ($path in $spec.paths.Keys) {
         $responses = @()
         foreach ($code in $op.responses.Keys) {
             $response = $raw.responses | Where-Object { [string]$_.code -eq [string]$code } | Select-Object -First 1
-            if (-not $response) { throw "Expected imported response missing: $code" }
+            if (-not $response) {
+                if ([int]$code -notin @(503, 507)) { throw "Expected imported response missing: $code" }
+                $response = @{ name = $op.responses[$code].description; code = [int]$code; contentType = 'json' }
+            }
             $response.description = $op.responses[$code].description
             $content = $op.responses[$code].content.'application/json'
             if ($content) { $response.jsonSchema = $content.schema }

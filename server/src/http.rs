@@ -1,5 +1,7 @@
 use crate::{
     auth::{self, User},
+    rate_limit::{AuthLimiter, Operation, ProxyPolicy},
+    storage_budget::StorageBudget,
     workspace::{Action, Workspace},
 };
 use axum::{
@@ -19,7 +21,6 @@ use std::{
     net::SocketAddr,
     path::PathBuf,
     sync::{Arc, Mutex},
-    time::{Duration, Instant},
 };
 use tower_http::{cors::CorsLayer, services::ServeDir};
 
@@ -38,15 +39,50 @@ pub struct Server {
     pub origin: String,
     pub secure: bool,
     pub workspaces: Mutex<HashMap<String, Arc<Mutex<Workspace>>>>,
-    attempts: Mutex<HashMap<String, (Instant, u32)>>,
-    registrations: Mutex<HashMap<String, (Instant, u32)>>,
+    auth_limiter: Mutex<AuthLimiter>,
+    proxy_policy: ProxyPolicy,
+    proxy_authority: String,
+    storage_budget: StorageBudget,
     auth_slots: tokio::sync::Semaphore,
     work_slots: tokio::sync::Semaphore,
     dummy_hash: String,
 }
 
+#[derive(Default)]
+pub struct ServerOptions {
+    pub proxy_policy: ProxyPolicy,
+    pub storage_budget: StorageBudget,
+}
+
 impl Server {
     pub fn open(root: PathBuf, assets: PathBuf, origin: String) -> Result<Arc<Self>, String> {
+        Self::open_with_proxy(root, assets, origin, ProxyPolicy::None)
+    }
+
+    pub fn open_with_proxy(
+        root: PathBuf,
+        assets: PathBuf,
+        origin: String,
+        proxy_policy: ProxyPolicy,
+    ) -> Result<Arc<Self>, String> {
+        Self::open_with_options(
+            root,
+            assets,
+            origin,
+            ServerOptions {
+                proxy_policy,
+                ..Default::default()
+            },
+        )
+    }
+
+    pub fn open_with_options(
+        root: PathBuf,
+        assets: PathBuf,
+        origin: String,
+        options: ServerOptions,
+    ) -> Result<Arc<Self>, String> {
+        let proxy_policy = options.proxy_policy;
         let url = reqwest::Url::parse(&origin).map_err(|_| "Invalid origin")?;
         let loopback = matches!(url.host_str(), Some("127.0.0.1" | "localhost" | "[::1]"));
         if url.path() != "/"
@@ -58,6 +94,13 @@ impl Server {
         {
             return Err("HTTPS origin required (HTTP loopback for tests only)".into());
         }
+        if proxy_policy == ProxyPolicy::TailscaleLoopback && url.scheme() != "https" {
+            return Err("Trusted Tailscale proxy requires an HTTPS origin".into());
+        }
+        let proxy_authority = match url.port() {
+            Some(port) => format!("{}:{port}", url.host_str().ok_or("Origin host required")?),
+            None => url.host_str().ok_or("Origin host required")?.to_owned(),
+        };
         std::fs::create_dir_all(&root).map_err(|e| e.to_string())?;
         let auth = auth::open(&root.join("accounts.db"))?;
         let dummy_hash = auth::password_hash(&auth::random_token()[..31])?;
@@ -68,8 +111,10 @@ impl Server {
             secure: url.scheme() == "https",
             origin: origin.trim_end_matches('/').to_owned(),
             workspaces: Mutex::new(HashMap::new()),
-            attempts: Mutex::new(HashMap::new()),
-            registrations: Mutex::new(HashMap::new()),
+            auth_limiter: Mutex::new(AuthLimiter::default()),
+            proxy_policy,
+            proxy_authority,
+            storage_budget: options.storage_budget,
             auth_slots: tokio::sync::Semaphore::new(2),
             work_slots: tokio::sync::Semaphore::new(8),
             dummy_hash,
@@ -108,11 +153,34 @@ impl Server {
             )
             .map_err(internal)?;
         let workspace = Arc::new(Mutex::new(
-            Workspace::open(&self.root, &key).map_err(internal)?,
+            Workspace::open_with_budget(&self.root, &key, self.storage_budget).map_err(internal)?,
         ));
         map.insert(user.id.clone(), workspace.clone());
         Ok(workspace)
     }
+}
+
+fn admit_auth(
+    server: &Server,
+    peer: SocketAddr,
+    headers: &HeaderMap,
+    operation: Operation,
+) -> Result<(), ApiError> {
+    let client = server
+        .proxy_policy
+        .client_ip(peer.ip(), headers, &server.proxy_authority);
+    if !server
+        .auth_limiter
+        .lock()
+        .map_err(internal)?
+        .admit(operation, client)
+    {
+        return Err(error(
+            StatusCode::TOO_MANY_REQUESTS,
+            "Too many authentication requests; try again later",
+        ));
+    }
+    Ok(())
 }
 
 fn token(headers: &HeaderMap) -> Option<String> {
@@ -250,25 +318,7 @@ async fn login(
     if input.username.len() > 48 || !(6..=31).contains(&input.password.chars().count()) {
         return Err(error(StatusCode::BAD_REQUEST, "Invalid credentials"));
     }
-    {
-        let mut attempts = server.attempts.lock().map_err(internal)?;
-        attempts.retain(|_, (time, _)| time.elapsed() < Duration::from_secs(900));
-        if attempts.len() >= 1024 {
-            return Err(error(StatusCode::TOO_MANY_REQUESTS, "Try again later"));
-        }
-        // Real socket peer, never an untrusted forwarded-for header. A private reverse
-        // proxy shares this bound, deliberately conservative until trusted-proxy support.
-        let entry = attempts
-            .entry(peer.ip().to_string())
-            .or_insert((Instant::now(), 0));
-        entry.1 += 1;
-        if entry.1 > 30 {
-            return Err(error(
-                StatusCode::TOO_MANY_REQUESTS,
-                "Too many login attempts; wait 15 minutes",
-            ));
-        }
-    }
+    admit_auth(&server, peer, &headers, Operation::Login)?;
     let permit = server
         .auth_slots
         .try_acquire()
@@ -307,6 +357,7 @@ async fn login(
 async fn register(
     State(server): State<Arc<Server>>,
     ConnectInfo(peer): ConnectInfo<SocketAddr>,
+    headers: HeaderMap,
     Json(input): Json<Credentials>,
 ) -> Result<Json<Value>, ApiError> {
     if input.username.len() > 48 || input.password.len() > 512 {
@@ -315,24 +366,7 @@ async fn register(
             "Invalid registration fields",
         ));
     }
-    {
-        let mut attempts = server.registrations.lock().map_err(internal)?;
-        attempts.retain(|_, (time, _)| time.elapsed() < Duration::from_secs(3600));
-        if attempts.len() >= 1024 {
-            return Err(error(StatusCode::TOO_MANY_REQUESTS, "Try again later"));
-        }
-        // Reverse-proxy peers intentionally share this conservative registration bound.
-        let entry = attempts
-            .entry(peer.ip().to_string())
-            .or_insert((Instant::now(), 0));
-        entry.1 += 1;
-        if entry.1 > 10 {
-            return Err(error(
-                StatusCode::TOO_MANY_REQUESTS,
-                "Too many registrations; wait one hour",
-            ));
-        }
-    }
+    admit_auth(&server, peer, &headers, Operation::Register)?;
     let _permit = server
         .auth_slots
         .try_acquire()
@@ -607,6 +641,7 @@ struct ResetPassword {
 async fn reset_password(
     State(server): State<Arc<Server>>,
     ConnectInfo(peer): ConnectInfo<SocketAddr>,
+    headers: HeaderMap,
     Json(input): Json<ResetPassword>,
 ) -> Result<Json<Value>, ApiError> {
     if input.username.len() > 48
@@ -615,23 +650,7 @@ async fn reset_password(
     {
         return Err(error(StatusCode::BAD_REQUEST, "Invalid reset request"));
     }
-    {
-        let mut attempts = server.attempts.lock().map_err(internal)?;
-        attempts.retain(|_, (time, _)| time.elapsed() < Duration::from_secs(900));
-        if attempts.len() >= 1024 {
-            return Err(error(StatusCode::TOO_MANY_REQUESTS, "Try again later"));
-        }
-        let entry = attempts
-            .entry(format!("reset:{}", peer.ip()))
-            .or_insert((Instant::now(), 0));
-        entry.1 += 1;
-        if entry.1 > 10 {
-            return Err(error(
-                StatusCode::TOO_MANY_REQUESTS,
-                "Try again in 15 minutes",
-            ));
-        }
-    }
+    admit_auth(&server, peer, &headers, Operation::Reset)?;
     let _permit = server
         .auth_slots
         .try_acquire()

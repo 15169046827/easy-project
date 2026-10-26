@@ -1,5 +1,7 @@
 # EasyProject API维护入口（Apifox）
 
+2026-10-26新HTTP候选：认证3操作新增可信代理/全局预算说明，工作区action/revision与MCP post补503/507/工具容量错误及远端准入边界，仍18操作/15路径；本地生成与11契约测试通过，6个HTTP定向同步/全18读回尚待，不代表线上已启用。原生MCP23/66接口与实际release来源保持，不重传未改原生接口。准确候选/验证/部署看NEXT_PHASE_CHECKPOINT。
+
 2026-10-26实际release已重绑：本机/服务器业务schema8，独立MCP源47b981d6cb9fdf24a5a0eb88a6c175f2e39a111f（clean/release），SHA1E8840C23FAE2D209E13395D676EB91AB3D3F94B241950CECFC6152A16663D39。合成库及实际库各23唯一工具仅发现、DB SHA不变；catalog/MODELS/32参考/66原生协议接口按该程序更新私有Apifox并读回，分组保留，后续只读66 unchanged/0计划。同步在66接口已验证后读取参考分组时曾HTTP0中断，未盲目重写，只读全流程复核闭环。HTTP18契约本轮无新变化，不机械重传；当前Codex客户端须重连，不冒称当前聊天已加载。准确安装/迁移/保护副本见父子专项。
 
 2026-10-25升级阶段：服务器已部署父子schema8候选（后端CI40171340228/a5aa958，前端47b981d），本机独立MCP仍旧schema7程序。新的release MCP1E8840C2...尚待实际发现/本机替换，catalog/Apifox仍绑定此前debug候选；暂不冒称实际release已重绑。恢复按父子专项顶部完成真实交付后再增量更新读回，不能用旧程序读新schema8真实库。

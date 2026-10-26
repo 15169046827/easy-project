@@ -11,6 +11,24 @@ const powerShellAvailable =
         timeout: 10000
     }).status === 0
 describe('Apifox API documentation boundary', () => {
+    it.skipIf(!powerShellAvailable)(
+        'rejects unknown targeted HTTP updates before network access',
+        () => {
+            const result = spawnSync(
+                'pwsh',
+                [
+                    '-NoProfile',
+                    '-File',
+                    'scripts/sync-web-apifox.ps1',
+                    '-OnlyOperations',
+                    'unmanaged'
+                ],
+                { encoding: 'utf8', windowsHide: true, timeout: 10000 }
+            )
+            expect(result.status).not.toBe(0)
+            expect(result.stderr).toContain('Unknown targeted Web operation')
+        }
+    )
     it('documents the real authenticated HTTP server separately from native protocols', () => {
         const api = JSON.parse(readFileSync('docs/api/web-openapi.json', 'utf8'))
         expect(Object.keys(api.paths)).toHaveLength(15)
@@ -30,6 +48,8 @@ describe('Apifox API documentation boundary', () => {
             api.paths['/mcp'].post.parameters.some(p => p.name === 'X-EasyProject-Request')
         ).toBe(false)
         expect(api.paths['/api/auth/login'].post.security).toEqual([])
+        expect(api.paths['/api/workspace/action'].post.responses[507]).toBeTruthy()
+        expect(api.paths['/api/workspace/action'].post.responses[503]).toBeTruthy()
         expect(
             api.paths['/api/workspace/action'].post.parameters.some(
                 parameter => parameter.name === 'X-Workspace-Revision'

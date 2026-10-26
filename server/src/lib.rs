@@ -15,4 +15,6 @@ pub mod maintenance;
 pub mod mcp;
 mod password_reset;
 mod profile;
+pub mod rate_limit;
+pub mod storage_budget;
 pub mod workspace;

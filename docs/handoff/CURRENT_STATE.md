@@ -1,5 +1,9 @@
 # EasyProject 交接时当前状态与待办
 
+2026-10-26安全候选最终本地验证：server61+19/287前端/11契约、严格检查、最终13真实HTTP通过；新增真实507/MCP工具错误与读保留、前端429/503/507不登出/不重试写入。check-storage预检4合成工作区/19原文件SHA不变。下一步候选CI、6HTTP接口增量同步与新副本后只更后端/限定配置，线上尚未启用新限流和逻辑预算；不重复schema8迁移/桌面/MCP替换。准确检查点仍NEXT_PHASE_CHECKPOINT。
+
+2026-10-26当前源码候选为共享限流与业务写入预算，尚未部署：默认不信任转发头，受信回环单值IP/Host/HTTPS严格检查并受总预算限制；工作区512MiB/池8GiB逻辑准入覆盖Web/远端MCP写前，读/导出不封禁、无自动删数据。server61+18/287前端/11契约与静态检查通过，13真实HTTP已验（最后CLI增加后需最终补验），候选CI与6HTTP增量Apifox尚待。现有运维timer和schema8交付保持，客户端仍须重连独立MCP；下一步按NEXT_PHASE_CHECKPOINT。
+
 2026-10-26最新运维实际部署：日备份/15分钟磁盘监测timer已enabled/active，run/health成功；真实2DB只读备份/隔离恢复通过，主服务PID680及active保持、正常TLS两入口200。新保护副本ops-install-d9fe3ac-20261026和业务快照均保留，未重启主服务/改业务库/清理旧副本。源d9fe3ac、CI40245676939两job成功，准确后续共享限流/预算/可见告警见NEXT_PHASE_CHECKPOINT。未实现站外通知/自动保留清理/硬配额或完整生产验收。
 
 2026-10-26进行中转NEXT_PHASE_CHECKPOINT：运维安全候选已通过Windows20/Python Linux20和原生systemd权限/WAL/恢复/锁/超时，root私有合成证据o5kbhmuj，未触生产数据。新备份时限/磁盘空间预留/回执/只读源及timer模板尚未部署；下一步候选CI与受保护运维部署，再继续共享限流/预算/可见告警。不是公网正式验收通过，也无站外告警或自动清理。

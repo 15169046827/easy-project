@@ -79,4 +79,6 @@ sudo systemctl restart easyproject
 
 # 运维部署补充（2026-10-26）
 
+新限流/写入预算源码候选说明见[受信代理](deploy/TRUSTED_PROXY.md)与[写入准入预算](deploy/STORAGE_BUDGET.md)，上线状态只看后续阶段检查点；默认不信任任意转发头，逻辑预算不等于OS硬配额，不扩展认证/权限或影响离线桌面/stdio。部署前须新保护副本及新二进制check-storage预检，保留原数据/ID，不因新限制建空库或自动清理。
+
 备份/健康工具与systemd手册见[ops/README.md](ops/README.md)，实际部署/进度见[后续阶段检查点](../docs/NEXT_PHASE_CHECKPOINT.md)。20本地/20Linux及原生只读WAL/恢复/锁/超时、CI40245676939通过，日备份/15分钟健康作业已启用，真实2DB只读备份及隔离恢复通过、主程序PID未变；不自动删除备份、不跨库原子保证、不恢复覆盖生产数据、无站外通知。主应用/API/MCP权限不因运维作业变化。旧“仅Tailnet”属于历史，当前公网Funnel及schema8部署看最新专项。

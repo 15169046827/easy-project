@@ -2,6 +2,7 @@ use crate::common::db_state::{init_db, DbState};
 use crate::services::{
     calendar_service, data_service, entity_api, plan_baseline_service, task_dependency_service,
 };
+use crate::storage_budget::StorageBudget;
 use serde::Deserialize;
 use serde_json::{json, Value};
 use std::io::Write;
@@ -23,10 +24,16 @@ fn empty_data() -> Value {
 pub struct Workspace {
     pub db: DbState,
     current_revision: i64,
+    root: std::path::PathBuf,
+    budget: StorageBudget,
 }
 
 impl Workspace {
     pub fn open(root: &Path, id: &str) -> Result<Self, String> {
+        Self::open_with_budget(root, id, StorageBudget::default())
+    }
+
+    pub fn open_with_budget(root: &Path, id: &str, budget: StorageBudget) -> Result<Self, String> {
         if id.len() != 32 || !id.bytes().all(|b| b.is_ascii_hexdigit()) {
             return Err("Invalid workspace identity".into());
         }
@@ -54,6 +61,8 @@ impl Workspace {
         Ok(Self {
             db,
             current_revision: revision,
+            root: root.to_path_buf(),
+            budget,
         })
     }
 
@@ -67,6 +76,7 @@ impl Workspace {
         call: impl FnOnce(&DbState) -> Result<Value, String>,
     ) -> Result<Value, String> {
         if mutation {
+            self.check_budget().map_err(|e| e.message().to_owned())?;
             let next = new_revision();
             self.db
                 .lock_connection()
@@ -96,6 +106,14 @@ impl Workspace {
         let next = if mutation { new_revision() } else { revision };
         let operation_id = uuid::Uuid::new_v4().simple().to_string();
         if mutation {
+            self.check_budget().map_err(|e| {
+                let status = if e == crate::storage_budget::BudgetError::Capacity {
+                    507
+                } else {
+                    503
+                };
+                (status, e.message().to_owned())
+            })?;
             self.audit(&request, &operation_id, "attempt", true)
                 .map_err(|e| (500, e))?;
             data_service::create_backup(&self.db, "web").map_err(|e| (500, e))?;
@@ -176,6 +194,15 @@ impl Workspace {
                 .execute("INSERT INTO web_revision VALUES(?1,1,?2) ON CONFLICT(singleton_key) DO UPDATE SET value=excluded.value", rusqlite::params![crate::common::id::new_id("WEB_REVISION"),next]).map_err(|e| (500,e.to_string()))?;
         }
         Ok(json!({"data":result.data,"revision":next}))
+    }
+
+    fn check_budget(&self) -> Result<(), crate::storage_budget::BudgetError> {
+        let directory = self
+            .db
+            .1
+            .parent()
+            .ok_or(crate::storage_budget::BudgetError::Check)?;
+        self.budget.check(&self.root, directory)
     }
 
     fn audit(

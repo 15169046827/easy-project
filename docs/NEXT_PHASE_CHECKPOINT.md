@@ -1,5 +1,26 @@
 # 后续阶段：公网稳定性、更新体验与国际化
 
+## 2026-10-26认证限流及业务写入预算候选复验（最新）
+
+最终本地补验：CLI在4个既有合成工作区预检通过，19个原文件SHA及文件数均不变；最终13真实HTTP串行零重试通过。新增真正HTTP507及远端MCP HTTP200/isError容量拒绝/认证查询保留反例通过，最新完整server61单元+19集成、严格Clippy/格式通过；日志public-safety-{server,clippy}-final.log及public-safety-http-final.log。287前端/11契约/类型/lint有效。候选将提交并触发CI，不部署前不改实际服务配置。
+
+- 基线766e424，原分支；WACAS未定义、适用AGENTS/维护skill/规则1.15/UPARS1.1.0。本阶段开工五小时剩63%，最新上节点52%，仍可继续，下一里程碑重查；不重置/唤醒/关机。
+- 共享限流候选如下一段；另增storage_budget模块，默认单工作区512MiB/服务数据池8GiB，包含恢复点/审计及2×最大文件+8MiB余量。远端业务变更（含导入/备份/恢复、HTTP MCP）在审计/恢复点/revision之前拒绝超限；Web507/测量异常503、MCP限定安全工具错误，读/导出保留，登录等账号认证不因该门禁锁住。无自动清理或OS硬配额承诺，并发可短暂超准入值；本地离线/独立stdio不受远端预算影响。范围/配置/测量限制见server/deploy/STORAGE_BUDGET.md。
+- 新check-storage只读元数据预检，不打开/初始化缺失DB、不改revision；部署必须先在现有数据上通过该预检，再新保护副本后替换后端，不迁移schema8或更换前端/桌面/独立MCP。预算512MiB/8GiB可由维护者在受控环境设置，客户端不能传入；未来归档/清理须另授权。
+- 验证：最终Windows server61单元+18集成，fmt/严格Clippy/显式build通过；6限流、5预算及1Web/MCP写前拒绝/读保留边界覆盖，Linux另有链接拒绝测试待CI。287前端/59文件、11契约及lint/类型通过，新增429/503/507不会登出或重试写入的反例。13真实HTTP串行通过；显式cargo build后SHA不变BE6C13B8...证明当时套件使用新预算程序（之后仅增加check-storage预检，最后HTTP补验正在安排）。原生UI/桌面未改，不冒称重跑90生产或新桌面包。
+- HTTP契约18操作/15路径，变更限流3项及workspace action/revision、MCP post的503/507/工具错误说明，受控定向同步器仅允许已管理目标，保留全体写前冲突校验和最终全量读回。尚未同步本候选Apifox或部署服务器；native23工具/66原生契约/独立程序不变。
+- 当前未提交：server/src/{http.rs,lib.rs,main.rs,mcp.rs,workspace.rs,rate_limit.rs,storage_budget.rs}、server/tests/web.rs、server/deploy/{easyproject-system.service,TRUSTED_PROXY.md,STORAGE_BUDGET.md}、scripts/{build-web-api.js,sync-web-apifox.ps1,apifox-contract.test.js}、src/**tests**/api/remote.test.js、docs/{MCP,NEXT_PHASE_CHECKPOINT}.md、docs/api/web-openapi.json及随后交接/候选文档。无他人修改，所有维护写入E盘。
+- 准确下一步：最终CLI无写入核验/13HTTP补验与文档校验，提交候选触发Linux CI（含新Unix链接反例）、6个HTTP接口定向Apifox同步及全18读回；成功后新受限服务器副本、既有库预算预检通过、停主服务备份核验后只换新后端及新增限定配置，原字段/ID/关联保持再启动/探活。不重复本机安装/MCP停止/迁移。服务器运维timer已启用继续运行，主程序当前仍旧后端/共享反代限流；本轮SSH已正常退出。
+
+## 2026-10-26共享认证限流候选完成（最新，尚未部署）
+
+- 运维实际交付回执766e424已推送且Wolai主/交接读回。当前候选基线766e424，分支不变，WACAS未定义/实际UPARS1.1.0/交接1.15。root运维SSH已正常退出；主服务及两个timer保留运行，不关机。
+- server/rate_limit模块实现显式EASYPROJECT_TRUSTED_PROXY=none（默认）或tailscale-loopback；仅后者且真实回环peer+HTTPS origin+单值有效IP/匹配Host/https时使用代理地址，异常回退peer桶，非回环/默认永不信任。依据服务器实际1.104.1及官方对应tag源代码，不用任意XFF作认证或权限。保留2哈希/8业务并发位、Origin/CSRF和loopback监听。
+- 每客户端登录30/15min、注册10/h、重置10/15min；独立全局300/100/100及1024键上限，IP轮换不能绕总预算。满表拒绝新键但保留已有键，不记录用户名/凭据。内存计数重启清空，不冒充持久账号锁。服务模板已加显式模式，实际线上尚未启用或更换二进制。
+- 已验56 server单元+17集成、fmt/严格Clippy；新增6单元+受信/默认两模式真实路由反例，未真实创建账号。其后全局预算测试扩到三操作，6项重验通过/Clippy通过；11 API契约测试、lint通过（最新新增测试/同步选择器后待再最终lint）。新增HTTP定向同步OnlyOperations只允许已管理ID，未知ID在联网前拒绝，避免机械重写未改15接口。HTTP18说明仅本地候选更新3项，尚未同步Apifox；native MCP契约/独立程序不变。
+- 准确下一步：继续同一公网稳定性阶段的工作区/数据池写入预算与安全可见错误，Web及远端MCP写前统一检查、读/导出不阻止，不自动删数据。只做可配置逻辑写入准入预算，不冒称系统硬配额；保留恢复点空间，低空间由已部署运维监测。然后完整server/HTTP/门禁与契约同步、CI及新副本后受控后端部署，不重复迁移、桌面安装或MCP替换。预算初始值/边界须明确记录验证，不隐藏新限制。
+- 当前全部未提交：server/src/{http.rs,lib.rs,main.rs,rate_limit.rs}、server/tests/web.rs、server/deploy/{easyproject-system.service,TRUSTED_PROXY.md}、scripts/{build-web-api.js,sync-web-apifox.ps1,apifox-contract.test.js}、docs/api/web-openapi.json、本检查点。其余Git干净，无他人重叠修改。预算尚未实现，不声称整个第一阶段完成；Wolai上次仅运维实际交付，这一候选里程碑待同步。
+
 ## 2026-10-26运维备份/容量监测已部署（最新）
 
 - 源d9fe3ac9225302d1a2fc033defc796bb9a8a50c8已推送，CI40245676939/server与security两job成功，包含20Python/原生隔离systemd及原Rust检查/安全扫描；不扩展为桌面全依赖新扫描。Wolai主/交接候选里程碑已读回；本段实际部署回执随后同步。

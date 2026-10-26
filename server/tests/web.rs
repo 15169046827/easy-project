@@ -1413,3 +1413,269 @@ async fn login_rate_limit_and_unregistered_operations_fail_closed() {
     )
     .is_err());
 }
+
+#[tokio::test]
+async fn trusted_proxy_separates_clients_but_default_still_ignores_spoofed_headers() {
+    use easyproject_server::rate_limit::ProxyPolicy;
+    for policy in [ProxyPolicy::None, ProxyPolicy::TailscaleLoopback] {
+        let root = std::env::temp_dir().join(format!(
+            "easyproject-proxy-test-{}",
+            uuid::Uuid::new_v4().simple()
+        ));
+        std::fs::create_dir_all(root.join("assets")).unwrap();
+        let server = Server::open_with_proxy(
+            root.join("data"),
+            root.join("assets"),
+            "https://example.test".into(),
+            policy,
+        )
+        .unwrap();
+        for index in 0..12 {
+            let mut request = test_request(
+                Method::POST,
+                "/api/auth/register",
+                Body::from(json!({"username":"synthetic","password":"short"}).to_string()),
+                "https://example.test",
+            );
+            request
+                .headers_mut()
+                .insert("x-forwarded-for", "203.0.113.1".parse().unwrap());
+            request
+                .headers_mut()
+                .insert("x-forwarded-host", "example.test".parse().unwrap());
+            request
+                .headers_mut()
+                .insert("x-forwarded-proto", "https".parse().unwrap());
+            let response = router(server.clone()).oneshot(request).await.unwrap();
+            assert_eq!(
+                response.status(),
+                if index < 10 {
+                    StatusCode::BAD_REQUEST
+                } else {
+                    StatusCode::TOO_MANY_REQUESTS
+                }
+            );
+        }
+        let mut request = test_request(
+            Method::POST,
+            "/api/auth/register",
+            Body::from(json!({"username":"synthetic","password":"short"}).to_string()),
+            "https://example.test",
+        );
+        request
+            .headers_mut()
+            .insert("x-forwarded-for", "203.0.113.2".parse().unwrap());
+        request
+            .headers_mut()
+            .insert("x-forwarded-host", "example.test".parse().unwrap());
+        request
+            .headers_mut()
+            .insert("x-forwarded-proto", "https".parse().unwrap());
+        let response = router(server.clone()).oneshot(request).await.unwrap();
+        assert_eq!(
+            response.status(),
+            if policy == ProxyPolicy::None {
+                StatusCode::TOO_MANY_REQUESTS
+            } else {
+                StatusCode::BAD_REQUEST
+            }
+        );
+        assert!(auth::list(&server.auth.lock().unwrap()).unwrap().is_empty());
+    }
+    assert!(Server::open_with_proxy(
+        std::env::temp_dir(),
+        std::env::temp_dir(),
+        "http://127.0.0.1:8080".into(),
+        ProxyPolicy::TailscaleLoopback
+    )
+    .is_err());
+}
+
+#[test]
+fn storage_budget_blocks_web_and_remote_mcp_before_revision_audit_or_backup() {
+    use easyproject_server::{mcp, storage_budget::StorageBudget};
+    let root = std::env::temp_dir().join(format!(
+        "easyproject-budget-boundary-{}",
+        uuid::Uuid::new_v4().simple()
+    ));
+    let key = "a".repeat(32);
+    let mut workspace = Workspace::open_with_budget(
+        &root,
+        &key,
+        StorageBudget {
+            workspace_bytes: 0,
+            data_bytes: 8192 * 1024 * 1024,
+        },
+    )
+    .unwrap();
+    let directory = root.join("workspaces").join(key);
+    let database = directory.join("project_manager.db");
+    let before = std::fs::read(&database).unwrap();
+    let revision = workspace.revision().unwrap();
+    let files_before = std::fs::read_dir(&directory).unwrap().count();
+    let error = workspace
+        .run(
+            Action {
+                model: "project".into(),
+                action: "add".into(),
+                data: json!({"name":"synthetic blocked"}),
+            },
+            Some(revision),
+        )
+        .unwrap_err();
+    assert_eq!(error.0, 507);
+    assert!(error.1.contains("reads remain available"));
+    let response = mcp::handle(&mut workspace, mcp::Permissions { write: true, delete: true },
+        json!({"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"easyproject_project_create","arguments":{"data":{"name":"synthetic blocked"}}}})).unwrap();
+    assert_eq!(response["result"]["isError"], true);
+    assert!(response["result"]["content"][0]["text"]
+        .as_str()
+        .unwrap()
+        .contains("storage budget reached"));
+    assert_eq!(workspace.revision().unwrap(), revision);
+    assert_eq!(std::fs::read(&database).unwrap(), before);
+    assert_eq!(std::fs::read_dir(&directory).unwrap().count(), files_before);
+    assert!(workspace
+        .run(
+            Action {
+                model: "project".into(),
+                action: "get_all".into(),
+                data: json!({})
+            },
+            None
+        )
+        .is_ok());
+    assert!(workspace
+        .run(
+            Action {
+                model: "data".into(),
+                action: "export_json".into(),
+                data: json!({})
+            },
+            None
+        )
+        .is_ok());
+    let response = mcp::handle(&mut workspace, mcp::Permissions { write: true, delete: true },
+        json!({"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"easyproject_project_list","arguments":{}}})).unwrap();
+    assert_eq!(response["result"]["isError"], false);
+}
+
+#[tokio::test]
+async fn http_budget_errors_preserve_authenticated_reads_and_remote_mcp_contract() {
+    use easyproject_server::{http::ServerOptions, storage_budget::StorageBudget};
+    let root = std::env::temp_dir().join(format!(
+        "easyproject-http-budget-{}",
+        uuid::Uuid::new_v4().simple()
+    ));
+    std::fs::create_dir_all(root.join("assets")).unwrap();
+    let server = Server::open_with_options(
+        root.join("data"),
+        root.join("assets"),
+        "http://127.0.0.1:8080".into(),
+        ServerOptions {
+            storage_budget: StorageBudget {
+                workspace_bytes: 64 * 1024 * 1024,
+                data_bytes: 64 * 1024 * 1024,
+            },
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    let user = account(&server, "budget_user", false);
+    let token = ready_token(server.clone(), "budget_user").await;
+    let (_, result, _) = call(
+        server.clone(),
+        Method::GET,
+        "/api/workspace/revision",
+        json!({}),
+        Some(&token),
+        None,
+    )
+    .await;
+    let revision = result["revision"].as_i64().unwrap();
+    let (status, credential, _) = call(
+        server.clone(),
+        Method::POST,
+        "/api/account/mcp-tokens",
+        json!({"name":"synthetic","scope":"delete","days":7}),
+        Some(&token),
+        None,
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    let key: String = server
+        .auth
+        .lock()
+        .unwrap()
+        .query_row(
+            "SELECT workspace_key FROM account WHERE id=?1",
+            [&user.id],
+            |row| row.get(0),
+        )
+        .unwrap();
+    let directory = root.join("data/workspaces").join(key);
+    std::fs::File::create(directory.join("synthetic-budget-pad"))
+        .unwrap()
+        .set_len(64 * 1024 * 1024)
+        .unwrap();
+    let before = std::fs::read(directory.join("project_manager.db")).unwrap();
+    let (status, failure, _) = call(
+        server.clone(),
+        Method::POST,
+        "/api/workspace/action",
+        json!({"model":"project","action":"add","data":{"name":"blocked"}}),
+        Some(&token),
+        Some(revision),
+    )
+    .await;
+    assert_eq!(status, StatusCode::INSUFFICIENT_STORAGE);
+    assert!(failure["error"]
+        .as_str()
+        .unwrap()
+        .contains("reads remain available"));
+    let mut request = test_request(Method::POST, "/mcp", Body::from(json!({"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"easyproject_project_create","arguments":{"data":{"name":"blocked"}}}}).to_string()), "http://127.0.0.1:8080");
+    request.headers_mut().insert(
+        header::AUTHORIZATION,
+        format!("Bearer {}", credential["secret"].as_str().unwrap())
+            .parse()
+            .unwrap(),
+    );
+    request.headers_mut().insert(
+        header::ACCEPT,
+        "application/json, text/event-stream".parse().unwrap(),
+    );
+    let response = router(server.clone()).oneshot(request).await.unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+    let response: Value =
+        serde_json::from_slice(&response.into_body().collect().await.unwrap().to_bytes()).unwrap();
+    assert_eq!(response["result"]["isError"], true);
+    assert!(response["result"]["content"][0]["text"]
+        .as_str()
+        .unwrap()
+        .contains("storage budget reached"));
+    assert_eq!(
+        std::fs::read(directory.join("project_manager.db")).unwrap(),
+        before
+    );
+    let (status, current, _) = call(
+        server.clone(),
+        Method::GET,
+        "/api/workspace/revision",
+        json!({}),
+        Some(&token),
+        None,
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(current["revision"], revision);
+    let (status, _, _) = call(
+        server,
+        Method::POST,
+        "/api/workspace/action",
+        json!({"model":"project","action":"get_all","data":{}}),
+        Some(&token),
+        None,
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+}

@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-26安全候选入口：server/rate_limit.rs仅将显式受信回环代理的单值地址用于频次桶，绝不用于认证/账号归属；AuthLimiter有单客户端和全局预算、1024键界限。storage_budget.rs用元数据检查工作区/服务池含恢复点的写入准入，Workspace在Web和远端MCP的revision/审计/恢复点之前复用；check-storage为部署只读预检。没有新DB表/schema或本地stdio限制，是否实际启用看NEXT_PHASE_CHECKPOINT，不据源码推定部署。
+
 2026-10-26运维候选：server/ops/safety.py提供backup/verify/health/run，共享协作截止时间、磁盘预留、私有唯一回执；verify_linux_safety.py只在新合成目录验证真实systemd只读挂载/WAL快照/锁/硬超时。server/deploy/easyproject-safety@.service及backup/health.timer为受限运维作业模板，非业务API；当前是否启用只以NEXT_PHASE_CHECKPOINT回执为准。副本逐库一致、不自动清理或在线恢复，没有站外通知。
 
 2026-10-26部署层跟进：桌面与home-host业务schema8、账号3，独立/伴随release MCP已实际更新；逐字段/ID/关联/来源保护核验通过。schema8由新桌面/服务器迁移入口执行，独立MCP仅接受已有schema8，不负责迁移；旧schema7程序不能读新库。客户端加载与磁盘交付分开，需重连。准确来源/副本见父子专项，架构与规则1.15复核不变。

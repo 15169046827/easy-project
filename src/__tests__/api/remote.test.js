@@ -121,6 +121,43 @@ describe('optional remote workspace transport', () => {
             'memory-only-session'
         )
     })
+    it.each([429, 503, 507])(
+        'preserves authentication and never retries a rejected resource write (%s)',
+        async status => {
+            const network = vi
+                .fn()
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        user: { username: 'alice' },
+                        token: 'memory-only-session'
+                    })
+                })
+                .mockResolvedValueOnce({ ok: true, json: async () => ({ revision: 4 }) })
+                .mockResolvedValueOnce({
+                    ok: false,
+                    status,
+                    json: async () => ({ error: 'Capacity unavailable' })
+                })
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ revision: 4, data: { list: [] } })
+                })
+            vi.stubGlobal('fetch', network)
+            const remote = await import('../../api/remote')
+            await remote.loginRemote('alice', 'synthetic-password')
+            await expect(
+                remote.remoteAction('project', 'add', { name: 'synthetic' })
+            ).rejects.toThrow('Capacity unavailable')
+            expect(network).toHaveBeenCalledTimes(3)
+            expect(remote.remoteUser.value.username).toBe('alice')
+            expect(remote.remoteStale.value).toBe(false)
+            await remote.remoteAction('project', 'get_all', {})
+            expect(network.mock.calls[3][1].headers.Authorization).toBe(
+                'Bearer memory-only-session'
+            )
+        }
+    )
     it('preserves conflict and authentication on network refresh failure but honors real session expiry', async () => {
         const network = vi
             .fn()

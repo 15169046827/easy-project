@@ -35,7 +35,7 @@ const groups = {
                 post: {
                     summary: '自助注册普通账号',
                     description:
-                        '直接开放注册，仅创建普通账号和独立工作区，不接受admin/账号ID/路径。不上传本地数据。用户名3—48位ASCII字母、数字、_或-，密码6—31字符；用户自设密码无需首次改密。10次/小时真实socket IP限流（私有反代共享），总账号上限1000；重复用户名拒绝。成功后登录，不直接签发会话。无邮箱验证；忘记密码使用管理员一次性重置码。',
+                        '直接开放注册，仅创建普通账号和独立工作区，不接受admin/账号ID/路径。不上传本地数据。用户名3—48位ASCII字母、数字、_或-，密码6—31字符；用户自设密码无需首次改密。每客户端10次/小时、全局100次/小时，总账号上限1000；默认客户端为socket IP，仅显式受信Tailscale回环代理且单值X-Forwarded-For/Host/HTTPS校验通过才使用转发IP。重复用户名拒绝。成功后登录，不直接签发会话。无邮箱验证；忘记密码使用管理员一次性重置码。',
                     security: [],
                     requestBody: { required: true, content: jsonContent(credentials) },
                     responses: {
@@ -50,7 +50,7 @@ const groups = {
                 post: {
                     summary: '登录',
                     description:
-                        '12小时会话。Web返回HttpOnly/Secure/SameSite=Strict cookie且token=null；X-EasyProject-Client=desktop时返回内存Bearer。首次须改密码。30次/15分钟真实socket IP限流，反代后共享。禁止记录凭据或返回令牌。',
+                        '12小时会话。Web返回HttpOnly/Secure/SameSite=Strict cookie且token=null；X-EasyProject-Client=desktop时返回内存Bearer。首次须改密码。每客户端30次/15分钟，全局300次/15分钟；默认按socket IP，显式受信Tailscale回环代理须验证单值转发IP、Host和HTTPS，任意/异常转发头不可信并回退socket桶。独立保留2个密码哈希并发位；进程重启清空内存限流，不作为持久账号锁。禁止记录凭据或返回令牌。',
                     security: [],
                     requestBody: { required: true, content: jsonContent(credentials) },
                     responses: {
@@ -65,7 +65,7 @@ const groups = {
                 post: {
                     summary: '使用管理员一次性码找回密码',
                     description:
-                        '匿名但须同源/请求标记。用户名+epreset_高熵码+6—31字符新密码；码15分钟/一次有效，仅存摘要。10次/15分钟socket IP限流；未知账号/错误/到期统一失败。事务撤销全部会话、MCP Token及重置码，不自动登录、不改变工作区。',
+                        '匿名但须同源/请求标记。用户名+epreset_高熵码+6—31字符新密码；码15分钟/一次有效，仅存摘要。每客户端10次/15分钟、全局100次/15分钟，受信代理边界与登录一致；未知账号/错误/到期统一失败。事务撤销全部会话、MCP Token及重置码，不自动登录、不改变工作区。',
                     security: [],
                     requestBody: {
                         required: true,
@@ -192,7 +192,7 @@ const groups = {
             '/api/workspace/action': {
                 post: {
                     summary: '执行账号工作区业务动作',
-                    description: `服务端按登录账号选择独立数据库，请求不能指定账号/路径。原生参数/返回复用DESKTOP_IPC.md与MODELS.md，不套用MCP默认值。严格model/action白名单：${JSON.stringify(catalog.actions)}。读返回data/revision；写须携带精确X-Workspace-Revision，旧值409且不写业务。写前UUID快照、持久失效旧epoch；传输中断先读回，禁止盲重试。task读含effort_state和summary，父进度/工作量/日期只读汇总；hierarchy:true按根分页并返回context_only和statistics.top_level/all_tasks。父子完成约束和估算来源共享后端校验，限定层级冲突可含本人工作区ID/名称，其它内部错误仍脱敏。JSON8导入兼容1—7，旧0为legacy_unknown；导入/恢复替换本账号全工作区，不是双向同步；远端不提供全库撤销。ICS沿用SSRF边界。`,
+                    description: `服务端按登录账号选择独立数据库，请求不能指定账号/路径。原生参数/返回复用DESKTOP_IPC.md与MODELS.md，不套用MCP默认值。严格model/action白名单：${JSON.stringify(catalog.actions)}。读返回data/revision；写须携带精确X-Workspace-Revision，旧值409且不写业务。写前UUID快照、持久失效旧epoch；传输中断先读回，禁止盲重试。task读含effort_state和summary，父进度/工作量/日期只读汇总；hierarchy:true按根分页并返回context_only和statistics.top_level/all_tasks。父子完成约束和估算来源共享后端校验，限定层级冲突可含本人工作区ID/名称，其它内部错误仍脱敏。JSON8导入兼容1—7，旧0为legacy_unknown；导入/恢复替换本账号全工作区，不是双向同步；远端不提供全库撤销。ICS沿用SSRF边界。业务写入在审计/恢复点/revision前检查工作区与数据池逻辑准入预算（默认512MiB/8GiB，含副本与恢复余量），超限507、无法安全测量503；读/导出仍可用，不自动删数据，不是OS硬配额。`,
                     requestBody: {
                         required: true,
                         content: jsonContent({
@@ -334,7 +334,7 @@ const groups = {
                 post: {
                     summary: '账号隔离的MCP Streamable HTTP',
                     description:
-                        '无状态单JSON-RPC消息，最大256KiB；支持initialize/ping/tools/list/tools/call及通知202空体。无Session-ID/SSE/OAuth自动发现。需专用epmcp_ Bearer（不能使用cookie或网页登录token）；Accept必须包含application/json与text/event-stream；后续MCP-Protocol-Version支持2025-03-26/06-18/11-25，缺省按03-26。Origin若存在必须同源，原生客户端可不带。23工具复用MCP inputSchema/业务校验，9/18/23按Token权限过滤，包含项目状态CRUD且任务创建必填同项目已有status_id。不接收账号ID或数据库路径。写前恢复点、脱敏审计，与Web共用账号锁并使旧revision失效；删除保留名称匹配和引用阻止约束，客户端仍须审批。不得自动重试写操作。',
+                        '无状态单JSON-RPC消息，最大256KiB；支持initialize/ping/tools/list/tools/call及通知202空体。无Session-ID/SSE/OAuth自动发现。需专用epmcp_ Bearer（不能使用cookie或网页登录token）；Accept必须包含application/json与text/event-stream；后续MCP-Protocol-Version支持2025-03-26/06-18/11-25，缺省按03-26。Origin若存在必须同源，原生客户端可不带。23工具复用MCP inputSchema/业务校验，9/18/23按Token权限过滤，包含项目状态CRUD且任务创建必填同项目已有status_id。不接收账号ID或数据库路径。写前恢复点、脱敏审计，与Web共用账号锁并使旧revision失效；删除保留名称匹配和引用阻止约束，客户端仍须审批。写入先检查共享工作区/数据池准入预算，超限或测量异常以HTTP200工具isError=true安全说明返回，读工具可用，不影响本地stdio；不是OS硬配额且不自动清理。不得自动重试写操作。',
                     security: [{ mcpToken: [] }],
                     parameters: [
                         {
@@ -396,7 +396,14 @@ for (const group of Object.values(groups)) {
             operation.tags = [group.name]
             operation['x-easyproject-group'] = group.name
             operation.operationId = `${method}_${path.replace(/[^a-z0-9]/gi, '_')}`
-            for (const code of [400, 401, 403, 409, 413, 415, 422, 429, 500]) {
+            const errorCodes = [400, 401, 403, 409, 413, 415, 422, 429, 500]
+            if (
+                ['/api/workspace/action', '/api/workspace/revision'].includes(path) ||
+                (path === '/mcp' && method === 'post')
+            )
+                errorCodes.push(503)
+            if (path === '/api/workspace/action' && method === 'post') errorCodes.push(507)
+            for (const code of errorCodes) {
                 operation.responses[code] = {
                     description: '请求/认证/权限/并发/资源错误；不自动重试',
                     content: {

@@ -13,6 +13,9 @@ Environment=EASYPROJECT_DATA_DIR=/var/lib/easyproject
 Environment=EASYPROJECT_ASSETS_DIR=/opt/easyproject/current/web
 Environment=EASYPROJECT_ORIGIN=https://home-host.tail2956dd.ts.net
 Environment=EASYPROJECT_LISTEN=127.0.0.1:8080
+Environment=EASYPROJECT_TRUSTED_PROXY=tailscale-loopback
+Environment=EASYPROJECT_WORKSPACE_BUDGET_BYTES=536870912
+Environment=EASYPROJECT_DATA_BUDGET_BYTES=8589934592
 Environment=TZ=Asia/Shanghai
 Restart=on-failure
 RestartSec=5

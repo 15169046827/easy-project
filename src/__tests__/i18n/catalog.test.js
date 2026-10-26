@@ -12,6 +12,7 @@ import statusZh from '../../i18n/locales/task-status-zh'
 import statusEs from '../../i18n/locales/task-status-es'
 import { getPrimeLocale, primeGeneratedKeys, primeTranslations } from '../../i18n/primeLocales'
 import { i18n, getLocale, setLocale, SUPPORTED_LOCALES } from '../../i18n'
+import { findStatusNameConflict } from '../../utils/taskStatus'
 
 function flatten(value, prefix = '') {
     return Object.fromEntries(
@@ -25,6 +26,22 @@ function flatten(value, prefix = '') {
 const placeholders = value => [...value.matchAll(/\{(\w+)\}/g)].map(match => match[1]).sort()
 
 describe('complete locale catalogs', () => {
+    it('reserves every localized built-in task status label in the UI', () => {
+        const keys = {
+            Pending: 'statusPending',
+            InProgress: 'statusInProgress',
+            Done: 'statusDone'
+        }
+        for (const [builtin, label] of Object.entries(keys)) {
+            const state = { id: builtin, name: builtin, builtin_key: builtin }
+            for (const locale of SUPPORTED_LOCALES) {
+                const display = i18n.global.messages.value[locale].tasks[label]
+                expect(findStatusNameConflict([state], ` ${display.toUpperCase()} `)?.id).toBe(
+                    builtin
+                )
+            }
+        }
+    })
     it('requires every registered language to remain complete and compilable', () => {
         expect([...i18n.global.availableLocales].sort()).toEqual([...SUPPORTED_LOCALES].sort())
         const reference = flatten(i18n.global.getLocaleMessage('en-US'))

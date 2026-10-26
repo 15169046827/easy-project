@@ -1,9 +1,9 @@
 // Explicit dictionary semantics take precedence over historical labels.
 export function statusNameKeys(name, builtin = '') {
     const aliases = {
-        Pending: ['Pending', '待办'],
-        InProgress: ['InProgress', 'In Progress', '进行中'],
-        Done: ['Done', '已完成']
+        Pending: ['Pending', '待办', 'Pendiente'],
+        InProgress: ['InProgress', 'In Progress', '进行中', 'En curso'],
+        Done: ['Done', '已完成', 'Completada']
     }
     return [name, ...(aliases[builtin] || [])].map(value =>
         String(value || '')

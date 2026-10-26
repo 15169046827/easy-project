@@ -16,6 +16,10 @@ WACAS未定义/待确认，UPARS1.1.0/交接1.15；开始长阶段5h余59%/周94
 
 ## 当前调查/下一步
 
+共享候选里程碑：桌面73单测+1stdio、服务器62单测+19集成、双方fmt/严格Clippy、前端lint/typecheck通过。Clippy仅有宿主增量缓存硬链接失败后复制的编译器环境告警，不是代码lint，也未关闭检查。345前端首次1项失败为Apifox边界脚本在高并发Rust/前端同时运行下超过Vitest既有5秒（实际PowerShell启动7.4秒）；不加超时、不删断言，停止重型并发后以maxWorkers=4完整复跑进行中。未部署，独立MCP不使用会直接覆盖artifacts的package-mcp脚本；先在target构建并隔离发现，停止/替换真实占用另获准。进入clean NSIS/伴随MCP及Linux CI前门禁5h余19%/周87%，大于10%，此节点已保存。准确源以随后提交SHA为准。
+
+2026-10-26用户已明确允许补齐共享校验并安全更新后端/MCP，覆盖下方历史“等待许可”；占用MCP停止进程仍需单独确认。续接基线a92d8b33a6308d4ff5dde8ed5e5e2e9d3df40518，分支不变且开工干净；5h余23%/周88%。已改common/task_status.rs中三条西语别名，UI taskStatus.js同步；MCP tools.rs公开三语冲突名，创建/重命名/导入共用现有边界，不改schema、不清理旧状态、不改权限。增加Rust只读冲突校验/跨项目保留测试与MCP创建/重命名拒绝后原值保持测试、前端所有注册语言默认显示名防漏门禁。桌面Rust73单元+1真实stdio通过；服务器与345前端完整验证进行中。当前7未提交路径：docs/MCP.md、src-tauri/src/common/task_status.rs、src-tauri/src/mcp/tests.rs、src-tauri/src/mcp/tools.rs、src/__tests__/components/TaskStatuses.test.js、src/__tests__/i18n/catalog.test.js、src/utils/taskStatus.js（另本文回执）。下一步完整静态/服务器验证→封存clean候选触发Linux CI/构建NSIS和MCP→契约生成并私有Apifox同步→原生及实际安全部署。设备/线上版本保持前条；没有新SSH或实际库操作。
+
 2026-10-26最终候选复验：产品源5d64039e23665a7f04ae00532aab58143c7d7e86已推送且远端完整SHA读回，工作区干净后build通过；344/64单测、lint、typecheck、release:check、104生产UI（零重试）及独立13真实HTTP全部通过。生产UI中的13 HTTP仅由专用运行器执行并通过，不把跳过算通过。日志在src-tauri/target/audit-tools/spanish-complete-vitest.log、spanish-clean-build.log、spanish-full-production-ui.log、spanish-real-http.log。Rust/数据库/协议无修改，未重跑Rust编译；NSIS与本轮原生复验、安装/服务器交付未做，不能宣称上线或正式发布通过。5小时余24%、周88%，非额度停止。
 
 已将候选源/测试/邮箱与共享校验许可缺口同步Wolai主页面及交接并读回，最终全量结果另同步。此次文档回执修改仅本文与docs/handoff/CURRENT_STATE.md、docs/handoff/README.md；基线分支/标准/设备保持顶部记录，无新设备连接、无关机。准确下一步：等待用户确认是否允许西语状态别名共享服务端/MCP校验及安全部署；同意后定向实现和契约/Apifox同步、完整复验、新安全副本及桌面/Web/MCP相应交付，停止占用连接需另行确认；不同意则按用户选择隔离邮箱单独交付。未获得答复不开始后端修改，不自动清理历史状态。邮箱候选已可点击mailto，未发送邮件，当前线上仍没有该新增入口。

@@ -104,7 +104,17 @@ fn rejects_unknown_dictionary_values_and_localized_status_duplicates() {
             .call(&format!("easyproject_{model}_create"), json!({"data":data}))
             .is_err());
     }
-    for name in ["Done", "已完成", " done ", "待办", "进行中", "in progress"] {
+    for name in [
+        "Done",
+        "已完成",
+        " done ",
+        "待办",
+        "进行中",
+        "in progress",
+        "Pendiente",
+        " EN CURSO ",
+        "completada",
+    ] {
         assert!(f
             .call(
                 "easyproject_task_status_create",
@@ -118,6 +128,24 @@ fn rejects_unknown_dictionary_values_and_localized_status_duplicates() {
             json!({"data":{"project_id":pid,"name":"Review"}}),
         )
         .unwrap();
+    for name in [" pendiente ", "En curso", "COMPLETADA"] {
+        assert!(f
+            .call(
+                "easyproject_task_status_update",
+                json!({"id":state["record"]["id"],"changes":{"name":name}})
+            )
+            .unwrap_err()
+            .contains("conflicts"));
+        assert_eq!(
+            entity_api::get(
+                &f.db,
+                "task_status",
+                state["record"]["id"].as_str().unwrap()
+            )
+            .unwrap()["name"],
+            "Review"
+        );
+    }
     assert!(f
         .call(
             "easyproject_task_status_update",

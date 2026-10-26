@@ -106,6 +106,7 @@ describe('project status UI logic', () => {
     it('recognizes case, surrounding whitespace and built-in display aliases without merging identities', () => {
         expect(findStatusNameConflict(states, ' 待办 ')?.id).toBe('s1')
         expect(findStatusNameConflict(states, ' PENDING ')?.id).toBe('s1')
+        expect(findStatusNameConflict(states, ' PENDIENTE ')?.id).toBe('s1')
         expect(findStatusNameConflict(states, ' testing ')?.id).toBe('s2')
         expect(findStatusNameConflict(states, 'Testing', 's2')).toBeUndefined()
         expect(findStatusNameConflict(states, 'Review')).toBeUndefined()

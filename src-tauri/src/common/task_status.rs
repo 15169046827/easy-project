@@ -7,9 +7,9 @@ use serde::Serialize;
 pub fn display_names(name: &str, builtin: &str) -> Vec<String> {
     let mut names = vec![name.trim().to_lowercase()];
     for alias in match builtin {
-        "Pending" => &["Pending", "待办"][..],
-        "InProgress" => &["In Progress", "InProgress", "进行中"][..],
-        "Done" => &["Done", "已完成"][..],
+        "Pending" => &["Pending", "待办", "Pendiente"][..],
+        "InProgress" => &["In Progress", "InProgress", "进行中", "En curso"][..],
+        "Done" => &["Done", "已完成", "Completada"][..],
         _ => &[],
     } {
         names.push(alias.to_lowercase());
@@ -276,6 +276,42 @@ mod tests {
         let conn = Connection::open_in_memory().unwrap();
         conn.execute_batch("PRAGMA foreign_keys=ON; CREATE TABLE project(id TEXT PRIMARY KEY); CREATE TABLE task(id TEXT PRIMARY KEY,project_id TEXT,status TEXT); INSERT INTO project VALUES('p'),('q'); INSERT INTO task VALUES('a','p','受阻'),('b','q','受阻'),('c','p','Done'),('d','p','Todo');").unwrap();
         conn
+    }
+
+    #[test]
+    fn spanish_display_conflicts_are_read_only_and_project_scoped() {
+        let conn = fixture();
+        migrate_rows(&conn).unwrap();
+        for label in [" pendiente ", "EN CURSO", "Completada"] {
+            let id = new_id("TASK_STATUS");
+            conn.execute(
+                "INSERT INTO task_status(id,project_id,name) VALUES(?1,'p',?2)",
+                params![id, label],
+            )
+            .unwrap();
+            assert!(validate_display_uniqueness(&conn).is_err());
+            // Checking imports/legacy conflicts never renames or removes an existing record.
+            assert_eq!(
+                list(&conn, "p")
+                    .unwrap()
+                    .iter()
+                    .find(|s| s.id == id)
+                    .unwrap()
+                    .name,
+                label
+            );
+            conn.execute("DELETE FROM task_status WHERE id=?1", [&id])
+                .unwrap();
+        }
+        conn.execute("INSERT INTO project VALUES('empty')", [])
+            .unwrap();
+        conn.execute(
+            "INSERT INTO task_status(id,project_id,name) VALUES(?1,'empty','Pendiente')",
+            [new_id("TASK_STATUS")],
+        )
+        .unwrap();
+        validate_display_uniqueness(&conn).unwrap();
+        assert_eq!(display_names("Completada", ""), vec!["completada"]);
     }
 
     #[test]

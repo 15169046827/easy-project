@@ -8,7 +8,7 @@ use uuid::Uuid;
 
 fn fields(model: &str) -> Value {
     if model == "task_status" {
-        return json!({"project_id":{"type":"string","minLength":1,"maxLength":128},"name":{"type":"string","minLength":1,"maxLength":64,"description":"Unique active name within this project after trimming/case folding; built-in English/Chinese display aliases also conflict. Existing duplicates must be explicitly renamed, never automatically merged."},"color":{"type":"string","minLength":7,"maxLength":7,"description":"#RRGGBB hex color; UI provides named presets, existing colors are not rewritten."},"sort_order":{"type":"integer","minimum":0,"maximum":1000000},"is_completed":{"type":"boolean"},"is_default":{"type":"boolean"}});
+        return json!({"project_id":{"type":"string","minLength":1,"maxLength":128},"name":{"type":"string","minLength":1,"maxLength":64,"description":"Unique active name within this project after trimming/case folding; built-in English/Chinese/Spanish display aliases also conflict: Pending/待办/Pendiente, InProgress/In Progress/进行中/En curso, Done/已完成/Completada. Existing duplicates must be explicitly renamed, never automatically merged."},"color":{"type":"string","minLength":7,"maxLength":7,"description":"#RRGGBB hex color; UI provides named presets, existing colors are not rewritten."},"sort_order":{"type":"integer","minimum":0,"maximum":1000000},"is_completed":{"type":"boolean"},"is_default":{"type":"boolean"}});
     }
     if model == "project_member" {
         return json!({"project_id":{"type":"string","minLength":1,"maxLength":128},"member_id":{"type":"string","minLength":1,"maxLength":128},"role":{"type":"string","maxLength":64}});

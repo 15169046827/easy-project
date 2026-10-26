@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-26官网整理候选：LandingPage的SelectButton选择当前项目截图、Panel折叠同一Release的高级格式；主下载资产仍唯一downloadRelease.js，不增加API/账号请求。scripts/capture-product-preview.js固定127.0.0.1:1420内存demo/全新上下文并拒绝/api/及外源，导出两1280PNG；维护流程见PRODUCT_PREVIEWS。截图不是数据库验收，不得换成真实账号内容。
+
 2026-10-26版本检查候选：VersionCheck.vue复用PrimeVue弹窗，releaseCheck.js为独立无凭据手动请求，releaseVersion.js严格验证受限SemVer/日期/tag并固定仓库URL。scripts/build-identity.js纯函数决定构建身份，Vite读取真实Git元数据，发布tag拒绝未知/dirty源；build-release-info.js从官网下载唯一入口生成静态release-info.json并在build检查一致性。Tauri主窗仅增受限open-url能力，注册opener状态但不接管所有链接；不新增invoke/业务API/MCP。静态资源列入Web契约运行状态（19操作），实际部署仍见专项检查点。
 
 2026-10-26安全候选入口：server/rate_limit.rs仅将显式受信回环代理的单值地址用于频次桶，绝不用于认证/账号归属；AuthLimiter有单客户端和全局预算、1024键界限。storage_budget.rs用元数据检查工作区/服务池含恢复点的写入准入，Workspace在Web和远端MCP的revision/审计/恢复点之前复用；check-storage为部署只读预检。没有新DB表/schema或本地stdio限制，是否实际启用看NEXT_PHASE_CHECKPOINT，不据源码推定部署。

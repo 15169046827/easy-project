@@ -29,9 +29,22 @@ export default {
     titleAccent: '每一步都清晰。',
     intro: '从一个想法到一个里程碑，把项目、任务和时间安排放在一起。浏览器随时打开，桌面端也能独立使用。',
     note: '免费开源 · 本地可离线 · AI 可接入',
-    preview: '项目工作区 · 看板视图',
-    previewAlt: 'EasyProject 项目看板界面，包含待办、进行中和已完成三列任务。',
-    previewNote: '历史版本示例界面，仅使用演示数据；具体样式以当前版本为准。',
+    previewTitle: '项目工作区',
+    previewSelect: '选择产品预览视图',
+    previewTasks: '任务列表',
+    previewBoard: '看板',
+    previewAlt: {
+        tasks: 'EasyProject 当前任务列表，展示顶层统计、显示列选择、任务状态与进度。',
+        board: 'EasyProject 当前看板，固定宽度状态容器自动换行，卡片左对齐展示。'
+    },
+    previewNote:
+        '2026-10-26 当前界面截图，仅使用内置合成演示数据；截图中的版本文字属于示例项目，公开桌面安装包的界面可能不同。',
+    windowsDownloadHint: '通常选择 x64 安装程序；需要 MSI 格式时展开下方“其他格式”。',
+    macDownloadHint:
+        '同一版本、两种芯片：Apple 芯片选 Apple Silicon，Intel 芯片选 Intel。不确定时查看“关于本机”。',
+    otherFormats: '其他格式（MSI / App 归档）',
+    otherFormatsHint:
+        '以下只是同一版本的不同打包格式，不是更多产品版本；通常使用上方安装程序或 DMG 即可。',
     featuresEyebrow: '少一点切换，多一点专注',
     featuresTitle: '从全局计划，到眼前这一件事。',
     features: [

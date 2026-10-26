@@ -29,10 +29,23 @@ export default {
     titleAccent: 'Confident next steps.',
     intro: 'Bring projects, tasks and schedules together, from your first idea to your next milestone. Open your workspace in a browser, or work independently on desktop.',
     note: 'Free and open source · Local offline use · MCP integration',
-    preview: 'Project workspace · Board view',
-    previewAlt: 'EasyProject project board with pending, in-progress and completed tasks.',
+    previewTitle: 'Project workspace',
+    previewSelect: 'Choose a product preview',
+    previewTasks: 'Task list',
+    previewBoard: 'Board',
+    previewAlt: {
+        tasks: 'Current EasyProject task list with root-level statistics, visible columns, task status and progress.',
+        board: 'Current EasyProject board with wrapping fixed-width status containers and left-aligned cards.'
+    },
     previewNote:
-        'Earlier-version example using demonstration data only. Current appearance may differ.',
+        'Current interface captured on 2026-10-26 using built-in synthetic demo data only. Version text inside the screenshot belongs to the example project; public desktop packages may look different.',
+    windowsDownloadHint:
+        'Choose the x64 installer for typical use. Expand Other formats below if you need MSI.',
+    macDownloadHint:
+        'One version, two chip types: choose Apple Silicon for Apple chips, or Intel for Intel chips. Check About This Mac if unsure.',
+    otherFormats: 'Other formats (MSI / App archives)',
+    otherFormatsHint:
+        'These are alternative package formats for the same version, not additional product versions. Most users can use the installer or DMG above.',
     featuresEyebrow: 'Less switching, more focus',
     featuresTitle: 'From the big picture to the task at hand.',
     features: [

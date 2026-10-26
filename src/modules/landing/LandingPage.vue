@@ -62,13 +62,21 @@
                 <figure class="landing-preview">
                     <figcaption>
                         <span class="preview-dots" aria-hidden="true">● ● ●</span
-                        >{{ t('landing.preview') }}
+                        >{{ t('landing.previewTitle') }}
+                        <SelectButton
+                            v-model="previewView"
+                            :options="previewOptions"
+                            option-label="label"
+                            option-value="value"
+                            :allow-empty="false"
+                            :aria-label="t('landing.previewSelect')"
+                        />
                     </figcaption>
                     <img
-                        src="/landing/project-board.png"
-                        width="1272"
-                        height="716"
-                        :alt="t('landing.previewAlt')"
+                        :src="`/landing/project-${previewView}-20261026.png`"
+                        width="1280"
+                        height="800"
+                        :alt="t('landing.previewAlt.' + previewView)"
                         fetchpriority="high"
                     />
                 </figure>
@@ -161,16 +169,39 @@
                                 {{ t('landing.systemRequirements') }}
                             </p>
                             <div class="landing-download-links">
-                                <Button
-                                    v-for="asset in desktopRelease.assets"
-                                    :key="asset.key"
-                                    as="a"
-                                    :href="desktopRelease.base + asset.file"
-                                    :label="t('landing.downloads.' + asset.key)"
-                                    icon="pi pi-download"
-                                    outlined
-                                />
+                                <article v-for="group in primaryDownloads" :key="group.key">
+                                    <h4>{{ group.title }}</h4>
+                                    <p>{{ group.hint }}</p>
+                                    <Button
+                                        v-for="asset in group.assets"
+                                        :key="asset.key"
+                                        as="a"
+                                        :href="desktopRelease.base + asset.file"
+                                        :label="t('landing.downloads.' + asset.key)"
+                                        icon="pi pi-download"
+                                        outlined
+                                    />
+                                </article>
                             </div>
+                            <Panel
+                                class="landing-other-downloads"
+                                :header="t('landing.otherFormats')"
+                                toggleable
+                                collapsed
+                            >
+                                <p>{{ t('landing.otherFormatsHint') }}</p>
+                                <div class="landing-secondary-downloads">
+                                    <Button
+                                        v-for="asset in secondaryDownloads"
+                                        :key="asset.key"
+                                        as="a"
+                                        :href="desktopRelease.base + asset.file"
+                                        :label="t('landing.downloads.' + asset.key)"
+                                        icon="pi pi-download"
+                                        outlined
+                                    />
+                                </div>
+                            </Panel>
                             <p>
                                 <a :href="desktopRelease.base + 'SHA256SUMS.txt'">{{
                                     t('landing.checksums')
@@ -231,18 +262,44 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Button from 'primevue/button'
+import SelectButton from 'primevue/selectbutton'
+import Panel from 'primevue/panel'
 import { useTheme } from '../../composables/useTheme'
 import { setLocale } from '../../i18n'
 import { desktopRelease } from './downloadRelease'
 
 const repo = 'https://github.com/15169046827/easy-project'
 // Pin to verified public documentation: the feature branch is not merged into main yet.
-const docs = repo + '/blob/c077bc7cc359c0ff7cc4a65474baacff1deb71e4'
+const docs = repo + '/blob/31c756ef18a1abe649b99d611c03e7b7493c6d87'
 const { t, tm, locale } = useI18n()
 const { isDark, toggle } = useTheme()
+const previewView = ref('tasks')
+const previewOptions = computed(() => [
+    { value: 'tasks', label: t('landing.previewTasks') },
+    { value: 'board', label: t('landing.previewBoard') }
+])
+const primaryDownloads = computed(() => [
+    {
+        key: 'windows',
+        title: 'Windows',
+        hint: t('landing.windowsDownloadHint'),
+        assets: desktopRelease.assets.filter(asset => asset.key === 'winNsis')
+    },
+    {
+        key: 'macos',
+        title: 'macOS',
+        hint: t('landing.macDownloadHint'),
+        assets: desktopRelease.assets.filter(asset =>
+            ['macArmDmg', 'macIntelDmg'].includes(asset.key)
+        )
+    }
+])
+const secondaryDownloads = desktopRelease.assets.filter(asset =>
+    ['winMsi', 'macArmApp', 'macIntelApp'].includes(asset.key)
+)
 const features = computed(
     () => /** @type {{ title: string, body: string, icon: string }[]} */ (tm('landing.features'))
 )
@@ -387,11 +444,18 @@ function changeLanguage() {
     box-shadow: 0 18px 60px #1e40af12;
 }
 .landing-preview figcaption {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
     padding: 12px 18px;
     font-size: 12px;
     color: var(--lp-muted);
     text-align: left;
     border-bottom: 1px solid var(--lp-border);
+}
+.landing-preview .p-selectbutton {
+    margin-left: auto;
 }
 .preview-dots {
     margin-right: 18px;
@@ -431,12 +495,34 @@ function changeLanguage() {
     margin: 20px 0 12px;
 }
 .landing-download-links {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+}
+.landing-download-links article {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid var(--lp-border);
+    border-radius: 12px;
+}
+.landing-download-links h4 {
+    margin: 0;
+    color: var(--lp-text);
+}
+.landing-download-links article p {
+    font-size: 13px;
 }
 .landing-download-links .p-button {
     max-width: 100%;
+    margin: 4px 0;
+}
+.landing-other-downloads {
+    margin-top: 16px;
+}
+.landing-secondary-downloads {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 .landing-features p {
     font-size: 14px;
@@ -556,6 +642,7 @@ function changeLanguage() {
         font-size: 16px;
     }
     .landing-features,
+    .landing-download-links,
     .landing-modes,
     .landing-ai,
     .landing-disclosures {

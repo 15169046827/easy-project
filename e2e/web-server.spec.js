@@ -175,7 +175,7 @@ test('real HTTP homepage is public and online entry retains same-origin login', 
     page.on('pageerror', error => errors.push(error.message))
     await page.goto(origin)
     await expect(page.locator('.landing-page')).toBeVisible()
-    await expect(page.locator('.landing-preview img')).toHaveJSProperty('naturalWidth', 1272)
+    await expect(page.locator('.landing-preview img')).toHaveJSProperty('naturalWidth', 1280)
     expect(api).toEqual([])
     await page.locator('.landing-actions a').first().click()
     await expect(page.locator('#remote-username')).toBeVisible()

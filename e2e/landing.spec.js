@@ -36,24 +36,43 @@ for (const width of [1280, 960, 375]) {
             await expect(page.locator('h1')).toContainText('项目有条理')
             await expect(page.locator('.landing-preview img')).toHaveJSProperty(
                 'naturalWidth',
-                1272
+                1280
             )
             await expect(page.locator('html')).toHaveClass(dark ? /app-dark/ : /^(?!.*app-dark)/)
             await page.keyboard.press('Tab')
             await expect(page.locator('.landing-skip')).toBeFocused()
             await page.keyboard.press('Enter')
             await expect(page.locator('#main-content')).toBeFocused()
+            await page.getByRole('button', { name: '看板', exact: true }).press('Enter')
+            await expect(page.locator('.landing-preview img')).toHaveAttribute(
+                'src',
+                '/landing/project-board-20261026.png'
+            )
+            await expect(page.locator('.landing-preview img')).toHaveJSProperty(
+                'naturalWidth',
+                1280
+            )
+            await page.getByRole('button', { name: '任务列表', exact: true }).click()
+            await expect(page.locator('.landing-preview img')).toHaveAttribute(
+                'src',
+                '/landing/project-tasks-20261026.png'
+            )
             await page.locator('.landing-actions a').last().click()
             await expect(page).toHaveURL(/#download$/)
             await expect(page.locator('#download')).toContainText(
                 desktopRelease.ready ? desktopRelease.tag : '当前未提供公开安装包'
             )
             if (desktopRelease.ready) {
-                await expect(page.locator('.landing-download-links a')).toHaveCount(6)
+                await expect(page.locator('.landing-download-links a')).toHaveCount(3)
+                const otherFormats = page.locator('.landing-other-downloads')
+                await expect(otherFormats.locator('.landing-secondary-downloads')).toBeHidden()
+                await otherFormats.locator('button').press('Enter')
+                await expect(otherFormats.locator('.landing-secondary-downloads')).toBeVisible()
+                await expect(otherFormats.locator('.landing-secondary-downloads a')).toHaveCount(3)
                 for (const asset of desktopRelease.assets)
                     await expect(
                         page.locator(
-                            `.landing-download-links a[href="${desktopRelease.base + asset.file}"]`
+                            `.landing-download a[href="${desktopRelease.base + asset.file}"]`
                         )
                     ).toHaveCount(1)
                 await expect(page.locator('#download')).toContainText('不要关闭系统安全功能')

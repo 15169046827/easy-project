@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
     compareVersions,
+    isInternalBuildTag,
     parseVersion,
     releaseRelationship,
     validateReleaseInfo
@@ -32,6 +33,9 @@ describe('verified public release metadata', () => {
     })
     it('does not label an internal build as up to date or recommend a downgrade', () => {
         expect(releaseRelationship('', '0.1.2-beta.1')).toBe('internal')
+        expect(releaseRelationship('v0.1.2-internal.3', '0.1.2-beta.1')).toBe('internal')
+        expect(isInternalBuildTag('v0.1.2-internal.3')).toBe(true)
+        expect(isInternalBuildTag('v0.1.2-beta.1')).toBe(false)
         expect(releaseRelationship('v0.1.2', '0.1.2-beta.1')).toBe('ahead')
         expect(releaseRelationship('v0.1.2-beta.1', '0.1.3-beta.1')).toBe('available')
     })

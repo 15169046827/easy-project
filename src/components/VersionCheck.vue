@@ -24,7 +24,7 @@
                 </dd>
             </dl>
             <p>{{ t('updates.manualOnly') }}</p>
-            <p v-if="!releaseTag">{{ t('updates.internalHint') }}</p>
+            <p v-if="internalBuild">{{ t('updates.internalHint') }}</p>
             <p v-if="loading" role="status">{{ t('updates.checking') }}</p>
             <Message v-if="error" severity="warn" :closable="false">{{ t(error) }}</Message>
             <div v-if="checked && !loading && !error" role="status">
@@ -72,7 +72,7 @@ import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import Message from 'primevue/message'
 import { checkPublicRelease } from '../utils/releaseCheck'
-import { releaseRelationship } from '../utils/releaseVersion'
+import { isInternalBuildTag, releaseRelationship } from '../utils/releaseVersion'
 
 const { t } = useI18n()
 const visible = ref(false),
@@ -83,6 +83,7 @@ const release = ref(
     /** @type {ReturnType<typeof import('../utils/releaseVersion').validateReleaseInfo>} */ (null)
 )
 const releaseTag = import.meta.env.VITE_RELEASE_TAG || ''
+const internalBuild = isInternalBuildTag(releaseTag)
 const currentVersion = releaseTag
     ? releaseTag.slice(1)
     : import.meta.env.VITE_APP_VERSION || 'unknown'

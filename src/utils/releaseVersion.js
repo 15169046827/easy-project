@@ -83,9 +83,14 @@ export function validateReleaseInfo(value) {
     })
 }
 
+export function isInternalBuildTag(tag) {
+    const version =
+        typeof tag === 'string' && tag.startsWith('v') ? parseVersion(tag.slice(1)) : null
+    return !version || version.prerelease[0] === 'internal'
+}
+
 export function releaseRelationship(currentTag, version) {
-    if (!currentTag || !currentTag.startsWith('v') || !parseVersion(currentTag.slice(1)))
-        return 'internal'
+    if (isInternalBuildTag(currentTag)) return 'internal'
     const difference = compareVersions(version, currentTag.slice(1))
     return difference > 0 ? 'available' : difference < 0 ? 'ahead' : 'current'
 }

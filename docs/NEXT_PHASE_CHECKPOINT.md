@@ -1,5 +1,15 @@
 # 后续阶段：公网稳定性、更新体验与国际化
 
+## 2026-10-26安全候选全量门禁/契约已闭环，等待后端更新许可（最新）
+
+- 源码31d9b7c676da7b16abbc252d0ea309fc800f0f63已提交/推送并完整SHA读回；CI40249270452/server与security两job成功，Linux62单元+19集成（含Unix链接拒绝）、20运维及原生systemd保护测试通过。Windows最终61+19、287前端/11契约、13真实HTTP、类型/lint/严格Clippy/格式/CLI4工作区19文件SHA不变均已完成，日志见下段。
+- 私有Apifox仅更新本次6个已管理HTTP接口，全18操作内容/Schema/状态/分组与摘要最终读回通过（public-safety-apifox-20261026.log，Updated6/Verified18）；没有机械重传原生66接口或替换本地MCP二进制，接口总数18/15路径保持。新增503/507响应按官方updateHttpEndpoint结构创建并读回，受控同步器仍先核全体远端冲突，未知目标联网前拒绝。
+- Linux产物已准备但**未部署**：CI artifact12619417944，官方归档digest独立匹配ADC6A8D75DE4AC571399D487F5938EB6FAF7FB4D90D1926B13F77AB46D54124E，解压唯一ELF64 x86-64服务程序10983272字节、SHA9D0D7D0A7F1F91743AF8F87A21ADB2802BA8D4A2728895DA0E2C7E44AC5BC358。本机E盘audit-tools/public-safety-31d9b7c保存zip/unpacked；不拿旧a5aa958后端冒充新候选。
+- 已向用户单独请求本阶段后端安全更新许可，尚未收到：新受限服务器副本后只更新home-host后端及明确512MiB/8GiB准入/受信代理配置，短暂重启应用；不迁移/清理库，不改桌面/独立MCP/域名/权限。此前父子安装授权和38944停止许可均已使用，不扩大到本阶段部署；回复前不上传/安装该新后端或启用新限制。原主服务及日备份/15分钟监测继续正常运行，SSH已退出。
+- 获批后准确下一步：查额度/Git及此段；重新核home-host当前release、Tailscale1.104.1/实际HTTP Funnel代理类型与受限easyproject身份；新产物check-storage对现有目录只读预检通过才停主服务并做新root700完整程序/配置/DB副本，原字段/ID/关联/账号摘要核验后只换后端并以新限定drop-in增3项配置，保持原service安全选项/Origin/CSP/Funnel；不执行schema迁移，不动桌面或独立MCP/新进程。正常TLS、匿名拒绝、原数据和timer核对后同步Git/Wolai/交接，再按原顺序继续版本检查/官网新截图与es-ES等已批准开发。若用户选择不部署，保留候选与准确未交付边界并按新指示继续。
+- 基线31d9b7c、分支codex/audit-release-20261006-api，WACAS未定义/实际UPARS1.1.0/规则1.15；最新额度上节点五小时剩52%/周62%，不是额度暂停。当前未提交为docs/api/web-apifox-manifest.json与本最终同步检查点及随后交接/API说明（保存提交后以Git为准），无未提交产品代码或他人修改。候选同步即将保存Git/Wolai，实际后端未变；所有本机写入E盘，不关机/重置/定时唤醒。
+- 后续发布边界：既有公开桌面beta不自动等于后续schema8/UI功能交付，需在新发布阶段复核兼容矩阵并取得具体新Release授权；不得将当前私有桌面或服务器升级说成新版公开下载已更新。无站外通知、OS硬配额、自动保留清理或异地备份，正式生产仍未通过。
+
 ## 2026-10-26认证限流及业务写入预算候选复验（最新）
 
 最终本地补验：CLI在4个既有合成工作区预检通过，19个原文件SHA及文件数均不变；最终13真实HTTP串行零重试通过。新增真正HTTP507及远端MCP HTTP200/isError容量拒绝/认证查询保留反例通过，最新完整server61单元+19集成、严格Clippy/格式通过；日志public-safety-{server,clippy}-final.log及public-safety-http-final.log。287前端/11契约/类型/lint有效。候选将提交并触发CI，不部署前不改实际服务配置。

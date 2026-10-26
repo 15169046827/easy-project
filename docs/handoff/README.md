@@ -1,5 +1,7 @@
 # EasyProject 新伙伴接手入口
 
+2026-10-26最新：31d9b7c安全候选CI40249270452两个job成功（Linux62+19/20运维及原生保护）；287前端/Windows61+19/13HTTP通过，Apifox只更新6HTTP并全18读回，官方产物ZIP digest和唯一ELF核验通过。新后端/512MiB工作区及8GiB池准入尚未部署，单独更新许可等待用户回复；现有主服务/运维timer不变。准确产物、许可边界及下一步见NEXT_PHASE_CHECKPOINT顶部，不自动停新MCP进程或重做迁移/本机覆盖。
+
 2026-10-26第一阶段后续候选：受信回环Tailscale单值地址限流+全局预算，以及远端工作区512MiB/数据池8GiB逻辑写入预算；Web/MCP写前拒绝、读保留，不影响本地离线/stdio，不自动清理。Windows server61+18、287前端/11契约/13HTTP及静态门禁通过，CLI最后补验/候选CI/API同步与部署仍待。线上只有上一运维timer已启用，不能称新限流/配额已部署；准确续接见NEXT_PHASE_CHECKPOINT。
 
 2026-10-26运维阶段已交付备份/磁盘监测：d9fe3ac/CI40245676939两job成功，新root700副本后安装受限只读源作业，真实2DB备份与隔离恢复通过，日备份及15分钟健康timer均enabled/active，主PID680不变/官网health200。无自动清理/站外通知/硬配额，不是整个公网验收通过；下一步共享限流与容量预算，准确证据/副本见NEXT_PHASE_CHECKPOINT顶部。

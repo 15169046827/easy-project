@@ -1,181 +1,181 @@
 {
-  "projectId": 8948094,
-  "branchId": 8751742,
-  "rootFolderId": 97929320,
-  "folders": {
-    "account": {
-      "id": 97961216,
-      "name": "用户MCP凭据"
+    "projectId": 8948094,
+    "branchId": 8751742,
+    "rootFolderId": 97929320,
+    "folders": {
+        "account": {
+            "id": 97961216,
+            "name": "用户MCP凭据"
+        },
+        "mcp": {
+            "id": 97961217,
+            "name": "远端MCP传输"
+        },
+        "auth": {
+            "id": 97929349,
+            "name": "认证与会话"
+        },
+        "admin": {
+            "id": 97929350,
+            "name": "账号管理"
+        },
+        "workspace": {
+            "id": 97929351,
+            "name": "工作区"
+        },
+        "operations": {
+            "id": 97929355,
+            "name": "运行状态"
+        },
+        "profile": {
+            "id": 98047242,
+            "name": "用户资料"
+        }
     },
-    "mcp": {
-      "id": 97961217,
-      "name": "远端MCP传输"
-    },
-    "auth": {
-      "id": 97929349,
-      "name": "认证与会话"
-    },
-    "admin": {
-      "id": 97929350,
-      "name": "账号管理"
-    },
-    "workspace": {
-      "id": 97929351,
-      "name": "工作区"
-    },
-    "operations": {
-      "id": 97929355,
-      "name": "运行状态"
-    },
-    "profile": {
-      "id": 98047242,
-      "name": "用户资料"
+    "interfaces": {
+        "post__api_auth_register": {
+            "id": 527000621,
+            "path": "/api/auth/register",
+            "method": "post",
+            "folderId": 97929349,
+            "name": "自助注册普通账号",
+            "sha256": "ce920d991367def38c953d84a3fbd074cc3467fd6813a48fc9db8be04f065ece"
+        },
+        "get__api_account_mcp_tokens": {
+            "id": 527000642,
+            "path": "/api/account/mcp-tokens",
+            "method": "get",
+            "folderId": 97961216,
+            "name": "查询自己的MCP Token元数据",
+            "sha256": "45fbdfc9a1a78a0816d1344eaec294815dcc1851996233f88519f786b1f4e08c"
+        },
+        "post__api_account_mcp_tokens": {
+            "id": 527000643,
+            "path": "/api/account/mcp-tokens",
+            "method": "post",
+            "folderId": 97961216,
+            "name": "生成用户MCP Token（仅显示一次）",
+            "sha256": "803c04f4b32375fb9b2e0b2601ccabe527e390d91acf0eb9fb8094291a816a39"
+        },
+        "post__api_account_mcp_tokens_revoke": {
+            "id": 527000644,
+            "path": "/api/account/mcp-tokens/revoke",
+            "method": "post",
+            "folderId": 97961216,
+            "name": "撤销自己的MCP Token",
+            "sha256": "50412c8e46eea8af97606fbf02979b70e2b12f80c3c204e79f1f9bd9a824d228"
+        },
+        "get__mcp": {
+            "id": 527000645,
+            "path": "/mcp",
+            "method": "get",
+            "folderId": 97961217,
+            "name": "MCP SSE能力探测（不提供流）",
+            "sha256": "84bea90d16c4a1f8f84a1e7eb79d663b29964c21438ce2003e3bb1dec76a91dd"
+        },
+        "post__mcp": {
+            "id": 527000646,
+            "path": "/mcp",
+            "method": "post",
+            "folderId": 97961217,
+            "name": "账号隔离的MCP Streamable HTTP",
+            "sha256": "0f51f6d78bb95872c65a95f162342cac17e74032d227c1734395355296297280"
+        },
+        "post__api_auth_login": {
+            "id": 526827472,
+            "path": "/api/auth/login",
+            "method": "post",
+            "folderId": 97929349,
+            "name": "登录",
+            "sha256": "a3c0ea4e6af57c03aa0b6f773db048b5fc56718fddc9d7ae4e7aaa18c83dccd3"
+        },
+        "get__api_admin_users": {
+            "id": 526827483,
+            "path": "/api/admin/users",
+            "method": "get",
+            "folderId": 97929350,
+            "name": "管理员查询账号",
+            "sha256": "372f192f1e4e2ccb7727bf4483107ed9baaa07921e7c4e2efe8c8b49a650aca0"
+        },
+        "get__api_workspace_revision": {
+            "id": 526827487,
+            "path": "/api/workspace/revision",
+            "method": "get",
+            "folderId": 97929351,
+            "name": "读取账号工作区版本",
+            "sha256": "b6e5f20d63f0f3e060ac36b0bde2a809807af767d8da545239b75e3cfb594fb9"
+        },
+        "get__api_health": {
+            "id": 526827490,
+            "path": "/api/health",
+            "method": "get",
+            "folderId": 97929355,
+            "name": "健康检查",
+            "sha256": "065a3f54344131cacced0e09e7b2d9f4a29b5c9cb5132f080e17b2173d368b55"
+        },
+        "get__api_auth_session": {
+            "id": 526827473,
+            "path": "/api/auth/session",
+            "method": "get",
+            "folderId": 97929349,
+            "name": "当前登录账号",
+            "sha256": "11d759760c191b4f8273b4d26d7fc19d02a5798ae7ae4d967161c56a9531ffb0"
+        },
+        "post__api_admin_users": {
+            "id": 526827484,
+            "path": "/api/admin/users",
+            "method": "post",
+            "folderId": 97929350,
+            "name": "管理员创建普通账号",
+            "sha256": "f49b77694535ec733156fc6dcab183c52fbf79ebb433ce6bbe83150201ee7f9b"
+        },
+        "post__api_workspace_action": {
+            "id": 526827488,
+            "path": "/api/workspace/action",
+            "method": "post",
+            "folderId": 97929351,
+            "name": "执行账号工作区业务动作",
+            "sha256": "7e621dd4ed55e775a2ca86061a2ba51551828df98466f5605ec9b97a3ae017d4"
+        },
+        "post__api_auth_logout": {
+            "id": 526827474,
+            "path": "/api/auth/logout",
+            "method": "post",
+            "folderId": 97929349,
+            "name": "退出并撤销当前会话",
+            "sha256": "381f31beed4ea2977a6cd0415b6402bb67da29428d20add7f8b768f8219ab06f"
+        },
+        "post__api_auth_password": {
+            "id": 526827475,
+            "path": "/api/auth/password",
+            "method": "post",
+            "folderId": 97929349,
+            "name": "修改密码并撤销全部会话及MCP Token",
+            "sha256": "175e6a512513b617d7d081ae28ba0f38ca57f4522a054dc8a15cdb6cc90d3534"
+        },
+        "post__api_auth_reset_password": {
+            "method": "post",
+            "name": "使用管理员一次性码找回密码",
+            "folderId": 97929349,
+            "id": 527478247,
+            "path": "/api/auth/reset-password",
+            "sha256": "cbad365cd0738743b667b2cc9782ee0334cfb264b8f0a4547b281bbbfa96e9fb"
+        },
+        "post__api_admin_reset_codes": {
+            "path": "/api/admin/reset-codes",
+            "method": "post",
+            "id": 527478248,
+            "name": "管理员生成一次性密码重置码",
+            "sha256": "4b543ac20adc714adde6ee1aec37804eb958d3f97ee1bec58bb1a91779befda2",
+            "folderId": 97929350
+        },
+        "post__api_account_profile": {
+            "path": "/api/account/profile",
+            "method": "post",
+            "id": 527478249,
+            "name": "修改本人的头像和登录用户名",
+            "sha256": "70913483586dfdfb22b9a3234b58e199ac7930bf126d9cc067df48a39761e84e",
+            "folderId": 98047242
+        }
     }
-  },
-  "interfaces": {
-    "post__api_auth_register": {
-      "id": 527000621,
-      "path": "/api/auth/register",
-      "method": "post",
-      "folderId": 97929349,
-      "name": "自助注册普通账号",
-      "sha256": "17438b5aa96f12a6aab170f41f853156a2d77f2496c0dc48e9d0e485a00e268e"
-    },
-    "get__api_account_mcp_tokens": {
-      "id": 527000642,
-      "path": "/api/account/mcp-tokens",
-      "method": "get",
-      "folderId": 97961216,
-      "name": "查询自己的MCP Token元数据",
-      "sha256": "45fbdfc9a1a78a0816d1344eaec294815dcc1851996233f88519f786b1f4e08c"
-    },
-    "post__api_account_mcp_tokens": {
-      "id": 527000643,
-      "path": "/api/account/mcp-tokens",
-      "method": "post",
-      "folderId": 97961216,
-      "name": "生成用户MCP Token（仅显示一次）",
-      "sha256": "803c04f4b32375fb9b2e0b2601ccabe527e390d91acf0eb9fb8094291a816a39"
-    },
-    "post__api_account_mcp_tokens_revoke": {
-      "id": 527000644,
-      "path": "/api/account/mcp-tokens/revoke",
-      "method": "post",
-      "folderId": 97961216,
-      "name": "撤销自己的MCP Token",
-      "sha256": "50412c8e46eea8af97606fbf02979b70e2b12f80c3c204e79f1f9bd9a824d228"
-    },
-    "get__mcp": {
-      "id": 527000645,
-      "path": "/mcp",
-      "method": "get",
-      "folderId": 97961217,
-      "name": "MCP SSE能力探测（不提供流）",
-      "sha256": "84bea90d16c4a1f8f84a1e7eb79d663b29964c21438ce2003e3bb1dec76a91dd"
-    },
-    "post__mcp": {
-      "id": 527000646,
-      "path": "/mcp",
-      "method": "post",
-      "folderId": 97961217,
-      "name": "账号隔离的MCP Streamable HTTP",
-      "sha256": "86d6bef82058ee6a3eaaeb178609a8b7102477a9b0dc313b83b14a8727d35800"
-    },
-    "post__api_auth_login": {
-      "id": 526827472,
-      "path": "/api/auth/login",
-      "method": "post",
-      "folderId": 97929349,
-      "name": "登录",
-      "sha256": "32c9ca62445558347ff1133bcdccabd49c0220f3475c80b5a7cd458a7d8990b2"
-    },
-    "get__api_admin_users": {
-      "id": 526827483,
-      "path": "/api/admin/users",
-      "method": "get",
-      "folderId": 97929350,
-      "name": "管理员查询账号",
-      "sha256": "372f192f1e4e2ccb7727bf4483107ed9baaa07921e7c4e2efe8c8b49a650aca0"
-    },
-    "get__api_workspace_revision": {
-      "id": 526827487,
-      "path": "/api/workspace/revision",
-      "method": "get",
-      "folderId": 97929351,
-      "name": "读取账号工作区版本",
-      "sha256": "969a198714f9d88ac62e613783643074c46b2fb32bfacc0517ee81eb391ee3e2"
-    },
-    "get__api_health": {
-      "id": 526827490,
-      "path": "/api/health",
-      "method": "get",
-      "folderId": 97929355,
-      "name": "健康检查",
-      "sha256": "065a3f54344131cacced0e09e7b2d9f4a29b5c9cb5132f080e17b2173d368b55"
-    },
-    "get__api_auth_session": {
-      "id": 526827473,
-      "path": "/api/auth/session",
-      "method": "get",
-      "folderId": 97929349,
-      "name": "当前登录账号",
-      "sha256": "11d759760c191b4f8273b4d26d7fc19d02a5798ae7ae4d967161c56a9531ffb0"
-    },
-    "post__api_admin_users": {
-      "id": 526827484,
-      "path": "/api/admin/users",
-      "method": "post",
-      "folderId": 97929350,
-      "name": "管理员创建普通账号",
-      "sha256": "f49b77694535ec733156fc6dcab183c52fbf79ebb433ce6bbe83150201ee7f9b"
-    },
-    "post__api_workspace_action": {
-      "id": 526827488,
-      "path": "/api/workspace/action",
-      "method": "post",
-      "folderId": 97929351,
-      "name": "执行账号工作区业务动作",
-      "sha256": "e16e8487f940b0312497ea289d03af2dbd7160e3e2df06258bda71acd8ab78fe"
-    },
-    "post__api_auth_logout": {
-      "id": 526827474,
-      "path": "/api/auth/logout",
-      "method": "post",
-      "folderId": 97929349,
-      "name": "退出并撤销当前会话",
-      "sha256": "381f31beed4ea2977a6cd0415b6402bb67da29428d20add7f8b768f8219ab06f"
-    },
-    "post__api_auth_password": {
-      "id": 526827475,
-      "path": "/api/auth/password",
-      "method": "post",
-      "folderId": 97929349,
-      "name": "修改密码并撤销全部会话及MCP Token",
-      "sha256": "175e6a512513b617d7d081ae28ba0f38ca57f4522a054dc8a15cdb6cc90d3534"
-    },
-    "post__api_auth_reset_password": {
-      "method": "post",
-      "name": "使用管理员一次性码找回密码",
-      "folderId": 97929349,
-      "id": 527478247,
-      "path": "/api/auth/reset-password",
-      "sha256": "383b05330047d35cffa9f8314fe7614e866f3ac58de6be4a179a501f107a7b5d"
-    },
-    "post__api_admin_reset_codes": {
-      "path": "/api/admin/reset-codes",
-      "method": "post",
-      "id": 527478248,
-      "name": "管理员生成一次性密码重置码",
-      "sha256": "4b543ac20adc714adde6ee1aec37804eb958d3f97ee1bec58bb1a91779befda2",
-      "folderId": 97929350
-    },
-    "post__api_account_profile": {
-      "path": "/api/account/profile",
-      "method": "post",
-      "id": 527478249,
-      "name": "修改本人的头像和登录用户名",
-      "sha256": "70913483586dfdfb22b9a3234b58e199ac7930bf126d9cc067df48a39761e84e",
-      "folderId": 98047242
-    }
-  }
 }

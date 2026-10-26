@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- 2026-10-26: Deployed the refreshed synthetic website previews and grouped downloads after full regression and a fresh protected server snapshot. All six public assets remain on the same existing release; backend, databases and access configuration are unchanged. No desktop reinstall for this website-only change.
+
 - Candidate: Replace the historical website preview with current synthetic task-list/board captures and a PrimeVue view switch. Group common Windows/macOS installers separately from expandable alternate formats; retain all six assets, checksum and prerelease warnings. No new public release.
 
 - 2026-10-26: Safely installed manual version checks and deployed the public static release index after protected snapshots and data-preservation checks. Native 1280px light/dark checking and scoped release-page opening verified; native narrow-window/full-keyboard/backup-folder checks remain unverified. No new public installer release or backend/database migration.

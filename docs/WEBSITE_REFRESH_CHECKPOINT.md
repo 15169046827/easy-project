@@ -2,6 +2,12 @@
 
 ## 当前状态
 
+2026-10-26已上线完成：源码83adac3ebd0d3ac2477bd401d9797f5f5e5772c1已推送/完整远端SHA读回，Git干净。最终323单测/63文件、94生产UI零重试、13真实HTTP、类型/lint/build/release:check通过（包含新预览与Panel的Enter操作）。root700新完整副本/var/backups/easyproject/website-refresh-83adac3-20261026后切current至/opt/easyproject/releases/website-refresh-83adac3-20261026；71文件逐SHA核验、306旧hashed资产保留，原后端9d0d7d0a.../PID2608、2DB全部字段/ID/表对象/schema、unit/drop-in/Funnel保持，备份/健康timer active。独立正常TLS核对2HTML、70静态SHA、4匿名401/health200通过；索引/6下载资产仍v0.1.2-beta.1，未发布新安装包。
+
+本阶段不重装无界面影响的桌面，不改独立MCP/权限。SSH已正常退出，服务器保持开机；本地开发服务1420仍属本任务，后续i18n复用，真实安装停留登录不代操作。IAB已验1280浅色/960×640深色与高级格式展开，旧截图仍保留仓库历史和未引用原文件，不擅自清理。上传脚本6B043801.../归档E82A1B5E...与服务器SHA匹配，不因scp退出提示再次上传。
+
+本次最终文档/Git/Wolai/交接同步后直接进入规范国际化/es-ES。额度里程碑5h余59%/周94%，未触门禁；WACAS未定义/UPARS1.1.0/交接1.15不变。未提交仅本专项、NEXT_PHASE_CHECKPOINT、handoff当前入口、CHANGELOG/PRODUCT_PREVIEWS的实际交付文档；产品源码已封存，下一步不要重做本轮部署/桌面安装/数据迁移。接口契约不变，Apifox19HTTP/66原生无重传需要。
+
 最终单测323/63、类型/lint通过；发布元数据与索引未改变。正在封存候选后清洁源build与完整94生产/13真实HTTP最终回归；原生/业务代码未改，不重跑迁移或替换桌面。当前新增文档PRODUCT_PREVIEWS及handoff/CHANGELOG已更新，本节点Git提交/推送与Wolai候选同步随后核对。
 
 里程碑：修正测试焦点顺序后7/7官网生产回归零重试通过（1280/960/375深浅、截图切换、下载收纳和旧深链）；随后将新切图/展开操作改为Enter键，最终全量生产矩阵仍待。IAB已实际核对1280浅色及960×640深色下载结构、其他格式展开；不下载/运行包。两PNG视觉检查通过，SHA tasks=E3A2C395B2FDD2DA85EA6D42105AE65F9301EECF7AEB42E5DAA97AA0B91BA42B、board=5665645AA853628B5FB2A5D5DE1F9A3E24E6D35FE53779CC86BB0291155E9928。额度本节点5h余67%/周95%。全量单测在运行，未上线。

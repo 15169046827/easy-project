@@ -1,6 +1,7 @@
 <template>
     <div>
         <InputNumber
+            :locale="locale"
             :inputId="inputId"
             :modelValue="state === 'unestimated' ? null : modelValue"
             :min="0"
@@ -20,6 +21,8 @@
 </template>
 <script setup>
 import InputNumber from 'primevue/inputnumber'
+import { useI18n } from 'vue-i18n'
+const { locale } = useI18n()
 defineProps({
     modelValue: { type: Number, default: null },
     state: { type: String, default: 'unestimated' },

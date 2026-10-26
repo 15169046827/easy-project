@@ -239,7 +239,7 @@ import { useStatusLabels } from '../../../../composables/useStatusLabels'
 import { avatarBg, avatarInitial } from '../../../../composables/useAvatar'
 
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const confirmDeletion = usePrimeConfirmation()
 function openProject(id) {
     return router.push({ name: 'Project', params: { id } }).catch(() => {
@@ -316,7 +316,7 @@ function formatTime(val) {
     if (diffHr < 24) return t('common.hoursAgo', { n: diffHr })
     const diffDay = Math.floor(diffHr / 24)
     if (diffDay < 7) return t('common.daysAgo', { n: diffDay })
-    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+    return d.toLocaleDateString(locale.value, { month: 'short', day: 'numeric' })
 }
 
 async function loadProjects() {

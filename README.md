@@ -1,5 +1,7 @@
 # EasyProject
 
+2026-10-26当前线上已完成手动版本检查、最新合成截图及官网下载分组，公开桌面包仍为既有v0.1.2-beta.1（并非下文历史“暂无公开包”）。西班牙语及规范国际化、官网反馈邮箱li_you_mu@126.com正在候选验证，尚未上线；见[国际化约定](docs/INTERNATIONALIZATION.md)与[准确续接状态](docs/I18N_SPANISH_CHECKPOINT.md)。正式生产验收结论不变。
+
 [产品官网 / Product homepage](https://home-host.tail2956dd.ts.net/) · [进入在线版 / Open web app](https://home-host.tail2956dd.ts.net/index.html#/dashboard)
 
 2026-10-22 homepage delivery: the bilingual, responsive product page is live on the existing server. Explicit `/index.html` and historical `/#/...` workspace links remain compatible. Desktop installers are not publicly distributed yet; local offline use, data isolation and MCP permissions are unchanged. See [deployment evidence and limitations](docs/LANDING_PAGE_CHECKPOINT.md).

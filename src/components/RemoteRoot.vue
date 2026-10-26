@@ -11,6 +11,7 @@
             <WindowTitleBar v-if="windowChrome.visible" :native="windowChrome.native" />
             <div class="remote-auth">
                 <form class="remote-auth-card" @submit.prevent="submit">
+                    <div class="auth-language"><LanguageSelect /></div>
                     <span class="eyebrow">EasyProject · {{ $t('remote.online') }}</span>
                     <h1>
                         {{
@@ -327,6 +328,7 @@ import { invoke } from '@tauri-apps/api/core'
 import App from '../App.vue'
 import DesktopRoot from './DesktopRoot.vue'
 import WindowTitleBar from './WindowTitleBar.vue'
+import LanguageSelect from './LanguageSelect.vue'
 import RemoteMcpTokens from './RemoteMcpTokens.vue'
 import AccountAvatarEditor from './AccountAvatarEditor.vue'
 import PasswordRecoveryDialog from './PasswordRecoveryDialog.vue'
@@ -654,6 +656,10 @@ onUnmounted(() => clearInterval(timer))
 }
 .remote-auth-card h1 {
     margin: 0;
+}
+.auth-language {
+    display: flex;
+    justify-content: flex-end;
 }
 .remote-auth-card p {
     line-height: 1.6;

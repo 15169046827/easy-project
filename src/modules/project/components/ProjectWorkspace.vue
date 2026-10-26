@@ -42,7 +42,7 @@
                     </p>
                 </div>
             </div>
-            <div class="view-switch" aria-label="Project views">
+            <div class="view-switch" :aria-label="$t('project.views')">
                 <Button :class="{ active: view === 'tasks' }" @click="view = 'tasks'">
                     <i class="pi pi-list-check"></i> {{ $t('project.viewTasks') }}
                 </Button>

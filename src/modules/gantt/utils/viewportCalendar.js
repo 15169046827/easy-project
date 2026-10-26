@@ -15,7 +15,7 @@ export function taskViewRange(tasks, parse, dayStart, now = new Date()) {
     return { start: dayStart(start), end: dayStart(end) }
 }
 
-export function viewportDays(range, project, todayStart, dayStart) {
+export function viewportDays(range, project, todayStart, dayStart, locale = 'en-US') {
     const result = []
     for (let date = new Date(range.start); date <= range.end; date.setDate(date.getDate() + 1)) {
         const copy = new Date(date)
@@ -23,7 +23,7 @@ export function viewportDays(range, project, todayStart, dayStart) {
         result.push({
             key: copy.toISOString(),
             day: copy.getDate(),
-            weekday: copy.toLocaleDateString(undefined, { weekday: 'short' }),
+            weekday: copy.toLocaleDateString(locale, { weekday: 'short' }),
             today: dayStart(copy).getTime() === todayStart,
             working: workday.working,
             name: workday.name

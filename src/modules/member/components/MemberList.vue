@@ -271,12 +271,12 @@
                         />
                         <DatePickerDateString
                             v-model="availabilityDraft.start_date"
-                            aria-label="Start date"
+                            :aria-label="$t('common.startDate')"
                         />
                         <span class="availability-separator">—</span>
                         <DatePickerDateString
                             v-model="availabilityDraft.end_date"
-                            aria-label="End date"
+                            :aria-label="$t('common.endDate')"
                         />
                         <Button
                             icon="pi pi-plus"
@@ -367,7 +367,7 @@ import Dialog from 'primevue/dialog'
 import { useI18n } from 'vue-i18n'
 import { parseAvailabilityExceptions } from '../../calendar/utils/memberAvailability.js'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const confirmDeletion = usePrimeConfirmation()
 const { members, loadMembers } = useMembers()
 const loading = ref(false)
@@ -469,7 +469,7 @@ function roleClass(role) {
 
 function fmtDate(date) {
     if (!date) return '—'
-    return new Date(date.replace(' ', 'T')).toLocaleDateString()
+    return new Date(date.replace(' ', 'T')).toLocaleDateString(locale.value)
 }
 
 // 加载数据

@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-26国际化候选：i18n/index.js注册三种locale及统一选项，LanguageSelect复用真实PrimeVue Select；primeLocales.js覆盖已安装组件文案/aria并用Intl生成月份/星期，main只响应更新config.locale，保留CSP配置。数字编辑显式locale，七处日期显示及甘特weekday不再用宿主默认；ISO数据/排期不变。catalog测试负责键/插值/编译/组件覆盖，i18n E2E负责三语持久化/无API/strict nonce/真实日期弹窗。后端诊断原文/用户数据不猜测翻译，西语状态显示别名需共享边界，待另批。详见INTERNATIONALIZATION与专项，不代表已部署。
+
 2026-10-26官网整理候选：LandingPage的SelectButton选择当前项目截图、Panel折叠同一Release的高级格式；主下载资产仍唯一downloadRelease.js，不增加API/账号请求。scripts/capture-product-preview.js固定127.0.0.1:1420内存demo/全新上下文并拒绝/api/及外源，导出两1280PNG；维护流程见PRODUCT_PREVIEWS。截图不是数据库验收，不得换成真实账号内容。
 
 2026-10-26版本检查候选：VersionCheck.vue复用PrimeVue弹窗，releaseCheck.js为独立无凭据手动请求，releaseVersion.js严格验证受限SemVer/日期/tag并固定仓库URL。scripts/build-identity.js纯函数决定构建身份，Vite读取真实Git元数据，发布tag拒绝未知/dirty源；build-release-info.js从官网下载唯一入口生成静态release-info.json并在build检查一致性。Tauri主窗仅增受限open-url能力，注册opener状态但不接管所有链接；不新增invoke/业务API/MCP。静态资源列入Web契约运行状态（19操作），实际部署仍见专项检查点。

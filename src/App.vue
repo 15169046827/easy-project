@@ -8,7 +8,7 @@
                 }}</span>
                 <h1>EasyProject</h1>
             </div>
-            <nav aria-label="Workspace views">
+            <nav :aria-label="$t('app.workspaceViews')">
                 <Button
                     :class="{ active: route.name === 'Dashboard' }"
                     @click="go('/dashboard')"
@@ -58,15 +58,7 @@
                     <i class="pi pi-window-maximize" aria-hidden="true" />
                     <span class="floating-entry-label">{{ $t('floating.open') }}</span>
                 </Button>
-                <Select
-                    class="lang-select"
-                    :modelValue="locale"
-                    :options="langOptions"
-                    optionLabel="label"
-                    optionValue="value"
-                    :placeholder="$t('app.language')"
-                    @update:modelValue="setLocale"
-                />
+                <LanguageSelect class="lang-select" />
                 <Button
                     class="theme-toggle"
                     :aria-label="isDark ? $t('app.themeToLight') : $t('app.themeToDark')"
@@ -142,12 +134,11 @@ import ConfirmDialog from 'primevue/confirmdialog'
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import Select from 'primevue/select'
+import LanguageSelect from './components/LanguageSelect.vue'
 import OnboardingGuide from './components/OnboardingGuide.vue'
 import WindowTitleBar from './components/WindowTitleBar.vue'
 import { useTheme } from './composables/useTheme'
 import { useKeyboard, SHORTCUTS_HELP } from './composables/useKeyboard'
-import { setLocale } from './i18n'
 import { canRedo, canUndo, crudAction, enableHistory, redoLastAction, undoLastAction } from './api'
 import { getWindowChromeMode } from './utils/windowChrome'
 import { openFloatingWindow } from './modules/floating/windowActions'
@@ -160,14 +151,9 @@ import { remoteActive } from './api/remote'
 
 const route = useRoute()
 const router = useRouter()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const { isDark, toggle: toggleTheme } = useTheme()
 const windowChrome = getWindowChromeMode()
-
-const langOptions = [
-    { label: '中文', value: 'zh-CN' },
-    { label: 'English', value: 'en-US' }
-]
 
 const showHelp = ref(false)
 const viewRevision = ref(0)

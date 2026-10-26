@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, watch } from 'vue'
 import { isTauri } from '@tauri-apps/api/core'
 import { isLandingEntry } from './utils/entryMode'
 
@@ -11,6 +11,7 @@ import { definePreset } from '@primeuix/themes'
 import 'primeicons/primeicons.css'
 import './assets/workspace-layout.css'
 import { i18n } from './i18n'
+import { getPrimeLocale } from './i18n/primeLocales'
 import { getStyleNonce } from './security/styleNonce'
 
 const floating =
@@ -55,6 +56,13 @@ async function start() {
             }
         }
     })
+    watch(
+        i18n.global.locale,
+        value => {
+            app.config.globalProperties.$primevue.config.locale = getPrimeLocale(value)
+        },
+        { immediate: true }
+    )
     if (!floating && !landing) app.use((await import('./router')).default)
     app.use(i18n)
     app.directive('tooltip', Tooltip)
@@ -65,6 +73,5 @@ async function start() {
 
 start().catch(() => {
     // No credentials, exception details or real workspace content in the public fallback.
-    document.getElementById('app').textContent =
-        'EasyProject 暂时无法载入 / Unable to load. 请刷新重试 / Please refresh.'
+    document.getElementById('app').textContent = i18n.global.t('app.loadFailed')
 })

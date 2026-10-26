@@ -3,13 +3,31 @@ import { describe, expect, it } from 'vitest'
 import Slider from 'primevue/slider'
 import InputNumber from 'primevue/inputnumber'
 import PrimeVue from 'primevue/config'
+import { i18n } from '../../i18n'
+import TaskEffortInput from '../../components/TaskEffortInput.vue'
 import ProgressEditor from '../../components/ProgressEditor.vue'
 
 describe('shared percentage editor', () => {
+    it('formats effort decimals with the selected Spanish locale, without changing the model', async () => {
+        const previous = i18n.global.locale.value
+        i18n.global.locale.value = 'es-ES'
+        const wrapper = mount(TaskEffortInput, {
+            props: { modelValue: 1.5, state: 'estimated' },
+            global: { plugins: [PrimeVue, i18n] }
+        })
+        try {
+            expect(wrapper.getComponent(InputNumber).props('locale')).toBe('es-ES')
+            expect(wrapper.get('input').element.value).toBe('1,5')
+            expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+        } finally {
+            wrapper.unmount()
+            i18n.global.locale.value = previous
+        }
+    })
     it('keeps the real slider and numeric percentage in sync and clamps/rounds values', async () => {
         const wrapper = mount(ProgressEditor, {
             props: { modelValue: 35, inputId: 'progress', label: 'Progress' },
-            global: { plugins: [PrimeVue] }
+            global: { plugins: [PrimeVue, i18n] }
         })
         expect(wrapper.getComponent(Slider).props('modelValue')).toBe(35)
         expect(wrapper.getComponent(InputNumber).props('suffix')).toBe('%')

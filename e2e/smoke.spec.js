@@ -804,10 +804,10 @@ test('saves a member unavailable date range', async ({ page }) => {
     await page.locator('.member-trigger').filter({ hasText: 'Alice' }).click()
 
     await page.locator('.availability-form > .p-inputtext').fill('Conference')
-    await page.getByLabel('Start date', { exact: true }).fill('2026-08-03')
-    await page.getByLabel('Start date', { exact: true }).press('Tab')
-    await page.getByLabel('End date', { exact: true }).fill('2026-08-05')
-    await page.getByLabel('End date', { exact: true }).press('Tab')
+    await page.getByLabel('开始时间', { exact: true }).fill('2026-08-03')
+    await page.getByLabel('开始时间', { exact: true }).press('Tab')
+    await page.getByLabel('结束时间', { exact: true }).fill('2026-08-05')
+    await page.getByLabel('结束时间', { exact: true }).press('Tab')
     await page.getByRole('button', { name: '添加', exact: true }).click()
 
     const updateCalls = await page.evaluate(() =>

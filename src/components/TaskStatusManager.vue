@@ -83,6 +83,7 @@
                 />
                 <label for="status-manager-order">{{ t('taskStatuses.order') }}</label
                 ><InputNumber
+                    :locale="locale"
                     inputId="status-manager-order"
                     v-model="draft.sort_order"
                     :min="0"
@@ -187,7 +188,7 @@ import { suggestStatusColor } from '../utils/statusColors'
 import { findStatusNameConflict } from '../utils/taskStatus'
 const props = defineProps({ projectId: { type: String, required: true } })
 const emit = defineEmits(['updated'])
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const states = ref([]),
     loading = ref(false),
     busy = ref(false),

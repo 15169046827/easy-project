@@ -85,7 +85,7 @@ import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const props = defineProps({ projectId: { type: String, required: true } })
 
 const { members: allMembers, loadMembers } = useMembers()
@@ -158,7 +158,7 @@ function formatJoined(value) {
     if (!value) return ''
     const d = new Date(String(value).replace(' ', 'T'))
     if (Number.isNaN(d.getTime())) return value
-    return d.toLocaleDateString()
+    return d.toLocaleDateString(locale.value)
 }
 
 watch(() => props.projectId, load)

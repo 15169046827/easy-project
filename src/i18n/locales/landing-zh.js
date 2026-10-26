@@ -99,6 +99,7 @@ export default {
     source: '源代码',
     docs: '使用文档',
     issues: '反馈问题',
+    contact: '邮件反馈',
     changelog: '更新记录',
     footer: '开源项目管理工具 · MIT License'
 }

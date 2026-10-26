@@ -189,7 +189,7 @@ const props = defineProps({
     }
 })
 const emit = defineEmits(['imported'])
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const memberId = ref('')
 const fileName = ref('')
 const parsedEvents = ref([])
@@ -349,7 +349,7 @@ function memberLabel(id) {
     return props.members.find(item => item.id === id)?.name || t('calendarSync.memberMissing')
 }
 function formatSyncDate(value) {
-    return new Intl.DateTimeFormat(undefined, { dateStyle: 'short', timeStyle: 'short' }).format(
+    return new Intl.DateTimeFormat(locale.value, { dateStyle: 'short', timeStyle: 'short' }).format(
         new Date(value)
     )
 }

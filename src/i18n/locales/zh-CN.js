@@ -224,6 +224,8 @@ export default {
         members: '人员管理'
     },
     app: {
+        workspaceViews: '工作区导航',
+        loadFailed: 'EasyProject 暂时无法载入，请刷新重试。',
         pageFailed: '当前页面未能正常打开',
         pageFailedHint:
             '可以重试或返回项目列表。此操作不会退出登录或切换数据源。若仍失败，请反馈下方诊断码。',
@@ -259,6 +261,7 @@ export default {
         escape: '关闭弹窗 / 返回'
     },
     dashboard: {
+        metrics: '工作区统计',
         eyebrow: 'DASHBOARD',
         title: '仪表盘',
         subtitle: '项目健康与近期工作的快速概览。',
@@ -420,6 +423,7 @@ export default {
         roleOther: '其他'
     },
     project: {
+        views: '项目视图',
         eyebrow: 'PROJECT WORKSPACE',
         back: '返回项目列表',
         defaultName: '项目',
@@ -747,7 +751,7 @@ export default {
         stepTasks: '创建并组织任务',
         stepTasksDesc:
             '任务支持树形层级（父/子）、开始与结束日期、优先级、进度跟踪，以及任务间的 FS 依赖。',
-        stepTasksDesc2: '点击任意行的铅笔图标进行内联编辑。先选择项目，再添加任务。',
+        stepTasksDesc2: '点击任意行的铅笔图标打开编辑弹窗。先选择项目，再添加任务。',
         stepDone: '一切就绪！',
         stepDoneDesc: '从创建一个项目开始，然后为任务添加日期，即可在甘特图中查看。',
         stepDoneHint: '随时按 ? 查看快捷键。按 Ctrl+D 切换暗色模式。',

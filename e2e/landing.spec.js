@@ -34,6 +34,10 @@ for (const width of [1280, 960, 375]) {
             })
             await page.goto('/')
             await expect(page.locator('h1')).toContainText('项目有条理')
+            await expect(page.getByRole('link', { name: /邮件反馈/ })).toHaveAttribute(
+                'href',
+                'mailto:li_you_mu@126.com'
+            )
             await expect(page.locator('.landing-preview img')).toHaveJSProperty(
                 'naturalWidth',
                 1280
@@ -81,7 +85,8 @@ for (const width of [1280, 960, 375]) {
                 })
             }
             await expect(page.locator('a[download]')).toHaveCount(0)
-            await page.getByRole('button', { name: 'Switch to English' }).click()
+            await page.getByRole('combobox', { name: '语言', exact: true }).click()
+            await page.getByRole('option', { name: 'English', exact: true }).click()
             await expect(page.locator('h1')).toContainText('Clear projects.')
             await expect(page.locator('html')).toHaveAttribute('lang', 'en-US')
             expect(

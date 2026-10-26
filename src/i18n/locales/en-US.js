@@ -239,6 +239,8 @@ export default {
         members: 'Members'
     },
     app: {
+        workspaceViews: 'Workspace views',
+        loadFailed: 'EasyProject could not load. Please refresh and try again.',
         pageFailed: 'This page could not be opened',
         pageFailedHint:
             'Retry or return to projects without signing out or switching data sources. If it still fails, report the diagnostic code below.',
@@ -274,6 +276,7 @@ export default {
         escape: 'Close dialog / Back'
     },
     dashboard: {
+        metrics: 'Workspace metrics',
         eyebrow: 'DASHBOARD',
         title: 'Dashboard',
         subtitle: 'A quick view of project health and upcoming work.',
@@ -409,7 +412,7 @@ export default {
         columnRole: 'Role',
         columnUpdated: 'Updated',
         untitled: 'Untitled',
-        emailPlaceholder: 'email@example.com',
+        emailPlaceholder: "email{'@'}example.com",
         phonePlaceholder: 'Phone number',
         rolePlaceholder: 'Select role',
         dialogAddTitle: 'Add Member',
@@ -436,6 +439,7 @@ export default {
         roleOther: 'Other'
     },
     project: {
+        views: 'Project views',
         eyebrow: 'PROJECT WORKSPACE',
         back: 'Back to projects',
         defaultName: 'Project',
@@ -774,7 +778,7 @@ export default {
         stepTasksDesc:
             'Tasks support tree hierarchies (parent/child), start & end dates, priority levels, progress tracking, and FS dependencies between tasks.',
         stepTasksDesc2:
-            'Click the pencil icon on any row to edit inline. Select a project first, then add tasks.',
+            'Click the pencil icon on a row to edit in a dialog. Select a project first, then add tasks.',
         stepDone: 'You are all set!',
         stepDoneDesc:
             'Start by creating a project, then add tasks with dates to see them on the Gantt chart.',

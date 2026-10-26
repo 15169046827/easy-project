@@ -151,7 +151,7 @@ for (const size of [
                 ['data', '.data-card']
             ]) {
                 await page
-                    .getByRole('navigation', { name: 'Workspace views' })
+                    .getByRole('navigation', { name: '工作区导航' })
                     .getByRole('button')
                     .nth(['dashboard', 'projects', 'tasks', 'data', 'members'].indexOf(route))
                     .click()
@@ -179,7 +179,7 @@ test('a failed project module has recoverable feedback instead of a blank worksp
     await page.goto('/#/projects')
     await page.locator('.project-link').click()
     await expect(page.getByRole('alert')).toContainText('PAGE_MODULE_LOAD_FAILED')
-    await expect(page.getByRole('navigation', { name: 'Workspace views' })).toBeVisible()
+    await expect(page.getByRole('navigation', { name: '工作区导航' })).toBeVisible()
     await page.getByRole('button', { name: '返回项目列表', exact: true }).click()
     await expect(page.locator('.project-link')).toBeVisible()
     await expect(page.locator('.workspace-route-error')).toHaveCount(0)
@@ -217,7 +217,7 @@ test('renders imported custom project statuses without breaking page navigation'
     await expect(page.locator('.dashboard')).toBeVisible()
     await expect(page.locator('.recent-list .status-pill')).toHaveText('进行中')
     await page
-        .getByRole('navigation', { name: 'Workspace views' })
+        .getByRole('navigation', { name: '工作区导航' })
         .getByRole('button', { name: '项目管理', exact: true })
         .click()
     await expect(page.locator('.project-link')).toBeVisible()
@@ -232,7 +232,7 @@ test('renders imported custom project statuses without breaking page navigation'
         ['仪表盘', '.dashboard']
     ]) {
         await page
-            .getByRole('navigation', { name: 'Workspace views' })
+            .getByRole('navigation', { name: '工作区导航' })
             .getByRole('button', { name, exact: true })
             .click()
         await expect(page.locator(selector)).toBeVisible()

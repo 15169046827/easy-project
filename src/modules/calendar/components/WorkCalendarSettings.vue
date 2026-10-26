@@ -111,7 +111,7 @@ const saving = ref(false)
 const message = ref('')
 const messageType = ref('success')
 
-const language = computed(() => (locale.value.startsWith('zh') ? 'zh' : 'en'))
+const language = computed(() => locale.value.split('-')[0])
 const countries = computed(() => getCountries(language.value))
 const regions = computed(() => getRegions(form.calendar_country, language.value))
 const weekdayLabels = computed(() => tm('calendar.weekdays'))

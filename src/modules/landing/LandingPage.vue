@@ -12,13 +12,7 @@
                 <a :href="docs + '/README.md'">{{ t('landing.navDocs') }}</a>
             </nav>
             <div class="landing-tools">
-                <Button
-                    text
-                    rounded
-                    :label="locale === 'zh-CN' ? 'EN' : '中'"
-                    :aria-label="t('landing.language')"
-                    @click="changeLanguage"
-                />
+                <LanguageSelect class="landing-language" />
                 <Button
                     text
                     rounded
@@ -256,6 +250,9 @@
                 <a :href="repo">GitHub</a><a :href="docs + '/README.md'">{{ t('landing.docs') }}</a
                 ><a :href="docs + '/CHANGELOG.md'">{{ t('landing.changelog') }}</a
                 ><a :href="repo + '/issues'">{{ t('landing.issues') }}</a>
+                <a href="mailto:li_you_mu@126.com"
+                    >{{ t('landing.contact') }} · li_you_mu@126.com</a
+                >
             </nav>
         </footer>
     </div>
@@ -268,13 +265,13 @@ import Button from 'primevue/button'
 import SelectButton from 'primevue/selectbutton'
 import Panel from 'primevue/panel'
 import { useTheme } from '../../composables/useTheme'
-import { setLocale } from '../../i18n'
+import LanguageSelect from '../../components/LanguageSelect.vue'
 import { desktopRelease } from './downloadRelease'
 
 const repo = 'https://github.com/15169046827/easy-project'
 // Pin to verified public documentation: the feature branch is not merged into main yet.
 const docs = repo + '/blob/31c756ef18a1abe649b99d611c03e7b7493c6d87'
-const { t, tm, locale } = useI18n()
+const { t, tm } = useI18n()
 const { isDark, toggle } = useTheme()
 const previewView = ref('tasks')
 const previewOptions = computed(() => [
@@ -303,9 +300,6 @@ const secondaryDownloads = desktopRelease.assets.filter(asset =>
 const features = computed(
     () => /** @type {{ title: string, body: string, icon: string }[]} */ (tm('landing.features'))
 )
-function changeLanguage() {
-    setLocale(locale.value === 'zh-CN' ? 'en-US' : 'zh-CN')
-}
 </script>
 
 <style>
@@ -456,6 +450,9 @@ function changeLanguage() {
 }
 .landing-preview .p-selectbutton {
     margin-left: auto;
+}
+.landing-language {
+    width: 8rem;
 }
 .preview-dots {
     margin-right: 18px;

@@ -216,7 +216,7 @@ const backups = ref([]),
     restoring = ref(false),
     pendingPayload = ref(null),
     importPreview = ref(null)
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const csvEscape = value => `"${String(value ?? '').replaceAll('"', '""')}"`
 function toCsv(snapshot) {
     const rows = [
@@ -437,9 +437,10 @@ async function openBackupFolder() {
 }
 function formatDate(value) {
     if (!value) return t('data.unknownDate')
-    return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(
-        new Date(value)
-    )
+    return new Intl.DateTimeFormat(locale.value, {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+    }).format(new Date(value))
 }
 function formatSize(value) {
     const bytes = Number(value) || 0

@@ -104,6 +104,7 @@ export default {
     source: 'Source code',
     docs: 'Documentation',
     issues: 'Report an issue',
+    contact: 'Email feedback',
     changelog: 'Changelog',
     footer: 'Open-source project management · MIT License'
 }

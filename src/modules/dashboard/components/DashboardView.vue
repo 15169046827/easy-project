@@ -17,7 +17,7 @@
 
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
-        <div class="metrics workspace-stats" aria-label="Workspace metrics">
+        <div class="metrics workspace-stats" :aria-label="$t('dashboard.metrics')">
             <Button class="metric-card" text severity="secondary" @click="go('/projects')">
                 <span class="metric-icon blue"><i class="pi pi-folder"></i></span>
                 <span
@@ -165,7 +165,7 @@ import ResourceLoadPanel from '../../../components/ResourceLoadPanel.vue'
 import { isTaskCompleted, taskBuiltinKey } from '../../../utils/taskStatus.js'
 
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 function go(path) {
     router.push(path)
 }
@@ -261,7 +261,7 @@ function isOverdue(task) {
 function formatDate(value) {
     const date = parseDate(value)
     return date
-        ? date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+        ? date.toLocaleDateString(locale.value, { month: 'short', day: 'numeric' })
         : t('common.noDate')
 }
 

@@ -2,6 +2,7 @@
     <div class="progress-editor">
         <Slider v-model="value" :min="0" :max="100" :step="1" :aria-label="label" />
         <InputNumber
+            :locale="locale"
             v-model="value"
             :inputId="inputId"
             :aria-label="label"
@@ -19,6 +20,8 @@
 import { computed } from 'vue'
 import Slider from 'primevue/slider'
 import InputNumber from 'primevue/inputnumber'
+import { useI18n } from 'vue-i18n'
+const { locale } = useI18n()
 
 const props = defineProps({
     modelValue: { type: Number, default: 0 },

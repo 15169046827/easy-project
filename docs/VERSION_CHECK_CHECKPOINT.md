@@ -2,6 +2,16 @@
 
 ## 当前结论
 
+2026-10-26版本检查已安全交付：用户确认隔离本地入口，并明确许可版本检查、官网截图/下载和西语三个阶段各自验证后逐阶段新副本/桌面及网页静态更新；不迁移数据库、不改后端/独立MCP/地址/权限、不新公开Release。本机完整新受限副本dictionary-overwrite-version-31c756e-20261026保存578文件，安装后575非程序文件SHA保持；安装/启动后全部业务行摘要与完整性/FK保持，正常响应，未代登录。NSIS862FA619...；实际安装0A7C1D4E1A163EA581D9D3054BEFE60BDAE7B4FEFD7B628C5CC2E258445C2603与release AAFDDC14...仅框架UNK→NSS三字节差异。安装回执SourceCommit为执行时文档HEAD1891f28，产品实际清洁构建仍31c756e，不能混淆。
+
+伴随MCP随NSIS更新为C20220F6B9B51651DD507E4DB119DD6F3A838844B6C852E48E31C79277017534，在合成库仅23唯一工具发现/DB SHA不变通过；独立artifacts/mcp仍1E8840C2...、连接/权限未改，不能称所有MCP二进制均未变化。没有真实业务CRUD或迁移。
+
+服务器current=version-check-31c756e-20261026，新root700完整副本/var/backups/easyproject/version-check-31c756e-20261026；67新文件摘要通过，275旧hashed资产保留。两库全字段/ID/对象及schema保持（账号3/业务8），后端原9d0d7d0a.../PID2608保持，主unit/drop-in/Funnel完全不变，日备份/健康timer active。正常证书TLS独立核对2HTML/66静态SHA/4匿名401/health200通过，release-info.json为application/json/200，仍公开v0.1.2-beta.1。仅静态切换，不重启主服务/清理旧资源。SSH连接仍在线用于下一阶段，服务器未关机。
+
+最终自动证据：323/63、94生产UI零重试、补跑13真实HTTP全部通过，Rust未改沿用72+stdio1/fmt/Clippy并本轮release编译通过。真实Windows1280浅深版本弹窗/内部来源/失败不切源/成功读索引通过；默认浏览器实际打开本仓库v0.1.2-beta.1发布页，opener无状态错误。原生工具Escape/Tab和拖动缩放未产生可确认结果（原因未定），故不冒称原生键盘/960通过；备份目录按钮在屏幕外，点击被工具拒绝且滚动未能有效完成，亦未验。浏览器严格nonce深浅/960及键盘矩阵已通过，不替代这些原生缺口；正式生产仍未通过，无放宽CSP。
+
+里程碑额度5h余84%/周98%；非额度暂停。准确下一步：按用户要求直接进入官网新合成截图/下载整理，再规范i18n/es-ES；不重复本轮安装/后端或旧数据迁移。WACAS未定义/UPARS1.1.0/交接1.15不变。此里程碑未提交仅本专项、NEXT_PHASE_CHECKPOINT、CHANGELOG、RELEASING、VERSION_CHECK使用状态及api/handoff对应文档；产品代码无新修改，Git/Wolai最终同步在本节点完成并记录。
+
 同步收尾回执：产品31c756e与文档1d718330a908a194f36ccdb8369b16a76a32c95b已推送并完整远端SHA读回；Wolai主/交接两页均已同步最终来源、产物、323/94结果及用户操作/更新许可等待状态并读回通过。无业务代码或接口新变化，本最小回执另存，不重复同步其它内容。用户回复仍待，候选保持运行于合成空登录页；原生/真实部署仍未完成。
 
 2026-10-26最终自动门禁/候选已完成，等待用户本地入口与更新许可：产品源31c756ef18a1abe649b99d611c03e7b7493c6d87已推送并精确读回，构建时Git干净。内部tag修复后完整323/63测试、typecheck/lint通过；清洁源默认NSIS构建及最终94生产UI零重试通过（13 Web专用跳过，不冒称本轮真实HTTP通过）。最终NSIS SHA862FA61969C41E0EC0CA6E49AC659F20B88DD8B965E0A6E631D8E40A0938D7B5；release/隔离exe均AAFDDC1433CD477FD5CCA77B102F4C016C0D268A2B9E57121A8173989D177748。旧2f70199包仅历史，不部署。

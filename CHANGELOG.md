@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- 2026-10-26: Safely installed manual version checks and deployed the public static release index after protected snapshots and data-preservation checks. Native 1280px light/dark checking and scoped release-page opening verified; native narrow-window/full-keyboard/backup-folder checks remain unverified. No new public installer release or backend/database migration.
+
 - Candidate: Add opt-in manual version checks with a bounded, credential-free public release index, explicit internal-build identity and scoped release-page opening. Enforce clean identified source for tagged builds; document the static resource separately from business APIs. Not yet installed or deployed; no automatic updater or new public release.
 
 - 2026-10-26: Activated the approved backend authentication/storage admission protections after an existing-data preflight and fresh protected snapshots. Both databases retain original fields and IDs; no schema migration, automatic cleanup, desktop overwrite or new public release.

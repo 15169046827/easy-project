@@ -606,6 +606,12 @@ test('keeps navigation geometry unchanged on hover and keyboard focus', async ({
     await page.setViewportSize({ width: 960, height: 640 })
     await page.goto('/#/dashboard')
     const nav = page.getByRole('navigation')
+    await expect(page.getByRole('combobox', { name: '语言', exact: true })).toBeVisible()
+    // Take the baseline after asynchronously loaded fonts/layout have settled.
+    await page.evaluate(async () => {
+        await document.fonts.ready
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+    })
     const initial = await nav.boundingBox()
     for (const button of await nav.getByRole('button').all()) {
         const box = await button.boundingBox()

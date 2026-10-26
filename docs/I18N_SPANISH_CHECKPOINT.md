@@ -16,6 +16,16 @@ WACAS未定义/待确认，UPARS1.1.0/交接1.15；开始长阶段5h余59%/周94
 
 ## 当前调查/下一步
 
+2026-10-26共享候选最终与实际独立MCP交付（最新）：源70ad16e7b9a89fd59b4fd8bcfbf7f1e6b4f1a689已推送；345/64前端完整复跑通过、lint/type/release、桌面73+stdio1、服务器62+集成19、双方fmt/严格Clippy通过。最终104生产UI零重试及新显式构建服务程序的13真实HTTP串行通过。Linux CI40327970525/server及security成功；artifact12652491089官方归档SHA95D3A709E5C411BB90F296CFA9AD21CFAF867CD160E2EF9FAC18021D000CCF7E，E盘spanish-linux-70ad16e下载核验；唯一ELF10983304字节，SHA C648F69E9BA8830DC177FD1B0D7FED0F9E6268432F51F30004BFE95DCFE727A1，尚未部署。
+
+clean源NSIS SHA47D6E9A23E8338963F39236BD9704DD9F8C80FCF1314CF36B16A8CA6032AD137，桌面exe86B731C0E2B7B449303B31BC6612A61AF9288EC6367E004AE8609AD04126BFEC；首次受限打包makensis系统DLL623失败，宿主环境同源重试成功，未修改系统设置。独立MCP release SHA53521FBD289F406EA1ED422D31E672252B481BBD4593A76DE9277F6B222F927F。发现辅助首次传相对DB路径被拒，改绝对路径后23唯一工具/合成DB摘要不变，无实体写入。用户已逐项授权仅停止PID5836（2026-10-26T16:30:45），新受限副本spanish-mcp-70ad16e-backup-20261026核验后实际停止并替换artifacts/mcp，替换后再23发现/DB保持通过；未改配置/权限，客户端需重连，不等于本聊天已加载新工具。
+
+真实桌面复验等待用户：隔离spanish-native-70ad16e已启动PID26056，窗口ID17960116；只复制既有合成库，不复制账号/密码/WebView，安装侧storage.json明确隔离E盘。通过sky只读确认仍为空登录页，已请用户自行点“不登录，本地使用”，尚未收到回复；不能自动操作认证表单。原安装未覆盖，服务器仍旧网页website-refresh-83adac3与后端31d9b7c，SSH未新连接，无关机。准确下一步：用户切本地→用sky复验中英西切换/PrimeVue日历及深浅/可达窄窗，不操作真实数据→新受限安全副本覆盖桌面→基于CI产物与同源dist制作完整服务器候选，保留旧静态assets、受限服务/unit/Funnel/预算/timers、停服快照及逐字段/ID核验后只更新程序/前端，启动正常TLS及匿名边界核验；不迁移/清库，不发新Release。部署前重新额度门禁，不能因已启动构建而绕过10%长阶段门槛。
+
+新增失败记录：最终生产矩阵首轮103/104，导航几何基准x变化约2.42px；测试未等字体/初始布局，补document.fonts.ready及两帧布局等待（原hover/focus完整几何断言保留）后该用例5次连续通过、随后全104零重试通过；不伪称首轮通过。原前端并行PowerShell超时保留上一条，345低并发完整通过。日志spanish-navigation-repeat、spanish-shared-production-final、spanish-shared-http-final、spanish-contract-final（11通过）、spanish-clean-nsis-retry、spanish-clean-mcp；之前日志保留。
+
+契约已由实际新release在合成库只读发现生成：23工具/7IPC/36动作、66接口/32参考，私有Apifox分组及参考脚本已逐项VERIFIED读回，ID/分组保留；日志spanish-apifox-interfaces（66行）/references（32行）。HTTP19契约/地址/权限未改，不机械重传。当前未提交准确列表：docs/api/MODELS.md、docs/api/apifox-documents.json、docs/api/apifox-layout.json、docs/api/apifox-manifest.json、docs/api/catalog.json、e2e/ui-consistency.spec.js；另本检查点与随后API/交接回执，以最终Git为准。Wolai本轮共享实现/实际MCP交付回执待本节点同步，之前仅前端候选记录有效。标准WACAS未定义/UPARS1.1.0/交接1.15不变，最近额度5h余13%/周86%，未触硬停，但下一长阶段前必须重查。
+
 共享候选里程碑：桌面73单测+1stdio、服务器62单测+19集成、双方fmt/严格Clippy、前端lint/typecheck通过。Clippy仅有宿主增量缓存硬链接失败后复制的编译器环境告警，不是代码lint，也未关闭检查。345前端首次1项失败为Apifox边界脚本在高并发Rust/前端同时运行下超过Vitest既有5秒（实际PowerShell启动7.4秒）；不加超时、不删断言，停止重型并发后以maxWorkers=4完整复跑进行中。未部署，独立MCP不使用会直接覆盖artifacts的package-mcp脚本；先在target构建并隔离发现，停止/替换真实占用另获准。进入clean NSIS/伴随MCP及Linux CI前门禁5h余19%/周87%，大于10%，此节点已保存。准确源以随后提交SHA为准。
 
 2026-10-26用户已明确允许补齐共享校验并安全更新后端/MCP，覆盖下方历史“等待许可”；占用MCP停止进程仍需单独确认。续接基线a92d8b33a6308d4ff5dde8ed5e5e2e9d3df40518，分支不变且开工干净；5h余23%/周88%。已改common/task_status.rs中三条西语别名，UI taskStatus.js同步；MCP tools.rs公开三语冲突名，创建/重命名/导入共用现有边界，不改schema、不清理旧状态、不改权限。增加Rust只读冲突校验/跨项目保留测试与MCP创建/重命名拒绝后原值保持测试、前端所有注册语言默认显示名防漏门禁。桌面Rust73单元+1真实stdio通过；服务器与345前端完整验证进行中。当前7未提交路径：docs/MCP.md、src-tauri/src/common/task_status.rs、src-tauri/src/mcp/tests.rs、src-tauri/src/mcp/tools.rs、src/__tests__/components/TaskStatuses.test.js、src/__tests__/i18n/catalog.test.js、src/utils/taskStatus.js（另本文回执）。下一步完整静态/服务器验证→封存clean候选触发Linux CI/构建NSIS和MCP→契约生成并私有Apifox同步→原生及实际安全部署。设备/线上版本保持前条；没有新SSH或实际库操作。

@@ -1,5 +1,21 @@
 # 状态卡固定尺寸与筛选独立统计（2026-10-27）
 
+## 本轮完成：桌面/网页已交付，控制已释放
+
+目标全部完成：192×76固定卡片/自动换行不撑满、中性底色+字典色圆点与选中边框、状态名前置及完整tooltip；卡片/下拉状态筛选仅过滤任务表，同项目/搜索/优先级和顶层/全部口径概览去status实际刷新，兄弟卡/计数不被自身选择过滤，错误不提交部分数据、延迟响应不覆盖新结果。不改变字典存储色/后端/schema/MCP/权限。用户已获准更新范围已执行，无待许可/待本地/待缩窗/待部署。
+
+原生fresh窗口7342644，合成4任务/2顶层，实际946×634浅深两卡宽度固定（与浏览器192px精确断言一致）、普通主题底/灰绿圆点；选择已完成后表格2根→1根，两卡仍1/1，Return回2根；CSP保护保持。合成全表hash与before-native基线相同，integrity ok/FK0，候选正常关闭/进程0后立即node_repl reset，后台更新时不持续接管。认证表单未自动操作；用户的“常规操作自行完成/空闲及时释放控制”已写AGENTS和交接1.18，人工认证/安全工具边界仍保留。
+
+实际部署执行源e0b4cee806341cab00cad055eff4c21803d6d513仅文档后继；clean构建源c5902ab/product697e54f无漂移。桌面新受限副本src-tauri/target/audit-tools/dictionary-overwrite-status-cards-c5902ab-20261027保存708文件，705非程序SHA/原DB前后及启动后全行hash保持、integrity ok/FK0；NSIS FD0D1A972897F263B4B13B6BC327B5C1C01364440E325D6DB538C33AD00FFF79安装exit0。最终main8B8B5799A52B648AC7BE2E6EDA6C9C37F2BDB238E75404795647198DCB4817E7与候选2D23仅14694112—14694114三字节UNK→NSS、长度18736128一致，已精确比较；伴随和独立MCP70E摘要保持，没有改独立程序或其配置。真实旧主程序已由用户退出，本次无需接管关闭；新PID25748/window4459930响应正常、默认登录无PAGE_RENDER_FAILED，未操作账号字段，只读启动核对后立即reset清理控制。
+
+服务器current=/opt/easyproject/releases/status-cards-697e54f-20261027，新root700完整程序/配置/Funnel/在线SQLite安全副本=/var/backups/easyproject/status-cards-697e54f-20261027。72交付文件/457旧assets保留；后端B15571B7/PID1893/User easyproject未改、未重启，两库全表/objects/schema/integrity/FK、服务配置与Funnel保持。正常证书HTTPS2HTML/CSP/71静态SHA/4匿名401/health200、邮箱和西语负载通过；不登录真实账号/改业务数据。首SCP44281认证等待超时关闭，远端确认两目标MISSING后才重试47152（exit0但socket pending警告），远端EE757CCA/64E4摘要与AST单独核对匹配；非盲重试。SSH61100已正常exit，无SSH/测试/构建/控制会话留跑，只有真实应用开启供用户使用。
+
+验证总账：353/65单测、110完整生产UI、13隔离真实HTTP、6响应式两页面/深浅矩阵、类型/lint/build均通过。真实HTTP新增待办/已完成两卡与表格筛选解耦断言通过，IAB后台4→2行但三卡1/2/1保留目检通过；临时tab/预览已关闭。首15定向/函数超100行整改、innerText视觉换行与textContent比较的6例失败、旧用例误取概览导致109/110及完整复跑均保留前文日志，未删业务断言/关门禁。未改Rust后端/MCP，不伪称本轮重跑全套Rust、依赖安全或全库审计。API/架构/规则已复核，23工具/66协议/32参考既有读回仍有效，无契约变更不重传。
+
+剩余边界：无本轮已知未解决功能缺陷；未遍历全部原生辅助技术/其它平台安装、macOS签名公证或真实公网压力，不等于正式生产发布通过，未创建新公开Release。WACAS未定义，实际UPARS1.1.0/交接1.18，最后5h余85%/周55%；不使用额度重置/唤醒/关机或停止新MCP连接。本地交接/计划/发布说明将按此完成回执提交推送并同步Wolai主/交接后读回，如失败须追加缺口。
+
+本节点未提交准确9路径：README.md、CHANGELOG.md、docs/PROJECT_PLAN.md、docs/RELEASING.md、docs/api/README.md、docs/handoff/CURRENT_STATE.md、docs/handoff/README.md、docs/handoff/ARCHITECTURE.md及本文；AGENTS/规则1.18已在e0b4cee提交。全部本机副本、构建、测试缓存与产物在E盘，真实数据仅在受保护更新流程核验，无额外业务写入。
+
 ## 新原生复验通过，进入已批准交付
 
 用户明确新候选已本地并缩小，并要求后续常规操作自行处理、空闲及时关控制；已记录规则1.18/79条及AGENTS，认证/安全人工边界不绕过。开工Git b74748bc4cc904ce52b4caaedad6fac72cc1e216干净，额度恢复5h余99%/周58%。fresh Sky返回新window7342644/精确status-cards-native路径，合成4任务无账号，新手说明自行跳过。实际946×634浅/深两卡固定大小/中性底色/灰绿圆点，不撑满余宽；点已完成后表格2根→1根，两卡仍1/1；Return取消回2根，两卡不变。真实严格CSP无关闭保护，相关原生键盘操作通过，不冒称完整辅助技术遍历。

@@ -95,4 +95,36 @@ describe('estimate provenance and inline child drawers', () => {
         expect(wrapper.emitted('edit')[0]).toMatchObject([{ id: 'c' }])
         wrapper.unmount()
     })
+    it('keeps status and progress in separate slots for short, long and unknown values', () => {
+        const tasks = [
+            {
+                id: 'zero',
+                parent: 'p',
+                name: 'Zero',
+                status: 'Waiting for a decision',
+                progress: 0
+            },
+            { id: 'done', parent: 'p', name: 'Done', status: 'Done', progress: 100 },
+            {
+                id: 'unknown',
+                parent: 'p',
+                name: 'Unknown',
+                status: 'Review',
+                summary: { has_children: true, progress: null, unestimated_count: 1 }
+            }
+        ]
+        const wrapper = mount(TaskChildrenDrawer, {
+            props: { parent: { id: 'p', name: 'Goal' }, tasks, labelStatus: value => value },
+            global
+        })
+        expect(wrapper.findAll('.child-status')).toHaveLength(3)
+        const progress = wrapper.findAll('.child-progress')
+        expect(progress.map(cell => cell.text())).toEqual(['0%', '100%', 'Not estimated'])
+        expect(progress.map(cell => cell.attributes('title'))).toEqual([
+            '0%',
+            '100%',
+            'Not estimated'
+        ])
+        wrapper.unmount()
+    })
 })

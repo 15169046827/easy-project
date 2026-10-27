@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-27子任务抽屉修正候选：TaskChildrenDrawer的child-main仍自适应标题/备注，但child-metrics作为固定14.7rem度量组，内含8:6独立状态/百分比槽，均左对齐；长Tag保留PrimeVue及tooltip，未知派生进度使用effortLabel而非假0，嵌套递归共用。375窄屏组允许受容器最大宽度缩小/换行而非溢出；新8矩阵直接比较同级子项状态和进度的几何起点，防止仅测外层列表再次漏检。没有MCP/API/模型变化，实际部署以专项顶部为准。
+
 2026-10-27进度对齐已实际交付：共用TaskList的mini-progress使用固定3.5rem条宽+4ch百分比槽、左对齐及等宽数字，progress列9rem避免100%裁切；6矩阵检查全局/项目内0%与100%起点/条宽/边界，原生两任务页浅深50%/100%稳定。无Rust/模型/API变化。两端当前客户端已发现状态CRUD和color，独立70E/catalog2a对应，66原生与32参考全读回一致；HTTP导出限制见DOCUMENTATION_SYNC_REVIEW_2026-10-27，不能以旧读回摘要覆盖该缺口。实际交付、文件/数据库保持及未验边界见PROGRESS_ALIGNMENT_SYNC_CHECKPOINT。
 
 ## 历史架构演进（候选与部署状态以最新专项为准）

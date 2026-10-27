@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- 2026-10-27 correction candidate: The reported alignment issue also affects inline child drawers, which the preceding outer-table fix missed. Reserve separate fixed status/progress slots in recursive child rows, retain full-value tooltips and unknown-estimate semantics, and add1920px/long-label/0%-100%/nested regressions. A separate local-only synthetic acceptance project is authorized after delivery; existing data and remote workspaces remain untouched.
+
 - 2026-10-27 delivered: Left-align task progress in a fixed bar/percentage grid and reserve enough column width for100%, shared by global/project lists. Strict-CSP responsive geometry and native light/dark checks passed; protected desktop/static updates preserved original files and database rows. Rechecked66 Apifox native protocols and32 reference digests; HTTP alternate-media export differences remain explicitly tracked. No API/backend/MCP change or public Release.
 
 - 2026-10-27 delivered: Keep task status cards at192×76px with neutral theme surfaces and dictionary-colored dots instead of full-card saturated fills. Put state names before project names and retain full tooltips. Status filters affect table rows only; refresh overview counts without the status condition while retaining project/search/priority dimensions, with atomic error and stale-response protection. Native light/dark narrow-window and keyboard checks passed; fresh protected desktop/static updates preserved original files/data. No backend, schema, permission, MCP or public Release change.

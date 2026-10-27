@@ -53,23 +53,40 @@
                         {{ task.end_time?.slice(0, 10) || '-' }} · {{ effortLabel(task, t) }}</small
                     >
                 </div>
-                <Tag
-                    :style="styleStatus(task)"
-                    :title="
-                        labelStatus(task.status, task.status_builtin_key, Boolean(task.status_id))
-                    "
-                    v-tooltip.bottom="
-                        labelStatus(task.status, task.status_builtin_key, Boolean(task.status_id))
-                    "
-                    :value="
-                        labelStatus(task.status, task.status_builtin_key, Boolean(task.status_id))
-                    "
-                />
-                <span>{{
-                    task.summary?.has_children && task.summary.progress == null
-                        ? effortLabel(task, t)
-                        : `${task.progress || 0}%`
-                }}</span>
+                <div class="child-metrics">
+                    <div class="child-status">
+                        <Tag
+                            :style="styleStatus(task)"
+                            :title="
+                                labelStatus(
+                                    task.status,
+                                    task.status_builtin_key,
+                                    Boolean(task.status_id)
+                                )
+                            "
+                            v-tooltip.bottom="
+                                labelStatus(
+                                    task.status,
+                                    task.status_builtin_key,
+                                    Boolean(task.status_id)
+                                )
+                            "
+                            :value="
+                                labelStatus(
+                                    task.status,
+                                    task.status_builtin_key,
+                                    Boolean(task.status_id)
+                                )
+                            "
+                        />
+                    </div>
+                    <span
+                        class="child-progress"
+                        :title="progressLabel(task)"
+                        v-tooltip.bottom="progressLabel(task)"
+                        >{{ progressLabel(task) }}</span
+                    >
+                </div>
                 <Button
                     icon="pi pi-pencil"
                     text
@@ -134,6 +151,10 @@ const completed = computed(
 )
 const hasChildren = task => props.tasks.some(child => child.parent === task.id)
 const expanded = task => props.filtering || open.value.has(task.id)
+const progressLabel = task =>
+    task.summary?.has_children && task.summary.progress == null
+        ? effortLabel(task, t)
+        : `${task.progress || 0}%`
 function toggle(task) {
     const next = new Set(open.value)
     if (next.has(task.id)) next.delete(task.id)
@@ -184,9 +205,33 @@ function toggle(task) {
 .child-main small {
     color: var(--p-text-muted-color);
 }
-.child-row :deep(.p-tag) {
-    max-width: min(12rem, 35%);
+.child-metrics {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 6fr);
+    align-items: center;
+    gap: 0.7rem;
+    flex: 0 0 14.7rem;
+    width: 14.7rem;
+    max-width: 100%;
+    text-align: left;
+}
+.child-status {
+    display: flex;
+    justify-content: flex-start;
     min-width: 0;
+}
+.child-status :deep(.p-tag) {
+    max-width: 100%;
+    min-width: 0;
+}
+.child-progress {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    font-variant-numeric: tabular-nums;
 }
 .child-row :deep(.p-tag-label) {
     overflow: hidden;

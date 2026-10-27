@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-for (const width of [1280, 960, 375]) {
+for (const width of [1920, 1280, 960, 375]) {
     for (const dark of [false, true]) {
         test(`shared task statistics and drawer at ${width}px dark=${dark}`, async ({ page }) => {
             await page.setViewportSize({ width, height: 800 })
@@ -89,10 +89,43 @@ for (const width of [1280, 960, 375]) {
                                       direct_child_count: 1,
                                       completed_child_count: 0,
                                       effort_days: 2,
-                                      progress: 30
+                                      progress: /** @type {number|null} */ (30),
+                                      unestimated_count: 0
                                   }
                                 : undefined
                     }))
+                    states[4].name = '等待决策 · A deliberately long custom status label'
+                    for (const { id, parent, state, progress } of [
+                        { id: 'child-zero', parent: 't0', state: 4, progress: 0 },
+                        { id: 'child-done', parent: 't0', state: 2, progress: 100 },
+                        { id: 'child-parent', parent: 't0', state: 5, progress: 0 },
+                        { id: 'grandchild', parent: 'child-parent', state: 4, progress: 0 }
+                    ]) {
+                        tasks.push({
+                            ...tasks[1],
+                            id,
+                            parent,
+                            name: id + ' · Complete nested task title',
+                            status_id: states[state].id,
+                            status: states[state].name,
+                            status_builtin_key: states[state].builtin_key,
+                            is_completed: state === 2,
+                            progress,
+                            summary:
+                                id === 'child-parent'
+                                    ? {
+                                          has_children: true,
+                                          direct_child_count: 1,
+                                          completed_child_count: 0,
+                                          effort_days: 0,
+                                          progress: null,
+                                          unestimated_count: 1
+                                      }
+                                    : undefined
+                        })
+                    }
+                    tasks[0].summary.direct_child_count = 4
+                    tasks[0].summary.completed_child_count = 1
                     const statistics = {
                         top_level: {
                             total: 7,
@@ -102,7 +135,7 @@ for (const width of [1280, 960, 375]) {
                             }))
                         },
                         all_tasks: {
-                            total: 8,
+                            total: tasks.length,
                             statuses: states.map(s => ({
                                 ...s,
                                 count: tasks.filter(t => t.status_id === s.id).length
@@ -305,6 +338,35 @@ for (const width of [1280, 960, 375]) {
                 await page.getByRole('button', { name: '展开任务', exact: true }).first().click()
                 const drawer = page.locator('.child-drawer').first()
                 await expect(drawer).toContainText('Child with a long complete name')
+                const metrics = drawer.locator(':scope > .child-entry > .child-row .child-metrics')
+                await expect(metrics).toHaveCount(4)
+                const positions = await metrics.evaluateAll(elements =>
+                    elements.map(el => {
+                        const status = el.querySelector('.child-status').getBoundingClientRect()
+                        const progress = el.querySelector('.child-progress')
+                        return {
+                            statusX: status.left,
+                            progressX: progress.getBoundingClientRect().left,
+                            width: el.getBoundingClientRect().width,
+                            align: getComputedStyle(progress).textAlign,
+                            value: progress.textContent
+                        }
+                    })
+                )
+                expect(positions.some(item => item.value === '0%')).toBe(true)
+                expect(positions.some(item => item.value === '100%')).toBe(true)
+                for (const item of positions) {
+                    expect(item.statusX).toBeCloseTo(positions[0].statusX, 0)
+                    expect(item.progressX).toBeCloseTo(positions[0].progressX, 0)
+                    expect(item.align).toBe('left')
+                    if (width >= 960) expect(item.width).toBeCloseTo(235.2, 0)
+                }
+                await drawer.getByRole('button', { name: '展开任务', exact: true }).click()
+                await expect(drawer.locator('.child-drawer .child-progress')).toHaveText('0%')
+                const longStatus = metrics.nth(1).locator('.p-tag')
+                await longStatus.hover()
+                await expect(page.getByRole('tooltip')).toContainText('deliberately long')
+                await page.mouse.move(0, 0)
                 const drawerBox = await drawer.boundingBox(),
                     tableBox = await table.boundingBox()
                 expect(tableBox.x + tableBox.width - drawerBox.x - drawerBox.width).toBeGreaterThan(

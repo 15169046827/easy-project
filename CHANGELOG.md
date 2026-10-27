@@ -4,7 +4,7 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
-- 2026-10-27 correction candidate: The reported alignment issue also affects inline child drawers, which the preceding outer-table fix missed. Reserve separate fixed status/progress slots in recursive child rows, retain full-value tooltips and unknown-estimate semantics, and add1920px/long-label/0%-100%/nested regressions. A separate local-only synthetic acceptance project is authorized after delivery; existing data and remote workspaces remain untouched.
+- 2026-10-27 correction delivered to desktop (web pending): Fixed the inline child drawers missed by the preceding outer-table change, using separate status/progress slots with left alignment, full-value tooltips and unknown-estimate semantics.354 unit/112 production UI/13 HTTP and8 responsive cases passed; native1920px showed aligned0%/100%. Two local acceptance projects,25 tasks and2 synthetic members were created without changing original rows or remote workspaces. One predecessor example remains unset due to desktop-control geometry errors; web static deployment remains a checkpointed follow-up.
 
 - 2026-10-27 delivered: Left-align task progress in a fixed bar/percentage grid and reserve enough column width for100%, shared by global/project lists. Strict-CSP responsive geometry and native light/dark checks passed; protected desktop/static updates preserved original files and database rows. Rechecked66 Apifox native protocols and32 reference digests; HTTP alternate-media export differences remain explicitly tracked. No API/backend/MCP change or public Release.
 

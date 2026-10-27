@@ -228,6 +228,12 @@ for (const width of [1280, 960, 375]) {
                 expect(await phase.evaluate(el => getComputedStyle(el).backgroundColor)).not.toBe(
                     accent
                 )
+                if (width === 1280 && !dark && !route.includes('project')) {
+                    await page.mouse.move(0, 0)
+                    await page.screenshot({
+                        path: 'src-tauri/target/audit-tools/status-cards-c5902ab/fixed-neutral-cards-preview.png'
+                    })
+                }
                 await phase.click()
                 await expect
                     .poll(() =>

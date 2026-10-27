@@ -1,5 +1,17 @@
 # 状态卡固定尺寸与筛选独立统计（2026-10-27）
 
+## clean包已封存，等待新合成窗口本地确认
+
+产品697e54f，clean源码c5902abb690e550c34cc13a5bfff006000d7aa06（仅多测试/检查点），353单测/65、110生产UI、13真实HTTP及类型/lint/build全过；新增无遮挡截图后6矩阵再次全过，测试截图增补不改产品。原生主2D23E9ACA09AAEB78CD568D507A8DE60BB63C7CE83C7A36F8F73341F783DD9AF，NSIS FD0D1A972897F263B4B13B6BC327B5C1C01364440E325D6DB538C33AD00FFF79，封存src-tauri/target/audit-tools/status-cards-c5902ab/manifest.json。Tauri no-bundle后恢复已验70E伴随再NSIS，实际独立70E未动；不部署顺带重编的MCP。无遮挡合成预览fixed-neutral-cards-preview.png已目检固定192/76、第二行孤卡不拉伸、圆点与选中边框；http-preview-1280-light.png捕获取消弹窗过渡层，不作为卡片视觉证明。
+
+72静态文件已封包，archive status-cards-697e54f-20261027.tar.gz SHA EE757CCAF118E48C44202FFF9CFFBC93B4235A60B21B1C39E13B50D3CBE1B154（clean sourcec5902ab/product697e54f）。纯静态受控部署helper deploy-status-cards-697e54f.py SHA64E4A8291699E4FFC5386094A8F19472D31549CB71C6810DCD93134E124FC0A3，限定旧current task-narrow-c2ca28b-20261027、后端B15571B7，源c5902ab；仅本地已准备，尚未上传/连接服务器或切换。新release/snapshot预定status-cards-697e54f-20261027，恢复点/在线DB校验/只切静态/无重启均沿用已审查helper；执行前还须重新核服务器状态与摘要/AST，不能盲执行旧记录。
+
+新隔离候选src-tauri/target/audit-tools/status-cards-native-697e54f，PID13672（18:15:25）由已验2D23启动。仅复制既有3项目3任务合成库，通过旧已验70E进程在此精确隔离路径用正式MCP task_create新增一个已完成根任务，稳定ID/关联/完整性验证通过，现4任务，基线before-native-database.json已保存；未访问真实库/账号/密码。这样可真实验证待办/已完成两卡在筛选后都保留。已请用户在该新窗口自行“不登录，本地使用”并缩小，尚未回复；未通过Sky接管或自动操作认证。浏览器临时页和1420预览均已关闭，当前无构建/测试/SSH运行。
+
+下一步：用户新本地+缩小确认→重新枚举并核新候选路径/合成4任务→深浅192固定宽/中性圆点/状态筛选两卡计数不变、键盘及严格桌面CSP复验→与before-native-database全表hash比较→及时清理控制会话→查询额度（最新5h余17%/周58%，<10%不开始交付长阶段）→已许可的新受限副本桌面/网页静态更新，不改后端/MCP/schema/权限。桌面helper install-task-ui-2a5904d.ps1参数新FD0.../执行时HEAD/全新SafetySuffix（建议status-cards-c5902ab-20261027），旧副本不可复用；核安装exe只允许UNK→NSS三字节差异，669等旧文件数量不可硬套，以新清单/DB为准。网页用新包并重核old current/source/no drift；正常TLS静态/匿名边界通过后最终三方同步。
+
+部署许可已收到，不再问同范围；本轮无进程停止/关机/额度重置/定时唤醒授权。当前真实安装仍B159、网页c2ca28b、独立70E，设备连接只有本机候选启动已确认，服务器本轮未连接不冒称在线。当前未提交e2e/task-list-refinement.spec.js截图增补及本文/后续交接回执，产品无新改动，WACAS未定义/UPARS1.1.0/交接1.17。Git/Wolai此前697首节点已读回，本包回执待同步；后续先读本段不重复构建、API契约不变不重传Apifox。
+
 ## 完整门禁通过，准备clean桌面候选
 
 产品源697e54fc2496f1008dfb3705db80a7af4e57a6e2已推送，353/65单测、类型/lint/build、最终110生产UI与13真实HTTP全过；真实HTTP新两卡/筛选表格断言已通过。完整首轮109/110，旧仪表盘跳转用例取最后带status请求，误读新增无status限制的统计请求；现精确限定pageSize20列表请求，保留原路由/选择值/计数断言，完整复跑110/110。无新Rust/服务器/MCP源码变化，不伪称本轮重跑Rust全量。

@@ -10,7 +10,7 @@ export const taskColumnWidths = {
     type: 7,
     priority: 7,
     status: 7,
-    progress: 6,
+    progress: 9,
     comment: 14,
     assignee: 9,
     order: 6

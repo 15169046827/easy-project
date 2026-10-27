@@ -1739,9 +1739,12 @@ onMounted(async () => {
 
 /* 迷你进度条 */
 .mini-progress {
-    display: flex;
+    display: grid;
+    grid-template-columns: 3.5rem 4ch;
+    justify-content: start;
     align-items: center;
     gap: 0.5rem;
+    text-align: left;
 }
 .mini-progress-bar {
     width: 3.5rem;
@@ -1760,6 +1763,8 @@ onMounted(async () => {
 .mini-progress small {
     font-size: 0.75rem;
     color: var(--color-text-muted);
+    text-align: left;
+    font-variant-numeric: tabular-nums;
 }
 .no-value {
     color: var(--color-text-muted);

@@ -1,5 +1,9 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-27进度对齐候选：共用TaskList的mini-progress使用固定3.5rem条宽+4ch百分比槽、左对齐及等宽数字，progress列9rem避免100%裁切；6矩阵同时检查全局/项目内0%与100%起点/条宽/边界。无Rust/模型/API变化。两端当前客户端实际已发现状态CRUD和color，独立70E/catalog2a对应，66原生与32参考全读回一致；HTTP多媒体导出限制见DOCUMENTATION_SYNC_REVIEW_2026-10-27，不能以旧读回摘要覆盖该缺口。
+
+## 历史架构演进（候选与部署状态以最新专项为准）
+
 2026-10-27状态卡已实际交付：TaskStatusStatistics固定192×76/flex换行、中性底色+CSS字典色变量圆点，状态名前置仍完整tooltip，字典存储与标签颜色不变。useTaskListQuery的loadTaskPage在status非空时并行查询同口径去status/pageSize1概览，结果与列表一次提交，原requestSequence/project守卫防旧响应覆盖；统计失败不发布部分数据。未增加API参数或变更响应/后端/权限，MCP继续70E。实际桌面8B8B/网页status-cards-697e54f与证据见STATUS_CARD_PRESENTATION_CHECKPOINT。
 
 2026-10-27窄窗复验补丁：TaskList自己的filter-bar断点负责1100以下4列/900以下2列及按钮nowrap/min-content；workspace-layout.css移除两条针对全局任务的高优先级重复列规则，避免embedded与global分叉。MCP实际独立与伴随均70E（源2a），CSS补丁不改协议/Rust/schema；新桌面mainbe248d2与网页c2ca28b是同一CSS产品源码，前者仅多检查点提交。修复版原生/桌面交付是否完成以专项顶部为准。

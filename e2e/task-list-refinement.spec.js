@@ -73,7 +73,7 @@ for (const width of [1280, 960, 375]) {
                         is_completed: i === 2,
                         priority: 'Normal',
                         type: 'Task',
-                        progress: i === 2 ? 100 : 30,
+                        progress: i === 2 ? 100 : i === 3 ? 0 : 30,
                         effort_days: 2,
                         effort_state: 'estimated',
                         start_time: '2026-10-27',
@@ -172,6 +172,29 @@ for (const width of [1280, 960, 375]) {
             for (const route of ['/#/tasks', '/#/project/p1']) {
                 await page.goto(route)
                 await expect(page.locator('.statistics-cards .status-stat')).toHaveCount(7)
+                const progress = await page.locator('.mini-progress').evaluateAll(elements =>
+                    elements.map(el => {
+                        const cell = el.closest('td').getBoundingClientRect()
+                        const bar = el.querySelector('.mini-progress-bar').getBoundingClientRect()
+                        const label = el.querySelector('small')
+                        const box = label.getBoundingClientRect()
+                        return {
+                            value: label.textContent,
+                            offset: box.left - cell.left,
+                            barWidth: bar.width,
+                            fits: box.right <= cell.right,
+                            align: getComputedStyle(label).textAlign
+                        }
+                    })
+                )
+                expect(progress.some(item => item.value === '0%')).toBe(true)
+                expect(progress.some(item => item.value === '100%')).toBe(true)
+                for (const item of progress) {
+                    expect(item.align).toBe('left')
+                    expect(item.fits).toBe(true)
+                    expect(item.barWidth).toBeCloseTo(56, 0)
+                    expect(item.offset).toBeCloseTo(progress[0].offset, 0)
+                }
                 await expect(page.locator('.statistics-cards')).not.toContainText('No tasks')
                 await expect(page.locator('.hierarchy-statistics [role="combobox"]')).toHaveCount(0)
                 const stats = page.locator('.hierarchy-statistics')

@@ -1,5 +1,11 @@
 # EasyProject 本地 MCP
 
+## 当前能力（2026-10-27复核）
+
+本地和远端当前客户端均已发现状态list/get/create/update/delete，create/update含color及缺省自动配色、内置色保护、三语查重说明；不再把历史“须重连”当本会话现状。实际独立程序70E、catalog clean2a5904d，23工具；66原生协议与32参考已全读回一致。颜色属于状态字段，不另造颜色CRUD实体。HTTP导出格式差异与所有文档核对范围见DOCUMENTATION_SYNC_REVIEW_2026-10-27。
+
+## 历史演进回执（不是当前待办）
+
 2026-10-27独立MCP实际已交付70E303F85852C21838D879FC4823FB51810E1A0178AE851194BC2E80074DC9C1（clean源2a5904d），新受限副本后仅停明确批准的16800/15308，启动时间/路径复核一致；在真实及合成库仅发现23唯一工具、数据库摘要不变，无实体操作/权限改变。现有客户端须重新连接，不声称本聊天已加载新工具。随后窄窗CSS补丁不改变协议，不再次替换MCP。下方“待批准/仍53521FBD”为历史，最新见专项。
 
 2026-10-27配色共享规则已在服务器远端MCP及桌面伴随程序70E303F8部署；独立artifacts/mcp仍53521FBD，等待占用的新连接停止许可，不能声称当前Codex连接已加载新规则。23工具/权限不变，契约已实际发现并同步Apifox66接口/32参考；无迁移/历史重写，详见TASK_LIST_UI_REFINEMENT_CHECKPOINT。
@@ -10,7 +16,7 @@
 
 2026-10-26远端安全已启用（后端31d9b7c）：远端HTTP MCP的业务变更受共享工作区/服务池写入准入预算约束，超限在恢复点/审计/revision及业务写入之前拒绝，并保留查询能力；`isError=true`返回安全容量说明，不扩大权限或返回他人用量。默认512MiB工作区/8GiB服务池包含副本及恢复余量，非OS硬配额、无自动清理；详见server/deploy/STORAGE_BUDGET.md。不改变本地stdio工具schema或引入本地配额；精确部署/核验以NEXT_PHASE_CHECKPOINT为准。
 
-## 2026-10-25父子任务与估算来源候选（未部署）
+## 历史：2026-10-25父子任务与估算来源候选（后续已交付）
 
 业务schema8、JSON8；独立MCP不自行迁移，schema7真实库与现有程序不变，须另获升级授权。新增task参数`effort_state`仅允许`unestimated`/`estimated`；不传工作量为待估算，显式`effort_days:0`为已估算且无工作量，清除可传`effort_state:unestimated`。`legacy_unknown`只用于保留旧0来源，不接受普通写入。所有字段仍共享服务端校验。
 
@@ -22,7 +28,7 @@ task_list可选`hierarchy:true`，缺省false保持平铺分页；true按顶层�
 
 2026-10-23实际更新：业务schema7已在保护副本及逐字段核验后迁移，独立与安装侧MCP均为release 765B4C33330442DC947B76DE58747FEFF0EB78181B8738481B980E72C5FC70DF（构建源1640e31）。新进程tools/list实际发现23工具且真实库SHA不变；原有write/delete开关未扩大。当前Codex需要重连/重启重新发现；MCP仍不自行迁移。下方18工具/schema6为历史，当前语义以本段及状态专项为准。
 
-## 2026-10-23项目状态字典候选（未替换已安装程序）
+## 历史：2026-10-23项目状态字典候选（后续已交付）
 
 新增`easyproject_task_status_list/get/create/update/delete`，只读9工具、可写18、完整23。list必填projectId；create数据须project_id/name，可选color/sort_order/is_completed/is_default；update变更不允许移动项目。get返回record和首50条usage（含total），更多冲突由IPC get_usage分页读取；delete使用id与精确confirm_name，任何任务引用（含软删除）均拒绝，默认/最后状态也拒绝。写前恢复点、事务、脱敏审计、审批及账号隔离不变。
 
@@ -62,7 +68,7 @@ MCP客户端需支持本地stdio并允许配置可执行文件与参数。默认
 
 ## 工具契约
 
-### 受控字典与写入校验（2026-10-24源码候选）
+### 受控字典与写入校验（已交付共享规则）
 
 以下约束由同一共享Rust边界执行，MCP工具schema也公开枚举；桌面IPC、Web action和显式导入不能绕过。候选不代表当前连接中的旧程序已更新。
 

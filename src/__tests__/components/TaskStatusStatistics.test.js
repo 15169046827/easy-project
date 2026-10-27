@@ -52,10 +52,12 @@ describe('task state statistics controls', () => {
         expect(w.findAll('.status-stat')).toHaveLength(2)
         w.unmount()
     })
-    it('uses the exact dictionary color without reducing opacity', () => {
+    it('uses dictionary color as an accent without filling the entire card', () => {
         const w = setup()
         const element = /** @type {HTMLElement} */ (w.find('.status-stat').element)
-        expect(element.style.backgroundColor).toBe('rgb(139, 92, 246)')
+        expect(element.style.backgroundColor).toBe('')
+        expect(element.style.getPropertyValue('--status-color')).toBe('#8b5cf6')
+        expect(w.find('.status-dot').attributes('aria-hidden')).toBe('true')
         expect(element.style.opacity).toBe('')
         w.unmount()
     })

@@ -1061,7 +1061,7 @@ const scopedStatistics = computed(() => {
     }
 })
 const statisticsLabel = state =>
-    `${selectedProjectId.value ? '' : getProjectName(state.project_id) + ' · '}${taskStatusLabel(state.name, state.builtin_key, true)}`
+    `${taskStatusLabel(state.name, state.builtin_key, true)}${selectedProjectId.value ? '' : ' · ' + getProjectName(state.project_id)}`
 
 function taskStatusLabel(status, builtinKey = '', hasReference = false) {
     if (hasReference && !builtinKey) return status || '-'

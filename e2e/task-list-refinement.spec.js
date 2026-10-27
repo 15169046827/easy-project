@@ -134,11 +134,35 @@ for (const width of [1280, 960, 375]) {
                                 }
                             if (args.model === 'task_status')
                                 return { success: true, data: { list: states } }
-                            if (args.model === 'task')
+                            if (args.model === 'task') {
+                                const filtered = args.data?.status
+                                    ? tasks.filter(task => task.status_id === args.data.status)
+                                    : tasks
+                                const counts = args.data?.status
+                                    ? Object.fromEntries(
+                                          Object.entries(statistics).map(([scope, group]) => [
+                                              scope,
+                                              {
+                                                  total: filtered.length,
+                                                  statuses: group.statuses.map(state => ({
+                                                      ...state,
+                                                      count: filtered.filter(
+                                                          task => task.status_id === state.id
+                                                      ).length
+                                                  }))
+                                              }
+                                          ])
+                                      )
+                                    : statistics
                                 return {
                                     success: true,
-                                    data: { list: tasks, total: 7, statistics }
+                                    data: {
+                                        list: filtered,
+                                        total: filtered.length,
+                                        statistics: counts
+                                    }
                                 }
+                            }
                             return { success: true, data: { list: [], total: 0 } }
                         }
                     }
@@ -169,6 +193,11 @@ for (const width of [1280, 960, 375]) {
                         exact: true
                     })
                     .click()
+                const overviewBefore = await page.locator('.status-stat').allTextContents()
+                await expect(page.locator('.status-name').first()).toHaveText(
+                    route.includes('project') ? '待办' : '待办 · Refinement fixture'
+                )
+                expect((await page.locator('.status-stat').first().boundingBox()).width).toBe(192)
                 const phase = page.locator('.status-stat').filter({ hasText: 'Phase 3' })
                 await phase.click()
                 await expect
@@ -180,6 +209,7 @@ for (const width of [1280, 960, 375]) {
                                         c =>
                                             c.args?.model === 'task' &&
                                             c.args?.action === 'get_all' &&
+                                            c.args.data.pageSize === 20 &&
                                             Object.hasOwn(c.args.data, 'status')
                                     )
                                     .at(-1)?.args.data.status
@@ -187,9 +217,16 @@ for (const width of [1280, 960, 375]) {
                     )
                     .toBe('s3')
                 await expect(page.locator('.filter-bar .p-select').first()).toContainText('Phase 3')
+                await expect(page.locator('.statistics-cards .status-stat')).toHaveCount(7)
+                await expect(page.locator('.status-stat')).toHaveText(overviewBefore)
+                expect((await phase.boundingBox()).width).toBe(192)
                 const tag = page.locator('tbody .pill').filter({ hasText: 'Phase 3' })
-                expect(await phase.evaluate(el => getComputedStyle(el).backgroundColor)).toBe(
-                    await tag.evaluate(el => getComputedStyle(el).backgroundColor)
+                const accent = await phase
+                    .locator('.status-dot')
+                    .evaluate(el => getComputedStyle(el).backgroundColor)
+                expect(accent).toBe(await tag.evaluate(el => getComputedStyle(el).backgroundColor))
+                expect(await phase.evaluate(el => getComputedStyle(el).backgroundColor)).not.toBe(
+                    accent
                 )
                 await phase.click()
                 await expect
@@ -201,6 +238,7 @@ for (const width of [1280, 960, 375]) {
                                         c =>
                                             c.args?.model === 'task' &&
                                             c.args?.action === 'get_all' &&
+                                            c.args.data.pageSize === 20 &&
                                             Object.hasOwn(c.args.data, 'status')
                                     )
                                     .at(-1)?.args.data.status

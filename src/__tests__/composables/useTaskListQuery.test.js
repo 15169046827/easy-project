@@ -156,4 +156,91 @@ describe('task query state ownership', () => {
         ])
         expect(state.relatedTasks.value).toHaveLength(2)
     })
+    it('keeps sibling status counts when a status filter returns no rows', async () => {
+        const overview = {
+            top_level: {
+                total: 3,
+                statuses: [
+                    { id: 's1', count: 2 },
+                    { id: 's2', count: 1 }
+                ]
+            },
+            all_tasks: {
+                total: 4,
+                statuses: [
+                    { id: 's1', count: 3 },
+                    { id: 's2', count: 1 }
+                ]
+            }
+        }
+        crudAction.mockImplementation(async (model, _action, query) => {
+            if (model !== 'task' || !query.hierarchy) return { list: [], total: 0 }
+            return {
+                list: [],
+                total: query.status ? 0 : 3,
+                statistics: query.status ? { top_level: { total: 0, statuses: [] } } : overview
+            }
+        })
+        const state = useTaskListQuery('p1')
+        state.statusFilter.value = 's1'
+        state.appliedKeyword.value = 'needle'
+        state.priorityFilter.value = 'High'
+        expect(await state.init()).toBe(true)
+        expect(state.tasks.value).toEqual([])
+        expect(state.totalRecords.value).toBe(0)
+        expect(state.statistics.value).toEqual(overview)
+        expect(crudAction).toHaveBeenCalledWith('task', 'get_all', {
+            pageIndex: 1,
+            pageSize: 1,
+            hierarchy: true,
+            projectId: 'p1',
+            keyword: 'needle',
+            priority: 'High',
+            status: '',
+            sortBy: 'sort_order',
+            sortDirection: 'asc'
+        })
+    })
+    it('does not publish partial rows or overwrite counts if the overview request fails', async () => {
+        const state = useTaskListQuery()
+        const previous = { top_level: { total: 1, statuses: [{ id: 's1', count: 1 }] } }
+        state.tasks.value = [task('previous')]
+        state.statistics.value = previous
+        state.statusFilter.value = 's1'
+        crudAction.mockImplementation(async (model, _action, query) => {
+            if (model === 'task' && query.hierarchy && query.pageSize === 1)
+                throw Error('overview unavailable')
+            return { list: [], total: 0 }
+        })
+        expect(await state.init()).toBe(false)
+        expect(state.tasks.value.map(t => t.id)).toEqual(['previous'])
+        expect(state.statistics.value).toEqual(previous)
+        expect(state.errorMessage.value).toBe('overview unavailable')
+    })
+    it('ignores an older overview after a newer status selection finishes', async () => {
+        let overviewCalls = 0
+        /** @type {(value: unknown) => void} */
+        let finishOld = () => {
+            throw Error('Overview did not start')
+        }
+        crudAction.mockImplementation((model, _action, query) => {
+            if (model === 'task' && query.hierarchy && query.pageSize === 1) {
+                overviewCalls++
+                if (overviewCalls === 1)
+                    return new Promise(resolve => {
+                        finishOld = resolve
+                    })
+                return Promise.resolve({ statistics: { top_level: { total: 22, statuses: [] } } })
+            }
+            return Promise.resolve({ list: [], total: 0 })
+        })
+        const state = useTaskListQuery('p1')
+        state.statusFilter.value = 's1'
+        const old = state.init()
+        state.statusFilter.value = 's2'
+        expect(await state.init()).toBe(true)
+        finishOld({ statistics: { top_level: { total: 1, statuses: [] } } })
+        expect(await old).toBe(false)
+        expect(state.statistics.value.top_level.total).toBe(22)
+    })
 })

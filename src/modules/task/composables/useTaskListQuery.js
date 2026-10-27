@@ -40,6 +40,23 @@ async function loadTaskSnapshot(query) {
     }
 }
 
+async function loadTaskPage(query) {
+    // Status selection only filters rows, not sibling cards/counts. Retain
+    // project, search and priority dimensions; the overview needs just one row.
+    const [result, overview] = await Promise.all([
+        loadTaskSnapshot(query),
+        query.status
+            ? crudAction('task', 'get_all', {
+                  ...query,
+                  status: '',
+                  pageIndex: 1,
+                  pageSize: 1
+              })
+            : Promise.resolve(null)
+    ])
+    return { ...result, statistics: overview?.statistics || result.statistics }
+}
+
 function createPageOption() {
     return reactive({ pageIndex: 1, pageSize: 20, pageOptions: [20, 50, 100], fetchSize: 1000 })
 }
@@ -75,7 +92,7 @@ export function useTaskListQuery(initialProjectId = '') {
         loading.value = true
         errorMessage.value = ''
         try {
-            const result = await loadTaskSnapshot({
+            const query = {
                 pageIndex: pageOption.pageIndex,
                 pageSize: pageOption.pageSize,
                 hierarchy: true,
@@ -85,7 +102,8 @@ export function useTaskListQuery(initialProjectId = '') {
                 priority: priorityFilter.value,
                 sortBy: sortBy.value,
                 sortDirection: sortBy.value === 'update_time' ? 'desc' : 'asc'
-            })
+            }
+            const result = await loadTaskPage(query)
             if (request !== requestSequence || projectId !== selectedProjectId.value) return false
             dependencies.value = result.dependencies
             relatedTasks.value = result.relatedTasks

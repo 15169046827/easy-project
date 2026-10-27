@@ -108,7 +108,24 @@ test('real hierarchy keeps roots, weighted estimates, drawer edits and filter co
     })
     const rejected = await action('task', 'update', { id: parent, status_id: done }, 400)
     expect(JSON.stringify(rejected)).toContain(leaf)
+    await action('task', 'add', {
+        ...data,
+        name: 'Completed overview sibling',
+        status_id: done,
+        progress: 100
+    })
     await login(page)
+    await page.goto(origin + '/index.html#/project/' + project)
+    const overviewCards = page.locator('.statistics-cards .status-stat')
+    await expect(overviewCards).toHaveCount(2)
+    const overviewText = await overviewCards.allTextContents()
+    await overviewCards.filter({ hasText: '待办' }).click()
+    await expect(page.locator('.task-name-text')).not.toContainText(['Completed overview sibling'])
+    await expect(overviewCards).toHaveText(overviewText)
+    await overviewCards.filter({ hasText: '待办' }).click()
+    await expect(
+        page.locator('.task-name-text').filter({ hasText: 'Completed overview sibling' })
+    ).toBeVisible()
     for (const width of [1280, 960])
         for (const dark of [false, true]) {
             await page.setViewportSize({ width, height: width === 960 ? 640 : 800 })

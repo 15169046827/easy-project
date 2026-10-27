@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-27状态卡新候选：TaskStatusStatistics固定192×76/flex换行、中性底色+CSS字典色变量圆点，状态名前置仍完整tooltip，字典存储与标签颜色不变。useTaskListQuery的loadTaskPage在status非空时并行查询同口径去status/pageSize1概览，结果与列表一次提交，原requestSequence/project守卫防旧响应覆盖；统计失败不发布部分数据。未增加API参数或变更响应/后端/权限，MCP继续70E。此新候选交付状态以STATUS_CARD_PRESENTATION_CHECKPOINT为准。
+
 2026-10-27窄窗复验补丁：TaskList自己的filter-bar断点负责1100以下4列/900以下2列及按钮nowrap/min-content；workspace-layout.css移除两条针对全局任务的高优先级重复列规则，避免embedded与global分叉。MCP实际独立与伴随均70E（源2a），CSS补丁不改协议/Rust/schema；新桌面mainbe248d2与网页c2ca28b是同一CSS产品源码，前者仅多检查点提交。修复版原生/桌面交付是否完成以专项顶部为准。
 
 2026-10-27上述共用TaskList/Statistics/statusColors/Drawer与共享Rust颜色规则已经桌面及远端实际部署，业务schema8/账号3不变。catalog/Apifox已绑定伴随70E303F8的实际23工具，独立MCP仍旧53521FBD等待具体占用进程许可；两者不能混淆。ResizeObserver释放、稳定状态ID筛选及默认色/显式自定义色策略不变，未增加权限或后台自动迁移。准确副本/原生范围/待办见本轮专项。

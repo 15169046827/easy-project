@@ -33,15 +33,18 @@
                 :key="state.id"
                 class="status-stat"
                 :class="{ selected: selectedStatus === state.id }"
-                :style="statusColorStyle(state)"
+                :style="{ '--status-color': statusColor(state) }"
                 :aria-label="label(state) + ': ' + state.count"
                 :aria-pressed="selectedStatus === state.id"
                 :title="label(state)"
                 v-tooltip.bottom="label(state)"
                 @click="$emit('select-status', selectedStatus === state.id ? '' : state.id)"
             >
-                <strong>{{ state.count }}</strong
-                ><small>{{ label(state) }}</small>
+                <strong>{{ state.count }}</strong>
+                <small>
+                    <span class="status-dot" aria-hidden="true"></span>
+                    <span class="status-name">{{ label(state) }}</span>
+                </small>
             </Button>
         </div>
     </section>
@@ -50,7 +53,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Button from 'primevue/button'
-import { statusColorStyle } from '../../../utils/statusColors'
+import { statusColor } from '../../../utils/statusColors'
 const props = defineProps({
     modelValue: { type: String, required: true },
     data: { type: Object, required: true },
@@ -96,9 +99,9 @@ const populatedStatuses = computed(() =>
     flex-shrink: 0;
 }
 .statistics-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr));
-    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 .status-stat {
     display: flex;
@@ -106,17 +109,27 @@ const populatedStatuses = computed(() =>
     align-items: flex-start;
     justify-content: center;
     gap: 0.35rem;
+    flex: 0 0 12rem;
+    width: 12rem;
+    max-width: 100%;
     min-width: 0;
     min-height: var(--workspace-stat-height, 76px);
     height: var(--workspace-stat-height, 76px);
     padding: 0.8rem 1rem;
-    border: 1px solid;
+    border: 1px solid var(--color-border);
     border-radius: 0.75rem;
     text-align: left;
+    background: var(--color-surface);
+    color: var(--color-text);
+}
+.status-stat:not(:disabled):hover {
+    border-color: var(--status-color);
+    background: var(--color-subtle-hover);
+    color: var(--color-text);
 }
 .status-stat.selected {
-    outline: 2px solid var(--p-primary-color);
-    outline-offset: 2px;
+    border-color: var(--status-color);
+    box-shadow: inset 0 0 0 1px var(--status-color);
 }
 .status-stat:focus-visible {
     outline: 3px solid var(--p-primary-color);
@@ -127,10 +140,24 @@ const populatedStatuses = computed(() =>
     line-height: 1;
 }
 .status-stat small {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     width: 100%;
+    min-width: 0;
+    line-height: 1.2;
+}
+.status-dot {
+    width: 0.625rem;
+    height: 0.625rem;
+    flex: 0 0 0.625rem;
+    border-radius: 50%;
+    background: var(--status-color);
+}
+.status-name {
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    line-height: 1.2;
 }
 </style>

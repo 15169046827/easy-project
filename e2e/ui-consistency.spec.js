@@ -846,6 +846,7 @@ test('dashboard status and overdue cards navigate to an effective, clearable tas
                                 call =>
                                     call.args.model === 'task' &&
                                     call.args.action === 'get_all' &&
+                                    call.args.data.pageSize === 20 &&
                                     Object.hasOwn(call.args.data, 'status')
                             )
                             .at(-1)?.args.data.status
@@ -878,6 +879,7 @@ test('dashboard status and overdue cards navigate to an effective, clearable tas
                             call =>
                                 call.args.model === 'task' &&
                                 call.args.action === 'get_all' &&
+                                call.args.data.pageSize === 20 &&
                                 Object.hasOwn(call.args.data, 'status')
                         )
                         .at(-1)?.args.data.status

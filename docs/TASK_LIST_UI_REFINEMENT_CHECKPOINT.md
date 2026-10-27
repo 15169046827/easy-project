@@ -1,5 +1,15 @@
 # 任务列表/统计/子任务抽屉统一整改
 
+## 完整回归与契约候选里程碑（2026-10-27）
+
+产品源码已封存并推送af72eb5fbec2e10061443789c786a3fa61e07bfa，分支codex/audit-release-20261006-api。clean生产110项通过；真实HTTP首轮12/13，唯一失败是旧统计总高<=80断言与新增工具栏/完整卡片冲突，已改为卡片精确76px、统计不裁剪及原列表>=120px检查，完整13/13复跑通过。最后lint通过，350单测/桌面74+1/服务器62+19/fmt/Clippy等既有本轮证据继续有效。Linux CI40429081924的server/security均success。
+
+clean release MCP已构建，SHA256=187715E8CE2946CEEE470E90EBADB20470FA21AE661342D5740F417DB91FFF43；仅target/release候选，独立artifacts/mcp仍旧53521FBD。通过匹配候选manifest在既有合成库仅initialize/tools/list发现23工具、7命令36动作，数据库摘要不变；catalog/66协议布局已生成，Apifox远端同步尚待。未迁移/清理/操作真实库。NSIS与本轮原生仍待。
+
+本节点未提交准确路径：docs/api/MODELS.md、docs/api/apifox-documents.json、docs/api/apifox-layout.json、docs/api/catalog.json、e2e/web-server.spec.js，加本检查点及交接CURRENT_STATE回执。WACAS未定义/UPARS1.1.0/交接1.16；下一长阶段前5h余16%/周72%，仍高于10%。先提交检查点，再构建NSIS候选、下载并核Linux产物、同步Apifox并读回；原生隔离候选需用户自行选择本地。新UI部署询问尚未回复，不覆盖现安装/服务器/独立MCP，不停止新连接。旧西语线上70ad16e及桌面31656保持，服务器之前SSH成功后已退出；无关机/重置/唤醒授权。Git/Wolai此节点待更新，更新后记录实际源。
+
+本任务拥有的两个1420预览session42712/64614均已正常Ctrl-C停止；上文“仍运行”为历史，不据此声称当前预览在线。HTTP隔离测试已完成并退出，未公开监听。
+
 
 ## 封存候选前复验/失败记录（2026-10-27）
 

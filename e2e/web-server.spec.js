@@ -125,7 +125,15 @@ test('real hierarchy keeps roots, weighted estimates, drawer edits and filter co
             if (width === 960) {
                 const statistics = await page.locator('.hierarchy-statistics').boundingBox()
                 const table = await page.locator('.p-datatable-table-container').boundingBox()
-                expect(statistics.height).toBeLessThanOrEqual(80)
+                // Statistics now include an accessible toolbar and fully visible cards.
+                // Check card geometry, not the previous scroll-clipped section height.
+                expect(statistics.height).toBeGreaterThanOrEqual(76)
+                const cards = page.locator('.statistics-cards')
+                await expect(cards).toBeVisible()
+                expect(
+                    await cards.evaluate(element => element.scrollHeight <= element.clientHeight)
+                ).toBe(true)
+                expect((await cards.locator('button').first().boundingBox()).height).toBe(76)
                 expect(table.height).toBeGreaterThanOrEqual(120)
             }
             await page.getByRole('button', { name: /^(展开任务|Expand task)$/ }).click()

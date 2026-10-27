@@ -1,9 +1,9 @@
 {
-  "sourceCommit": "70ad16e7b9a89fd59b4fd8bcfbf7f1e6b4f1a689",
+  "sourceCommit": "af72eb5fbec2e10061443789c786a3fa61e07bfa",
   "sourceNote": "Documentation source; unchanged MCP input schemas may be reused only when the previously verified binary digest matches. Binary provenance is separate; this generator does not rebuild or replace it.",
   "mcpBinary": {
-    "sha256": "53521fbd289f406ea1ed422d31e672252b481bbd4593a76de9277f6b222f927f",
-    "sourceCommit": "70ad16e7b9a89fd59b4fd8bcfbf7f1e6b4f1a689",
+    "sha256": "187715e8ce2946ceee470e90ebadb20470fa21ae661342d5740f417db91fff43",
+    "sourceCommit": "af72eb5fbec2e10061443789c786a3fa61e07bfa",
     "worktreeDirty": false,
     "buildKind": "release"
   },
@@ -951,7 +951,7 @@
             "additionalProperties": false,
             "properties": {
               "color": {
-                "description": "#RRGGBB hex color; UI provides named presets, existing colors are not rewritten.",
+                "description": "#RRGGBB hex color. On create, omission picks and persists a random least-used color from #3b82f6/#8b5cf6/#14b8a6/#f59e0b/#f43f5e/#06b6d4/#d946ef/#22c55e. Explicit custom colors are preserved. Built-in Pending/InProgress/Done display colors are fixed at #64748b/#3b82f6/#22c55e; a different explicit color update requires first renaming the status to make it custom. No automatic rewriting of legacy rows.",
                 "maxLength": 7,
                 "minLength": 7,
                 "type": "string"
@@ -1009,7 +1009,7 @@
             "minProperties": 1,
             "properties": {
               "color": {
-                "description": "#RRGGBB hex color; UI provides named presets, existing colors are not rewritten.",
+                "description": "#RRGGBB hex color. On create, omission picks and persists a random least-used color from #3b82f6/#8b5cf6/#14b8a6/#f59e0b/#f43f5e/#06b6d4/#d946ef/#22c55e. Explicit custom colors are preserved. Built-in Pending/InProgress/Done display colors are fixed at #64748b/#3b82f6/#22c55e; a different explicit color update requires first renaming the status to make it custom. No automatic rewriting of legacy rows.",
                 "maxLength": 7,
                 "minLength": 7,
                 "type": "string"

@@ -1,5 +1,15 @@
 # 进度列对齐与同步复核（2026-10-27）
 
+## 本轮交付完成：桌面及网页已更新，控制已释放
+
+用户已明确点正确候选的本地入口；原生1282×802全局/项目内浅深50%与100%起点/条宽稳定，正常X退出后候选进程0，合成所有表hash保持/integrity ok/FK0，立即reset。未冒称本轮原生960/375或完整辅助技术测试，相关6浏览器严格CSP矩阵及353单测/110生产UI/13独立HTTP有效。主题切换即时过渡截图未作为最终证据，另取稳定主题验证；首次候选未保持运行和测试服务启动超时失败仍保留。未修改Rust或重跑全库安全审计。
+
+网页已实际交付progress-71de9e0-20261027：新root700副本/72文件/491旧assets保留，B15571B7后端和PID1893未重启，两库全字段/schema/对象/integrity/FK、服务配置及Funnel保持；正常证书HTTPS2HTML/CSP/no-store/71静态摘要/4匿名401/health200/邮箱与西语通过。SSH49193已exit，不重复部署。
+
+桌面已使用执行HEAD ef9f10a21b5dcf7e4efefdc100f40b00551f2289（仅文档后继、产品/clean构建71de9e0）安全覆盖。fresh观察真实window3279194实际为无草稿本地仪表盘，不是旧登录快照；正常X退出后installer守卫确认进程已停，未强杀。新E盘受限副本dictionary-overwrite-progress-71de9e0-20261027保存742文件；739非程序SHA、全部原DB行hash/完整性/外键及独立MCP保持，installer exit0。最终main45AEF6A9C58A68955532762A19A65B5D2F975585E1D784550316BA987BA76F9B，与候选0080C114仅14694112—14694114三字节UNK→NSS，18736128字节长度一致；伴随和独立均70E303F8全摘要不变。启动后PID29832/window7606276只读确认默认登录/本地入口且无PAGE_RENDER_FAILED，未操作账号字段，立即node_repl reset；再核全部原DB行hash与新副本相同/integrity ok/FK0。
+
+本轮无待许可/待本地/待安装/待部署。仍保留DOC-SYNC-001 HTTP备用媒体导出格式待办（不是MCP状态颜色漏同步）；66原生/32参考读回一致，近期UI变化无新协议不重传Apifox。源71de9e0，交接规则1.19/79条、WACAS未定义/实际UPARS1.1.0，最新5h余49%/周50%（最终同步前）。Git/Wolai/交接本完成节点将在提交后同步并读回，有缺口须追加，不冒称正式生产发布通过或新公开Release。无关机/重置/唤醒/新MCP进程停止授权。下方全部为历史节点。
+
 ## 网页静态已交付，桌面覆盖待执行
 
 重新核home-host/current旧status-cards-697e54f、PID1893/User easyproject、archive6360/helper4d52完整摘要及AST后，执行已批准静态专用helper。新release=/opt/easyproject/releases/progress-71de9e0-20261027，新root700受限副本=/var/backups/easyproject/progress-71de9e0-20261027；72交付文件/491旧assets保持，后端B15571B7/PID1893未改变且未重启，2DB全表/schema/对象/integrity/FK及service配置/Funnel保持，三服务/timer active。正常证书HTTPS2HTML/CSP/no-store/71静态SHA/4匿名401/health200/邮箱及西语负载通过，无真实账号登录或实体操作。SSH49193已正常exit。下一步仅桌面fresh无草稿检查→正常退出→新E盘副本覆盖及启动核验，不重复网页部署，不修改MCP。当前仅本文待提交；源包71de9e0不变。

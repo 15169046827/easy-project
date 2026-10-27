@@ -1,6 +1,6 @@
 # EasyProject
 
-2026-10-27进度列左对齐修复已通过353单测、110生产界面及6矩阵，正在已批准的新副本交付流程，尚不等于已安装。近期状态/颜色已同步两端MCP，Apifox66原生与32参考全读回一致；HTTP备用媒体导出有明确缺口，详见[同步复核](docs/DOCUMENTATION_SYNC_REVIEW_2026-10-27.md)与[本轮检查点](docs/PROGRESS_ALIGNMENT_SYNC_CHECKPOINT.md)。
+2026-10-27进度列左对齐修复已安全交付桌面和网页；353单测、110生产界面、13真实HTTP及6矩阵通过，原生全局/项目内深浅复验、739原有非程序文件与启动后数据库保全通过。近期状态/颜色已同步两端MCP，Apifox66原生与32参考全读回一致；HTTP备用媒体导出仍有明确缺口，详见[同步复核](docs/DOCUMENTATION_SYNC_REVIEW_2026-10-27.md)与[交付检查点](docs/PROGRESS_ALIGNMENT_SYNC_CHECKPOINT.md)。无后端/MCP/数据库迁移或新公开Release。
 
 2026-10-27状态卡最新调整已交付桌面和网页：固定192×76px、不撑满整行，中性底色+字典色圆点；状态筛选只过滤表格，保留同口径其它卡片/计数。353单测、110界面、13真实HTTP及原生窄窗深浅/键盘复验通过，新副本及原数据保全通过；后端、MCP和权限未变。公开下载包与正式生产结论不变，详见[最新交付记录](docs/STATUS_CARD_PRESENTATION_CHECKPOINT.md)；前一轮任务列表功能见[历史专项](docs/TASK_LIST_UI_REFINEMENT_CHECKPOINT.md)。
 

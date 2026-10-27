@@ -1,6 +1,6 @@
 # EasyProject 架构、代码地图与验证工作流
 
-2026-10-27进度对齐候选：共用TaskList的mini-progress使用固定3.5rem条宽+4ch百分比槽、左对齐及等宽数字，progress列9rem避免100%裁切；6矩阵同时检查全局/项目内0%与100%起点/条宽/边界。无Rust/模型/API变化。两端当前客户端实际已发现状态CRUD和color，独立70E/catalog2a对应，66原生与32参考全读回一致；HTTP多媒体导出限制见DOCUMENTATION_SYNC_REVIEW_2026-10-27，不能以旧读回摘要覆盖该缺口。
+2026-10-27进度对齐已实际交付：共用TaskList的mini-progress使用固定3.5rem条宽+4ch百分比槽、左对齐及等宽数字，progress列9rem避免100%裁切；6矩阵检查全局/项目内0%与100%起点/条宽/边界，原生两任务页浅深50%/100%稳定。无Rust/模型/API变化。两端当前客户端已发现状态CRUD和color，独立70E/catalog2a对应，66原生与32参考全读回一致；HTTP导出限制见DOCUMENTATION_SYNC_REVIEW_2026-10-27，不能以旧读回摘要覆盖该缺口。实际交付、文件/数据库保持及未验边界见PROGRESS_ALIGNMENT_SYNC_CHECKPOINT。
 
 ## 历史架构演进（候选与部署状态以最新专项为准）
 

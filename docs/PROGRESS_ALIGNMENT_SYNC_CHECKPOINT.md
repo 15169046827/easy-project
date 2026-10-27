@@ -1,5 +1,17 @@
 # 进度列对齐与同步复核（2026-10-27）
 
+## 本轮纠正桌面已交付，人工数据已生成；网页及一条前置样例仍待
+
+产品/clean构建d1faa3541ca8364f575b9afa26f1c406eef56e18，执行文档HEAD8a00a2ed68dddeee6aa1c15b37f1cf4b93b314c2，分支codex/audit-release-20261006-api。354单测/65、112完整生产UI、13真实HTTP及8抽屉矩阵通过（首111/112甘特日期并发失败、低并发完整通过保留），类型/lint/build有效。NSIS1D4CBA2B344599B897EA32DD386DBB1F5E064596988096DD3E60D9CE9854DC00已新副本dictionary-overwrite-child-drawer-d1faa35-20261027后安装exit0：保存778文件/775非程序SHA及原DB全行保持；安装主7B4509FC75A6BA72F08DD609A755F7A1EA11551E202AA166B66578219C58602E仅比封存B8FFF7E1多标准14694112—14694114三字节UNK→NSS，伴随/独立70E未变。完整安装保全在创建样例前已通过，后续DB新增是用户明确要求的数据，不再用整库SHA不变做错误判定。
+
+用户要求的实际本地数据已通过正式MCP创建：主项目PROJECT:85f2dd83aede48048e3247683f6f8cf6为21任务/10顶层/9状态，对照PROJECT:9d7986bf127348faadc0162c08a1e440为4任务/4顶层/4状态，两合成人员/3团队关系及各自负责人；共25任务。包含多层子孙、0/100、未估算/明确0/正数、各合法优先级、长标题备注与多色状态；两个评审中跨项目独立红/紫，默认三态固定灰蓝绿。无远端写入/删除/原项目修改。每步实际ID/recovery结果保存新受限副本内manual-fixture-created.json；verify-manual-fixture.cjs对旧副本逐行比较18条原业务记录均保持，integrity ok/FK0，最后UI操作后再核一次仍通过。
+
+用户已在新真实安装点本地入口。PID22172/window9702368，fresh精确路径核对，原生最大化1920×1032（与用户图同尺寸）主验收项目抽屉明确见已完成100%/待办0%同左起点，状态标签也同左起点，真实PrimeVue/CSP保持。原生深色/长状态滚动未完成，不拿8浏览器矩阵冒充全部原生。Windows helper最大化后出现持续输入映射偏移：AX搜索误开排序、滚动报16×16小区域bounds、还原操作变最小化；已按规范重新绑定/恢复窗口，停止指针输入并reset。未操作原项目/编辑表单或数据；新增样例的前置关系因此未补，TASK:906f4144995b4452938aff9ddb1f8d58仍无前置，计划引用同项目“03｜评审中”TASK（查清单key review），不能说已设置或直接写SQL。搜索输入已清空，但活动查询仍筛选该一行，人工点“清除”即可回10顶层；窗口恢复可见并留本地项目，控制已释放。
+
+网页本轮未更新：服务器仍前轮progress-71de9e0-20261027/PID1893（本轮未重连，不把旧在线当新确认）。新72文件包child-drawer-d1faa35-20261027.tar.gz已本地生成，SHA804808925fd43ef875710f1dfb6d4cee68176dbfbe3345f009f280db39e18158；静态helper deploy-child-drawer-d1faa35.py SHA7A4A9A64788AB10A0ECDBD915736EAAD153C4D6709CECBF4E191DA9BFB922611，限定旧progress71/新child-drawer-d1faa35、source/product d1，保留所有已审查静态安全保护；尚未上传或执行。HTTPS helper verify-child-drawer-https.cjs已绑定新payload；不重建/重装桌面，不重新创建样例，不停MCP进程。MCP/Apifox语义无变化，不机械重传；HTTP导出DOC-SYNC-001仍未关闭。
+
+准确下一步：先查五小时额度；低于10%不启动网页部署长阶段。恢复后先读本文/人工数据指南、核Git/实际安装和清单及helper摘要，再连接home-host核current/PID/二库/配置，上传新包并远端核SHA/AST，在新root700副本后只切静态/保留491旧assets及后端PID/DB，正常TLS核对；工具正常时仅在新主验收项目补前置关系并读回，若仍偏移停止而不瞎点。最后更新README/CHANGELOG/计划/发布说明/交接与Wolai准确桌面/网页分开状态。当前待提交本文、MANUAL_ACCEPTANCE_DATA及handoff当前状态；WACAS未定义/UPARS1.1.0/交接1.19，最近5h余11%/周44%，保存后再核门禁；无重置/关机/唤醒授权。下面“完成”仅前轮外表历史，不覆盖本轮明确待办。
+
 ## 用户截图重开：漏检子任务抽屉，新增本地人工验收数据要求
 
 clean产品/包源d1faa3541ca8364f575b9afa26f1c406eef56e18已推送；354/65、类型lintbuild、8矩阵/112完整UI/13HTTP全过。完整首111/112甘特日期输入并发失败已保留，未改断言，降低并发2完整112/112通过。Windows mainB8FFF7E12F7336FCB32178CCA9A5BC1EBB87473E69D3E6117BAE57900F0463AA、NSIS1D4CBA2B344599B897EA32DD386DBB1F5E064596988096DD3E60D9CE9854DC00；先no-bundle、恢复70E伴随后NSIS，独立MCP未改。当前实际安装无运行进程，尚未纠正覆盖/服务器切换或真实样例创建。

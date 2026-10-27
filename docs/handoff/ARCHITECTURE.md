@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-27窄窗复验补丁：TaskList自己的filter-bar断点负责1100以下4列/900以下2列及按钮nowrap/min-content；workspace-layout.css移除两条针对全局任务的高优先级重复列规则，避免embedded与global分叉。MCP实际独立与伴随均70E（源2a），CSS补丁不改协议/Rust/schema；新桌面mainbe248d2与网页c2ca28b是同一CSS产品源码，前者仅多检查点提交。修复版原生/桌面交付是否完成以专项顶部为准。
+
 2026-10-27上述共用TaskList/Statistics/statusColors/Drawer与共享Rust颜色规则已经桌面及远端实际部署，业务schema8/账号3不变。catalog/Apifox已绑定伴随70E303F8的实际23工具，独立MCP仍旧53521FBD等待具体占用进程许可；两者不能混淆。ResizeObserver释放、稳定状态ID筛选及默认色/显式自定义色策略不变，未增加权限或后台自动迁移。准确副本/原生范围/待办见本轮专项。
 
 2026-10-27任务列表整改候选：TaskList已收敛两套头部/筛选/列工具模板，嵌入标题为h3保留语义。TaskStatusStatistics用真实PrimeVue按钮发update:modelValue与select-status，隐藏0/整体折叠；共享statusColors提供默认色、原字典色及WCAG黑白文字。table-card ResizeObserver提供CSS可见宽度给嵌套TaskChildrenDrawer，卸载释放；卡片/标签/看板同源。Rust common/task_status的颜色集/随机最少使用建议由task_status_service的新增缺省复用，显式自定义色不覆盖，内置颜色写入受保护，无schema迁移。MCP schema已更新，实际程序/Apifox绑定仍待本候选clean构建与交付。

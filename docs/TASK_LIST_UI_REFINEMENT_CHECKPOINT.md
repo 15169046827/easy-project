@@ -1,5 +1,17 @@
 # 任务列表/统计/子任务抽屉统一整改
 
+## CSS网页已交付，新桌面候选待原生（2026-10-27）
+
+全量350/65、110生产UI、13真实HTTP及类型/lint/build通过；109/110首轮route.fetch ECONNRESET导致goto中断与完整workers4复跑全过的证据保留。最终CSS源码c2ca28b，Windows clean源be248d286c29e89a70c81638e638a90172d7b093仅多检查点、产品无漂移。Tauri no-bundle构建后明确恢复已验伴随70E，再独立NSIS封装，未再次部署Tauri顺带重建的MCP。新主9F6BFAE00157CFA598B5D24894BA85E2448B4F015647EA2B7CC48793673DB688/NSISE036803D574E1B9ED99107E92395801BB249E18BA9906737CE4200C46141111F封存src-tauri/target/audit-tools/task-narrow-be248d2/manifest.json，独立/伴随70E摘要一致。桌面此CSS包尚未覆盖。
+
+网页纯静态已安全交付current=/opt/easyproject/releases/task-narrow-c2ca28b-20261027，新root700副本=/var/backups/easyproject/task-narrow-c2ca28b-20261027（原程序/配置/Funnel及在线SQLite一致副本）。72交付文件/422旧assets保留；后台程序B15571B7/PID1893不变、未重启，2DB全部表行/objects/schema/完整性保持，配置/Funnel保持。正常证书TLS2HTML/71静态摘要/4匿名401/health200/邮箱和西语负载通过；SSH31251已正常exit。无真实CRUD/迁移/清理/权限变化/公开Release。
+
+旧候选10720正常关闭后，仅在同一task-ui-native-2a5904d隔离目录保留旧exe为before-narrow-be248d2.exe并复制新9F6BFAE0；不复制账号或真实数据，合成DB保持。新PID2652/window397622（Sky新枚举），已请用户在此新窗口自行“不登录，本地使用”并缩到最小，尚未回复。上次946×634仅发现缺陷，不算这份修复的原生验收；不可自动点登录入口或继承旧启动的本地确认。真实安装仍BAFEE1B7/PID10048默认登录，未操作其登录表单。
+
+独立MCP已完成70E交付与真实/合成23工具/DB SHA保持，下文待许可均历史，停止16800/15308授权已执行失效。下一步：收到新本地+缩窗确认→fresh Sky选择window397622、确认合成库→深浅全局与项目内筛选按钮不换行/统计折叠/抽屉/滚动分页合理核验→合成DB保全→关闭真实安装登录页（无草稿）→新受限E盘副本及NSISE036覆盖→新主/伴随/原文件及启动DB保持→更新Git/Wolai/交接。只更新桌面，不重部署网页/后端/MCP；新MCP连接不需停、不扩大权限。新覆盖副本须不同于task-ui-2a5904d，建议dictionary-overwrite-task-narrow-be248d2-20261027。SourceCommit必须取执行时实际HEAD，产品与be248d2无漂移时可文档后继；helper用install-task-ui-2a5904d.ps1（精确路径检查、完整保全）及新InstallerSha/SafetySuffix，不可复用旧副本。
+
+WACAS未定义/UPARS1.1.0/交接1.16，无关机/额度重置/唤醒授权。最新进入打包前5h余72%/周67%；本节点未提交准确10路径：README.md、CHANGELOG.md、docs/PROJECT_PLAN.md、docs/RELEASING.md、docs/MCP.md、docs/api/README.md、docs/handoff/CURRENT_STATE.md、docs/handoff/README.md、docs/handoff/ARCHITECTURE.md及本文。Git/Wolai待本回执；API契约无变化不重传。当前无构建/测试/SSH进行中，仅真实安装及新隔离候选窗口开着。
+
 ## MCP已交付，原生窄窗发现的样式补丁（2026-10-27）
 
 CSS补丁c2ca28b6c968cca4ba15b114264f82413bfbbd59已clean完整复验：350/65单测、类型/lint/build通过；完整首轮109/110，失败为原有project-navigation首次route.fetch ECONNRESET继而goto ERR_ABORTED（无产品断言失败），保留日志，不修改/忽略该例；有界workers4完整复跑110/110，随后13真实HTTP全部通过。新6矩阵均有效，Rust/后端/MCP源未变复用先前74+1/62+19/CI，不伪称CSS阶段重跑Rust。纯静态72文件包已生成，SHA5FDB2E9EA1DE375F7325DC9C2F122A389353241B791B58ED48677B9D0CA8B5FB；上传与helper80FA42F5736CF8394E73EF7D9CC3B49CF54C6E2AC6F1D7A9E5DDAC1FEB40B8A7远端SHA及AST匹配。新SSH31251已核后端仍1893，未执行静态切换。下一长阶段：clean主程序+NSIS构建，Tauri若重建伴随MCP则不部署新件，恢复已验70E再打包；独立70E不重建替换、API契约不重传。旧合成候选已正常关闭，无草稿/数据改动；修复候选重启需要用户自行再次选择本地并缩窗，不能自动认证。此回执未提交，提交后Git应干净，Wolai待同步。

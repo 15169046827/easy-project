@@ -1,5 +1,7 @@
 # EasyProject 新伙伴接手入口
 
+2026-10-27续接从docs/TASK_LIST_UI_REFINEMENT_CHECKPOINT.md顶部开始：候选完整110UI/13HTTP及NSIS/Linux/MCP构建已过，最终伴随MCP70E303F8（非首轮187715E8）；真实部署仍西语70ad16e。新隔离原生窗口等待用户自行选择本地，另有本轮部署许可未回复，不可直接覆盖。契约同步及准确产物/额度见专项。
+
 2026-10-27当前开发为TASK_LIST_UI_REFINEMENT_CHECKPOINT：按用户批准的新抽屉/动态统计/统一TaskList及状态颜色方案实施，350/74+1/62+19及静态门禁通过，完整110生产UI/13HTTP、clean构建/API/原生与部署仍待闭环；RULES1.16为最新意图。不要重做已交付70ad16e西语/邮箱，真实安装/服务器与MCP暂不随候选改变。
 
 2026-10-27当前：国际化/官网反馈邮箱及共享校验70ad16e已安全交付桌面/服务器，独立MCP53521FBD保持，新副本与原数据保全/HTTPS逐资源核验通过；I18N_SPANISH_CHECKPOINT顶部为最终事实，下方待部署/待切本地已是历史。下一步实施TASK_LIST_UI_REFINEMENT_CHECKPOINT已确认的抽屉、统计区与项目/全局任务列表统一方案。原生960/完整键盘、正式生产与未更新公开包边界保留，不重复旧构建或授权，不关机。

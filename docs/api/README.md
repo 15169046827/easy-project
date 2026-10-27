@@ -1,5 +1,9 @@
 # EasyProject API维护入口（Apifox）
 
+2026-10-27最终候选同步收尾：66协议接口/32参考均已逐项VERIFIED，原ID/分组保持，source2a5904d与MCP70E摘要对应；11契约Vitest通过。实际安装仍70ad16e/53521FBD，候选契约不是当前客户端已加载或新后端已部署证明。
+
+2026-10-27配色候选最终NSIS伴随release MCP源2a5904d（产品af72eb5），SHA70E303F8…；实际23工具发现/合成DB摘要不变，catalog/66协议本地重生成，公开缺省颜色随机持久化及内置色保护。Apifox最终同步进行中，见TASK_LIST_UI_REFINEMENT_CHECKPOINT，不冒充线上已启用。实际独立MCP与远端仍70ad16e/53521FBD，HTTP19结构及权限不变，无schema迁移。
+
 2026-10-26西语共享校验及独立MCP已安全交付：release源70ad16e，SHA53521FBD…，23工具schema公开Pending/待办/Pendiente、InProgress/In Progress/进行中/En curso、Done/已完成/Completada同项目防重，不用别名替代status_id。实际合成库只读发现/摘要不变后重生成catalog与66接口/32参考，私有Apifox逐项读回、原ID/分组保持。服务器/桌面仍待原生复验及安全部署，不把契约同步当线上已生效；HTTP19与权限不变。精确源/摘要/验证/当前待用户切本地见I18N_SPANISH_CHECKPOINT，客户端需重连。
 
 2026-10-26公开静态索引已随前端31c756e部署，正常TLS GET /release-info.json返回application/json/200及v0.1.2-beta.1；契约仍全19HTTP/16路径、66原生/23MCP不变。未改后端/独立MCP/权限，无需机械重传未变接口；新安装伴随MCP只做合成发现，独立实际来源保持47b981d。准确部署及原生未验边界见版本检查点。

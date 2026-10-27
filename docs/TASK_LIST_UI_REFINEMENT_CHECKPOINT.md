@@ -1,5 +1,17 @@
 # 任务列表/统计/子任务抽屉统一整改
 
+## 最终包与原生接管等待（2026-10-27）
+
+本节点收尾：session26786已exit0，最终66接口/32参考全部VERIFIED读回，原ID/分组保持，源2a5904d/最终候选MCP70E。无进行中的构建/接口写入/HTTP测试；尚未做本轮原生验收或真实部署。最终待提交完整9路径：本文、docs/api/MODELS.md、docs/api/README.md、docs/api/apifox-documents.json、docs/api/apifox-layout.json、docs/api/apifox-manifest.json、docs/api/catalog.json、docs/handoff/CURRENT_STATE.md、docs/handoff/README.md。保存提交后未提交应为空；Wolai将按该回执源同步读回。继续前重查额度，低于10%只保存不开始原生长验证。
+
+Windows NSIS已从clean 2a5904dc032093a814ac973b21b350135064eb8e构建（与af72eb5产品无差异，仅测试/契约/检查点后继）。安装包28B9DB9BC3635562FC68355CE061C98FE6B1B8D9E227AB4E487BA7B47B521F18，主程序F5A112A98B5018210FB18F68AD9612DE293A536D1FF1B774E8B79BE597123A89；Tauri构建同步重建伴随MCP为70E303F85852C21838D879FC4823FB51810E1A0178AE851194BC2E80074DC9C1，首轮187715E8不是最终交付件。已据70E匹配manifest重跑23工具发现/合成DB摘要不变并重新生成catalog。全部产物封存src-tauri/target/audit-tools/task-ui-delivery-2a5904d/manifest.json，不覆盖真实artifacts/mcp。
+
+Linux CI40429081924源af72eb5、server/security均success；artifact12701093008的ZIP1E0C7F43132EBD625EC3E3F79CDE946C518A75DA2BF86724051EBA3CF9AFD226与GitHub摘要一致，ELF B15571B759DF49941C23C393BC94E41232302E4E52D4D5B6EF012A340F02C9CB及7F454C46头已核，仅候选未部署。11项Apifox契约Vitest和release:check通过；曾误用node --test导致Vitest初始化失败，日志保留，正确复跑通过。第一轮66接口全部VERIFIED后外层误判继承LASTEXITCODE提前结束，参考未同步；先只读核对无远端冲突，再以最终70E重新同步，当前session26786，日志task-ui-apifox-final-layout.log/final-docs.log。此进程未结束时不并行改manifest或盲重试。
+
+新隔离原生候选task-ui-native-2a5904d，PID10720（09:06:20），Sky返回window4394658及该完整exe路径。仅复制既有合成DB（源/目标SHA EA919F196F3D7B523EB8BD59A70A25B3FE0013C0D85CB33D3126591886055ACB）及exe/E盘storage配置，未复制账号/凭据/WebView。候选新WebView在E盘；已请用户在此新窗口自行点“不登录，本地使用”，尚未回复，不能自动操作登录或沿用旧窗口确认。
+
+下一步：收Apifox最终结果并读回；等待新本地切换→重新枚举Sky后原生深浅/统计折叠/抽屉/窄屏键盘及合成库保全→新UI部署许可明确后新受限副本交付。新部署询问仍未回复，新MCP连接停止另确认。真实安装/远端/独立MCP仍70ad16e，旧桌面31656不操作；SSH已退出、服务器保持开机，无关机/重置/唤醒。WACAS未定义/UPARS1.1.0/交接1.16，最新5h余13%/周72%，低于10%不开新长阶段。当前未提交5生成API文件（MODELS/apifox-documents/apifox-layout/apifox-manifest/catalog）及本文/交接/API入口回执，最终以Git为准。Git/Wolai前一2a5904d里程碑已同步读回，本包回执待同步。
+
 ## 完整回归与契约候选里程碑（2026-10-27）
 
 产品源码已封存并推送af72eb5fbec2e10061443789c786a3fa61e07bfa，分支codex/audit-release-20261006-api。clean生产110项通过；真实HTTP首轮12/13，唯一失败是旧统计总高<=80断言与新增工具栏/完整卡片冲突，已改为卡片精确76px、统计不裁剪及原列表>=120px检查，完整13/13复跑通过。最后lint通过，350单测/桌面74+1/服务器62+19/fmt/Clippy等既有本轮证据继续有效。Linux CI40429081924的server/security均success。

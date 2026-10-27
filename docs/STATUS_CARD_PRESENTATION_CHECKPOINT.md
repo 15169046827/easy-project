@@ -1,5 +1,13 @@
 # 状态卡固定尺寸与筛选独立统计（2026-10-27）
 
+## 新原生复验通过，进入已批准交付
+
+用户明确新候选已本地并缩小，并要求后续常规操作自行处理、空闲及时关控制；已记录规则1.18/79条及AGENTS，认证/安全人工边界不绕过。开工Git b74748bc4cc904ce52b4caaedad6fac72cc1e216干净，额度恢复5h余99%/周58%。fresh Sky返回新window7342644/精确status-cards-native路径，合成4任务无账号，新手说明自行跳过。实际946×634浅/深两卡固定大小/中性底色/灰绿圆点，不撑满余宽；点已完成后表格2根→1根，两卡仍1/1；Return取消回2根，两卡不变。真实严格CSP无关闭保护，相关原生键盘操作通过，不冒称完整辅助技术遍历。
+
+候选已正常X关闭，进程数0；与before-native-database.json逐表hash完全一致、integrity ok/FK0。完成后立即node_repl reset清理桌面控制，再做后台上传，不在后台工作时持续接管。SSH61100已连接并核current task-narrow-c2ca28b-20261027、PID1893/User easyproject、backendB15571B7、84GiB自由空间。首次SCP44281因认证提示等待超时关闭，远端确认两目标均不存在后才重试47152，未盲重写。
+
+下一步：核新静态包EE757CCA/helper64E4远端SHA与AST→新root700副本后只切静态，PID/2DB/配置/Funnel保持及正常TLS验证；桌面进入时fresh观察无草稿，正常退出→新dictionary-overwrite-status-cards-c5902ab-20261027副本→FD0D NSIS安全覆盖→只允许主2D23到安装的UNK→NSS差异、70E伴随/独立保持、所有原文件与启动DB核验→及时关控制→最终Git/Wolai/交接。许可已明确不再询问，不改后端/MCP/schema/权限/公开Release。当前未提交仅AGENTS.md、docs/handoff/RULES.md、本文；WACAS未定义/UPARS1.1.0，Git/Wolai前一候选节点已同步，本原生里程碑提交后更新。
+
 ## clean包已封存，等待新合成窗口本地确认
 
 三方同步回执：6c6d525eba1ccb998011fa24bfed4e25f109e8e2已Git推送/远端完整SHA一致，Wolai主和交接副本均已按该源同步并读回，本地规则/架构/当前状态一致；无同步缺口。后台演示页已关闭，Cua会话也已清理，不占用用户桌面。当前仍只等待用户新候选本地+缩小确认，未执行本轮桌面/网页部署。

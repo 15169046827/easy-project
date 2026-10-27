@@ -1,5 +1,9 @@
 # 进度列对齐与同步复核（2026-10-27）
 
+## 网页静态已交付，桌面覆盖待执行
+
+重新核home-host/current旧status-cards-697e54f、PID1893/User easyproject、archive6360/helper4d52完整摘要及AST后，执行已批准静态专用helper。新release=/opt/easyproject/releases/progress-71de9e0-20261027，新root700受限副本=/var/backups/easyproject/progress-71de9e0-20261027；72交付文件/491旧assets保持，后端B15571B7/PID1893未改变且未重启，2DB全表/schema/对象/integrity/FK及service配置/Funnel保持，三服务/timer active。正常证书HTTPS2HTML/CSP/no-store/71静态SHA/4匿名401/health200/邮箱及西语负载通过，无真实账号登录或实体操作。SSH49193已正常exit。下一步仅桌面fresh无草稿检查→正常退出→新E盘副本覆盖及启动核验，不重复网页部署，不修改MCP。当前仅本文待提交；源包71de9e0不变。
+
 ## 原生复验通过，进入已批准安全交付
 
 恢复基线fb1a62dc425bbf501e9972c5fd518dcb22297f03，Git干净，额度5h余57%/周51%，原生后余52%/周50%。用户已明确点击正确窗口本地入口；fresh Sky核精确progress-native路径/window2952196，3合成项目4任务。实际1282×802全局/项目内浅深50%与100%左起点一致、条宽稳定、PrimeVue样式及标题/导航正常，严格桌面CSP未放宽；主题过渡即时截图为中间态，另取过渡完成截图才判通过，不将浏览器375/960结果冒充原生窄窗。未做写入/编辑或认证操作。候选正常X退出，随后进程计数0，所有合成表hash与封存前相同、integrity ok/FK0，立即node_repl reset释放控制。

@@ -16,6 +16,10 @@ WACAS未定义/待确认，UPARS1.1.0/交接1.15；开始长阶段5h余59%/周94
 
 ## 当前调查/下一步
 
+2026-10-27本机已安全交付：新NSIS AD7DDF8D…安装退出0，受限副本dictionary-overwrite-spanish-70ad16e-20261027保存612文件/609非程序逐hash保持，安装exe86B731C0…及伴随MCP53521FBD…与候选完全一致，独立MCP保持，安装前后及启动后数据库逐表内容/integrity/FK相同。原安装已启动PID31656；受限Get-Process未看到进程曾误判、再启动40152，升级权限只读检查证实二者均Responding，已用sky正常关闭多余200380窗口（不操作登录表单），待再次核实最终单实例；不会将误判记作程序崩溃。
+
+服务器开机后已SSH连入，current仍website-refresh-83adac3-20261026、后端SHA9D0D7D0A…、PID670（重启已变化，旧2608历史）、受限easyproject及两timer active，磁盘84GiB空余；仅核对，无远端改动。准备的新候选spanish-70ad16e-payload共73文件，归档SHA84502AE18252755D6E188313434ED61A95805869C3B68C24A154CA34B3A92914，绑定Linux CI40327970525/C648F69E…及dist内70ad16e真实来源。已编写最小部署助手deploy-spanish-70ad16e.py：新受限完整副本、既有预算只读预检、停服务后2库逐字段/ID/schema保持、旧静态assets保留、仅切bin/web、不动unit/drop-in/Funnel/timers、不迁移、不清理，失败只回退程序符号链接并重启旧服务，不覆盖实时库。尚未上传执行，准确下一步语法/归档验证→上传/核SHA→sudo安全执行→正常TLS逐资源与匿名边界核验→同步本轮实际部署回执及新UI需求Git/Wolai/交接，再开发UI。当前仅本文与后续交接回执未提交；产品70ad16e不变。设备服务器SSH会话63644仍连入，无关机授权，未自动升级Ubuntu。
+
 2026-10-27安装前检查点：原生英语项目页切换与翻译已实际观察，候选无未保存草稿后正常关闭，当前无easy-project进程。为明确NSIS伴随MCP与已验证53521FBD完全一致，保留旧47D6E9A安装包到spanish-original-nsis-47d6e9a.exe，使用已构建产物tauri bundle --no-binary-patching仅重封装（不重编译或改主exe），新NSIS AD7DDF8DFECDDC7F1E066EF48F2008C67C00E0B00604179BE017E8C041FAA2BB；主exe86B731C0/MCP53521FBD摘要均不变。产品源仍70ad16e，当前回执源4c2ffe41bfd9a8c3c1057c5836304515d51a0d83，无未提交产品修改。下步用已读安全安装脚本、全新受限副本dictionary-overwrite-spanish-70ad16e-20261027，覆盖现有E盘安装，核验伴随MCP/所有非程序文件及逐表数据保持再启动；服务器SSH超时尚未部署。里程碑5h余83%/周83%，WACAS/标准/分支不变；本检查点保存修改，其余Git干净。Wolai本次原生/新需求与安装回执待同步。
 
 2026-10-27原生里程碑：1280×800候选实际本地三合成项目/三任务，中文→西语选择器、仪表盘日期28 oct、西语深浅主题、真实PrimeVue项目草稿弹窗与octubre日历/周标题/辅助按钮正常；取消草稿回到列表，两份合成库逐表SHA/数量一致，integrity ok/FK0。尝试Escape与边缘拖动缩窗后未观察到目标效果，原因未知，仍不宣称原生键盘/960通过（浏览器已有104完整生产含960/375和键盘）。没有改变系统设置或绕开CSP。用户原已要求简化内部人工验收，按实际1280+自动矩阵交付，正式发布未验边界保留。服务器首次SSH超时，仍待开机确认，不阻断已获准的本机安全覆盖与后续UI开发。

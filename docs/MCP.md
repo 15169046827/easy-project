@@ -1,5 +1,7 @@
 # EasyProject 本地 MCP
 
+2026-10-27配色候选（尚未部署）：状态create省略color时，共享服务从八色集随机选择最少使用色并保存；显式自定义hex保留，不批量清理历史。八色为#3b82f6/#8b5cf6/#14b8a6/#f59e0b/#f43f5e/#06b6d4/#d946ef/#22c55e。仍保留builtin_key的Pending/InProgress/Done跨项目显示固定#64748b/#3b82f6/#22c55e，不接受显式更新为其它颜色；需自定义则先明确重命名为自定义状态。旧库不自动改写，完成语义仍依is_completed，不能从颜色或文字推断。当前实际部署仍70ad16e，见TASK_LIST_UI_REFINEMENT_CHECKPOINT。
+
 2026-10-26实际交付：本机及服务器业务schema8/账号3，独立及伴随release MCP源47b981d clean、SHA1E8840C2...已安全更新并完成真实23工具只读发现/DB SHA不变；当前客户端须重连。下方“父子候选未部署”是历史，实际保护副本/原字段与ID核验见PARENT_CHILD_TASK_DISCUSSION顶部。
 
 2026-10-26远端安全已启用（后端31d9b7c）：远端HTTP MCP的业务变更受共享工作区/服务池写入准入预算约束，超限在恢复点/审计/revision及业务写入之前拒绝，并保留查询能力；`isError=true`返回安全容量说明，不扩大权限或返回他人用量。默认512MiB工作区/8GiB服务池包含副本及恢复余量，非OS硬配额、无自动清理；详见server/deploy/STORAGE_BUDGET.md。不改变本地stdio工具schema或引入本地配额；精确部署/核验以NEXT_PHASE_CHECKPOINT为准。

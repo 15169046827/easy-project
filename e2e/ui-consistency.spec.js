@@ -293,8 +293,8 @@ async function measureWorkspace(page) {
         }
         return {
             heading: rect('.workspace-heading'),
-            stats: rect('.workspace-stats'),
-            card: rect('.workspace-stats > *'),
+            stats: rect('.workspace-stats, .hierarchy-statistics'),
+            card: rect('.workspace-stats > *, .statistics-cards > .status-stat'),
             toolbar: rect('.workspace-toolbar'),
             content: rect('.dashboard-grid, .table-card'),
             scroll: document.documentElement.scrollHeight > window.innerHeight
@@ -327,7 +327,11 @@ for (const size of [
                 await expect(page.locator('.workspace-heading .eyebrow')).toHaveText(
                     routeEyebrows[path]
                 )
-                await expect(page.locator('.workspace-stats > *')).toHaveCount(4)
+                const cards = page.locator(
+                    path === 'tasks' ? '.statistics-cards > .status-stat' : '.workspace-stats > *'
+                )
+                if (path === 'tasks') expect(await cards.count()).toBeGreaterThan(0)
+                else await expect(cards).toHaveCount(4)
                 await expect(page.locator('.workspace-page')).toBeVisible()
                 const controlsInViewport = await page.locator('.app-header').evaluate(header =>
                     [...header.querySelectorAll('button, .lang-select')].every(node => {
@@ -336,7 +340,7 @@ for (const size of [
                     })
                 )
                 expect(controlsInViewport).toBe(true)
-                await expect(page.locator('.workspace-stats > *').first()).toBeVisible()
+                await expect(cards.first()).toBeVisible()
                 let geometry = await measureWorkspace(page)
                 await expect
                     .poll(async () => {
@@ -344,7 +348,7 @@ for (const size of [
                         return geometry.card.height
                     })
                     .toBe(76)
-                layouts.push(geometry)
+                layouts.push({ ...geometry, path })
                 expect(geometry.card.height).toBe(76)
                 if (path === 'dashboard') {
                     const offsets = await page
@@ -365,10 +369,19 @@ for (const size of [
             }
             for (const actual of layouts.slice(1)) {
                 for (const section of ['heading', 'stats', 'toolbar', 'content']) {
-                    for (const field of ['x', 'y', 'width'])
+                    for (const field of ['x', 'y', 'width']) {
+                        // Task statistics are dynamic and have their own scope/collapse toolbar.
+                        // Preserve all horizontal alignment and unchanged fixed-page vertical checks.
+                        if (
+                            actual.path === 'tasks' &&
+                            field === 'y' &&
+                            ['toolbar', 'content'].includes(section)
+                        )
+                            continue
                         expect(
                             Math.abs(actual[section][field] - layouts[0][section][field])
                         ).toBeLessThanOrEqual(1)
+                    }
                 }
             }
         })
@@ -595,9 +608,9 @@ for (const dark of [false, true]) {
 test('excludes the hidden project column from embedded column preferences', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
     await page.goto('/#/project/p1')
-    await expect(page.locator('.column-toolbar .p-multiselect-label')).toHaveText('已选5列')
+    await expect(page.locator('.filter-bar .p-multiselect-label')).toHaveText('已选5列')
     await page.getByRole('button', { name: '恢复默认列', exact: true }).click()
-    await expect(page.locator('.column-toolbar .p-multiselect-label')).toHaveText('已选5列')
+    await expect(page.locator('.filter-bar .p-multiselect-label')).toHaveText('已选5列')
     const container = page.locator('.p-datatable-table-container')
     expect(await container.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true)
 })

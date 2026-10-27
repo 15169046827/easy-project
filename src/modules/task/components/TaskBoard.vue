@@ -100,6 +100,7 @@ import Button from 'primevue/button'
 import ProgressBar from 'primevue/progressbar'
 import { useI18n } from 'vue-i18n'
 import { crudAction } from '../../../api'
+import { statusColor } from '../../../utils/statusColors'
 
 const props = defineProps({
     projectId: { type: String, default: '' },
@@ -168,7 +169,7 @@ const columns = computed(() => {
     const result = states.value.map(state => ({
         status: state.id,
         label: Object.hasOwn(keys, state.builtin_key) ? t(keys[state.builtin_key]) : state.name,
-        color: state.color,
+        color: statusColor(state),
         is_completed: state.is_completed,
         writable: true
     }))

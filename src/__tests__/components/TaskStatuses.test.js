@@ -138,6 +138,7 @@ describe('project status UI logic', () => {
         wrapper.unmount()
     })
     it('creates in the current project and immediately selects the new ID', async () => {
+        const random = vi.spyOn(Math, 'random').mockReturnValue(0)
         const wrapper = setup(TaskStatusSelect, { projectId: 'p', modelValue: 's1' })
         await flushPromises()
         await wrapper.find('button').trigger('click')
@@ -155,6 +156,7 @@ describe('project status UI logic', () => {
         })
         expect(wrapper.emitted('update:modelValue').at(-1)).toEqual(['new-status'])
         wrapper.unmount()
+        random.mockRestore()
     })
     it('ignores stale dictionary responses after project switches', async () => {
         let resolve = _value => {}

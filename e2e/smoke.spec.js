@@ -250,7 +250,7 @@ for (const dark of [false, true])
         ).toBe(false)
         await add.getByLabel('Status name', { exact: true }).fill('Review')
         await expect(add.getByRole('combobox', { name: 'Color', exact: true })).toContainText(
-            'Blue'
+            /^(Blue|Violet|Teal|Amber|Rose|Cyan|Magenta|Green)$/
         )
         await add.getByRole('combobox', { name: 'Color', exact: true }).click()
         await page.getByRole('option', { name: 'Teal', exact: true }).click()
@@ -1019,8 +1019,10 @@ test('creates a complete task from the Gantt timeline form', async ({ page }) =>
     await expect(page.locator('.create-panel')).toBeVisible()
     await page.locator('.create-name').fill('Plan launch')
     await page.locator('#gantt-create-start').fill('2026-07-17')
-    // PrimeVue traps Tab inside an open calendar. Blur explicitly rather than
-    // navigating through a stale focused day while filling the next control.
+    await expect(page.locator('#gantt-create-start')).toHaveValue('2026-07-17')
+    // Close the calendar before clicking another field, so an opening overlay
+    // cannot interpret that pointer event as selecting a stale calendar day.
+    await page.locator('#gantt-create-start').press('Escape')
     await page.locator('.create-name').click()
     await expect(page.locator('#gantt-create-start')).toHaveValue('2026-07-17')
     await page.locator('#gantt-create-effort').fill('2')

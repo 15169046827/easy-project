@@ -4,7 +4,9 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
-- Candidate: Add complete Spanish catalogs and shared language selection for the website, sign-in and workspace. Localize PrimeVue prompts/ARIA/calendar names and date/number display without changing business payloads; fix the English email-placeholder parser error and obsolete inline-edit onboarding text. Add the explicitly requested product-feedback email link. Deployment awaits the shared Spanish status-alias validation decision; no backend, schema, permissions or independent MCP changes yet.
+- Candidate: Unify global and project task-list controls, expand child drawers to the visible table width, and provide opaque dictionary-colored status cards with zero-count hiding, icon scope switching, ID-based filtering and whole-section collapse. Persist balanced random colors for new uncolored states at the shared boundary; preserve explicit custom colors and keep built-in display colors consistent across projects. No database migration or automatic legacy cleanup.
+
+- 2026-10-27: Safely delivered complete Spanish catalogs, shared website/sign-in/workspace language selection, PrimeVue localization, date/number display, shared Spanish status-alias conflict checks and the product-feedback email link. Desktop, headless and independent MCP updates preserved original data and permissions; public download artifacts remain unchanged. Native 1280px checks passed; native narrow-window/full-keyboard coverage remains unconfirmed.
 
 - 2026-10-26: Deployed the refreshed synthetic website previews and grouped downloads after full regression and a fresh protected server snapshot. All six public assets remain on the same existing release; backend, databases and access configuration are unchanged. No desktop reinstall for this website-only change.
 

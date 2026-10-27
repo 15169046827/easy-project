@@ -54,6 +54,13 @@
                     >
                 </div>
                 <Tag
+                    :style="styleStatus(task)"
+                    :title="
+                        labelStatus(task.status, task.status_builtin_key, Boolean(task.status_id))
+                    "
+                    v-tooltip.bottom="
+                        labelStatus(task.status, task.status_builtin_key, Boolean(task.status_id))
+                    "
                     :value="
                         labelStatus(task.status, task.status_builtin_key, Boolean(task.status_id))
                     "
@@ -84,6 +91,7 @@
                 :parent="task"
                 :filtering="filtering"
                 :labelStatus="labelStatus"
+                :styleStatus="styleStatus"
                 :selectedTasks="selectedTasks"
                 @edit="$emit('edit', $event)"
                 @add-child="$emit('add-child', $event)"
@@ -112,7 +120,8 @@ const props = defineProps({
         default: () => []
     },
     filtering: Boolean,
-    labelStatus: { type: Function, required: true }
+    labelStatus: { type: Function, required: true },
+    styleStatus: { type: Function, default: () => ({}) }
 })
 defineEmits(['edit', 'add-child', 'select'])
 const { t } = useI18n()
@@ -134,8 +143,8 @@ function toggle(task) {
 </script>
 <style scoped>
 .child-drawer {
-    width: min(64rem, calc(100vw - 7rem));
-    max-width: 100%;
+    width: calc(var(--task-list-viewport-width, 100vw) - 3rem);
+    max-width: calc(100% - 1rem);
     margin: 0.5rem;
     padding: 0.8rem 1rem;
     border-radius: 0.8rem;
@@ -174,6 +183,15 @@ function toggle(task) {
 }
 .child-main small {
     color: var(--p-text-muted-color);
+}
+.child-row :deep(.p-tag) {
+    max-width: min(12rem, 35%);
+    min-width: 0;
+}
+.child-row :deep(.p-tag-label) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .context-only .child-main > strong {
     color: var(--p-text-muted-color);

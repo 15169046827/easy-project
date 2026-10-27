@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-27任务列表整改候选：TaskList已收敛两套头部/筛选/列工具模板，嵌入标题为h3保留语义。TaskStatusStatistics用真实PrimeVue按钮发update:modelValue与select-status，隐藏0/整体折叠；共享statusColors提供默认色、原字典色及WCAG黑白文字。table-card ResizeObserver提供CSS可见宽度给嵌套TaskChildrenDrawer，卸载释放；卡片/标签/看板同源。Rust common/task_status的颜色集/随机最少使用建议由task_status_service的新增缺省复用，显式自定义色不覆盖，内置颜色写入受保护，无schema迁移。MCP schema已更新，实际程序/Apifox绑定仍待本候选clean构建与交付。
+
 2026-10-27国际化实际交付：common/task_status.rs与UI taskStatus.js对仍有builtin_key的默认状态保留中英西显示别名，MCP schema公开同规则；自定义文本不猜测完成语义，不迁移/合并历史。主/官网/登录统一LanguageSelect，真实PrimeVue locale/ARIA及显式日期数字locale响应式更新且不替换nonce。桌面/Web/服务器/独立MCP实际70ad16e已部署；精确验证与未验看专项。TaskList当前虽然被ProjectWorkspace embedded复用，但头部/筛选/列工具存在两套模板，后续按新UI检查点收敛，不复制业务查询组件。
 
 2026-10-26国际化候选：i18n/index.js注册三种locale及统一选项，LanguageSelect复用真实PrimeVue Select；primeLocales.js覆盖已安装组件文案/aria并用Intl生成月份/星期，main只响应更新config.locale，保留CSP配置。数字编辑显式locale，七处日期显示及甘特weekday不再用宿主默认；ISO数据/排期不变。catalog测试负责键/插值/编译/组件覆盖，i18n E2E负责三语持久化/无API/strict nonce/真实日期弹窗。后端诊断原文/用户数据不猜测翻译，西语状态显示别名需共享边界，待另批。详见INTERNATIONALIZATION与专项，不代表已部署。

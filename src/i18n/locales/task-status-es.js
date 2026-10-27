@@ -10,7 +10,9 @@ export default {
     default: 'Predeterminado para tareas nuevas',
     color: 'Color',
     duplicateName:
-        'El proyecto ya tiene un estado con este nombre, incluidos los nombres integrados en inglés y chino. Elige otro.',
+        'El proyecto ya tiene un estado con este nombre, incluidos los nombres integrados en chino, inglés y español. Elige otro.',
+    fixedColor:
+        'Los colores integrados son iguales en todos los proyectos; renombra el estado para personalizar su color.',
     customColor: 'Color hexadecimal personalizado (opcional)',
     currentColor: 'Color actual: {color}',
     colors: {

@@ -8,7 +8,8 @@ export default {
     completed: '属于已完成状态',
     default: '新任务默认状态',
     color: '颜色',
-    duplicateName: '本项目已存在同名状态（包括内置状态的中英文显示名），请使用其他名称。',
+    duplicateName: '本项目已存在同名状态（包括内置状态的中英西文显示名），请使用其他名称。',
+    fixedColor: '默认状态使用跨项目统一颜色；重命名为自定义状态后可改色。',
     customColor: '自定义色值（可选）',
     currentColor: '当前颜色 {color}',
     colors: {

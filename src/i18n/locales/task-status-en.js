@@ -10,7 +10,9 @@ export default {
     default: 'Default for new tasks',
     color: 'Color',
     duplicateName:
-        'This project already has a status with this name (including built-in English/Chinese display names). Choose another name.',
+        'This project already has a status with this name (including built-in English/Chinese/Spanish display names). Choose another name.',
+    fixedColor:
+        'Built-in colors are shared across projects; rename the status to make its color customizable.',
     customColor: 'Custom hex color (optional)',
     currentColor: 'Current color {color}',
     colors: {

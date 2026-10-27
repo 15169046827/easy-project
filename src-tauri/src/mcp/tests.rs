@@ -180,6 +180,62 @@ fn rejects_unknown_dictionary_values_and_localized_status_duplicates() {
 }
 
 #[test]
+fn status_colors_are_persistent_balanced_and_builtin_colors_are_fixed() {
+    let f = Fixture::new();
+    let project = f
+        .call(
+            "easyproject_project_create",
+            json!({"data":{"name":"Palette fixture"}}),
+        )
+        .unwrap();
+    let pid = project["record"]["id"].as_str().unwrap();
+    let mut colors = std::collections::HashSet::new();
+    for index in 0..6 {
+        let record = f
+            .call(
+                "easyproject_task_status_create",
+                json!({"data":{"project_id":pid,"name":format!("Phase {index}")}}),
+            )
+            .unwrap()["record"]
+            .clone();
+        let color = record["color"].as_str().unwrap();
+        assert!(crate::common::task_status::STATUS_COLORS.contains(&color));
+        assert!(!["#3b82f6", "#22c55e"].contains(&color));
+        assert!(colors.insert(color.to_owned()));
+        assert_eq!(
+            f.call("easyproject_task_status_get", json!({"id":record["id"]}))
+                .unwrap()["record"]["color"],
+            color
+        );
+    }
+    let custom = f
+        .call(
+            "easyproject_task_status_create",
+            json!({"data":{"project_id":pid,"name":"My color","color":"#123456"}}),
+        )
+        .unwrap();
+    assert_eq!(custom["record"]["color"], "#123456");
+    let states = {
+        let conn = f.db.lock_connection().unwrap();
+        crate::common::task_status::list(&conn, pid).unwrap()
+    };
+    for state in states.iter().filter(|s| !s.builtin_key.is_empty()) {
+        assert!(f
+            .call(
+                "easyproject_task_status_update",
+                json!({"id":state.id,"changes":{"color":"#123456"}})
+            )
+            .unwrap_err()
+            .contains("fixed"));
+        assert_eq!(
+            f.call("easyproject_task_status_get", json!({"id":state.id}))
+                .unwrap()["record"]["color"],
+            state.color
+        );
+    }
+}
+
+#[test]
 fn finite_large_estimates_have_stable_means_and_aggregate_overflow_rolls_back() {
     let f = Fixture::new();
     let project = f

@@ -3,6 +3,36 @@ use super::id::new_id;
 use rusqlite::{params, Connection, OptionalExtension};
 use serde::Serialize;
 
+pub const STATUS_COLORS: [&str; 8] = [
+    "#3b82f6", "#8b5cf6", "#14b8a6", "#f59e0b", "#f43f5e", "#06b6d4", "#d946ef", "#22c55e",
+];
+
+pub fn builtin_color(key: &str) -> Option<&'static str> {
+    match key {
+        "Pending" => Some("#64748b"),
+        "InProgress" => Some("#3b82f6"),
+        "Done" => Some("#22c55e"),
+        _ => None,
+    }
+}
+
+pub fn suggest_color(states: &[TaskStatus]) -> &'static str {
+    let counts = STATUS_COLORS.map(|color| {
+        states
+            .iter()
+            .filter(|state| state.color.eq_ignore_ascii_case(color))
+            .count()
+    });
+    let minimum = counts.iter().min().copied().unwrap_or(0);
+    let choices: Vec<_> = STATUS_COLORS
+        .iter()
+        .zip(counts)
+        .filter(|(_, count)| *count == minimum)
+        .map(|(color, _)| *color)
+        .collect();
+    choices[uuid::Uuid::new_v4().as_bytes()[0] as usize % choices.len()]
+}
+
 /// Compare stored names and built-in localized display labels, not completion meaning.
 pub fn display_names(name: &str, builtin: &str) -> Vec<String> {
     let mut names = vec![name.trim().to_lowercase()];

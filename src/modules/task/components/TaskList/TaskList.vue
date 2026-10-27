@@ -1,200 +1,127 @@
 <template>
     <section class="panel" :class="{ embedded, 'workspace-page': !embedded }">
-        <!-- 非嵌入模式的头部和统计 -->
-        <template v-if="!embedded">
-            <header class="task-page-header workspace-heading">
-                <div class="header-info">
-                    <span class="eyebrow">{{ $t('tasks.eyebrow') }}</span>
-                    <h2>{{ $t('tasks.title') }}</h2>
-                    <p>
-                        {{ $t('tasks.viewCount', { count: totalRecords }) }} ·
-                        {{ $t('taskHierarchy.topLevel') }}
-                    </p>
-                </div>
-                <div class="toolbar-actions">
-                    <Select
-                        v-model="selectedProjectId"
-                        :options="projects"
-                        optionLabel="name"
-                        optionValue="id"
-                        :placeholder="$t('tasks.allProjects')"
-                        showClear
-                        class="project-select"
-                    />
-                    <Button :label="$t('tasks.newTask')" icon="pi pi-plus" @click="addTask" />
-                    <Button
-                        :label="$t('tasks.delete')"
-                        icon="pi pi-trash"
-                        severity="danger"
-                        outlined
-                        :disabled="selectedTasks.length === 0"
-                        @click="deleteTask"
-                    />
-                </div>
-            </header>
-
-            <TaskStatusStatistics
-                v-model="statisticsScope"
-                :data="scopedStatistics"
-                :label="statisticsLabel"
-                inputId="task-statistics-scope"
-            />
-
-            <div class="filter-card workspace-toolbar">
-                <div class="filter-bar">
-                    <div class="clearable-search">
-                        <InputText
-                            v-model="keywordInput"
-                            :placeholder="$t('tasks.searchPlaceholder')"
-                            @keyup.enter="applySearch"
-                        />
-                        <Button
-                            v-if="keywordInput"
-                            icon="pi pi-times"
-                            text
-                            rounded
-                            :aria-label="$t('tasks.clearSearch')"
-                            @click="clearSearch"
-                        />
-                    </div>
-                    <Select
-                        v-model="statusFilter"
-                        :options="taskFilterStatus"
-                        optionLabel="label"
-                        optionValue="value"
-                        :placeholder="$t('tasks.allStatuses')"
-                        showClear
-                    />
-                    <Select
-                        v-model="priorityFilter"
-                        :options="taskPriority"
-                        optionLabel="label"
-                        optionValue="value"
-                        :placeholder="$t('tasks.allPriorities')"
-                        showClear
-                    />
-                    <Select
-                        v-model="sortBy"
-                        :options="sortOptions"
-                        optionLabel="label"
-                        optionValue="value"
-                        :placeholder="$t('tasks.sortBy')"
-                    />
-                    <Button
-                        icon="pi pi-search"
-                        :label="$t('tasks.searchBtn')"
-                        outlined
-                        @click="applySearch"
-                    />
-                    <Button :label="$t('tasks.clearBtn')" text @click="clearFilters" />
-                    <MultiSelect
-                        v-model="selectedColumns"
-                        :options="columnOptions"
-                        optionLabel="label"
-                        optionValue="value"
-                        :placeholder="$t('tasks.chooseColumns')"
-                        :aria-label="$t('tasks.chooseColumns')"
-                        :maxSelectedLabels="0"
-                        :selectedItemsLabel="$t('tasks.selectedColumns', { count: '{0}' })"
-                        class="column-picker"
-                    />
-                    <Button
-                        icon="pi pi-refresh"
-                        v-tooltip.bottom="$t('tasks.resetColumns')"
-                        :aria-label="$t('tasks.resetColumns')"
-                        text
-                        @click="selectedColumns = [...defaultColumns]"
-                    />
-                </div>
+        <header class="task-page-header workspace-heading">
+            <div class="header-info">
+                <span v-if="!embedded" class="eyebrow">{{ $t('tasks.eyebrow') }}</span>
+                <component :is="embedded ? 'h3' : 'h2'">{{ $t('tasks.title') }}</component>
+                <p>
+                    {{ $t('tasks.viewCount', { count: totalRecords }) }} ·
+                    {{ $t('taskHierarchy.topLevel') }}
+                </p>
             </div>
-        </template>
+            <div class="toolbar-actions">
+                <Select
+                    v-if="!embedded"
+                    v-model="selectedProjectId"
+                    :options="projects"
+                    optionLabel="name"
+                    optionValue="id"
+                    :placeholder="$t('tasks.allProjects')"
+                    showClear
+                    class="project-select"
+                />
+                <Button :label="$t('tasks.newTask')" icon="pi pi-plus" @click="addTask" />
+                <Button
+                    :label="$t('tasks.delete')"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    outlined
+                    :disabled="selectedTasks.length === 0"
+                    @click="deleteTask"
+                />
+            </div>
+        </header>
 
-        <template v-else>
-            <header class="embedded-toolbar">
-                <div class="embedded-toolbar-left">
-                    <div class="view-summary">
-                        <strong>{{ totalRecords }}</strong>
-                        <span>{{ $t('tasks.unit') }}</span>
-                    </div>
-                    <div class="clearable-search embedded-search">
-                        <InputText
-                            v-model="keywordInput"
-                            :placeholder="$t('tasks.searchTasks')"
-                            @keyup.enter="applySearch"
-                        />
-                        <Button
-                            v-if="keywordInput"
-                            icon="pi pi-times"
-                            text
-                            rounded
-                            :aria-label="$t('tasks.clearSearch')"
-                            @click="clearSearch"
-                        />
-                    </div>
-                    <Select
-                        v-model="statusFilter"
-                        :options="taskFilterStatus"
-                        optionLabel="label"
-                        optionValue="value"
-                        :placeholder="$t('tasks.status')"
-                        showClear
-                        class="embedded-filter"
-                    />
-                    <Select
-                        v-model="sortBy"
-                        :options="sortOptions"
-                        optionLabel="label"
-                        optionValue="value"
-                        :placeholder="$t('tasks.sort')"
-                        class="embedded-filter"
-                    />
-                </div>
-                <div class="toolbar-actions">
-                    <Button :label="$t('tasks.newTask')" icon="pi pi-plus" @click="addTask" />
-                    <Button
-                        :label="$t('tasks.delete')"
-                        icon="pi pi-trash"
-                        severity="danger"
-                        outlined
-                        :disabled="selectedTasks.length === 0"
-                        @click="deleteTask"
-                    />
-                </div>
-            </header>
-        </template>
         <TaskStatusStatistics
-            v-if="embedded"
             v-model="statisticsScope"
             :data="scopedStatistics"
             :label="statisticsLabel"
-            inputId="project-task-statistics-scope"
+            :selectedStatus="statusFilter"
+            :inputId="embedded ? 'project-task-statistics-scope' : 'task-statistics-scope'"
+            @select-status="statusFilter = $event"
         />
-        <div v-if="embedded" class="column-toolbar">
-            <span>{{ $t('tasks.columnHint') }}</span>
-            <MultiSelect
-                v-model="selectedColumns"
-                :options="columnOptions"
-                optionLabel="label"
-                optionValue="value"
-                :placeholder="$t('tasks.chooseColumns')"
-                :aria-label="$t('tasks.chooseColumns')"
-                :maxSelectedLabels="0"
-                :selectedItemsLabel="$t('tasks.selectedColumns', { count: '{0}' })"
-                class="column-picker"
-            />
-            <Button
-                :label="$t('tasks.resetColumns')"
-                text
-                size="small"
-                @click="selectedColumns = [...defaultColumns]"
-            />
+
+        <div class="filter-card workspace-toolbar">
+            <div class="filter-bar">
+                <div class="clearable-search">
+                    <InputText
+                        v-model="keywordInput"
+                        :placeholder="$t('tasks.searchPlaceholder')"
+                        @keyup.enter="applySearch"
+                    />
+                    <Button
+                        v-if="keywordInput"
+                        icon="pi pi-times"
+                        text
+                        rounded
+                        :aria-label="$t('tasks.clearSearch')"
+                        @click="clearSearch"
+                    />
+                </div>
+                <Select
+                    v-model="statusFilter"
+                    :options="taskFilterStatus"
+                    optionLabel="label"
+                    optionValue="value"
+                    :placeholder="$t('tasks.allStatuses')"
+                    showClear
+                />
+                <Select
+                    v-model="priorityFilter"
+                    :options="taskPriority"
+                    optionLabel="label"
+                    optionValue="value"
+                    :placeholder="$t('tasks.allPriorities')"
+                    showClear
+                />
+                <Select
+                    v-model="sortBy"
+                    :options="sortOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    :placeholder="$t('tasks.sortBy')"
+                />
+                <Button
+                    icon="pi pi-search"
+                    :label="$t('tasks.searchBtn')"
+                    outlined
+                    @click="applySearch"
+                />
+                <Button :label="$t('tasks.clearBtn')" text @click="clearFilters" />
+                <MultiSelect
+                    v-model="selectedColumns"
+                    :options="columnOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    :placeholder="$t('tasks.chooseColumns')"
+                    :aria-label="$t('tasks.chooseColumns')"
+                    :maxSelectedLabels="0"
+                    :selectedItemsLabel="$t('tasks.selectedColumns', { count: '{0}' })"
+                    class="column-picker"
+                />
+                <Button
+                    icon="pi pi-refresh"
+                    v-tooltip.bottom="$t('tasks.resetColumns')"
+                    :aria-label="$t('tasks.resetColumns')"
+                    text
+                    @click="selectedColumns = [...defaultColumns]"
+                />
+            </div>
         </div>
         <p v-if="errorMessage" class="error-banner">{{ errorMessage }}</p>
         <p v-if="successMessage" class="success-banner">{{ successMessage }}</p>
         <p v-if="!loading && projects.length === 0" class="empty-state">
             {{ $t('tasks.emptyState') }}
         </p>
-        <div class="table-card">
+        <div
+            ref="tableCard"
+            class="table-card"
+            :style="{
+                '--task-list-viewport-width': tableViewportWidth
+                    ? tableViewportWidth + 'px'
+                    : '100vw'
+            }"
+        >
             <DataTable
                 v-model:selection="selectedTasks"
                 :value="visibleTasks"
@@ -442,16 +369,8 @@
                                     Boolean(data.status_id)
                                 )
                             "
-                            :class="[
-                                'pill',
-                                statusPillClass(
-                                    data.status_id
-                                        ? isTaskCompleted(data)
-                                            ? 'Done'
-                                            : data.status_builtin_key
-                                        : data.status
-                                )
-                            ]"
+                            class="pill"
+                            :style="statusAppearance(data)"
                         >
                             <span class="pill-dot"></span>
                             {{
@@ -570,6 +489,7 @@
                         :tasks="tasks"
                         :filtering="filteringHierarchy"
                         :labelStatus="taskStatusLabel"
+                        :styleStatus="statusAppearance"
                         :selectedTasks="selectedTasks"
                         @edit="openTaskEditor"
                         @add-child="addChildTask"
@@ -806,7 +726,7 @@
 
 <script setup>
 import { priorityRank } from '../../../../utils/taskPriority'
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import Button from 'primevue/button'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
@@ -825,6 +745,7 @@ import Message from 'primevue/message'
 import { useI18n } from 'vue-i18n'
 import { crudAction } from '../../../../api'
 import { isTaskCompleted } from '../../../../utils/taskStatus.js'
+import { statusColorStyle } from '../../../../utils/statusColors.js'
 import DateTimePickerString from './components/DateTimePickerString.vue'
 import MemberSelect from '../../../member/components/MemberSelect.vue'
 import { useMembers } from '../../../../composables/useMembers'
@@ -1009,11 +930,25 @@ const taskFilterStatus = computed(() => [
               ...taskStatus.value.filter(item => item.value !== 'Todo'),
               ...Array.from(
                   new Map(
-                      tasks.value
-                          .filter(task => task.status_id && !task.status_builtin_key)
-                          .map(task => [
-                              task.status_id,
-                              { label: task.status, value: task.status_id }
+                      (
+                          statistics.value?.all_tasks?.statuses ||
+                          tasks.value.map(task => ({
+                              id: task.status_id,
+                              project_id: task.project_id,
+                              name: task.status,
+                              builtin_key: task.status_builtin_key
+                          }))
+                      )
+                          .filter(state => state.id)
+                          .map(state => [
+                              state.id,
+                              {
+                                  label:
+                                      getProjectName(state.project_id) +
+                                      ' · ' +
+                                      taskStatusLabel(state.name, state.builtin_key, true),
+                                  value: state.id
+                              }
                           ])
                   ).values()
               )
@@ -1066,6 +1001,36 @@ const getPriorityLabel = value => {
 }
 
 const statisticsScope = ref('top_level')
+const tableCard = ref(null)
+const tableViewportWidth = ref(0)
+let tableResizeObserver
+onMounted(() => {
+    if (!tableCard.value) return
+    tableViewportWidth.value = tableCard.value.clientWidth
+    if (typeof ResizeObserver === 'undefined') return
+    tableResizeObserver = new ResizeObserver(() => {
+        tableViewportWidth.value = tableCard.value?.clientWidth || 0
+    })
+    tableResizeObserver.observe(tableCard.value)
+})
+onBeforeUnmount(() => tableResizeObserver?.disconnect())
+const statusDefinitions = computed(
+    () =>
+        new Map(
+            [...(statistics.value?.all_tasks?.statuses || []), ...projectStatuses.value].map(
+                state => [state.id, state]
+            )
+        )
+)
+function statusAppearance(task) {
+    return statusColorStyle(
+        statusDefinitions.value.get(task.status_id) || {
+            builtin_key:
+                task.status_builtin_key ||
+                (!task.status_id ? (task.status === 'Todo' ? 'Pending' : task.status) : '')
+        }
+    )
+}
 const scopedStatistics = computed(() => {
     if (statistics.value?.[statisticsScope.value]) return statistics.value[statisticsScope.value]
     const source =
@@ -1097,11 +1062,6 @@ const scopedStatistics = computed(() => {
 })
 const statisticsLabel = state =>
     `${selectedProjectId.value ? '' : getProjectName(state.project_id) + ' · '}${taskStatusLabel(state.name, state.builtin_key, true)}`
-
-function statusPillClass(status) {
-    const map = { Pending: 'pill-draft', InProgress: 'pill-inprogress', Done: 'pill-done' }
-    return map[status] || 'pill-draft'
-}
 
 function taskStatusLabel(status, builtinKey = '', hasReference = false) {
     if (hasReference && !builtinKey) return status || '-'
@@ -1410,14 +1370,14 @@ onMounted(async () => {
     flex-direction: column;
     height: calc(100vh - 88px - var(--window-titlebar-height, 0px));
     padding: 1.5rem;
-    overflow: hidden;
+    overflow: auto;
 }
 .panel.embedded {
     height: 100%;
     padding: 0;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: auto;
 }
 @media (max-height: 720px) {
     .panel.workspace-page,
@@ -1512,7 +1472,8 @@ onMounted(async () => {
     font-weight: 700;
     letter-spacing: 0.14em;
 }
-.header-info h2 {
+.header-info h2,
+.header-info h3 {
     margin: 0.15rem 0 0;
     font-size: 1.6rem;
     font-weight: 700;
@@ -1594,6 +1555,12 @@ onMounted(async () => {
     display: grid;
     grid-template-columns: minmax(10rem, 1fr) repeat(3, minmax(7rem, 8.5rem)) auto auto 10rem auto;
     gap: 0.65rem;
+}
+.filter-bar > .p-select,
+.filter-bar > .p-multiselect,
+.filter-bar > .clearable-search {
+    width: 100%;
+    min-width: 0;
 }
 :deep(.workspace-table) {
     display: flex;
@@ -1749,8 +1716,8 @@ onMounted(async () => {
 
 /* 表格卡片容器 */
 .table-card {
-    flex: 1 1 auto;
-    min-height: 0;
+    flex: 1 0 18rem;
+    min-height: 18rem;
     display: flex;
     flex-direction: column;
     border: 1px solid var(--color-border);
@@ -1861,7 +1828,7 @@ onMounted(async () => {
         grid-template-columns: repeat(2, 1fr);
     }
     .filter-bar {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .project-select {
         width: auto;

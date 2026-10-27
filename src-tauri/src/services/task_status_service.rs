@@ -133,12 +133,19 @@ pub fn handle_action(
     if name.is_empty() || name.chars().count() > 64 || name.chars().any(char::is_control) {
         return Err("Status name must contain 1–64 visible characters".into());
     }
+    let suggested = if current.is_none() {
+        task_status::suggest_color(
+            &task_status::list(&conn, &project_id).map_err(|e| e.to_string())?,
+        )
+    } else {
+        "#64748b"
+    };
     let color = match data.get("color") {
         Some(v) => v.as_str().ok_or("Color must be a string")?,
         None => current
             .as_ref()
             .map(|s| s.color.as_str())
-            .unwrap_or("#64748b"),
+            .unwrap_or(suggested),
     };
     if color.len() != 7
         || !color.starts_with('#')
@@ -173,6 +180,12 @@ pub fn handle_action(
         .map(|s| s.builtin_key.as_str())
         .unwrap_or("");
     let names = task_status::display_names(name, builtin);
+    if data.get("color").is_some()
+        && task_status::builtin_color(builtin)
+            .is_some_and(|expected| !color.eq_ignore_ascii_case(expected))
+    {
+        return Err("Built-in status colors are fixed across projects; rename the status to make it custom before choosing another color".into());
+    }
     for state in task_status::list(&conn, &project_id).map_err(|error| error.to_string())? {
         if state.id != id
             && task_status::display_names(&state.name, &state.builtin_key)

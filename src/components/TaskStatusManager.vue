@@ -12,7 +12,7 @@
         <DataTable :value="states" :loading="loading" dataKey="id" scrollable>
             <Column field="name" :header="t('taskStatuses.name')"
                 ><template #body="{ data }"
-                    ><span class="status-swatch" :style="{ background: data.color }"></span
+                    ><span class="status-swatch" :style="{ background: statusColor(data) }"></span
                     >{{ label(data) }}</template
                 ></Column
             >
@@ -71,17 +71,18 @@
                 ><StatusColorSelect
                     inputId="status-manager-color"
                     v-model="draft.color"
-                    :disabled="busy"
+                    :disabled="busy || builtinColorLocked"
                 />
                 <label for="status-manager-custom-color">{{ t('taskStatuses.customColor') }}</label
                 ><InputText
                     id="status-manager-custom-color"
                     v-model="draft.color"
                     :maxlength="7"
-                    :disabled="busy"
+                    :disabled="busy || builtinColorLocked"
                     placeholder="#64748b"
                 />
-                <label for="status-manager-order">{{ t('taskStatuses.order') }}</label
+                <small v-if="builtinColorLocked">{{ t('taskStatuses.fixedColor') }}</small
+                ><label for="status-manager-order">{{ t('taskStatuses.order') }}</label
                 ><InputNumber
                     :locale="locale"
                     inputId="status-manager-order"
@@ -184,7 +185,7 @@ import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import { crudAction } from '../api'
 import StatusColorSelect from './StatusColorSelect.vue'
-import { suggestStatusColor } from '../utils/statusColors'
+import { suggestStatusColor, statusColor } from '../utils/statusColors'
 import { findStatusNameConflict } from '../utils/taskStatus'
 const props = defineProps({ projectId: { type: String, required: true } })
 const emit = defineEmits(['updated'])
@@ -209,6 +210,10 @@ const blank = () => ({
 })
 const draft = ref(blank()),
     usage = ref({ list: [], total: 0, pageIndex: 1 })
+const builtinColorLocked = computed(() => {
+    const state = states.value.find(item => item.id === draft.value.id)
+    return Boolean(state?.builtin_key && draft.value.name.trim() === state.name)
+})
 const duplicateNames = computed(() => [
     ...new Set(
         states.value
@@ -257,7 +262,7 @@ function edit(state) {
         ? {
               id: state.id,
               name: state.name,
-              color: state.color,
+              color: statusColor(state),
               sort_order: state.sort_order,
               is_completed: state.is_completed,
               is_default: state.is_default

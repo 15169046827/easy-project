@@ -2,6 +2,8 @@
 
 ## clean包已封存，等待新合成窗口本地确认
 
+三方同步回执：6c6d525eba1ccb998011fa24bfed4e25f109e8e2已Git推送/远端完整SHA一致，Wolai主和交接副本均已按该源同步并读回，本地规则/架构/当前状态一致；无同步缺口。后台演示页已关闭，Cua会话也已清理，不占用用户桌面。当前仍只等待用户新候选本地+缩小确认，未执行本轮桌面/网页部署。
+
 产品697e54f，clean源码c5902abb690e550c34cc13a5bfff006000d7aa06（仅多测试/检查点），353单测/65、110生产UI、13真实HTTP及类型/lint/build全过；新增无遮挡截图后6矩阵再次全过，测试截图增补不改产品。原生主2D23E9ACA09AAEB78CD568D507A8DE60BB63C7CE83C7A36F8F73341F783DD9AF，NSIS FD0D1A972897F263B4B13B6BC327B5C1C01364440E325D6DB538C33AD00FFF79，封存src-tauri/target/audit-tools/status-cards-c5902ab/manifest.json。Tauri no-bundle后恢复已验70E伴随再NSIS，实际独立70E未动；不部署顺带重编的MCP。无遮挡合成预览fixed-neutral-cards-preview.png已目检固定192/76、第二行孤卡不拉伸、圆点与选中边框；http-preview-1280-light.png捕获取消弹窗过渡层，不作为卡片视觉证明。
 
 72静态文件已封包，archive status-cards-697e54f-20261027.tar.gz SHA EE757CCAF118E48C44202FFF9CFFBC93B4235A60B21B1C39E13B50D3CBE1B154（clean sourcec5902ab/product697e54f）。纯静态受控部署helper deploy-status-cards-697e54f.py SHA64E4A8291699E4FFC5386094A8F19472D31549CB71C6810DCD93134E124FC0A3，限定旧current task-narrow-c2ca28b-20261027、后端B15571B7，源c5902ab；仅本地已准备，尚未上传/连接服务器或切换。新release/snapshot预定status-cards-697e54f-20261027，恢复点/在线DB校验/只切静态/无重启均沿用已审查helper；执行前还须重新核服务器状态与摘要/AST，不能盲执行旧记录。

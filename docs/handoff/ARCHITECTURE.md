@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-27国际化实际交付：common/task_status.rs与UI taskStatus.js对仍有builtin_key的默认状态保留中英西显示别名，MCP schema公开同规则；自定义文本不猜测完成语义，不迁移/合并历史。主/官网/登录统一LanguageSelect，真实PrimeVue locale/ARIA及显式日期数字locale响应式更新且不替换nonce。桌面/Web/服务器/独立MCP实际70ad16e已部署；精确验证与未验看专项。TaskList当前虽然被ProjectWorkspace embedded复用，但头部/筛选/列工具存在两套模板，后续按新UI检查点收敛，不复制业务查询组件。
+
 2026-10-26国际化候选：i18n/index.js注册三种locale及统一选项，LanguageSelect复用真实PrimeVue Select；primeLocales.js覆盖已安装组件文案/aria并用Intl生成月份/星期，main只响应更新config.locale，保留CSP配置。数字编辑显式locale，七处日期显示及甘特weekday不再用宿主默认；ISO数据/排期不变。catalog测试负责键/插值/编译/组件覆盖，i18n E2E负责三语持久化/无API/strict nonce/真实日期弹窗。后端诊断原文/用户数据不猜测翻译，西语状态显示别名需共享边界，待另批。详见INTERNATIONALIZATION与专项，不代表已部署。
 
 2026-10-26官网整理候选：LandingPage的SelectButton选择当前项目截图、Panel折叠同一Release的高级格式；主下载资产仍唯一downloadRelease.js，不增加API/账号请求。scripts/capture-product-preview.js固定127.0.0.1:1420内存demo/全新上下文并拒绝/api/及外源，导出两1280PNG；维护流程见PRODUCT_PREVIEWS。截图不是数据库验收，不得换成真实账号内容。

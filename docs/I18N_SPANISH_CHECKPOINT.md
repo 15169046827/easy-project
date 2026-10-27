@@ -16,6 +16,12 @@ WACAS未定义/待确认，UPARS1.1.0/交接1.15；开始长阶段5h余59%/周94
 
 ## 当前调查/下一步
 
+2026-10-27安全交付完成（产品70ad16e）：Windows实际安装NSIS AD7DDF8DFECDDC7F1E066EF48F2008C67C00E0B00604179BE017E8C041FAA2BB、安装exe86B731C0E2B7B449303B31BC6612A61AF9288EC6367E004AE8609AD04126BFEC、伴随/独立MCP53521FBD289F406EA1ED422D31E672252B481BBD4593A76DE9277F6B222F927F。612文件受限新副本/609非程序及数据库启动前后逐表保持通过，PID31656 Responding默认登录；误启动40152已正常关闭并由进程检查仅余31656。原生1280中文/英语/西语、深浅、西语项目草稿/日历octubre与取消不写库已实际验证，原生960/完整键盘工具未确认，保持未验，不据自动浏览器矩阵宣称全部原生通过。
+
+home-host用户开机确认后SSH正常，远端部署助手与归档SHA逐一匹配且python3 AST语法通过（本机python别名未产出验证，未当成功）。sudo执行成功：current=/opt/easyproject/releases/spanish-70ad16e-20261027，新root700完整副本/var/backups/easyproject/spanish-70ad16e-20261027，2DB账号3/业务8全字段/ID/对象/schema保持（预期web_revision运行epoch可变），既有预算只读预检1工作区通过；73交付文件/344旧assets保留，后端C648F69E9BA8830DC177FD1B0D7FED0F9E6268432F51F30004BFE95DCFE727A1/PID1320，受限身份/main unit/drop-in/Funnel与两timer不变且active/enabled，无迁移/清库。正常证书HTTPS独立2HTML/71静态SHA/4匿名401/health200通过，已核对邮箱mailto与西语资源；日志spanish-https-result.json与服务器verification.json。不登录真实账号、不做真实写入。IAB新标签验证创建超时并kernel reset，未取得线上截图，不把本机截图当线上验收；正常TLS逐资源校验有效。
+
+当前官网联系邮箱li_you_mu@126.com与三语入口已上线，不再是候选；旧公开桌面Release仍v0.1.2-beta.1，本次不新公开Release。Apifox66接口/32参考上轮已按同一实际MCP源读回，HTTP19无变化不重复上传。SSH会话63644已正常exit，服务器保持开机；scp/exit提示关闭socket仍有IO但退出0，部署前摘要与部署后HTTPS均核验，不忽略警告或盲重传。下一步同步Git/Wolai/交接实际交付及新UI决策，然后转TASK_LIST_UI_REFINEMENT_CHECKPOINT实施；本里程碑文档修改以Git status准确列表为准，产品源码未新增更改。无关机/重置/唤醒授权，正式生产验收仍未通过。
+
 2026-10-27本机已安全交付：新NSIS AD7DDF8D…安装退出0，受限副本dictionary-overwrite-spanish-70ad16e-20261027保存612文件/609非程序逐hash保持，安装exe86B731C0…及伴随MCP53521FBD…与候选完全一致，独立MCP保持，安装前后及启动后数据库逐表内容/integrity/FK相同。原安装已启动PID31656；受限Get-Process未看到进程曾误判、再启动40152，升级权限只读检查证实二者均Responding，已用sky正常关闭多余200380窗口（不操作登录表单），待再次核实最终单实例；不会将误判记作程序崩溃。
 
 服务器开机后已SSH连入，current仍website-refresh-83adac3-20261026、后端SHA9D0D7D0A…、PID670（重启已变化，旧2608历史）、受限easyproject及两timer active，磁盘84GiB空余；仅核对，无远端改动。准备的新候选spanish-70ad16e-payload共73文件，归档SHA84502AE18252755D6E188313434ED61A95805869C3B68C24A154CA34B3A92914，绑定Linux CI40327970525/C648F69E…及dist内70ad16e真实来源。已编写最小部署助手deploy-spanish-70ad16e.py：新受限完整副本、既有预算只读预检、停服务后2库逐字段/ID/schema保持、旧静态assets保留、仅切bin/web、不动unit/drop-in/Funnel/timers、不迁移、不清理，失败只回退程序符号链接并重启旧服务，不覆盖实时库。尚未上传执行，准确下一步语法/归档验证→上传/核SHA→sudo安全执行→正常TLS逐资源与匿名边界核验→同步本轮实际部署回执及新UI需求Git/Wolai/交接，再开发UI。当前仅本文与后续交接回执未提交；产品70ad16e不变。设备服务器SSH会话63644仍连入，无关机授权，未自动升级Ubuntu。

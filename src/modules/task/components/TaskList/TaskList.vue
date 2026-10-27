@@ -1562,6 +1562,10 @@ onMounted(async () => {
     width: 100%;
     min-width: 0;
 }
+.filter-bar > .p-button {
+    min-width: max-content;
+    white-space: nowrap;
+}
 :deep(.workspace-table) {
     display: flex;
     flex: 1 1 auto;
@@ -1796,6 +1800,12 @@ onMounted(async () => {
     background: var(--color-surface);
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
+}
+
+@media (max-width: 1100px) {
+    .filter-bar {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 900px) {

@@ -216,9 +216,23 @@ for (const width of [1280, 960, 375]) {
                 expect((await table.boundingBox()).height).toBeGreaterThanOrEqual(before)
                 if (width >= 1280)
                     expect((await table.boundingBox()).height).toBeGreaterThan(before + 1)
-                await expect(
-                    page.locator('.filter-bar').getByRole('button', { name: '搜索', exact: true })
-                ).toBeVisible()
+                const filterBar = page.locator('.filter-bar')
+                const searchButton = filterBar.getByRole('button', { name: '搜索', exact: true })
+                await expect(searchButton).toBeVisible()
+                for (const name of ['搜索', '清除']) {
+                    const button = filterBar.getByRole('button', { name, exact: true })
+                    expect(await button.evaluate(el => getComputedStyle(el).whiteSpace)).toBe(
+                        'nowrap'
+                    )
+                    expect((await button.boundingBox()).height).toBeLessThanOrEqual(42)
+                }
+                if (width === 960) {
+                    expect(
+                        await filterBar.evaluate(
+                            el => getComputedStyle(el).gridTemplateColumns.split(' ').length
+                        )
+                    ).toBe(4)
+                }
                 const expanded = page.getByRole('button', { name: '折叠任务', exact: true }).first()
                 if (await expanded.count()) await expanded.click()
                 await page.getByRole('button', { name: '展开任务', exact: true }).first().click()

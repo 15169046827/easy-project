@@ -124,15 +124,9 @@ section.workspace-page > .cards {
     :root {
         --workspace-padding: 1rem;
     }
-    section.workspace-page > div.workspace-toolbar .filter-bar {
-        grid-template-columns: minmax(8rem, 1fr) repeat(3, minmax(5rem, 6rem)) auto auto 8rem auto;
-    }
 }
 @media (max-width: 900px) {
     section.workspace-page > div.workspace-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    section.workspace-page > div.workspace-toolbar .filter-bar {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     section.workspace-page > header.workspace-heading {

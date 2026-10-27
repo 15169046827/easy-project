@@ -1,5 +1,17 @@
 # 任务列表/统计/子任务抽屉统一整改
 
+## 桌面/网页后端实际交付，独立MCP与窄窗待办（2026-10-27）
+
+基线执行0022aa7751e960ff4c3b5bc23a1ad0d4410d91e1，产品af72eb5/clean构建源2a5904d，无业务源码新增。1280真实原生合成库全局/项目内深浅主题、抽屉右扩留边、隐藏0/1根与3全部维度、折叠扩展、卡片鼠标筛选及Return取消已验证；合成全部行hash与源一致，integrity ok/FK0。原生缩放未成功，Alt+Space被第三方快捷工具拦截、边角拖动选中文字，未改系统设置；已请用户缩窗，尚未回复，不能声称原生960或全键盘验收。浏览器1280/960/375深浅与键盘完整回归110、真实HTTP13等此前结果仍有效。
+
+服务器已执行受控helper：current=/opt/easyproject/releases/task-ui-2a5904d-20261027，新root700安全副本=/var/backups/easyproject/task-ui-2a5904d-20261027，73交付文件/387旧assets保持，2DB原字段/ID/objects/schema3及8保持（仅允许web_revision.value启动epoch变化），未迁移/清理；现PID1893身份easyproject，unit/drop-in/Funnel/两个定时器保持。现有预算检查1工作区通过。正常TLS2HTML/CSP/no-store、71静态摘要、4匿名401/health200及反馈邮箱/西语负载均通过。SSH40527已正常exit，SCP27813 exit0但提示socket pending，远端两摘要/AST已另核，未盲重传。
+
+桌面已安全覆盖：新副本src-tauri/target/audit-tools/dictionary-overwrite-task-ui-2a5904d-20261027，644文件已保存、641非程序文件SHA保持，安装exit0；原数据库前后及启动后全部行hash一致、integrity ok/FK0，独立MCP未变。包28B9DB9B（完整SHA见下方封存清单），安装主BAFEE1B7187D2DE8329B5402F310E5DCB10D3202BC72DFF400C8B25FD15AD5E0与候选F5A112A9同长且仅14694112—14694114三字节UNK→NSS框架标记不同，已精确比较；伴随MCP70E303F8与候选一致。安装器使用RestartManager按完整安装exe路径检查，不影响不同路径的合成候选；新helper仅将原宽泛同名进程保护改为精确安装路径，保留所有备份/DB/文件校验。首次原安装未成功关闭时保护在备份前拒绝（无写入），之后截图几何刷新/坐标X正常关闭才覆盖，无强杀。真实安装启动PID10048/window3870640默认登录，未操作账号表单。
+
+仍未完成：独立MCP实际53521FBD，现有16800（07:45:21）/15308（07:45:27）两已核路径旧连接，已询具体停止许可未回复，未停止/替换；新连接不在该请求授权内。原生候选10720/window4394658仍开着等待用户缩窗。下一步仅在确认具体许可后核当时进程/创建时间→新受限副本→替换独立MCP70E并23工具只读发现/DB摘要核验；同时完成可行原生窄窗，最后同步Git/Wolai/交接，不重做桌面/服务器覆盖。不增加公开Release/权限/域名/迁移，也无关机/重置/唤醒授权。
+
+WACAS未定义、实际UPARS1.1.0/交接1.16，当前5h余84%/周69%。本节点未提交准确10路径：README.md、CHANGELOG.md、docs/PROJECT_PLAN.md、docs/RELEASING.md、docs/MCP.md、docs/api/README.md、docs/handoff/CURRENT_STATE.md、docs/handoff/README.md、docs/handoff/ARCHITECTURE.md、本文。Git/Wolai待本交付回执同步，API实际契约无变化不机械重传。
+
 ## 最终包与原生接管等待（2026-10-27）
 
 2026-10-27再次恢复：用户明确“额度已恢复，已切换本地”；开工5h余100%/周71%，基线290c9667ca862c253bc777a192208437998e7340、Git干净，封存主/MCP摘要一致。Sky重新返回原隔离window4394658/完整候选路径，确认合成3项目3任务，无远端账号；跳过引导后1280全局列表正常。真实浅/深主题下抽屉左缩进/右留边、统计隐藏0、1根/3全部切换、统计折叠列表扩展已观察；点统计卡自动选对应项目状态，坐标点击后Return成功取消筛选，原生键盘此项通过。逐表全部行hash与合成源一致，integrity ok/FK0。自动边角缩放未生效（选中文字），Alt+Space被本机快捷工具拦截，未更改设置；已请用户缩到接近最小尺寸，待回复，不能声称原生960通过。继续项目内复用核对。

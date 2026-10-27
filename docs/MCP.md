@@ -1,5 +1,7 @@
 # EasyProject 本地 MCP
 
+2026-10-27配色共享规则已在服务器远端MCP及桌面伴随程序70E303F8部署；独立artifacts/mcp仍53521FBD，等待占用的新连接停止许可，不能声称当前Codex连接已加载新规则。23工具/权限不变，契约已实际发现并同步Apifox66接口/32参考；无迁移/历史重写，详见TASK_LIST_UI_REFINEMENT_CHECKPOINT。
+
 2026-10-27配色候选（尚未部署）：状态create省略color时，共享服务从八色集随机选择最少使用色并保存；显式自定义hex保留，不批量清理历史。八色为#3b82f6/#8b5cf6/#14b8a6/#f59e0b/#f43f5e/#06b6d4/#d946ef/#22c55e。仍保留builtin_key的Pending/InProgress/Done跨项目显示固定#64748b/#3b82f6/#22c55e，不接受显式更新为其它颜色；需自定义则先明确重命名为自定义状态。旧库不自动改写，完成语义仍依is_completed，不能从颜色或文字推断。当前实际部署仍70ad16e，见TASK_LIST_UI_REFINEMENT_CHECKPOINT。
 
 2026-10-26实际交付：本机及服务器业务schema8/账号3，独立及伴随release MCP源47b981d clean、SHA1E8840C2...已安全更新并完成真实23工具只读发现/DB SHA不变；当前客户端须重连。下方“父子候选未部署”是历史，实际保护副本/原字段与ID核验见PARENT_CHILD_TASK_DISCUSSION顶部。

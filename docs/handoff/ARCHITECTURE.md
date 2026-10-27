@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-27上述共用TaskList/Statistics/statusColors/Drawer与共享Rust颜色规则已经桌面及远端实际部署，业务schema8/账号3不变。catalog/Apifox已绑定伴随70E303F8的实际23工具，独立MCP仍旧53521FBD等待具体占用进程许可；两者不能混淆。ResizeObserver释放、稳定状态ID筛选及默认色/显式自定义色策略不变，未增加权限或后台自动迁移。准确副本/原生范围/待办见本轮专项。
+
 2026-10-27任务列表整改候选：TaskList已收敛两套头部/筛选/列工具模板，嵌入标题为h3保留语义。TaskStatusStatistics用真实PrimeVue按钮发update:modelValue与select-status，隐藏0/整体折叠；共享statusColors提供默认色、原字典色及WCAG黑白文字。table-card ResizeObserver提供CSS可见宽度给嵌套TaskChildrenDrawer，卸载释放；卡片/标签/看板同源。Rust common/task_status的颜色集/随机最少使用建议由task_status_service的新增缺省复用，显式自定义色不覆盖，内置颜色写入受保护，无schema迁移。MCP schema已更新，实际程序/Apifox绑定仍待本候选clean构建与交付。
 
 2026-10-27国际化实际交付：common/task_status.rs与UI taskStatus.js对仍有builtin_key的默认状态保留中英西显示别名，MCP schema公开同规则；自定义文本不猜测完成语义，不迁移/合并历史。主/官网/登录统一LanguageSelect，真实PrimeVue locale/ARIA及显式日期数字locale响应式更新且不替换nonce。桌面/Web/服务器/独立MCP实际70ad16e已部署；精确验证与未验看专项。TaskList当前虽然被ProjectWorkspace embedded复用，但头部/筛选/列工具存在两套模板，后续按新UI检查点收敛，不复制业务查询组件。

@@ -4,7 +4,7 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
-- Candidate: Unify global and project task-list controls, expand child drawers to the visible table width, and provide opaque dictionary-colored status cards with zero-count hiding, icon scope switching, ID-based filtering and whole-section collapse. Persist balanced random colors for new uncolored states at the shared boundary; preserve explicit custom colors and keep built-in display colors consistent across projects. No database migration or automatic legacy cleanup.
+- 2026-10-27 desktop/web delivery (standalone MCP replacement pending): Unify global and project task-list controls, expand child drawers to the visible table width, and provide opaque dictionary-colored status cards with zero-count hiding, icon scope switching, ID-based filtering and whole-section collapse. Persist balanced random colors for new uncolored states at the shared boundary; preserve explicit custom colors and keep built-in display colors consistent across projects. Fresh protected copies and unchanged original records verified; native 1280 light/dark passed, native narrow-window coverage pending. No database migration, automatic legacy cleanup or new public Release.
 
 - 2026-10-27: Safely delivered complete Spanish catalogs, shared website/sign-in/workspace language selection, PrimeVue localization, date/number display, shared Spanish status-alias conflict checks and the product-feedback email link. Desktop, headless and independent MCP updates preserved original data and permissions; public download artifacts remain unchanged. Native 1280px checks passed; native narrow-window/full-keyboard coverage remains unconfirmed.
 

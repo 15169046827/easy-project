@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-10-28恢复后新62候选AAFE已替换隔离程序并打开，PID37340/window983558等待用户本地入口；未复制账号/重造库，控制已释放。Git旧两笔检查点已补推，服务器fresh仍d1/PID673/B155、SSH已关闭。新受限helper5DBAB714已准备/与旧助手防护diff复核，尚未上传或实际交付；下一步是新原生复验，不重新跑已有效357/112/8/13/API或重造25真实样例。详见TASK_PRESENTATION_V2_CHECKPOINT顶部。
+
 2026-10-28产品62dc911替代811候选：原生捕获表格滚动条触发6–7px偏移及右侧按钮挤压，观察实际table尺寸/限制进度槽和按钮宽修复；357/112/8及静态复验通过，新main AAFE9844、NSIS9FCEE6B3和服务器包23EE87B4已封存，Linux仍18f/EF06930F。尚未新包原生或真实交付，旧合成窗口已退出/进程0/控制释放。精确摘要/来源/额度/所有下一步见TASK_PRESENTATION_V2_CHECKPOINT顶部；不可复用旧811 payload/helper或重造25样例。API源18f读回不受此布局补丁影响，MCP70E不变。
 
 2026-10-28最新候选封存：产品18f8024/clean8115948，357/66单测、112完整UI、13真实HTTP、8矩阵、桌面75+stdio1/服务63+20/严格Clippy全过；Linux CI40626473312两job成功及唯一归档/ELF摘要核验通过。Apifox66/32及19主JSON已同步读回，DOC-SYNC-001仍开。Windows最终main29B1326B/NSIS29FF12B3，独立/伴随70E保持；新73文件后端静态包B9852D1D和受限helperCEA72A5A准备好但未上传/部署。最终纯合成候选PID29488/window1248486仍停登录，等待用户点不登录本地入口，控制已释放。服务器fresh确认仍child-drawer-d1/PID673/B155，SSH退出。实际安装/真实25样例未改，不重造；精确路径/完整SHA/失败/权限/下一步见TASK_PRESENTATION_V2_CHECKPOINT顶部。下方“门禁待跑”属历史。

@@ -1,5 +1,15 @@
 # 任务展示第二轮整改（2026-10-28）
 
+## 额度恢复，62候选已启动待本地入口
+
+2026-10-28恢复后完整读技能/检查点，Git干净HEAD7ccbd89021a448c00f0df643d272887137ddbfc5；额度5h/周均余100%。此前两笔文档提交已成功补推至GitHub，旧网络缺口关闭。新main AAFE9844、NSIS9FCEE6B3、服务器包23EE87B4的完整SHA与上节记录一致，不重建。核无easy-project进程后只替换既有合成候选exe为新最终AAFE，未重造库/复制凭据。
+
+Sky启动再次出现accessibility window-opened handler未ready，fresh列表无候选；reset后CIM确认精确路径无进程，再用已批准的显式Start-Process启动，PID37340/window983558/路径presentation-native-18f8024。fresh观察确认空白登录及“不登录，本地使用”，已请求用户只点此入口；控制随即reset释放，未自动认证。目前等待新62候选入口，不把旧回执当新验证。
+
+安全helper deploy-presentation-62dc911.py已由完整复核旧助手最小复制并检查diff，仅改来源/新路径/归档摘要及product明确等于62，linuxSource明确仍18f；所有副本/DB3与8/全表字段/旧assets/旧进程摘要/受限账户/配置Funnel计时器/程序回滚不覆盖数据的防护保持。helper SHA 5DBAB714DB8258043FC1661182A794A809C0FE84DC44015BA97690B2EABB3EB5；新的正常TLS核验器已准备且node语法检查通过，尚未运行部署或TLS交付验证。服务器本轮真实SSH只读确认current仍child-drawer-d1faa35-20261027、MainPID673/User easyproject/active、旧后端B155完整SHA一致，新62上传/helper/release/副本路径全不存在。已exit关闭SSH，无服务重启/上传/新副本或真实数据写入。
+
+准确下一步仍是用户新候选本地后fresh观察，完成1280滚动条下同名列/操作按钮、深浅/窄窗/折叠与跨项目合计原生复验；正常关闭核合成库全表hash。通过再查额度并执行此前已批受限副本桌面/服务器交付，不跳过原生；25真实样例/安装/独立MCP仍未改。WACAS未定义/待确认，UPARS1.1.0/交接1.20；当前仅本检查点、handoff入口和当前状态待提交，Wolai待同步此节点，API不变无需重传。无关机/重置/唤醒或新MCP停止授权。
+
 ## 62dc911 新包封存，旧候选已退出，待原生与交付
 
 额度门禁回执：本轮5h已余10%，不再开启新长阶段，保存后暂停等待用户恢复通知。文档提交a9ee31331237589c8db68559dde4df83fdb762ad已本地保存；GitHub首推送TLS连接重置、安全重试443超时，未推送成功，恢复后先补推文档。Wolai主状态块28dPKMDkPpLCFu557s8exF与交接块oLvsZ6M65HtTfFsJmg8ptD已同步本轮新包/失败/待原生/未部署事实，分别读回AAFE完整摘要及a9ee313通过；推送网络缺口另作最小补充。当前仅本检查点回执待提交；设备/范围/下一步均如下，没有运行构建、桌面控制或SSH。

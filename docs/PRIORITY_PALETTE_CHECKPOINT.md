@@ -1,5 +1,15 @@
 # 优先级浅色配色修订（2026-10-28）
 
+## clean候选已封存，待本地入口和本轮安全交付许可
+
+产品源abc1e9ecc7f3bf0cd4e1da7dae0797581bea71e3已Git提交并推送，前轮5笔文档网络缺口同时补推关闭。完整357单测/112生产UI、补同屏截图的最新8矩阵全部通过，列表P2浅蜜桃橙/P3晴空蓝同屏目检差异明显，文字中性可读；看板同源颜色/正常文字断言含深浅/多宽全过。类型/lint/build/release门禁通过；本轮不改Rust/HTTP/IPC/MCP逻辑，前轮逻辑证据复核可复用，不称本轮重跑后端测试。
+
+clean no-bundle及bundle-only成功，重编译MCP只封存未交付，恢复70E伴随再封包。E盘priority-palette-abc1e9e/final-bundle-main.exe SHA 3DB4486622DBF9DCAB3A2E27B4092EB3E2E83B8C148BB584D44BB634FD9EFDF5；NSIS SHA 9AF42BA0CCF8901538D508995F4EB21F519D2E1B9360E5C02DA58A2BA13830A9；72文件纯静态包priority-palette-abc1e9e-20261028.tar.gz SHA 7EE2F3867CD9AA1B3C1EF65253AFAE0D3A82997E5625986AF08C6D32343B3FC9。受限静态helper由完整审查旧助手复制最小改来源/路径/旧后端EF06930F，保留DB在线副本/全hash/旧assets/配置Funnel/PID不变及程序切换回滚，SHA 53E32289A29F9691865EC442487BE5ABE5642A61375B9C677ACADB4BDF68FF8F，尚未上传执行。
+
+核隔离候选精确路径无进程后复用原2项目6任务合成库，仅换最终3DB程序并启动PID37292/window4131818；不重造数据/复制账号。Sky激活首报failed to activate captured window，fresh列表同窗仍存在，重新rehydrate只读正常捕获空白登录/本地入口；不再抢焦点，已请求用户一次点本地入口及确认本轮新副本桌面/纯静态交付范围。控制reset释放。当前正式EasyProject进程未运行（CIM只返回候选），但覆盖前仍须fresh核无草稿/进程；真实安装1B34C5D9与网页62均未改。本轮尚未重新SSH，不冒称服务器在线。
+
+准确下一步：收到本地入口后fresh真实候选查看优先级列/看板的新色，窗口操作自行完成不请求例行调整，深浅核对→正常关闭并全合成表hash/integrity/FK→本轮许可明确后查额度/fresh真实进程→新E盘安全副本NSIS覆盖保全（使用当前HEAD作助手源守卫、产品仍abc）→freshSSH旧current62/PID/EF摘要/新路径核对并上传摘要/AST→新root700副本仅切静态，不重启/迁移/改后端→正常TLS2HTML/71资源/4匿名边界→Git/Wolai/交接/README/CHANGELOG最终同步。若许可选保留候选则不更新真实环境。WACAS未定义/UPARS1.1.0/交接1.20不变，最新5h余92%/周88%，非额度暂停；无重置/关机/唤醒或MCP停止授权。
+
 最新完整112生产UI全部通过（13真实HTTP专用入口跳过，不冒称本轮已重跑HTTP）；类型/lint/build/release一致性和357单测通过，新增看板中高同源浅色/正常文字断言覆盖八个深浅多宽矩阵。测试按钮名错误已修复，未削减断言或放宽超时。截图滚动到P2以同时目检中高差异，补跑八矩阵后保存clean产品源并打包；尚未覆盖/更新线上，后端/IPC/MCP/Rust源码完全未变，可沿用前轮逻辑证据但不称本轮新跑。
 
 已完成候选：lint/typecheck/build和完整357单测通过；首版8严格nonce矩阵通过。补看板一致性断言后首完整UI为104通过/8失败（13专用HTTP在此入口跳过）：新增测试错误地把按钮无障碍名当精确“看板”，实际包含PrimeIcons字符；已改为稳定后缀匹配/看板颜色和文字断言保留，未改应用行为或放宽超时。最新完整112重跑中。1280深浅列表截图已目检：中等浅蓝彩点/正常文字，不再深黄棕；P2/P3精确RGB断言通过，后续补两者同屏截图。原先六图全部交付事实不受本轮候选影响。

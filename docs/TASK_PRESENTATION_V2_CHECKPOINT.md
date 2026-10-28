@@ -2,6 +2,8 @@
 
 ## clean包与契约完成，等待最终隔离候选本地入口
 
+最终等待回执：ded3f49f36ed63d606c3a23d95e8792f15bc2fe5已Git推送，产品18f/clean811不变。home-host本轮已真实SSH只读确认current=child-drawer-d1faa35-20261027、PID673/User easyproject、后端B155完整摘要匹配；新上传/helper/release路径均不存在，未上传/执行/建新服务器副本，SSH已exit。候选window1248486最后fresh只读仍为登录、尚无本地导航，控制立即reset；此处是等待用户入口，不是额度暂停或已交付。所有源码/完整门禁/API已完成，不重做；仅待本地入口后的原生→获批安全部署与桌面覆盖/保全→最终同步。
+
 产品18f8024/clean构建81159480fa0427f0bc7b6c5c0707a11239cd7ef9已推送且Git原干净，357/66、112完整生产UI、13专用真实HTTP、8矩阵、桌面75+stdio1/服务63+20及两端严格Clippy/类型lintbuild/release门禁通过。Apifox66/32及19主JSON门禁已同步并读回，Wolai主/交接按8115948同步候选与尚未部署事实并读回。DOC-SYNC-001仍开。
 
 Windows最终main29B1326B6A6EEBC234D156960D7DE7A637559C208C1D85DCC1554949EFC7E57E；最终NSIS29FF12B3CA29EC30DDE6D334D07CB98A1499C18D6B3EB83EECE849BD677F43EE，封存presentation-8115948。no-bundle首main3B7398与后续build打包main29B1有23字节差异（含构建时间字段，不冒称仅3字节），首候选已正常关闭并换最终29B1；原生最终按29B1而非首3B检验。Tauri build会重编译伴随38C1→2791，未把它们交付；本地CLI帮助确认bundle只打包后，恢复已验70E并用bundle生成最终NSIS，release/独立MCP均70E，权限/Schema不改。首次Sky launch handler未就绪且fresh无窗口，已reset，核无进程后明确获准Start-Process启动，不重复未知进程。

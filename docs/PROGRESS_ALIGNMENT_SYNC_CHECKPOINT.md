@@ -2,6 +2,8 @@
 
 ## 2026-10-28恢复：网页已交付，仅前置关系样例待本地入口
 
+同步回执：18d853620e36d09fbfe51edfb3d356e1bdf5ff1a已推送既有分支；Wolai产品主页面及交接副本均补充本节点并读回来源SHA/网页已交付/一条样例关系待本地入口。当前无本轮文档同步缺口；只有上述示例关系尚未完成。五小时余93%/周余42%，本次不是额度暂停；无SSH/构建/测试或桌面控制留跑。待用户进入本地后先fresh核窗口，仅操作新验收项目。
+
 恢复基线92e8fc3da687dcb05d65800782b12527ffcdd662，原分支Git干净；5小时余97%/周余43%。WACAS未定义，实际UPARS1.1.0/交接1.19。重新核包80480892及helper7A4A9A64完整SHA，受限清单读取获准后verify-manual-fixture.cjs通过：25任务/两项目/两人员齐全，18条原业务记录保持、integrity ok/FK0，未重复创建或安装。
 
 home-host本轮重新连接确认current为前轮progress-71de9e0，后端B15571B7、受限easyproject服务PID673（重启后的实际值，不沿用旧1893）。上传前确认两目标新路径，SCP exit0伴socket pending提示，独立远端完整摘要/AST_OK确认后执行既定静态helper。新root700副本/var/backups/easyproject/child-drawer-d1faa35-20261027；current切到/opt/easyproject/releases/child-drawer-d1faa35-20261027，72文件/525旧assets保持、后端673未重启、2DB全表/schema/对象/integrity/FK、配置/Funnel保持。正常TLS验证2HTML/CSP/no-store、71静态SHA、4匿名401/health200及邮箱/西语通过。SSH已exit，不重复部署。

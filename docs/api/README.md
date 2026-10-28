@@ -1,5 +1,7 @@
 # EasyProject API维护入口（Apifox）
 
+2026-10-28任务展示v2查询候选已同步：task/get_all增加statusIds数组OR过滤（完整ID/≤1000/空与省略区别/其它条件AND/服务端根分页及账号隔离），IPC和HTTP工作区说明及Apifox已更新读回。66原生/32参考及19主JSON契约门禁通过，代码源18f8024，部署待；MCP23工具Schema不变、独立70E不替换。柔和展示色不改原存储色，编辑保色。DOC-SYNC-001没有关闭；准确状态见TASK_PRESENTATION_V2_CHECKPOINT。
+
 ## 当前同步结论（2026-10-27复核）
 
 状态CRUD及颜色规则已在本地/远端MCP公开。私有Apifox66原生协议全部内容/摘要/分组一致，32参考摘要一致；HTTP19全读回但备用text/plain媒体类型及空security存在导出差异，不能宣称全字段等价。准确范围与待办见[同步复核](../DOCUMENTATION_SYNC_REVIEW_2026-10-27.md)。本轮进度列对齐不改变接口，无须重传或替换MCP。

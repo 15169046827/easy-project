@@ -2,6 +2,12 @@
 
 ## 候选实现与第一轮复验
 
+最终候选源码18f802413ec02fd684c377c29373011b33936fad已推送。减并发完整357/66前端测试通过（未改5秒安全门禁），完整112生产界面、13独立真实HTTP及8矩阵通过；类型/lint/build、桌面75+stdio1/Clippy、服务端63+20/Clippy通过。Linux CI40626473312两job（server/security）成功；官方唯一artifact12789656555的ZIP SHA da588669ed9dbc7312f805f58bcd5f17613e99dc7ceee8c99c9d598ae233bf6a已下载新E盘presentation-linux-18f8024.zip且摘要一致，唯一ELF SHA EF06930F2044D5E2C5566E1AED7E9AB10D6174A318ED492D6103E18720C90139。
+
+Apifox已32参考更新读回、66原生内容/摘要/目录/协议/路径/名称读回（源18f8024，MCP实际源仍2a/70E，23工具输入Schema无变化）；仅更新HTTP工作区526827488，全部19主JSON请求/响应Schema/描述/分组读回通过。备用text/plain/空security导出DOC-SYNC-001仍开，不称全字段等价。首串行命令误用LASTEXITCODE判断PowerShell脚本，实际仅完成32参考后exit0；确认实际结果后只继续尚未执行的native/Web阶段，未盲重写首阶段。当前API生成/manifest待提交，Git/Wolai最终回执待存。
+
+clean Windows/NSIS、纯合成原生及真实安全交付仍待。prepare-presentation-native-18f8024.cjs已写E盘忽略区但未执行，只在新目录复制/重置既有progress-native合成schema，不访问实际用户库/凭据。下一步保存API/证据干净HEAD→clean no-bundle/NSIS（保留70E伴随）→隔离原生→已批新副本后端/静态与桌面交付及保全。设备本机可用，服务器本轮未连接；5h余43%/周34%，无重置/关机/新MCP停止授权。下方待重跑/待API是历史节点。
+
 后续门禁：服务端完整63单测/20真实HTTP全部通过（新增跨项目状态ID集合分页及两账号隔离）；桌面完整75+stdio1/Clippy通过。8矩阵含优先级可读性与跨项目样例全过；完整生产首111/112失败为优先级颜色读取时Vue替换了元素、getComputedStyle收到空值，改为自动重定位的toHaveCSS保留原颜色对比要求后全量重跑。前端最新完整357首次355/357，两个既有Apifox安全拒绝测试的PowerShell子进程在并行Rust/浏览器高负载下超过5秒；不放宽超时/删断言，待减并发完整重跑。类型HTMLElement断言已修。发布/原生/Apifox尚未完成，暂不创建安装或服务器副本。候选先提交便于Linux CI产物验证，不等于门禁已全部通过。
 
 六图候选已实现，未部署。共享TaskStatusBadge/TaskProgressCell内外复用，柔和展示彩点＋主题中性底色/文字/描边、长状态截断与完整tooltip；状态管理器明确使用storedStatusColor，改名不回写柔和展示色（新回归测试通过）。内外同名列用实际表头边界定位，窄屏紧凑固定双槽/遵循隐藏列；状态和进度均非挤在外层进度列。删除右侧两PrimeVue图标独立折叠统计整区（含口径行）/搜索整区，列表利用高度。全局卡片按builtin key或自定义trim/case名称合计，各项目字典ID/完成属性/存储色不改；点击传statusIds集合，后端参数化OR、其它过滤AND、先筛后根分页/祖先上下文，旧MCP Schema/权限/程序不用替换。

@@ -1,5 +1,7 @@
 # EasyProject 本地 MCP
 
+2026-10-28任务展示v2说明：新增statusIds集合查询仅属于IPC/HTTP task/get_all，MCP task_list输入不扩展，23工具及权限保持、独立70E不替换。UI柔和彩点是展示映射，状态CRUD仍返回/保存原color，编辑名称不得隐式改色；全局卡片仅合计显示，不合并各项目字典ID或按文字猜完成属性。候选验证/交付见TASK_PRESENTATION_V2_CHECKPOINT，Apifox66/32/19主JSON已同步，DOC-SYNC-001仍开。
+
 ## 当前能力（2026-10-27复核）
 
 本地和远端当前客户端均已发现状态list/get/create/update/delete，create/update含color及缺省自动配色、内置色保护、三语查重说明；不再把历史“须重连”当本会话现状。实际独立程序70E、catalog clean2a5904d，23工具；66原生协议与32参考已全读回一致。颜色属于状态字段，不另造颜色CRUD实体。HTTP导出格式差异与所有文档核对范围见DOCUMENTATION_SYNC_REVIEW_2026-10-27。

@@ -1,5 +1,5 @@
 {
-  "sourceCommit": "2a5904dc032093a814ac973b21b350135064eb8e",
+  "sourceCommit": "18f802413ec02fd684c377c29373011b33936fad",
   "sourceNote": "Documentation source; unchanged MCP input schemas may be reused only when the previously verified binary digest matches. Binary provenance is separate; this generator does not rebuild or replace it.",
   "mcpBinary": {
     "sha256": "70e303f85852c21838d879fc4823fb51810e1a0178ae851194bc2e80074dc9c1",

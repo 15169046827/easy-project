@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-28下述62dc911布局与statusIds查询已实际交付桌面/网页/后端，不再仅候选。Windows来源62、Linux来源18f分别绑定且Rust差异核为空；MCP公开输入Schema未扩展、独立70E不替换。原生窄窗明确紧凑槽/横向滚动降级，不要求空间不足时仍按离屏外列绝对坐标摆放。全部证据与未验边界见TASK_PRESENTATION_V2_CHECKPOINT最终段。
+
 2026-10-28原生补丁62dc911：ResizeObserver同时观察外卡与实际table，覆盖展开抽屉出现纵向滚动条后的列宽重分配；抽屉进度槽最大104px，操作按钮32px，防止保留多余进度列宽而把按钮挤出。1280及1920默认列新增内外同名列和所有子操作按钮边界断言。原生修复前曾漏检，不能以浏览器矩阵代替新原生复验。
 
 2026-10-28新候选：TaskStatusBadge（真实PrimeVue Tag，中性底色/柔和彩点/截断tooltip）与TaskProgressCell（真实ProgressBar/等宽百分比/未知估算语义）由TaskList和递归Drawer共用；TaskList测量实际表头列边界，经ResizeObserver/列选择/滚动更新传Drawer，宽屏同名列对齐，窄屏独立紧凑槽。统计/搜索整体v-if由删除右两按钮控制。statusColors分离storedStatusColor与展示statusColor，管理器草稿使用前者，避免改名时偷偷变色。statusGroups仅聚合显示，不改ID/完成属性；全局点击组经useTaskListQuery转换statusIds，Rust task_service验证类型/完整ID/≤1000，task_db参数化IN及task_tree过滤后根分页；概览移除status及statusIds但保留其它维度。MCP输入不变、无需独立程序替换。准确测试/未交付见TASK_PRESENTATION_V2_CHECKPOINT，以下14.7rem旧方案由本轮覆盖。

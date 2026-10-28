@@ -1,5 +1,7 @@
 # 近期改动与文档同步复核
 
+2026-10-28增补：任务展示第二轮已交付产品62dc911/共享查询后端18f。statusIds为task/get_all的受控IPC/HTTP可选ID集合，已在源18f同步Apifox66原生/32参考及19主JSON读回；本轮最终滚动条布局修复不改契约，不重复上传。MCP23工具输入Schema/权限/独立70E仍保持，状态/颜色CRUD和字典校验未回退。Git/Wolai/交接最终回执见TASK_PRESENTATION_V2_CHECKPOINT顶部；下文DOC-SYNC-001备用媒体/空security缺口不因主JSON通过而关闭。
+
 日期：2026-10-27。基线7f792fe，本轮只读核对Apifox，不修改远端定义/真实业务数据。
 
 ## 核对结论

@@ -1,5 +1,19 @@
 # 任务展示第二轮整改（2026-10-28）
 
+## 最终交付完成：桌面、网页及必要查询后端
+
+六图整改已实际交付，不再等待本地入口/缩窗/覆盖许可；下方候选和等待记录均为历史。产品与Windows clean来源62dc911f5b50bd57eb807fc41a5b5692a287e75e；交付前文档基线8cdd8fb6238745a0962610c549396749919e3940，分支codex/audit-release-20261006-api。WACAS未定义/待确认，实际UPARS1.1.0、交接1.20及PrimeVue/nonce约束，规则/架构已复核。用户最新常规窗口操作自主偏好沿用，不反复请求例行步骤，也不绕过工具的认证/真实阻断限制。
+
+本轮结果：柔和展示色＋单一彩点/中性状态背景，长状态省略和完整提示；优先级中性文字/彩点，内外共用PrimeVue状态与进度组件。宽屏同名列对齐，ResizeObserver覆盖实际table滚动条变化，窄屏保留独立紧凑槽/隐藏列约束；统计/搜索整区独立折叠，删除右双按钮，统计口径同行隐藏、表格利用空间。全局卡片跨项目合计，点击按组内ID集合筛表格、不隐藏其它卡；项目字典/存储颜色/完成语义/权限均未合并或批量改写。
+
+验证：完整357单测/66文件、112生产UI、独立13真实HTTP、8严格nonce响应式矩阵、类型/lint/build/release门禁；桌面75+stdio1/服务63+20及严格Clippy，Linux CI40626473312成功，均有上述来源证据。新Windows真实候选1280及缩窄946×634深浅观察、滚动条同列/按钮边界、两区域折叠延伸、跨项目待办2/Review1及表格3→2卡片仍保留通过；正常关闭/合成8表hash一致/integrity ok/FK0，桌面控制reset。原生完整辅助技术和每个悬停未逐项独立实测，tooltip等由生产8矩阵覆盖，不扩大验证结论。
+
+桌面：已执行批准的安全助手，fresh受限E盘副本src-tauri/target/audit-tools/dictionary-overwrite-presentation-62dc911-20261028；保存858文件，855原有非程序文件逐项保持，原库全部行摘要/完整性/FK及启动后再比对保持，包含此前25人工验收任务和原项目。NSIS SHA 9FCEE6B31EEEBF6C4828CE6C0DFE3315DE78CE7E5620E3BB2041370A71352740，Exit0；最终安装main SHA 1B34C5D97363CCDABF98001ED8C81AC1C5C4C981C0716CCCAE4E881E05D383B6，与候选AAFE9844135F6B21BF97568F48AAFAB3CE32FDD5CD4212C146701730D636513E同尺寸18746880字节，仅偏移14701264–14701266的UNK→NSS三字节差异，已本地tauri-utils2.10.1 platform.rs证明为标准bundle标志。非前轮23字节构建差异，不混淆。伴随及独立MCP均70E303F85852C21838D879FC4823FB51810E1A0178AE851194BC2E80074DC9C1保持，未停止MCP连接/更改权限。正式程序已启动window1179950，只读看到仪表盘正常，无PAGE_RENDER_FAILED；未操作其登录/账号或业务数据，启动后所有DB摘要再核一致。副本普通权限读取曾拒绝，提升仅只读后核验，不降低ACL。
+
+服务器：fresh核旧current=d1/PID673/User easyproject及B155全SHA后，验证上传归档23EE87B4及helper5DBAB714/AST，运行同schema受限助手；新current=/opt/easyproject/releases/presentation-62dc911-20261028，新root700副本=/var/backups/easyproject/presentation-62dc911-20261028，PID2947，73交付文件摘要一致并保留559旧assets。LinuxSource仍18f802413ec02fd684c377c29373011b33936fad/CI40626473312，ELF EF06930F2044D5E2C5566E1AED7E9AB10D6174A318ED492D6103E18720C90139，与前端62来源分别记录。2数据库全部字段/ID/schema/对象保持（账号3、业务8；仅允许运行revision epoch变化），未迁移/清理库；配置/Funnel/备份与健康timer均保持enabled/active，现有预算check-storage通过。失败回滚只针对程序，不覆盖实时数据。正常证书TLS独立核2HTML/no-store/nonce CSP、71静态SHA、4匿名401/health200、反馈邮箱和西语资源均通过；没有用生产账号做CRUD验收。SSH94130已exit，无连接留跑。
+
+文档/API：MCP输入Schema仍23项原样，本轮只新增IPC/HTTP内部statusIds已在此前源18f的66原生/32参考/19主JSON同步读回；最新布局不再重传Apifox。DOC-SYNC-001备用text/plain及空security导出差异仍开，不称全字段等价。README/CHANGELOG/计划/发布/同步复核/交接随本完成节点更新；Wolai及Git最终回执完成后补记，近期网络TLS重置曾导致a78177a等文档未推送，须核实际push后再声称已同步。无新公开Release/签名/macOS安装验证，正式生产结论未因本轮安全交付改变。当前任务无功能或交付待办；后续按用户新需求推进，不重做本轮安装/部署/造数据。无关机/重置/唤醒授权。
+
 ## 原生窄窗完成，进入已批安全交付
 
 用户已缩小，同一window592674 fresh截图946×634（客户端窗口缩放后的实际捕获尺寸）完成稳定深浅主题：导航/删除右双折叠入口可达；抽屉在窄窗独立紧凑状态/进度槽，编辑及新增按钮完整；外表格保留横向滚动，不把窄屏降级误称同名列绝对位置仍对齐。恢复统计卡固定宽度不拉伸，待办2/Review1不拆项目；点击待办后表格3→2，两个卡及原计数仍保留，合成同状态跨项目均能匹配。1280同列/滚动条/深浅及整区折叠证据与此前完整8矩阵共同有效；不冒称原生完整辅助技术/每个悬停均独立验过。

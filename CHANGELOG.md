@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- 2026-10-28 delivered: Replace similar dark priority accents with a shared pastel palette (P2 peach/P3 sky blue), used consistently by task lists and boards while preserving neutral readable text.357 unit/112 production UI/8 responsive matrices and native theme checks passed; fresh protected desktop/static-web updates preserved all original data, backend and MCP. No new public Release.
+
 - 2026-10-28 delivered to desktop/web/backend: Shared neutral status/progress components with muted single-dot accents and full-value tooltips; child status/progress align with corresponding outer columns and remeasure actual table scrollbar changes. Statistics/search collapse independently from the shared header. Global cards aggregate project dictionaries without merging IDs, using validated bounded IPC/HTTP statusIds queries; MCP schemas and stored colors remain unchanged.357 unit/112 production UI/13 HTTP/8 responsive cases and native theme/narrow-window checks passed; fresh protected copies,855 original desktop files, all database rows and normal-TLS resources verified. No new public Release; see TASK_PRESENTATION_V2_CHECKPOINT.
 
 - 2026-10-28 final acceptance-data handoff: Saved and independently read back the real FS predecessor relationship through the PrimeVue edit dialog; all25 synthetic tasks and18 original business rows verified, integrity/FKs passed. Cleared task search back to10 roots and released desktop control. The current desktop/web correction and local acceptance fixture are complete; no code/API/MCP change.

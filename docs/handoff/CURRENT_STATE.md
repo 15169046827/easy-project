@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+优先级配色最终完成abc1e9e：P2浅蜜桃橙/P3晴空蓝、列表/看板统一。桌面安装04252CAB/新副本891文件、888原非程序文件和启动后全部库摘要保持；网页新priority-palette-abc1e9e/72文件/594旧assets，后端EF/PID2947/两库及配置Funnel不变、正常TLS过。357/112/8与原生深浅通过，无本轮待入口/许可/交付，勿重做；SSH/控制释放，25验收任务与MCP70E保持。精确SHA/失败/未验与最终同步见PRIORITY_PALETTE_CHECKPOINT。
+
 优先级配色候选abc1e9e已推送，357/112/8/类型lintbuildrelease全过，P2蜜桃橙/P3晴空蓝及列表/看板同源验证通过。Windows最终3DB44866、NSIS9AF42BA0及72文件静态包7EE2F386已封存；隔离候选PID37292/window4131818空白登录待用户本地入口，且本轮安全覆盖/纯静态更新许可待回复。控制reset，真实安装/网页仍62；不重造合成库/真实25样例，不改后端/MCP。精确摘要、失败及下一步见PRIORITY_PALETTE_CHECKPOINT顶部。
 
 2026-10-28优先级新配色候选：高P2浅蜜桃橙#f2ab7d、中P3晴空蓝#80b9ee，列表/看板中性文字＋同源彩点，其它级别配套浅色，不改数据库/API/MCP。357单测及首轮8矩阵通过，补充看板同色回归后正在跑最新完整生产UI/静态门禁。尚未新包/部署，准确状态转PRIORITY_PALETTE_CHECKPOINT；前轮62交付不重做。

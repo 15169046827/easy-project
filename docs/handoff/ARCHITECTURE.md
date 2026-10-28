@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+优先级共享浅色变量已以abc1e9e交付桌面和网页；只更改App全局展示变量与List/Board彩点，不是状态字典或数据迁移。后端/IPC/API/MCP未变，规则1.20复核保持。候选验证及交付来源/保全证据见PRIORITY_PALETTE_CHECKPOINT最终段。
+
 2026-10-28优先级视觉候选：App统一--priority-p1至p5展示变量，TaskList和TaskBoard的彩点均引用，文字保留当前主题正常文本色，不以浅色画小字。此为非持久化显示映射，不影响priorityRank、允许值、排序或MCP；不混用项目状态颜色字典。交付状态见PRIORITY_PALETTE_CHECKPOINT。
 
 2026-10-28下述62dc911布局与statusIds查询已实际交付桌面/网页/后端，不再仅候选。Windows来源62、Linux来源18f分别绑定且Rust差异核为空；MCP公开输入Schema未扩展、独立70E不替换。原生窄窗明确紧凑槽/横向滚动降级，不要求空间不足时仍按离屏外列绝对坐标摆放。全部证据与未验边界见TASK_PRESENTATION_V2_CHECKPOINT最终段。

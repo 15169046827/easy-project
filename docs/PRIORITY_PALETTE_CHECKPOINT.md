@@ -1,5 +1,15 @@
 # 优先级浅色配色修订（2026-10-28）
 
+## 最终交付完成：桌面及网页浅色优先级
+
+产品abc1e9ecc7f3bf0cd4e1da7dae0797581bea71e3，安全覆盖前文档基线88311cd1e7fea1d2a97816cafc7aa0e6c70e4f8c；分支codex/audit-release-20261006-api。P2蜜桃橙/P3晴空蓝及配套浅色集已实际交付，列表与看板同源彩点/正常文字，不再深棕黄近似色。357单测/112完整生产UI、最新8严格nonce深浅多宽列表/看板矩阵、类型/lint/build/release门禁通过；原生看板P2/P3浅色和稳定暗色正常。正常关闭合成候选并全表hash/integrity/FK核验保持、reset释放控制；逐页原生穷举/完整辅助技术未验，不扩大结论。
+
+桌面：新受限E盘副本src-tauri/target/audit-tools/dictionary-overwrite-priority-palette-abc1e9e-20261028保存891文件，888原有非程序文件/原数据库逐表摘要均保持，启动后再次全库比对通过/integrity ok/FK0。安装NSIS9AF42BA0CCF8901538D508995F4EB21F519D2E1B9360E5C02DA58A2BA13830A9 Exit0；安装main04252CABB2F3E9027A9C2532A890E7F73D2024FA1DC239C1BAC23FF13E330670，与候选3DB44866同尺寸仅14701264–14701266标准UNK→NSS标志差异，程序已启动留供用户使用。独立/伴随MCP70E不变，未停止连接/改权限，25人工样例和原项目未改。
+
+网页：fresh确认旧presentation62/PID2947/User easyproject/EF全SHA及新路径不存在后，上传7EE2F386归档和53E32289助手均远端完整SHA匹配/AST通过；新root700副本/var/backups/easyproject/priority-palette-abc1e9e-20261028，仅切current到/opt/easyproject/releases/priority-palette-abc1e9e-20261028，72文件摘要/594旧assets保持。后端EF06930F/PID2947完全不变，2数据库全行/schema/对象及配置/Funnel保持，未重启/迁移/清理/做生产CRUD。正常证书TLS2HTML/no-store/nonceCSP、71静态SHA、4匿名401/health200/联系邮箱与西语资源通过；SSH54982已exit，无控制/远程连接留跑。
+
+文档/API：README/CHANGELOG/规划/发布/交接更新实际交付；规则1.20、数据库设计/API/IPC/MCP/Apifox均无契约变化，复核无需重复上传66/32/19或重建后端，DOC-SYNC-001仍开。Wolai和Git最终回执待完成后补记，不继承前轮“仅候选”状态。WACAS未定义/待确认，UPARS1.1.0/交接1.20，全部维护者文件仍E盘。本轮无功能/安装/网页待办，不重装或重造数据；无新公开Release/正式生产放行，不自动重置/唤醒/关机。下文等待用户入口/授权和未部署均为历史。
+
 ## 原生配色通过，已获本轮安全交付许可
 
 用户已确认本地入口及新副本桌面/仅网页静态安全更新；不得借此改后端/数据库/MCP/权限。fresh原生候选本地2项目6任务确认后，在合成项目看板观察P3浅蓝/P2蜜桃橙，正常文字、浅色及稳定暗色均清晰；第一次点击屏外最近项目被边界拒绝，重新观察后用常规滚动完成，不请求用户调整。标准关闭候选后reset释放控制，合成全表hash保持/integrity ok/FK0。未做业务编辑，原生列表颜色由相同全局变量及完整8矩阵覆盖，不冒称逐页原生全验。最新5h余81%/周86%，允许开始获批安全交付。下一步fresh程序退出核对→新E盘副本覆盖NSIS9AF42BA0→fresh服务器旧62/EF/PID→新受限副本仅切72静态、正常TLS及保全→完成三方文档同步。此刻尚未安装/部署，不重建已有abc产物。

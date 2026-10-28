@@ -1026,6 +1026,8 @@ onMounted(() => {
         updateDrawerColumns()
     })
     tableResizeObserver.observe(tableCard.value)
+    const table = tableCard.value.querySelector('table')
+    if (table) tableResizeObserver.observe(table)
 })
 onBeforeUnmount(() => {
     tableResizeObserver?.disconnect()

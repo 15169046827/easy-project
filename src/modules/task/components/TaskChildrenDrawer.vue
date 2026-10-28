@@ -191,7 +191,7 @@ const rowStyle = computed(() =>
         ? {
               '--child-main-width': `${props.columnLayout.statusLeft - contentLeft.value}px`,
               '--child-status-width': `${props.columnLayout.progressLeft - props.columnLayout.statusLeft}px`,
-              '--child-progress-width': `${props.columnLayout.progressWidth}px`
+              '--child-progress-width': `${Math.min(props.columnLayout.progressWidth, 104)}px`
           }
         : {}
 )
@@ -257,6 +257,12 @@ function toggle(task) {
 .child-actions {
     display: flex;
     align-items: center;
+}
+.child-actions :deep(.p-button) {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.25rem;
+    flex: 0 0 2rem;
 }
 .child-row.aligned-columns {
     grid-template-columns:

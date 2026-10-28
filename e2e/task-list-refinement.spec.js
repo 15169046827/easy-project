@@ -429,6 +429,10 @@ for (const width of [1920, 1280, 960, 375]) {
                         )
                     ).toBe(4)
                 }
+                await page.getByRole('button', { name: '恢复默认列', exact: true }).click()
+                await expect(
+                    page.getByRole('columnheader', { name: '优先级', exact: true })
+                ).toHaveCount(0)
                 const expanded = page.getByRole('button', { name: '折叠任务', exact: true }).first()
                 if (await expanded.count()) await expanded.click()
                 await page.getByRole('button', { name: '展开任务', exact: true }).first().click()
@@ -456,7 +460,7 @@ for (const width of [1920, 1280, 960, 375]) {
                     expect(item.progressX).toBeCloseTo(positions[0].progressX, 0)
                     expect(item.align).toBe('left')
                 }
-                if (width === 1920) {
+                if (width >= 1280) {
                     expect(positions.every(item => item.aligned)).toBe(true)
                     const outer = await page
                         .locator('tbody tr')
@@ -470,6 +474,18 @@ for (const width of [1920, 1280, 960, 375]) {
                         }))
                     expect(positions[0].statusX).toBeCloseTo(outer.status, 0)
                     expect(positions[0].progressX).toBeCloseTo(outer.progress, 0)
+                    const fits = await drawer
+                        .locator(':scope > .child-entry > .child-row')
+                        .evaluateAll(rows =>
+                            rows.every(row =>
+                                Array.from(row.querySelectorAll('.child-actions button')).every(
+                                    button =>
+                                        button.getBoundingClientRect().right <=
+                                        row.getBoundingClientRect().right
+                                )
+                            )
+                        )
+                    expect(fits).toBe(true)
                 }
                 await drawer.getByRole('button', { name: '展开任务', exact: true }).click()
                 await expect(drawer.locator('.child-drawer .child-progress')).toHaveText('0%')

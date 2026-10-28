@@ -10,6 +10,7 @@ pub struct TaskQuery<'a> {
     pub project_id: Option<&'a str>,
     pub keyword: Option<&'a str>,
     pub status: Option<&'a str>,
+    pub status_ids: Option<&'a [String]>,
     pub priority: Option<&'a str>,
     pub assignee: Option<&'a str>,
     pub sort_by: &'a str,
@@ -202,6 +203,14 @@ pub fn query_tasks(db: &DbState, query: &TaskQuery<'_>) -> rusqlite::Result<(Vec
         let pattern = format!("%{}%", keyword.trim());
         values.push(pattern.clone());
         values.push(pattern);
+    }
+    if let Some(ids) = query.status_ids {
+        if ids.is_empty() {
+            conditions.push("0=1".to_string());
+        } else {
+            conditions.push(format!("status_id IN ({})", vec!["?"; ids.len()].join(",")));
+            values.extend(ids.iter().cloned());
+        }
     }
     if let Some(status) = query.status.filter(|value| !value.is_empty()) {
         match status {
@@ -569,6 +578,7 @@ mod status_query_tests {
             project_id: None,
             keyword: None,
             status: Some("Pending"),
+            status_ids: None,
             priority: None,
             assignee: None,
             sort_by: "name",

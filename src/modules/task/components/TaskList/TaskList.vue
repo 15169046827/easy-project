@@ -29,19 +29,43 @@
                     :disabled="selectedTasks.length === 0"
                     @click="deleteTask"
                 />
+                <Button
+                    icon="pi pi-chart-bar"
+                    text
+                    rounded
+                    :aria-label="statisticsHint"
+                    :title="statisticsHint"
+                    v-tooltip.bottom="statisticsHint"
+                    :aria-expanded="!statisticsCollapsed"
+                    aria-controls="task-statistics-region"
+                    @click="statisticsCollapsed = !statisticsCollapsed"
+                />
+                <Button
+                    icon="pi pi-filter"
+                    text
+                    rounded
+                    :aria-label="filtersHint"
+                    :title="filtersHint"
+                    v-tooltip.bottom="filtersHint"
+                    :aria-expanded="!filtersCollapsed"
+                    aria-controls="task-filter-region"
+                    @click="filtersCollapsed = !filtersCollapsed"
+                />
             </div>
         </header>
 
         <TaskStatusStatistics
+            v-if="!statisticsCollapsed"
+            id="task-statistics-region"
             v-model="statisticsScope"
             :data="scopedStatistics"
             :label="statisticsLabel"
             :selectedStatus="statusFilter"
             :inputId="embedded ? 'project-task-statistics-scope' : 'task-statistics-scope'"
-            @select-status="statusFilter = $event"
+            @select-status="selectStatisticsStatus"
         />
 
-        <div class="filter-card workspace-toolbar">
+        <div v-if="!filtersCollapsed" id="task-filter-region" class="filter-card workspace-toolbar">
             <div class="filter-bar">
                 <div class="clearable-search">
                     <InputText
@@ -352,35 +376,19 @@
                     field="status"
                     :header="$t('tasks.columnStatus')"
                     :style="columnStyle('status')"
+                    headerClass="task-status-column"
                 >
                     <template #body="{ data }">
-                        <span
-                            :title="
+                        <TaskStatusBadge
+                            :label="
                                 taskStatusLabel(
                                     data.status,
                                     data.status_builtin_key,
                                     Boolean(data.status_id)
                                 )
                             "
-                            v-tooltip.bottom="
-                                taskStatusLabel(
-                                    data.status,
-                                    data.status_builtin_key,
-                                    Boolean(data.status_id)
-                                )
-                            "
-                            class="pill"
-                            :style="statusAppearance(data)"
-                        >
-                            <span class="pill-dot"></span>
-                            {{
-                                taskStatusLabel(
-                                    data.status,
-                                    data.status_builtin_key,
-                                    Boolean(data.status_id)
-                                )
-                            }}
-                        </span>
+                            :appearance="statusAppearance(data)"
+                        />
                     </template>
                 </Column>
                 <Column
@@ -388,20 +396,10 @@
                     field="progress"
                     :header="$t('tasks.columnProgress')"
                     :style="columnStyle('progress')"
+                    headerClass="task-progress-column"
                 >
                     <template #body="{ data }">
-                        <span v-if="data.summary?.has_children && data.summary.progress == null">{{
-                            effortLabel(data, t)
-                        }}</span>
-                        <div v-else class="mini-progress">
-                            <ProgressBar
-                                class="mini-progress-bar"
-                                :value="data.progress || 0"
-                                :showValue="false"
-                                :aria-label="$t('tasks.columnProgress')"
-                            />
-                            <small>{{ data.progress || 0 }}%</small>
-                        </div>
+                        <TaskProgressCell :task="data" />
                     </template>
                 </Column>
                 <Column
@@ -491,6 +489,9 @@
                         :labelStatus="taskStatusLabel"
                         :styleStatus="statusAppearance"
                         :selectedTasks="selectedTasks"
+                        :columnLayout="drawerColumnLayout"
+                        :showStatus="columnVisible('status')"
+                        :showProgress="columnVisible('progress')"
                         @edit="openTaskEditor"
                         @add-child="addChildTask"
                         @select="toggleChildSelection"
@@ -726,7 +727,7 @@
 
 <script setup>
 import { priorityRank } from '../../../../utils/taskPriority'
-import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import Button from 'primevue/button'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
@@ -737,7 +738,6 @@ import TaskStatusStatistics from '../TaskStatusStatistics.vue'
 import { effortLabel, summaryHint } from '../../../../utils/taskEffort.js'
 import ProgressEditor from '../../../../components/ProgressEditor.vue'
 import TaskStatusSelect from '../../../../components/TaskStatusSelect.vue'
-import ProgressBar from 'primevue/progressbar'
 import Select from 'primevue/select'
 import MultiSelect from 'primevue/multiselect'
 import Dialog from 'primevue/dialog'
@@ -746,6 +746,9 @@ import { useI18n } from 'vue-i18n'
 import { crudAction } from '../../../../api'
 import { isTaskCompleted } from '../../../../utils/taskStatus.js'
 import { statusColorStyle } from '../../../../utils/statusColors.js'
+import TaskStatusBadge from '../../../../components/TaskStatusBadge.vue'
+import TaskProgressCell from '../../../../components/TaskProgressCell.vue'
+import { groupStatusStatistics } from '../../utils/statusGroups.js'
 import DateTimePickerString from './components/DateTimePickerString.vue'
 import MemberSelect from '../../../member/components/MemberSelect.vue'
 import { useMembers } from '../../../../composables/useMembers'
@@ -798,6 +801,18 @@ const {
 statusFilter.value = props.initialStatus
 
 const showLoading = useDelayedBusy(loading)
+const statisticsCollapsed = ref(false)
+const filtersCollapsed = ref(false)
+const statisticsHint = computed(() =>
+    t(
+        statisticsCollapsed.value
+            ? 'taskHierarchy.expandStatistics'
+            : 'taskHierarchy.collapseStatistics'
+    )
+)
+const filtersHint = computed(() =>
+    t(filtersCollapsed.value ? 'tasks.expandFilters' : 'tasks.collapseFilters')
+)
 const columnStorageKey = props.embedded
     ? 'easyproject-task-columns-embedded-v1'
     : 'easyproject-task-columns-global-v1'
@@ -926,33 +941,12 @@ const taskFilterStatus = computed(() => [
               label: taskStatusLabel(state.name, state.builtin_key, true),
               value: state.id
           }))
-        : [
-              ...taskStatus.value.filter(item => item.value !== 'Todo'),
-              ...Array.from(
-                  new Map(
-                      (
-                          statistics.value?.all_tasks?.statuses ||
-                          tasks.value.map(task => ({
-                              id: task.status_id,
-                              project_id: task.project_id,
-                              name: task.status,
-                              builtin_key: task.status_builtin_key
-                          }))
-                      )
-                          .filter(state => state.id)
-                          .map(state => [
-                              state.id,
-                              {
-                                  label:
-                                      getProjectName(state.project_id) +
-                                      ' · ' +
-                                      taskStatusLabel(state.name, state.builtin_key, true),
-                                  value: state.id
-                              }
-                          ])
-                  ).values()
-              )
-          ]),
+        : groupStatusStatistics(statistics.value?.all_tasks || { statuses: [] }).statuses.map(
+              state => ({
+                  label: taskStatusLabel(state.name, state.builtin_key, true),
+                  value: state.id
+              })
+          )),
     { label: t('common.overdue'), value: 'Overdue' }
 ])
 const projectStatuses = ref([])
@@ -1003,17 +997,45 @@ const getPriorityLabel = value => {
 const statisticsScope = ref('top_level')
 const tableCard = ref(null)
 const tableViewportWidth = ref(0)
+const drawerColumnLayout = ref({})
+function updateDrawerColumns() {
+    const root = tableCard.value
+    if (!root) return
+    const bounds = root.getBoundingClientRect()
+    const status = root.querySelector('th.task-status-column')?.getBoundingClientRect()
+    const progress = root.querySelector('th.task-progress-column')?.getBoundingClientRect()
+    const inset = root.querySelector('td:not(.p-datatable-frozen-column)')
+    const padding = inset ? parseFloat(getComputedStyle(inset).paddingLeft) : 16
+    drawerColumnLayout.value = {
+        statusLeft: status ? status.left + padding : undefined,
+        statusWidth: status?.width,
+        progressLeft: progress ? progress.left + padding : undefined,
+        progressWidth: progress?.width,
+        right: bounds.right
+    }
+}
 let tableResizeObserver
 onMounted(() => {
     if (!tableCard.value) return
     tableViewportWidth.value = tableCard.value.clientWidth
+    updateDrawerColumns()
+    tableCard.value.addEventListener('scroll', updateDrawerColumns, true)
     if (typeof ResizeObserver === 'undefined') return
     tableResizeObserver = new ResizeObserver(() => {
         tableViewportWidth.value = tableCard.value?.clientWidth || 0
+        updateDrawerColumns()
     })
     tableResizeObserver.observe(tableCard.value)
 })
-onBeforeUnmount(() => tableResizeObserver?.disconnect())
+onBeforeUnmount(() => {
+    tableResizeObserver?.disconnect()
+    tableCard.value?.removeEventListener('scroll', updateDrawerColumns, true)
+})
+watch(
+    [selectedColumns, tasks, statisticsCollapsed, filtersCollapsed],
+    () => nextTick(updateDrawerColumns),
+    { deep: true }
+)
 const statusDefinitions = computed(
     () =>
         new Map(
@@ -1031,7 +1053,7 @@ function statusAppearance(task) {
         }
     )
 }
-const scopedStatistics = computed(() => {
+const rawScopedStatistics = computed(() => {
     if (statistics.value?.[statisticsScope.value]) return statistics.value[statisticsScope.value]
     const source =
         statisticsScope.value === 'top_level'
@@ -1060,8 +1082,15 @@ const scopedStatistics = computed(() => {
         }))
     }
 })
-const statisticsLabel = state =>
-    `${taskStatusLabel(state.name, state.builtin_key, true)}${selectedProjectId.value ? '' : ' · ' + getProjectName(state.project_id)}`
+const scopedStatistics = computed(() =>
+    selectedProjectId.value
+        ? rawScopedStatistics.value
+        : groupStatusStatistics(rawScopedStatistics.value)
+)
+function selectStatisticsStatus(key) {
+    statusFilter.value = key
+}
+const statisticsLabel = state => taskStatusLabel(state.name, state.builtin_key, true)
 
 function taskStatusLabel(status, builtinKey = '', hasReference = false) {
     if (hasReference && !builtinKey) return status || '-'
@@ -1733,8 +1762,35 @@ onMounted(async () => {
 
 /* 优先级标签 */
 .priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--p-text-color);
     font-weight: 600;
     font-size: 0.8rem;
+}
+.priority-badge::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    flex: 0 0 0.5rem;
+    border-radius: 50%;
+    background: var(--priority-dot, #718096);
+}
+.priority-badge.priority-p1 {
+    --priority-dot: #b56c72;
+}
+.priority-badge.priority-p2 {
+    --priority-dot: #b98663;
+}
+.priority-badge.priority-p3 {
+    --priority-dot: #ad975d;
+}
+.priority-badge.priority-p4 {
+    --priority-dot: #6284ad;
+}
+.priority-badge.priority-p5 {
+    --priority-dot: #718096;
 }
 
 /* 迷你进度条 */

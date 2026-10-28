@@ -303,6 +303,8 @@ export default {
         priority: '优先级',
         sort: '排序',
         searchBtn: '搜索',
+        collapseFilters: '折叠搜索和筛选',
+        expandFilters: '展开搜索和筛选',
         clearBtn: '清除',
         emptyState: '请先创建项目再添加任务。',
         columnName: '名称',

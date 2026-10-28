@@ -24,6 +24,22 @@ for (const width of [1920, 1280, 960, 375]) {
                     localStorage.setItem('easyproject-lang', 'zh-CN')
                     localStorage.setItem('easyproject-theme', dark ? 'dark' : 'light')
                     localStorage.setItem('easyproject-onboarding-done', 'true')
+                    for (const key of [
+                        'easyproject-task-columns-global-v1',
+                        'easyproject-task-columns-embedded-v1'
+                    ])
+                        localStorage.setItem(
+                            key,
+                            JSON.stringify([
+                                'project_id',
+                                'parent',
+                                '_predecessorIds',
+                                'end_time',
+                                'priority',
+                                'status',
+                                'progress'
+                            ])
+                        )
                     sessionStorage.setItem('easyproject.local-launch', 'desktop-preview')
                     window.isTauri = true
                     window.__EASY_PROJECT_CALLS__ = []
@@ -71,7 +87,7 @@ for (const width of [1920, 1280, 960, 375]) {
                         status: states[i].name,
                         status_builtin_key: states[i].builtin_key,
                         is_completed: i === 2,
-                        priority: 'Normal',
+                        priority: i === 3 ? 'High' : 'Normal',
                         type: 'Task',
                         progress: i === 2 ? 100 : i === 3 ? 0 : 30,
                         effort_days: 2,
@@ -95,6 +111,7 @@ for (const width of [1920, 1280, 960, 375]) {
                                 : undefined
                     }))
                     states[4].name = '等待决策 · A deliberately long custom status label'
+                    tasks[4].status = states[4].name
                     for (const { id, parent, state, progress } of [
                         { id: 'child-zero', parent: 't0', state: 4, progress: 0 },
                         { id: 'child-done', parent: 't0', state: 2, progress: 100 },
@@ -126,9 +143,18 @@ for (const width of [1920, 1280, 960, 375]) {
                     }
                     tasks[0].summary.direct_child_count = 4
                     tasks[0].summary.completed_child_count = 1
+                    states.push({ ...states[0], id: 'second-pending', project_id: 'p2' })
+                    tasks.push({
+                        ...tasks[0],
+                        id: 'second-project-task',
+                        project_id: 'p2',
+                        name: 'Cross-project pending task',
+                        status_id: 'second-pending',
+                        summary: undefined
+                    })
                     const statistics = {
                         top_level: {
-                            total: 7,
+                            total: tasks.filter(task => !task.parent).length,
                             statuses: states.map(s => ({
                                 ...s,
                                 count: tasks.filter(t => !t.parent && t.status_id === s.id).length
@@ -166,27 +192,59 @@ for (const width of [1920, 1280, 960, 375]) {
                                     }
                                 }
                             if (args.model === 'task_status')
-                                return { success: true, data: { list: states } }
+                                return {
+                                    success: true,
+                                    data: {
+                                        list: states.filter(
+                                            state => state.project_id === args.data.projectId
+                                        )
+                                    }
+                                }
                             if (args.model === 'task') {
-                                const filtered = args.data?.status
-                                    ? tasks.filter(task => task.status_id === args.data.status)
+                                const source = args.data?.projectId
+                                    ? tasks.filter(task => task.project_id === args.data.projectId)
                                     : tasks
-                                const counts = args.data?.status
-                                    ? Object.fromEntries(
-                                          Object.entries(statistics).map(([scope, group]) => [
-                                              scope,
-                                              {
-                                                  total: filtered.length,
-                                                  statuses: group.statuses.map(state => ({
-                                                      ...state,
-                                                      count: filtered.filter(
-                                                          task => task.status_id === state.id
-                                                      ).length
-                                                  }))
-                                              }
-                                          ])
+                                const filtered = args.data?.statusIds
+                                    ? source.filter(task =>
+                                          args.data.statusIds.includes(task.status_id)
                                       )
-                                    : statistics
+                                    : args.data?.status
+                                      ? source.filter(task => task.status_id === args.data.status)
+                                      : source
+                                const counts =
+                                    args.data?.status || args.data?.statusIds
+                                        ? Object.fromEntries(
+                                              Object.entries(statistics).map(([scope, group]) => [
+                                                  scope,
+                                                  {
+                                                      total: filtered.length,
+                                                      statuses: group.statuses.map(state => ({
+                                                          ...state,
+                                                          count: filtered.filter(
+                                                              task => task.status_id === state.id
+                                                          ).length
+                                                      }))
+                                                  }
+                                              ])
+                                          )
+                                        : Object.fromEntries(
+                                              Object.entries(statistics).map(([scope, group]) => [
+                                                  scope,
+                                                  {
+                                                      total:
+                                                          scope === 'top_level'
+                                                              ? source.filter(task => !task.parent)
+                                                                    .length
+                                                              : source.length,
+                                                      statuses: group.statuses.filter(
+                                                          state =>
+                                                              !args.data?.projectId ||
+                                                              state.project_id ===
+                                                                  args.data.projectId
+                                                      )
+                                                  }
+                                              ])
+                                          )
                                 return {
                                     success: true,
                                     data: {
@@ -205,7 +263,18 @@ for (const width of [1920, 1280, 960, 375]) {
             for (const route of ['/#/tasks', '/#/project/p1']) {
                 await page.goto(route)
                 await expect(page.locator('.statistics-cards .status-stat')).toHaveCount(7)
-                const progress = await page.locator('.mini-progress').evaluateAll(elements =>
+                if (!route.includes('project')) {
+                    const pending = page
+                        .locator('.status-stat')
+                        .filter({ has: page.locator('.status-name', { hasText: /^待办$/ }) })
+                    await expect(pending.locator('strong')).toHaveText('2')
+                    await pending.click()
+                    await expect(page.locator('tbody')).toContainText('Cross-project pending task')
+                    await expect(page.locator('tbody')).toContainText('Parent goal')
+                    await expect(page.locator('.status-stat')).toHaveCount(7)
+                    await page.getByRole('button', { name: '清除', exact: true }).click()
+                }
+                const progress = await page.locator('td > .mini-progress').evaluateAll(elements =>
                     elements.map(el => {
                         const cell = el.closest('td').getBoundingClientRect()
                         const bar = el.querySelector('.mini-progress-bar').getBoundingClientRect()
@@ -229,6 +298,23 @@ for (const width of [1920, 1280, 960, 375]) {
                     expect(item.offset).toBeCloseTo(progress[0].offset, 0)
                 }
                 await expect(page.locator('.statistics-cards')).not.toContainText('No tasks')
+                const priorityBadge = page
+                    .locator('.priority-badge')
+                    .filter({ hasText: 'P2' })
+                    .first()
+                await expect(priorityBadge).toBeVisible()
+                await expect(priorityBadge).toHaveCSS(
+                    'color',
+                    await page
+                        .locator('.task-status-badge .status-label')
+                        .first()
+                        .evaluate(el => getComputedStyle(el).color)
+                )
+                expect(
+                    await priorityBadge.evaluate(
+                        el => getComputedStyle(el, '::before').backgroundColor
+                    )
+                ).not.toBe('rgba(0, 0, 0, 0)')
                 await expect(page.locator('.hierarchy-statistics [role="combobox"]')).toHaveCount(0)
                 const stats = page.locator('.hierarchy-statistics')
                 expect(await stats.evaluate(el => getComputedStyle(el).overflowY)).toBe('visible')
@@ -250,9 +336,7 @@ for (const width of [1920, 1280, 960, 375]) {
                     })
                     .click()
                 const overviewBefore = await page.locator('.status-stat').allTextContents()
-                await expect(page.locator('.status-name').first()).toHaveText(
-                    route.includes('project') ? '待办' : '待办 · Refinement fixture'
-                )
+                await expect(page.locator('.status-name').first()).toHaveText('待办')
                 expect((await page.locator('.status-stat').first().boundingBox()).width).toBe(192)
                 const phase = page.locator('.status-stat').filter({ hasText: 'Phase 3' })
                 await phase.click()
@@ -268,6 +352,11 @@ for (const width of [1920, 1280, 960, 375]) {
                                             c.args.data.pageSize === 20 &&
                                             Object.hasOwn(c.args.data, 'status')
                                     )
+                                    .at(-1)?.args.data.statusIds?.[0] ||
+                                window.__EASY_PROJECT_CALLS__
+                                    .filter(
+                                        c => c.args?.model === 'task' && c.args.data.pageSize === 20
+                                    )
                                     .at(-1)?.args.data.status
                         )
                     )
@@ -276,11 +365,18 @@ for (const width of [1920, 1280, 960, 375]) {
                 await expect(page.locator('.statistics-cards .status-stat')).toHaveCount(7)
                 await expect(page.locator('.status-stat')).toHaveText(overviewBefore)
                 expect((await phase.boundingBox()).width).toBe(192)
-                const tag = page.locator('tbody .pill').filter({ hasText: 'Phase 3' })
+                const tag = page.locator('tbody .task-status-badge').filter({ hasText: 'Phase 3' })
                 const accent = await phase
                     .locator('.status-dot')
                     .evaluate(el => getComputedStyle(el).backgroundColor)
-                expect(accent).toBe(await tag.evaluate(el => getComputedStyle(el).backgroundColor))
+                expect(accent).toBe(
+                    await tag
+                        .locator('.status-dot')
+                        .evaluate(el => getComputedStyle(el).backgroundColor)
+                )
+                expect(await tag.evaluate(el => getComputedStyle(el).backgroundColor)).not.toBe(
+                    accent
+                )
                 expect(await phase.evaluate(el => getComputedStyle(el).backgroundColor)).not.toBe(
                     accent
                 )
@@ -347,7 +443,7 @@ for (const width of [1920, 1280, 960, 375]) {
                         return {
                             statusX: status.left,
                             progressX: progress.getBoundingClientRect().left,
-                            width: el.getBoundingClientRect().width,
+                            aligned: el.closest('.child-row').classList.contains('aligned-columns'),
                             align: getComputedStyle(progress).textAlign,
                             value: progress.textContent
                         }
@@ -359,11 +455,32 @@ for (const width of [1920, 1280, 960, 375]) {
                     expect(item.statusX).toBeCloseTo(positions[0].statusX, 0)
                     expect(item.progressX).toBeCloseTo(positions[0].progressX, 0)
                     expect(item.align).toBe('left')
-                    if (width >= 960) expect(item.width).toBeCloseTo(235.2, 0)
+                }
+                if (width === 1920) {
+                    expect(positions.every(item => item.aligned)).toBe(true)
+                    const outer = await page
+                        .locator('tbody tr')
+                        .filter({ has: page.locator('.task-tree-name') })
+                        .first()
+                        .evaluate(row => ({
+                            status: row.querySelector('.task-status-badge').getBoundingClientRect()
+                                .left,
+                            progress: row.querySelector('.mini-progress').getBoundingClientRect()
+                                .left
+                        }))
+                    expect(positions[0].statusX).toBeCloseTo(outer.status, 0)
+                    expect(positions[0].progressX).toBeCloseTo(outer.progress, 0)
                 }
                 await drawer.getByRole('button', { name: '展开任务', exact: true }).click()
                 await expect(drawer.locator('.child-drawer .child-progress')).toHaveText('0%')
                 const longStatus = metrics.nth(1).locator('.p-tag')
+                expect(
+                    await longStatus.evaluate(
+                        el =>
+                            el.getBoundingClientRect().right <=
+                            el.parentElement.getBoundingClientRect().right + 1
+                    )
+                ).toBe(true)
                 await longStatus.hover()
                 await expect(page.getByRole('tooltip')).toContainText('deliberately long')
                 await page.mouse.move(0, 0)
@@ -378,6 +495,28 @@ for (const width of [1920, 1280, 960, 375]) {
                         () => document.documentElement.scrollWidth <= innerWidth + 1
                     )
                 ).toBe(true)
+                const header = page.locator('.task-page-header')
+                await header.getByRole('button', { name: '展开状态统计', exact: true }).click()
+                await expect(page.locator('.hierarchy-statistics')).toBeVisible()
+                await table.scrollIntoViewIfNeeded()
+                const beforeCollapse = await table.evaluate(
+                    el => /** @type {HTMLElement} */ (el).offsetTop
+                )
+                await header.getByRole('button', { name: '折叠状态统计', exact: true }).click()
+                await expect(page.locator('.hierarchy-statistics')).toHaveCount(0)
+                await header.getByRole('button', { name: '折叠搜索和筛选', exact: true }).click()
+                await expect(page.locator('.filter-card')).toHaveCount(0)
+                expect(
+                    await table.evaluate(el => /** @type {HTMLElement} */ (el).offsetTop)
+                ).toBeLessThan(beforeCollapse)
+                await header
+                    .getByRole('button', { name: '展开状态统计', exact: true })
+                    .press('Enter')
+                await header
+                    .getByRole('button', { name: '展开搜索和筛选', exact: true })
+                    .press('Enter')
+                await expect(page.locator('.hierarchy-statistics')).toBeVisible()
+                await expect(page.locator('.filter-card')).toBeVisible()
                 await page.screenshot({
                     path: `test-results/task-refinement-${route.includes('project') ? 'project' : 'global'}-${width}-${dark}.png`
                 })

@@ -318,6 +318,8 @@ export default {
         priority: 'Priority',
         sort: 'Sort',
         searchBtn: 'Search',
+        collapseFilters: 'Collapse search and filters',
+        expandFilters: 'Expand search and filters',
         clearBtn: 'Clear',
         emptyState: 'Create a project before adding tasks.',
         columnName: 'Name',

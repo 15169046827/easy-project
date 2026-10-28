@@ -13,6 +13,31 @@ fn validate_schedule(start: &str, end: &str) -> Result<(), String> {
     Ok(())
 }
 
+// Optional OR filter for cross-project overview groups. Empty means no matches;
+// omitted means unrestricted. Values remain bound SQL parameters, never SQL text.
+fn status_ids_filter(data: &Value) -> Result<Option<Vec<String>>, String> {
+    let Some(value) = data.get("statusIds") else {
+        return Ok(None);
+    };
+    let values = value.as_array().ok_or("statusIds must be an array")?;
+    if values.len() > 1000 {
+        return Err("statusIds may contain at most 1000 IDs".into());
+    }
+    let mut ids = Vec::new();
+    for value in values {
+        let id = value
+            .as_str()
+            .ok_or("Each statusIds entry must be a string")?;
+        if !crate::common::id::valid_id(id, "TASK_STATUS") {
+            return Err("Each statusIds entry must be a complete TASK_STATUS ID".into());
+        }
+        if !ids.iter().any(|existing| existing == id) {
+            ids.push(id.to_owned());
+        }
+    }
+    Ok(Some(ids))
+}
+
 fn validate_assignee(db: &DbState, project_id: &str, assignee: &str) -> Result<(), String> {
     if assignee.is_empty() {
         return Ok(());
@@ -173,6 +198,7 @@ pub fn handle_action(
                 .filter(|value| !value.is_empty());
             let keyword = data.get("keyword").and_then(|value| value.as_str());
             let status = data.get("status").and_then(|value| value.as_str());
+            let status_ids = status_ids_filter(&data)?;
             let priority = data.get("priority").and_then(|value| value.as_str());
             let assignee = data.get("assignee").and_then(|value| value.as_str());
             let sort_by = data
@@ -189,6 +215,7 @@ pub fn handle_action(
                 project_id,
                 keyword,
                 status,
+                status_ids: status_ids.as_deref(),
                 priority,
                 assignee,
                 sort_by,
@@ -475,5 +502,34 @@ pub fn handle_action(
         }
 
         _ => ApiResponse::err("Unsupported action for task"),
+    }
+}
+
+#[cfg(test)]
+mod status_filter_tests {
+    use super::status_ids_filter;
+    use serde_json::json;
+    #[test]
+    fn validates_optional_id_union_without_changing_legacy_queries() {
+        let id = "TASK_STATUS:11111111111111111111111111111111";
+        assert_eq!(status_ids_filter(&json!({})).unwrap(), None);
+        assert_eq!(
+            status_ids_filter(&json!({"statusIds":[]})).unwrap(),
+            Some(vec![])
+        );
+        assert_eq!(
+            status_ids_filter(&json!({"statusIds":[id,id]})).unwrap(),
+            Some(vec![id.to_owned()])
+        );
+        for value in [
+            json!(null),
+            json!("Done"),
+            json!([17]),
+            json!(["Done"]),
+            json!(["TASK_STATUS:short"]),
+            json!(vec![id; 1001]),
+        ] {
+            assert!(status_ids_filter(&json!({"statusIds":value})).is_err());
+        }
     }
 }

@@ -185,7 +185,7 @@ import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import { crudAction } from '../api'
 import StatusColorSelect from './StatusColorSelect.vue'
-import { suggestStatusColor, statusColor } from '../utils/statusColors'
+import { suggestStatusColor, statusColor, storedStatusColor } from '../utils/statusColors'
 import { findStatusNameConflict } from '../utils/taskStatus'
 const props = defineProps({ projectId: { type: String, required: true } })
 const emit = defineEmits(['updated'])
@@ -262,7 +262,7 @@ function edit(state) {
         ? {
               id: state.id,
               name: state.name,
-              color: statusColor(state),
+              color: storedStatusColor(state),
               sort_order: state.sort_order,
               is_completed: state.is_completed,
               is_default: state.is_default

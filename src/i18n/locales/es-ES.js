@@ -320,6 +320,8 @@ export default {
         priority: 'Prioridad',
         sort: 'Ordenar',
         searchBtn: 'Buscar',
+        collapseFilters: 'Contraer búsqueda y filtros',
+        expandFilters: 'Expandir búsqueda y filtros',
         clearBtn: 'Limpiar',
         emptyState: 'Crea un proyecto antes de añadir tareas.',
         columnName: 'Nombre',

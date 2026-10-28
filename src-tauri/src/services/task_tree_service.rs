@@ -8,6 +8,12 @@ use serde_json::{json, Value};
 use std::collections::{HashMap, HashSet};
 
 fn matches(task: &Task, query: &TaskQuery<'_>) -> bool {
+    if query
+        .status_ids
+        .is_some_and(|ids| !ids.contains(&task.status_id))
+    {
+        return false;
+    }
     let keyword = query.keyword.unwrap_or("").trim().to_lowercase();
     if !keyword.is_empty()
         && !task.name.to_lowercase().contains(&keyword)
@@ -44,6 +50,7 @@ pub fn query(db: &DbState, query: &TaskQuery<'_>) -> Result<Value, String> {
         page_size: i64::MAX as u64,
         keyword: None,
         status: None,
+        status_ids: None,
         priority: None,
         assignee: None,
         ..*query
@@ -204,6 +211,7 @@ mod tests {
             project_id: Some("p"),
             keyword: None,
             status: None,
+            status_ids: None,
             priority: None,
             assignee: None,
             sort_by: "sort_order",
@@ -213,6 +221,36 @@ mod tests {
         assert_eq!(first["total"], 2);
         assert_eq!(first["list"].as_array().unwrap().len(), 3);
         assert_eq!(first["statistics"]["all_tasks"]["total"], 4);
+        let ids = vec![first["list"][0]["status_id"].as_str().unwrap().to_owned()];
+        query.status_ids = Some(&ids);
+        assert_eq!(super::query(&db, &query).unwrap()["total"], 2);
+        assert_eq!(task_db::query_tasks(&db, &query).unwrap().1, 4);
+        let other_status = {
+            let conn = db.lock_connection().unwrap();
+            let done = crate::common::task_status::list(&conn, "p")
+                .unwrap()
+                .into_iter()
+                .find(|state| state.builtin_key == "Done")
+                .unwrap()
+                .id;
+            conn.execute("UPDATE task SET status_id=?1 WHERE id='other'", [&done])
+                .unwrap();
+            done
+        };
+        assert_eq!(super::query(&db, &query).unwrap()["total"], 1);
+        assert_eq!(task_db::query_tasks(&db, &query).unwrap().1, 3);
+        let union = vec![ids[0].clone(), other_status];
+        query.status_ids = Some(&union);
+        assert_eq!(super::query(&db, &query).unwrap()["total"], 2);
+        assert_eq!(task_db::query_tasks(&db, &query).unwrap().1, 4);
+        db.lock_connection()
+            .unwrap()
+            .execute("UPDATE task SET status_id=?1 WHERE id='other'", [&ids[0]])
+            .unwrap();
+        query.status_ids = Some(&[]);
+        assert_eq!(super::query(&db, &query).unwrap()["total"], 0);
+        assert_eq!(task_db::query_tasks(&db, &query).unwrap().1, 0);
+        query.status_ids = None;
         query.page_index = 2;
         assert_eq!(super::query(&db, &query).unwrap()["list"][0]["id"], "other");
         query.page_index = 1;

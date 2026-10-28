@@ -5,7 +5,8 @@ import {
     STATUS_COLORS,
     suggestStatusColor,
     statusColor,
-    statusColorStyle
+    statusColorStyle,
+    storedStatusColor
 } from '../../utils/statusColors'
 
 describe('status color suggestions', () => {
@@ -29,14 +30,17 @@ describe('status color suggestions', () => {
         expect(states).toEqual([{ color: '#123456' }])
         expect(statusColor(states[0])).toBe('#123456')
     })
-    it('keeps built-in colors canonical and opaque with contrasting text', () => {
-        expect(statusColor({ builtin_key: 'Done', color: '#123456' })).toBe('#22c55e')
-        expect(statusColor({ builtin_key: 'InProgress', color: '#000000' })).toBe('#3b82f6')
-        expect(statusColor({ builtin_key: 'Pending', color: '#ffffff' })).toBe('#64748b')
+    it('keeps built-in accents consistent and text neutral without changing stored colors', () => {
+        expect(storedStatusColor({ color: '#f43f5e' })).toBe('#f43f5e')
+        expect(storedStatusColor({ builtin_key: 'Done', color: '#123456' })).toBe('#22c55e')
+        expect(statusColor({ builtin_key: 'Done', color: '#123456' })).toBe('#629579')
+        expect(statusColor({ builtin_key: 'InProgress', color: '#000000' })).toBe('#6284ad')
+        expect(statusColor({ builtin_key: 'Pending', color: '#ffffff' })).toBe('#718096')
         for (const color of ['#000000', '#ffffff', ...STATUS_COLORS.map(c => c.value)]) {
             const style = statusColorStyle({ color })
-            expect(style.backgroundColor).toBe(color)
-            expect(['#000000', '#ffffff']).toContain(style.color)
+            expect(style.backgroundColor).toBe('var(--p-content-background)')
+            expect(style.color).toBe('var(--p-text-color)')
+            expect(style['--status-color']).toBe(statusColor({ color }))
         }
     })
 })

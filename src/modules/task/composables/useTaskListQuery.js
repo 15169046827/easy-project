@@ -1,6 +1,7 @@
 import { reactive, ref } from 'vue'
 import { crudAction } from '../../../api'
 import { loadAllTasks } from '../../../api/taskCatalog.js'
+import { groupStatusStatistics } from '../utils/statusGroups.js'
 
 async function loadTaskSnapshot(query) {
     const result = await crudAction('task', 'get_all', query)
@@ -17,6 +18,7 @@ async function loadTaskSnapshot(query) {
                 query.projectId &&
                 !query.keyword &&
                 !query.status &&
+                !query.statusIds &&
                 !query.priority &&
                 rows.length >= (result?.total || 0)
             const related = completeProject ? rows : await loadAllTasks({ projectId })
@@ -45,10 +47,11 @@ async function loadTaskPage(query) {
     // project, search and priority dimensions; the overview needs just one row.
     const [result, overview] = await Promise.all([
         loadTaskSnapshot(query),
-        query.status
+        query.status || query.statusIds
             ? crudAction('task', 'get_all', {
                   ...query,
                   status: '',
+                  statusIds: undefined,
                   pageIndex: 1,
                   pageSize: 1
               })
@@ -66,6 +69,18 @@ async function requireTaskRefresh(init, errorMessage) {
 }
 function clearFilterValues(fields) {
     for (const field of fields) field.value = ''
+}
+
+function resolveStatusQuery(query, statistics) {
+    if (!query.projectId && /^(builtin:|name:)/.test(query.status)) {
+        const groups = groupStatusStatistics(statistics?.all_tasks || { statuses: [] })
+        return {
+            ...query,
+            status: '',
+            statusIds: groups.statuses.find(group => group.id === query.status)?.statusIds || []
+        }
+    }
+    return query
 }
 
 export function useTaskListQuery(initialProjectId = '') {
@@ -103,7 +118,7 @@ export function useTaskListQuery(initialProjectId = '') {
                 sortBy: sortBy.value,
                 sortDirection: sortBy.value === 'update_time' ? 'desc' : 'asc'
             }
-            const result = await loadTaskPage(query)
+            const result = await loadTaskPage(resolveStatusQuery(query, statistics.value))
             if (request !== requestSequence || projectId !== selectedProjectId.value) return false
             dependencies.value = result.dependencies
             relatedTasks.value = result.relatedTasks

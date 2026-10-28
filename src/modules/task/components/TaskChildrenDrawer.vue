@@ -1,5 +1,9 @@
 <template>
-    <section class="child-drawer" :aria-label="$t('taskHierarchy.children') + ': ' + parent.name">
+    <section
+        ref="drawerElement"
+        class="child-drawer"
+        :aria-label="$t('taskHierarchy.children') + ': ' + parent.name"
+    >
         <header>
             <div>
                 <strong>{{ $t('taskHierarchy.children') }}</strong> ·
@@ -19,59 +23,59 @@
             />
         </header>
         <div v-for="task in children" :key="task.id" class="child-entry">
-            <div class="child-row" :class="{ 'context-only': task.context_only }">
-                <Checkbox
-                    :modelValue="selectedTasks.some(item => item.id === task.id)"
-                    binary
-                    :aria-label="task.name"
-                    @update:modelValue="$emit('select', task)"
-                />
-                <Button
-                    v-if="hasChildren(task)"
-                    :icon="expanded(task) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
-                    text
-                    rounded
-                    size="small"
-                    :aria-label="expanded(task) ? $t('tasks.collapseTask') : $t('tasks.expandTask')"
-                    :aria-expanded="expanded(task)"
-                    @click="toggle(task)"
-                />
-                <div class="child-main">
-                    <strong
-                        tabindex="0"
-                        class="truncate"
-                        :title="task.name"
-                        v-tooltip.bottom="task.name"
-                        >{{ task.name }}</strong
-                    >
-                    <small v-if="task.context_only">{{ $t('taskHierarchy.contextOnly') }}</small>
-                    <small class="truncate" :title="task.comment" v-tooltip.bottom="task.comment">{{
-                        task.comment || '-'
-                    }}</small>
-                    <small
-                        >{{ task.start_time?.slice(0, 10) || '-' }} –
-                        {{ task.end_time?.slice(0, 10) || '-' }} · {{ effortLabel(task, t) }}</small
-                    >
+            <div
+                class="child-row"
+                :class="{ 'context-only': task.context_only, 'aligned-columns': aligned }"
+                :style="rowStyle"
+            >
+                <div class="child-content">
+                    <Checkbox
+                        :modelValue="selectedTasks.some(item => item.id === task.id)"
+                        binary
+                        :aria-label="task.name"
+                        @update:modelValue="$emit('select', task)"
+                    />
+                    <Button
+                        v-if="hasChildren(task)"
+                        :icon="expanded(task) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                        text
+                        rounded
+                        size="small"
+                        :aria-label="
+                            expanded(task) ? $t('tasks.collapseTask') : $t('tasks.expandTask')
+                        "
+                        :aria-expanded="expanded(task)"
+                        @click="toggle(task)"
+                    />
+                    <div class="child-main">
+                        <strong
+                            tabindex="0"
+                            class="truncate"
+                            :title="task.name"
+                            v-tooltip.bottom="task.name"
+                            >{{ task.name }}</strong
+                        >
+                        <small v-if="task.context_only">{{
+                            $t('taskHierarchy.contextOnly')
+                        }}</small>
+                        <small
+                            class="truncate"
+                            :title="task.comment"
+                            v-tooltip.bottom="task.comment"
+                            >{{ task.comment || '-' }}</small
+                        >
+                        <small
+                            >{{ task.start_time?.slice(0, 10) || '-' }} –
+                            {{ task.end_time?.slice(0, 10) || '-' }} ·
+                            {{ effortLabel(task, t) }}</small
+                        >
+                    </div>
                 </div>
                 <div class="child-metrics">
-                    <div class="child-status">
-                        <Tag
-                            :style="styleStatus(task)"
-                            :title="
-                                labelStatus(
-                                    task.status,
-                                    task.status_builtin_key,
-                                    Boolean(task.status_id)
-                                )
-                            "
-                            v-tooltip.bottom="
-                                labelStatus(
-                                    task.status,
-                                    task.status_builtin_key,
-                                    Boolean(task.status_id)
-                                )
-                            "
-                            :value="
+                    <div v-if="showStatus" class="child-status">
+                        <TaskStatusBadge
+                            :appearance="styleStatus(task)"
+                            :label="
                                 labelStatus(
                                     task.status,
                                     task.status_builtin_key,
@@ -80,27 +84,31 @@
                             "
                         />
                     </div>
-                    <span
+                    <div
+                        v-if="showProgress"
                         class="child-progress"
                         :title="progressLabel(task)"
                         v-tooltip.bottom="progressLabel(task)"
-                        >{{ progressLabel(task) }}</span
                     >
+                        <TaskProgressCell :task="task" />
+                    </div>
                 </div>
-                <Button
-                    icon="pi pi-pencil"
-                    text
-                    rounded
-                    :aria-label="$t('common.edit') + ': ' + task.name"
-                    @click="$emit('edit', task)"
-                />
-                <Button
-                    icon="pi pi-plus"
-                    text
-                    rounded
-                    :aria-label="$t('taskHierarchy.addChild') + ': ' + task.name"
-                    @click="$emit('add-child', task)"
-                />
+                <div class="child-actions">
+                    <Button
+                        icon="pi pi-pencil"
+                        text
+                        rounded
+                        :aria-label="$t('common.edit') + ': ' + task.name"
+                        @click="$emit('edit', task)"
+                    />
+                    <Button
+                        icon="pi pi-plus"
+                        text
+                        rounded
+                        :aria-label="$t('taskHierarchy.addChild') + ': ' + task.name"
+                        @click="$emit('add-child', task)"
+                    />
+                </div>
             </div>
             <TaskChildrenDrawer
                 v-if="hasChildren(task) && expanded(task)"
@@ -110,6 +118,9 @@
                 :labelStatus="labelStatus"
                 :styleStatus="styleStatus"
                 :selectedTasks="selectedTasks"
+                :columnLayout="columnLayout"
+                :showStatus="showStatus"
+                :showProgress="showProgress"
                 @edit="$emit('edit', $event)"
                 @add-child="$emit('add-child', $event)"
                 @select="$emit('select', $event)"
@@ -118,10 +129,11 @@
     </section>
 </template>
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Button from 'primevue/button'
-import Tag from 'primevue/tag'
+import TaskStatusBadge from '../../../components/TaskStatusBadge.vue'
+import TaskProgressCell from '../../../components/TaskProgressCell.vue'
 import Checkbox from 'primevue/checkbox'
 import { effortLabel } from '../../../utils/taskEffort.js'
 const props = defineProps({
@@ -137,11 +149,52 @@ const props = defineProps({
         default: () => []
     },
     filtering: Boolean,
+    columnLayout: { type: Object, default: () => ({}) },
+    showStatus: { type: Boolean, default: true },
+    showProgress: { type: Boolean, default: true },
     labelStatus: { type: Function, required: true },
     styleStatus: { type: Function, default: () => ({}) }
 })
 defineEmits(['edit', 'add-child', 'select'])
 const { t } = useI18n()
+const drawerElement = ref(null)
+const contentLeft = ref(0)
+let observer
+function measure() {
+    const row = drawerElement.value?.querySelector('.child-row')
+    if (row)
+        contentLeft.value =
+            row.getBoundingClientRect().left + parseFloat(getComputedStyle(row).paddingLeft)
+}
+onMounted(() => {
+    measure()
+    if (typeof ResizeObserver !== 'undefined') {
+        observer = new ResizeObserver(measure)
+        observer.observe(drawerElement.value)
+    }
+})
+onBeforeUnmount(() => observer?.disconnect())
+watch(
+    () => props.columnLayout,
+    () => nextTick(measure),
+    { deep: true }
+)
+const aligned = computed(
+    () =>
+        props.showStatus &&
+        props.showProgress &&
+        props.columnLayout.statusLeft - contentLeft.value >= 180 &&
+        props.columnLayout.progressLeft + 110 < props.columnLayout.right
+)
+const rowStyle = computed(() =>
+    aligned.value
+        ? {
+              '--child-main-width': `${props.columnLayout.statusLeft - contentLeft.value}px`,
+              '--child-status-width': `${props.columnLayout.progressLeft - props.columnLayout.statusLeft}px`,
+              '--child-progress-width': `${props.columnLayout.progressWidth}px`
+          }
+        : {}
+)
 const open = ref(new Set())
 const children = computed(() => props.tasks.filter(task => task.parent === props.parent.id))
 const completed = computed(
@@ -184,16 +237,45 @@ function toggle(task) {
     margin-top: 0.5rem;
 }
 .child-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     align-items: center;
     gap: 0.7rem;
     padding: 0.65rem;
     border-radius: 0.5rem;
     background: var(--p-content-background);
 }
+.child-content {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    min-width: 0;
+}
+.child-content > .p-checkbox {
+    flex-shrink: 0;
+}
+.child-actions {
+    display: flex;
+    align-items: center;
+}
+.child-row.aligned-columns {
+    grid-template-columns:
+        var(--child-main-width) var(--child-status-width) var(--child-progress-width)
+        minmax(0, 1fr);
+    gap: 0;
+}
+.aligned-columns .child-metrics {
+    display: contents;
+}
+.aligned-columns .child-content {
+    padding-right: 0.8rem;
+}
+.aligned-columns .child-status {
+    padding-right: 0.7rem;
+}
 .child-main {
     display: grid;
-    min-width: 5rem;
+    min-width: 0;
     flex: 1;
     gap: 0.25rem;
 }
@@ -207,11 +289,10 @@ function toggle(task) {
 }
 .child-metrics {
     display: grid;
-    grid-template-columns: minmax(0, 8fr) minmax(0, 6fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: center;
     gap: 0.7rem;
-    flex: 0 0 14.7rem;
-    width: 14.7rem;
+    width: 13rem;
     max-width: 100%;
     text-align: left;
 }
@@ -243,7 +324,13 @@ function toggle(task) {
 }
 @media (max-width: 640px) {
     .child-row {
-        flex-wrap: wrap;
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+    .child-content {
+        grid-column: 1 / -1;
+    }
+    .child-metrics {
+        width: min(100%, 15rem);
     }
     .child-main {
         flex-basis: 65%;

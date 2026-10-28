@@ -95,7 +95,7 @@ describe('estimate provenance and inline child drawers', () => {
         expect(wrapper.emitted('edit')[0]).toMatchObject([{ id: 'c' }])
         wrapper.unmount()
     })
-    it('keeps status and progress in separate slots for short, long and unknown values', () => {
+    it('keeps status and progress in separate slots for short, long and unknown values', async () => {
         const tasks = [
             {
                 id: 'zero',
@@ -125,6 +125,11 @@ describe('estimate provenance and inline child drawers', () => {
             '100%',
             'Not estimated'
         ])
+        await wrapper.setProps({ showStatus: false })
+        expect(wrapper.findAll('.child-status')).toHaveLength(0)
+        expect(wrapper.findAll('.child-progress')).toHaveLength(3)
+        await wrapper.setProps({ showProgress: false })
+        expect(wrapper.findAll('.child-progress')).toHaveLength(0)
         wrapper.unmount()
     })
 })

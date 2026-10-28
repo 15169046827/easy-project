@@ -2653,6 +2653,7 @@
                                     },
                                     "data": {
                                         "type": "object",
+                                        "description": "按model/action使用原生参数。task/get_all可选statusIds字符串数组（最多1000个完整TASK_STATUS:32位小写UUID ID），去重后OR匹配；省略不限，空数组无结果，非法类型/ID拒绝，与projectId/status/keyword/priority等AND。平铺及hierarchy均筛选后分页，层级模式保留祖先上下文；只访问当前账号工作区，不合并项目状态字典。MCP task_list不因此增加参数。",
                                         "default": {}
                                     }
                                 }

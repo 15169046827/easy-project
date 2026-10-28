@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- Candidate, not deployed: Use shared neutral task status/progress components with muted accents and clipped full-value tooltips; align child status/progress with their corresponding outer columns where space allows. Make statistics/search independently collapsible from the shared header and aggregate global cards across project dictionaries without merging IDs. Add a bounded, validated IPC/HTTP statusIds OR query while keeping existing MCP schemas unchanged. Preserve stored colors when editing status names; see TASK_PRESENTATION_V2_CHECKPOINT for verification/delivery status.
+
 - 2026-10-28 final acceptance-data handoff: Saved and independently read back the real FS predecessor relationship through the PrimeVue edit dialog; all25 synthetic tasks and18 original business rows verified, integrity/FKs passed. Cleared task search back to10 roots and released desktop control. The current desktop/web correction and local acceptance fixture are complete; no code/API/MCP change.
 
 - 2026-10-28: Delivered the child-drawer correction to the website after a fresh protected snapshot. Verified72 files,525 retained assets, unchanged backend PID673/two databases/settings/Funnel and normal-TLS71 static hashes/anonymous boundaries. Desktop delivery and25 local acceptance tasks remain valid; one predecessor example still awaits local-mode entry. No backend/MCP/schema or new public Release change.

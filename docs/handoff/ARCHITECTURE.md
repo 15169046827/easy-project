@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-28新候选：TaskStatusBadge（真实PrimeVue Tag，中性底色/柔和彩点/截断tooltip）与TaskProgressCell（真实ProgressBar/等宽百分比/未知估算语义）由TaskList和递归Drawer共用；TaskList测量实际表头列边界，经ResizeObserver/列选择/滚动更新传Drawer，宽屏同名列对齐，窄屏独立紧凑槽。统计/搜索整体v-if由删除右两按钮控制。statusColors分离storedStatusColor与展示statusColor，管理器草稿使用前者，避免改名时偷偷变色。statusGroups仅聚合显示，不改ID/完成属性；全局点击组经useTaskListQuery转换statusIds，Rust task_service验证类型/完整ID/≤1000，task_db参数化IN及task_tree过滤后根分页；概览移除status及statusIds但保留其它维度。MCP输入不变、无需独立程序替换。准确测试/未交付见TASK_PRESENTATION_V2_CHECKPOINT，以下14.7rem旧方案由本轮覆盖。
+
 2026-10-27子任务抽屉修正候选：TaskChildrenDrawer的child-main仍自适应标题/备注，但child-metrics作为固定14.7rem度量组，内含8:6独立状态/百分比槽，均左对齐；长Tag保留PrimeVue及tooltip，未知派生进度使用effortLabel而非假0，嵌套递归共用。375窄屏组允许受容器最大宽度缩小/换行而非溢出；新8矩阵直接比较同级子项状态和进度的几何起点，防止仅测外层列表再次漏检。没有MCP/API/模型变化，实际部署以专项顶部为准。
 
 2026-10-27进度对齐已实际交付：共用TaskList的mini-progress使用固定3.5rem条宽+4ch百分比槽、左对齐及等宽数字，progress列9rem避免100%裁切；6矩阵检查全局/项目内0%与100%起点/条宽/边界，原生两任务页浅深50%/100%稳定。无Rust/模型/API变化。两端当前客户端已发现状态CRUD和color，独立70E/catalog2a对应，66原生与32参考全读回一致；HTTP导出限制见DOCUMENTATION_SYNC_REVIEW_2026-10-27，不能以旧读回摘要覆盖该缺口。实际交付、文件/数据库保持及未验边界见PROGRESS_ALIGNMENT_SYNC_CHECKPOINT。

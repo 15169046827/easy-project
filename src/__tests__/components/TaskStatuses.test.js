@@ -103,6 +103,26 @@ beforeEach(() => {
         )
 })
 describe('project status UI logic', () => {
+    it('keeps the stored color when editing instead of persisting its softer presentation accent', async () => {
+        const wrapper = setup(TaskStatusManager, { projectId: 'p' })
+        await flushPromises()
+        await wrapper
+            .findAll('button')
+            .find(button => button.attributes('aria-label') === 'Edit Testing')
+            .trigger('click')
+        await flushPromises()
+        await wrapper
+            .findAll('button')
+            .find(button => button.text() === 'Save')
+            .trigger('click')
+        await flushPromises()
+        expect(crudAction).toHaveBeenCalledWith(
+            'task_status',
+            'update',
+            expect.objectContaining({ id: 's2', color: '#3b82f6' })
+        )
+        wrapper.unmount()
+    })
     it('recognizes case, surrounding whitespace and built-in display aliases without merging identities', () => {
         expect(findStatusNameConflict(states, ' 待办 ')?.id).toBe('s1')
         expect(findStatusNameConflict(states, ' PENDING ')?.id).toBe('s1')

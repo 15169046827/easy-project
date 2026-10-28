@@ -197,6 +197,7 @@ describe('task query state ownership', () => {
             keyword: 'needle',
             priority: 'High',
             status: '',
+            statusIds: undefined,
             sortBy: 'sort_order',
             sortDirection: 'asc'
         })
@@ -216,6 +217,36 @@ describe('task query state ownership', () => {
         expect(state.tasks.value.map(t => t.id)).toEqual(['previous'])
         expect(state.statistics.value).toEqual(previous)
         expect(state.errorMessage.value).toBe('overview unavailable')
+    })
+    it('requests a grouped cross-project ID union and clears it only for overview counts', async () => {
+        const state = useTaskListQuery()
+        const all_tasks = {
+            total: 3,
+            statuses: [
+                { id: 's1', name: 'Review', count: 1 },
+                { id: 's2', name: 'review', count: 2 }
+            ]
+        }
+        state.statistics.value = { all_tasks }
+        state.statusFilter.value = 'name:review'
+        crudAction.mockResolvedValue({ list: [], total: 0, statistics: { all_tasks } })
+        await state.init()
+        expect(crudAction).toHaveBeenCalledWith(
+            'task',
+            'get_all',
+            expect.objectContaining({
+                pageSize: 20,
+                status: '',
+                statusIds: ['s1', 's2'],
+                hierarchy: true
+            })
+        )
+        expect(crudAction).toHaveBeenCalledWith(
+            'task',
+            'get_all',
+            expect.objectContaining({ pageSize: 1, status: '', statusIds: undefined })
+        )
+        expect(state.statistics.value.all_tasks).toEqual(all_tasks)
     })
     it('ignores an older overview after a newer status selection finishes', async () => {
         let overviewCalls = 0

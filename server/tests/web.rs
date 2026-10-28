@@ -109,6 +109,95 @@ async fn ready_token(server: Arc<Server>, name: &str) -> String {
     login["token"].as_str().unwrap().to_owned()
 }
 
+#[tokio::test]
+async fn status_id_union_queries_preserve_pagination_and_account_isolation() {
+    let (server, _root) = setup();
+    account(&server, "overview_alice", true);
+    account(&server, "overview_bob", false);
+    let alice = ready_token(server.clone(), "overview_alice").await;
+    let bob = ready_token(server.clone(), "overview_bob").await;
+    let mut ids = Vec::new();
+    for name in ["First project", "Second project"] {
+        let (_, current, _) = call(
+            server.clone(),
+            Method::GET,
+            "/api/workspace/revision",
+            json!({}),
+            Some(&alice),
+            None,
+        )
+        .await;
+        let (code, created, _) = call(server.clone(), Method::POST, "/api/workspace/action", json!({"model":"project","action":"add","data":{"name":name,"version":"v1","type":"private","status":"InProgress","owner":""}}), Some(&alice), current["revision"].as_i64()).await;
+        assert_eq!(code, StatusCode::OK, "{created}");
+        let project = created["data"]["id"].as_str().unwrap();
+        let (code, dictionary, _) = call(
+            server.clone(),
+            Method::POST,
+            "/api/workspace/action",
+            json!({"model":"task_status","action":"get_all","data":{"projectId":project}}),
+            Some(&alice),
+            None,
+        )
+        .await;
+        assert_eq!(code, StatusCode::OK);
+        let state = dictionary["data"]["list"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|state| state["builtin_key"] == "Pending")
+            .unwrap()["id"]
+            .as_str()
+            .unwrap();
+        ids.push(state.to_owned());
+        let (code, task, _) = call(server.clone(), Method::POST, "/api/workspace/action", json!({"model":"task","action":"add","data":{"project_id":project,"name":name,"parent":"","dependence":"","start_time":"","end_time":"","type":"Task","priority":"Normal","status_id":state,"comment":"","assignee":""}}), Some(&alice), created["revision"].as_i64()).await;
+        assert_eq!(code, StatusCode::OK, "{task}");
+    }
+    let read = |ids: Value, page| json!({"model":"task","action":"get_all","data":{"statusIds":ids,"hierarchy":true,"pageSize":1,"pageIndex":page}});
+    let mut first_id = String::new();
+    for page in [1, 2] {
+        let (code, result, _) = call(
+            server.clone(),
+            Method::POST,
+            "/api/workspace/action",
+            read(json!(ids), page),
+            Some(&alice),
+            None,
+        )
+        .await;
+        assert_eq!(code, StatusCode::OK, "{result}");
+        assert_eq!(result["data"]["total"], 2);
+        assert_eq!(result["data"]["list"].as_array().unwrap().len(), 1);
+        let id = result["data"]["list"][0]["id"].as_str().unwrap();
+        assert_ne!(id, first_id);
+        first_id = id.to_owned();
+    }
+    for token in [&alice, &bob] {
+        let (code, result, _) = call(
+            server.clone(),
+            Method::POST,
+            "/api/workspace/action",
+            read(if token == &bob { json!(ids) } else { json!([]) }, 1),
+            Some(token),
+            None,
+        )
+        .await;
+        assert_eq!(code, StatusCode::OK);
+        assert_eq!(result["data"]["total"], 0);
+    }
+    for bad in [json!(null), json!(["Done"]), json!([17])] {
+        let (code, _, _) = call(
+            server.clone(),
+            Method::POST,
+            "/api/workspace/action",
+            read(bad, 1),
+            Some(&alice),
+            None,
+        )
+        .await;
+        assert_eq!(code, StatusCode::BAD_REQUEST);
+    }
+}
+
 async fn signup(server: Arc<Server>, name: &str) -> (String, String) {
     let (status, result, _) = call(
         server.clone(),

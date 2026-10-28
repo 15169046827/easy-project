@@ -16,27 +16,36 @@ export const BUILTIN_STATUS_COLORS = {
     Done: '#22c55e'
 }
 
-export function statusColor(state = {}) {
+export function storedStatusColor(state = {}) {
     return (
         BUILTIN_STATUS_COLORS[state.builtin_key] ||
         (/^#[0-9a-f]{6}$/i.test(state.color || '') ? state.color.toLowerCase() : '#64748b')
     )
 }
 
+export function statusColor(state = {}) {
+    const stored = storedStatusColor(state)
+    // Render existing dictionary colors calmly without rewriting user data.
+    const palette = {
+        '#64748b': '#718096',
+        '#3b82f6': '#6284ad',
+        '#22c55e': '#629579',
+        '#8b5cf6': '#8c7aaa',
+        '#14b8a6': '#5c9690',
+        '#f59e0b': '#af8c55',
+        '#f43f5e': '#b87585',
+        '#06b6d4': '#6298aa',
+        '#d946ef': '#a67eaa'
+    }
+    return palette[stored] || stored
+}
+
 export function statusColorStyle(state) {
-    const backgroundColor = statusColor(state)
-    const rgb = backgroundColor
-        .slice(1)
-        .match(/../g)
-        .map(value => {
-            const channel = parseInt(value, 16) / 255
-            return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
-        })
-    const luminance = rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722
     return {
-        backgroundColor,
-        borderColor: backgroundColor,
-        color: luminance > 0.179 ? '#000000' : '#ffffff'
+        '--status-color': statusColor(state),
+        backgroundColor: 'var(--p-content-background)',
+        borderColor: 'var(--color-border)',
+        color: 'var(--p-text-color)'
     }
 }
 

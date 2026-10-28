@@ -13,21 +13,9 @@
                     v-tooltip.bottom="scopeHint"
                     @click="$emit('update:modelValue', nextScope)"
                 />
-                <Button
-                    :icon="collapsed ? 'pi pi-chevron-down' : 'pi pi-chevron-up'"
-                    text
-                    rounded
-                    size="small"
-                    :aria-label="collapseHint"
-                    :title="collapseHint"
-                    :aria-expanded="!collapsed"
-                    :aria-controls="inputId + '-cards'"
-                    v-tooltip.bottom="collapseHint"
-                    @click="collapsed = !collapsed"
-                />
             </div>
         </header>
-        <div v-if="!collapsed" :id="inputId + '-cards'" class="statistics-cards">
+        <div :id="inputId + '-cards'" class="statistics-cards">
             <Button
                 v-for="state in populatedStatuses"
                 :key="state.id"
@@ -50,7 +38,7 @@
     </section>
 </template>
 <script setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Button from 'primevue/button'
 import { statusColor } from '../../../utils/statusColors'
@@ -63,16 +51,12 @@ const props = defineProps({
 })
 defineEmits(['update:modelValue', 'select-status'])
 const { t } = useI18n()
-const collapsed = ref(false)
 const nextScope = computed(() => (props.modelValue === 'top_level' ? 'all_tasks' : 'top_level'))
 const scopeName = value =>
     t(value === 'top_level' ? 'taskHierarchy.topLevel' : 'taskHierarchy.allTasks')
 const scopeLabel = computed(() => scopeName(props.modelValue))
 const scopeHint = computed(() =>
     t('taskHierarchy.switchScope', { current: scopeLabel.value, next: scopeName(nextScope.value) })
-)
-const collapseHint = computed(() =>
-    t(collapsed.value ? 'taskHierarchy.expandStatistics' : 'taskHierarchy.collapseStatistics')
 )
 const populatedStatuses = computed(() =>
     (props.data.statuses || []).filter(state => state.count > 0)

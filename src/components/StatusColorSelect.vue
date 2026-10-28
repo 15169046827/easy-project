@@ -12,13 +12,19 @@
     >
         <template #value="{ value }">
             <span class="color-option"
-                ><span class="color-dot" :style="{ background: value }"></span
+                ><span
+                    class="color-dot"
+                    :style="{ background: statusColor({ color: value }) }"
+                ></span
                 >{{ colorLabel(value) }}</span
             >
         </template>
         <template #option="{ option }">
             <span class="color-option"
-                ><span class="color-dot" :style="{ background: option.value }"></span
+                ><span
+                    class="color-dot"
+                    :style="{ background: statusColor({ color: option.value }) }"
+                ></span
                 >{{ option.label }}</span
             >
         </template>
@@ -28,7 +34,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Select from 'primevue/select'
-import { STATUS_COLORS } from '../utils/statusColors'
+import { STATUS_COLORS, statusColor } from '../utils/statusColors'
 const props = defineProps({
     modelValue: { type: String, default: '' },
     inputId: { type: String, required: true },

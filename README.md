@@ -1,6 +1,6 @@
 # EasyProject
 
-最新纠正：用户截图中的子任务抽屉对齐已更新桌面，网页端本轮补丁尚待续接；前轮外表格交付不代表抽屉投诉已全部闭环。本地已新增两个明确标记的人工验收项目、25任务及两名示例人员，原项目保留；使用方法和一条尚未补齐的前置关系见[人工验收数据](docs/MANUAL_ACCEPTANCE_DATA_2026-10-27.md)，准确阶段及额度续接见[检查点](docs/PROGRESS_ALIGNMENT_SYNC_CHECKPOINT.md)。
+2026-10-28最新：用户截图中的子任务抽屉对齐已交付桌面和网页，服务器静态更新及正常TLS逐资源验证通过，后端/两库/配置保持。本地两个明确标记的人工验收项目、25任务及两名示例人员已生成，18条原业务记录保持；一条前置关系样例待本地入口后补齐。使用见[人工验收数据](docs/MANUAL_ACCEPTANCE_DATA_2026-10-27.md)，精确证据及边界见[检查点](docs/PROGRESS_ALIGNMENT_SYNC_CHECKPOINT.md)。
 
 2026-10-27进度列左对齐修复已安全交付桌面和网页；353单测、110生产界面、13真实HTTP及6矩阵通过，原生全局/项目内深浅复验、739原有非程序文件与启动后数据库保全通过。近期状态/颜色已同步两端MCP，Apifox66原生与32参考全读回一致；HTTP备用媒体导出仍有明确缺口，详见[同步复核](docs/DOCUMENTATION_SYNC_REVIEW_2026-10-27.md)与[交付检查点](docs/PROGRESS_ALIGNMENT_SYNC_CHECKPOINT.md)。无后端/MCP/数据库迁移或新公开Release。
 

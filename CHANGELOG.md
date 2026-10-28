@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- 2026-10-28: Delivered the child-drawer correction to the website after a fresh protected snapshot. Verified72 files,525 retained assets, unchanged backend PID673/two databases/settings/Funnel and normal-TLS71 static hashes/anonymous boundaries. Desktop delivery and25 local acceptance tasks remain valid; one predecessor example still awaits local-mode entry. No backend/MCP/schema or new public Release change.
+
 - 2026-10-27 correction delivered to desktop (web pending): Fixed the inline child drawers missed by the preceding outer-table change, using separate status/progress slots with left alignment, full-value tooltips and unknown-estimate semantics.354 unit/112 production UI/13 HTTP and8 responsive cases passed; native1920px showed aligned0%/100%. Two local acceptance projects,25 tasks and2 synthetic members were created without changing original rows or remote workspaces. One predecessor example remains unset due to desktop-control geometry errors; web static deployment remains a checkpointed follow-up.
 
 - 2026-10-27 delivered: Left-align task progress in a fixed bar/percentage grid and reserve enough column width for100%, shared by global/project lists. Strict-CSP responsive geometry and native light/dark checks passed; protected desktop/static updates preserved original files and database rows. Rechecked66 Apifox native protocols and32 reference digests; HTTP alternate-media export differences remain explicitly tracked. No API/backend/MCP change or public Release.

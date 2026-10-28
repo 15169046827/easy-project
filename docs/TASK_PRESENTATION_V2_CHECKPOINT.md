@@ -1,5 +1,17 @@
 # 任务展示第二轮整改（2026-10-28）
 
+## 62dc911 新包封存，旧候选已退出，待原生与交付
+
+产品/clean来源62dc911f5b50bd57eb807fc41a5b5692a287e75e，分支codex/audit-release-20261006-api，已推送。滚动条修复后完整357单测/66文件、112生产UI通过（13 HTTP专用在此入口跳过，先前独立13通过仍有效）；新增8深浅/多宽矩阵及静态门禁通过。当前无运行测试。Windows no-bundle和bundle-only成功；先保留未交付的重编译MCP，再恢复70E伴随，只执行bundle不重编译。新产物全部封存E盘src-tauri/target/audit-tools/presentation-62dc911：final-bundle-main.exe SHA AAFE9844135F6B21BF97568F48AAFAB3CE32FDD5CD4212C146701730D636513E；NSIS SHA 9FCEE6B31EEEBF6C4828CE6C0DFE3315DE78CE7E5620E3BB2041370A71352740。伴随与独立MCP仍70E303F85852C21838D879FC4823FB51810E1A0178AE851194BC2E80074DC9C1，未更新独立程序或停止连接。
+
+新73文件服务器包presentation-62dc911-20261028.tar.gz SHA 23EE87B4006E05AE73E05B877A907D526C388CF3640DA7D318284ED2EA6A6471；manifest分别记录前端/product=62dc911、LinuxSource=18f802413ec02fd684c377c29373011b33936fad/CI40626473312，后端ELF仍EF06930F2044D5E2C5566E1AED7E9AB10D6174A318ED492D6103E18720C90139，Rust文件diff为空确认可复用。旧811包和helper不得直接用于交付；新安全helper尚未生成，须区分前端/后端来源而非要求两者相等。
+
+本轮未打开新窗口/未占用控制，旧合成候选已关闭；CIM普通权限拒绝访问，获准提升只读后确认easy-project.exe进程0，未强杀。用户上次“已进入候选本地”对应旧811候选，其真实检查发现滚动条偏移，故必须新62包复验，不冒充通过。现仍保留旧合成目录presentation-native-18f8024/2项目6任务及before-database.json，无账号密码；不要重跑fresh seed。真实安装、25人工样例与服务器均未改，本轮未重新SSH确认服务器在线，不把上轮已在线当当前证明。
+
+准确下一步：先查额度；核Git/最新文件及新包摘要→确认候选路径无进程→仅替换其程序为62 final-bundle-main→新启动由用户进入本地（遵守认证工具边界）→1280滚动条下同名列/按钮、深浅/窄窗/折叠及分组合计原生复验→正常关闭/合成全表hash一致、释放控制→制作新来源常量的安全helper并复核→fresh SSH/旧current/PID/摘要后按已批新副本部署、正常TLS与全数据保全→新E盘副本覆盖桌面及全保全→最终Git/Wolai/交接回执。不可跳过原生，不重传已完成API，不重造真实样例。
+
+检查点规范：WACAS未定义/待确认，实际UPARS1.1.0/交接1.20及PrimeVue/nonce规则；基线62dc911，记录时Git干净，本次仅本文及handoff入口/当前状态/架构说明待提交；全部未提交文件以提交前git status --short逐项核对。最近额度5h余11%/周29%，下一个长阶段前再查，低于10%暂停，不重置/不唤醒/不关机。Apifox66原生/32参考/19主JSON已读回（源18f，最新补丁无契约变化），DOC-SYNC-001继续开；Wolai待同步本节点，完成后另记读回结果。所有已完成门禁和失败仍保留在下文。
+
 ## 原生复验发现滚动条重排偏移，修复后待重新打包复验
 
 补丁定向8矩阵全过，新增1920及1280默认列的内外状态/进度几何和所有子操作按钮不越界断言；lint/type/build通过。旧隔离候选已正常退出，CIM确认精确路径进程0；合成全表hash与before-database.json一致、integrity ok/FK0，控制reset。完整357/112复跑与新clean包/原生仍待，不重用旧811安装包或服务器payload交付。两处UI布局改动不改变Rust/API/Linux来源，已完成的63/20/75/stdio1及契约证据保持有效。

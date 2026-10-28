@@ -438,21 +438,39 @@ async function dropTask(status) {
     outline-offset: 2px;
 }
 .priority {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     width: fit-content;
     padding: 0.12rem 0.4rem;
     border-radius: 0.3rem;
-    color: #475569;
-    background: #e2e8f0;
+    color: var(--color-text);
+    background: var(--color-panel-bg);
     font-size: 0.65rem;
     font-weight: 800;
 }
+.priority::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    flex: 0 0 0.5rem;
+    border-radius: 50%;
+    background: var(--priority-dot, var(--priority-p5));
+}
 .priority.p1 {
-    color: #b91c1c;
-    background: #fee2e2;
+    --priority-dot: var(--priority-p1);
 }
 .priority.p2 {
-    color: #c2410c;
-    background: #ffedd5;
+    --priority-dot: var(--priority-p2);
+}
+.priority.p3 {
+    --priority-dot: var(--priority-p3);
+}
+.priority.p4 {
+    --priority-dot: var(--priority-p4);
+}
+.priority.p5 {
+    --priority-dot: var(--priority-p5);
 }
 .board-card > strong {
     font-size: 0.86rem;

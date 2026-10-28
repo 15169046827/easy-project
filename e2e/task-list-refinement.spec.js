@@ -314,7 +314,20 @@ for (const width of [1920, 1280, 960, 375]) {
                     await priorityBadge.evaluate(
                         el => getComputedStyle(el, '::before').backgroundColor
                     )
-                ).not.toBe('rgba(0, 0, 0, 0)')
+                ).toBe('rgb(242, 171, 125)')
+                const mediumPriority = page.locator('.priority-badge.priority-p3').first()
+                await expect(mediumPriority).toBeVisible()
+                expect(
+                    await mediumPriority.evaluate(
+                        el => getComputedStyle(el, '::before').backgroundColor
+                    )
+                ).toBe('rgb(128, 185, 238)')
+                if (width === 1280) {
+                    await priorityBadge.scrollIntoViewIfNeeded()
+                    await page.screenshot({
+                        path: `test-results/priority-palette-${route.includes('project') ? 'project' : 'global'}-${dark}.png`
+                    })
+                }
                 await expect(page.locator('.hierarchy-statistics [role="combobox"]')).toHaveCount(0)
                 const stats = page.locator('.hierarchy-statistics')
                 expect(await stats.evaluate(el => getComputedStyle(el).overflowY)).toBe('visible')
@@ -536,6 +549,28 @@ for (const width of [1920, 1280, 960, 375]) {
                 await page.screenshot({
                     path: `test-results/task-refinement-${route.includes('project') ? 'project' : 'global'}-${width}-${dark}.png`
                 })
+                if (route.includes('project')) {
+                    await page.getByRole('button', { name: /看板$/ }).click()
+                    const high = page.locator('.board-card .priority.p2').first()
+                    const medium = page.locator('.board-card .priority.p3').first()
+                    await expect(high).toBeVisible()
+                    await expect(medium).toBeVisible()
+                    expect(
+                        await high.evaluate(el => getComputedStyle(el, '::before').backgroundColor)
+                    ).toBe('rgb(242, 171, 125)')
+                    expect(
+                        await medium.evaluate(
+                            el => getComputedStyle(el, '::before').backgroundColor
+                        )
+                    ).toBe('rgb(128, 185, 238)')
+                    await expect(high).toHaveCSS(
+                        'color',
+                        await page
+                            .locator('.board-card > strong')
+                            .first()
+                            .evaluate(el => getComputedStyle(el).color)
+                    )
+                }
             }
         })
     }

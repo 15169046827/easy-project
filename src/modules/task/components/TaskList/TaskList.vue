@@ -1780,19 +1780,19 @@ onMounted(async () => {
     background: var(--priority-dot, #718096);
 }
 .priority-badge.priority-p1 {
-    --priority-dot: #b56c72;
+    --priority-dot: var(--priority-p1);
 }
 .priority-badge.priority-p2 {
-    --priority-dot: #b98663;
+    --priority-dot: var(--priority-p2);
 }
 .priority-badge.priority-p3 {
-    --priority-dot: #ad975d;
+    --priority-dot: var(--priority-p3);
 }
 .priority-badge.priority-p4 {
-    --priority-dot: #6284ad;
+    --priority-dot: var(--priority-p4);
 }
 .priority-badge.priority-p5 {
-    --priority-dot: #718096;
+    --priority-dot: var(--priority-p5);
 }
 
 /* 迷你进度条 */

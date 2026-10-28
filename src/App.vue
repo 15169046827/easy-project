@@ -330,11 +330,11 @@ useKeyboard([
     --status-paused: #f59e0b;
     --status-done: #22c55e;
     --status-archived: #6b7280;
-    --priority-p1: #ef4444;
-    --priority-p2: #f97316;
-    --priority-p3: #eab308;
-    --priority-p4: #3b82f6;
-    --priority-p5: #6b7280;
+    --priority-p1: #f38fa2;
+    --priority-p2: #f2ab7d;
+    --priority-p3: #80b9ee;
+    --priority-p4: #8bcabb;
+    --priority-p5: #b2bfce;
 
     /* 统一布局尺寸 */
     --page-gap: 0.75rem;

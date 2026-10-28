@@ -1,5 +1,17 @@
 # 任务展示第二轮整改（2026-10-28）
 
+## clean包与契约完成，等待最终隔离候选本地入口
+
+产品18f8024/clean构建81159480fa0427f0bc7b6c5c0707a11239cd7ef9已推送且Git原干净，357/66、112完整生产UI、13专用真实HTTP、8矩阵、桌面75+stdio1/服务63+20及两端严格Clippy/类型lintbuild/release门禁通过。Apifox66/32及19主JSON门禁已同步并读回，Wolai主/交接按8115948同步候选与尚未部署事实并读回。DOC-SYNC-001仍开。
+
+Windows最终main29B1326B6A6EEBC234D156960D7DE7A637559C208C1D85DCC1554949EFC7E57E；最终NSIS29FF12B3CA29EC30DDE6D334D07CB98A1499C18D6B3EB83EECE849BD677F43EE，封存presentation-8115948。no-bundle首main3B7398与后续build打包main29B1有23字节差异（含构建时间字段，不冒称仅3字节），首候选已正常关闭并换最终29B1；原生最终按29B1而非首3B检验。Tauri build会重编译伴随38C1→2791，未把它们交付；本地CLI帮助确认bundle只打包后，恢复已验70E并用bundle生成最终NSIS，release/独立MCP均70E，权限/Schema不改。首次Sky launch handler未就绪且fresh无窗口，已reset，核无进程后明确获准Start-Process启动，不重复未知进程。
+
+最终隔离presentation-native-18f8024只复制旧progress-native合成schema，新目录合成2项目/6任务/10状态，长状态/0和100/高优先级/同语义跨项目状态，未复制webview/账号密码或实际用户库。首次初始候选38796/window724232已正常X退出并确认无进程后换最终程序；现PID29488/window1248486，fresh核精确路径与空白登录/本地入口、已置前并请求用户点一次本地入口，随即reset。当前等待此确认，未自动认证；真实安装/25样例未改。
+
+Linux CI40626473312/源18f、唯一ELF EF06930F已核；新73文件后端+静态包presentation-8115948-20261028.tar.gz SHA B9852D1DB51EE2D763EE83BBAE2E0AD1E93F2A12927E1506032510A682809726已生成。安全helper deploy-presentation-8115948.py SHA CEA72A5A42FEEF338F5A139BD1F384521E1B46C061473362F9093423728007C4已基于完整审查的同schema助手复制/最小改常量并加强旧PID/产品来源检查；限定旧child-drawer-d1、新presentation811、新root700副本、数据库3/8/全行和旧assets/配置/Funnel、仅程序回滚不覆盖库，无迁移。尚未上传/执行或新服务器副本，连接仅准备只读核对。
+
+准确下一步：用户最终候选本地后fresh原生对齐/长提示/中性色与优先级/跨项目合计/折叠/深浅和常规缩窗，正常关闭并合成库全表hash；查额度→重新核服务器current/PID、上传完整SHA/AST后已批新受限副本后端+静态安全更新/正常TLS→fresh真实安装无草稿正常退出、新E盘副本覆盖最终NSIS/全部原数据保全→Git/Wolai/交接完成回执。不能重造25真实样例/重传已完成API/重建包；无MCP停止、重置、关机/唤醒授权。最新5h余31%/周32%，WACAS未定义/UPARS1.1.0/交接1.20。下方未打包/待门禁为历史。
+
 ## 候选实现与第一轮复验
 
 最终候选源码18f802413ec02fd684c377c29373011b33936fad已推送。减并发完整357/66前端测试通过（未改5秒安全门禁），完整112生产界面、13独立真实HTTP及8矩阵通过；类型/lint/build、桌面75+stdio1/Clippy、服务端63+20/Clippy通过。Linux CI40626473312两job（server/security）成功；官方唯一artifact12789656555的ZIP SHA da588669ed9dbc7312f805f58bcd5f17613e99dc7ceee8c99c9d598ae233bf6a已下载新E盘presentation-linux-18f8024.zip且摘要一致，唯一ELF SHA EF06930F2044D5E2C5566E1AED7E9AB10D6174A318ED492D6103E18720C90139。

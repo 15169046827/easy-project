@@ -1,5 +1,17 @@
 # 甘特图层级与统计筛选口径（2026-10-29）
 
+## 待人工解锁的精确暂停点（2026-10-29）
+
+产品bcc6366已推送；文档/契约回执6d76af0027553b519f043958909dee6307b69d9d本地提交，远端最后读回仍bcc6366，文档推送遇网络等待，不冒充已同步。Wolai主状态块28dPKMDkPpLCFu557s8exF和交接oLvsZ6M65HtTfFsJmg8ptD已按6d76进度补写并读回，包含1.21规则和未部署边界；最后封包/SSH释放回执随后增补。
+
+最终Linux ELF242169264BE59639E1913B74AD005C375076A344766A59469A85C224F9FAB54F已从home-host复制回E盘并与官方ZIP来源校验一致；完整73文件payload为src-tauri/target/audit-tools/gantt-bcc6366-payload，包gantt-bcc6366-20261029.tar.gz SHA C352E183D4BC377CC4228CE6C278DA0FBB117113F5C1638C5C12B99F03E754D8。产品运行源码与bcc6366无差异，封包时Git干净，文档来源6d76；程序/脚本分别记录，不将文档提交冒充构建来源。Apifox续传脚本语法和未知ResumeFrom的提前拒绝已验证，66/32/19主JSON同步完成。
+
+仅剩必须依赖用户解锁的原生复验，然后才能覆盖交付。新的隔离候选仍为gantt-native-bcc6366-final/window787304（恢复时须重新发现，不沿用句柄），只含合成数据；已发请求让用户解锁并点“不登录，本地使用”。锁屏时没有继续发输入，Windows控制已reset。home-host SSH17973已exit，服务active、原后端EF06930F2044D5E2C5566E1AED7E9AB10D6174A318ED492D6103E18720C90139不变，既有priority-palette-abc1e9e部署保持；本轮未创建正式安装/服务器安全副本，未覆盖、未迁移、未操作真实账号/项目或独立MCP。没有关机/唤醒/重置授权。
+
+恢复下一步：先核本检查点/Git与额度（当前5h余40%、周76%），不重跑全部已过门禁；确认解锁后重新发现候选窗口，在合成库验证甘特树/未排期/父范围/折叠/冲突/排序，浅深及窄窗键盘；如有问题修复重验。通过后生成新安全部署脚本（可参考deploy-presentation-62dc911.py，但必须替换旧release、旧EF摘要、源bcc、CI40820950262、包C352和新ELF2421全部守卫，不复用旧常量），以全新受限副本更新桌面/网页/必要后端，核全库字段/ID/配置/Funnel/权限和原非程序文件。最终正常TLS/401验证，更新Git/Wolai/handoff。独立MCP保持70E，不停新连接；不发公开Release。
+
+本次暂停前新未提交文件仅本检查点与handoff的README/CURRENT_STATE/CHECKPOINT（后续提交后以git status复核）；源码没有未提交改动。以下6d76之前清单是历史，不重复修改。保留全部候选/失败证据在E盘，无需重建、重新下载、重造25条正式验收样例或再次迁移。
+
 ## 最新续接：bcc6366候选完成，原生待解锁（尚未部署）
 
 产品提交bcc636685d96de7e31dcfbcd37a02a66f69f0e99已推送，前轮883/c083/672文档一并补推。361/67、118严格CSP UI、13独立真实HTTP UI（含本轮顶层/全部切换）、Rust75+stdio1、服务器63+20及lint/typecheck/build/rustfmt/两端Clippy过。API66原生和32参考分段写入/读回、HTTP19主JSON验证通过；DOC-SYNC-001继续保留。规则1.21/79条、WACAS未定义/实际UPARS1.1.0。

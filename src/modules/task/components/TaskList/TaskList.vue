@@ -787,6 +787,7 @@ const {
     keywordInput,
     appliedKeyword,
     statusFilter,
+    statusScope,
     priorityFilter,
     sortBy,
     pageOption,
@@ -994,7 +995,7 @@ const getPriorityLabel = value => {
     return match ? match.label : value
 }
 
-const statisticsScope = ref('top_level')
+const statisticsScope = statusScope
 const tableCard = ref(null)
 const tableViewportWidth = ref(0)
 const drawerColumnLayout = ref({})
@@ -1356,6 +1357,9 @@ watch(
     }
 )
 watch([statusFilter, priorityFilter, sortBy], resetPageAndLoad)
+watch(statisticsScope, () => {
+    if (statusFilter.value) resetPageAndLoad()
+})
 
 onMounted(async () => {
     loading.value = true

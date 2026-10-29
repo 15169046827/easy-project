@@ -1,4 +1,5 @@
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { ganttTaskRows } from '../utils/taskRows.js'
 import { calculateCriticalPath } from '../utils/criticalPath.js'
 import { taskAvailabilityConflict } from '../../calendar/utils/memberAvailability.js'
 import { calculateDragDelta, calculateDragUpdate } from '../utils/interaction.js'
@@ -52,25 +53,16 @@ function taskBarStyle(task, context) {
     }
 }
 
-/** @returns {Array<{id: string, name: string, parent: string, start_time: string, end_time: string, type: string, status: string, level: number, progress?: number, assignee?: string}>} */
-function datedTaskRows(tasks, parse) {
-    const source = tasks
-        .filter(task => parse(task.start_time))
-        .map(task => ({
-            ...task,
-            end_time: parse(task.end_time) ? task.end_time : task.start_time
-        }))
-    const ids = new Set(source.map(task => task.id))
-    const level = task => {
-        let count = 0
-        let parent = task.parent
-        while (parent && ids.has(parent) && count < 20) {
-            count++
-            parent = source.find(item => item.id === parent)?.parent
-        }
-        return count
+function useTaskRows(tasks, parse) {
+    const collapsed = ref(new Set())
+    const rows = computed(() => ganttTaskRows(tasks.value, parse, collapsed.value))
+    function toggleTask(id) {
+        const next = new Set(collapsed.value)
+        if (next.has(id)) next.delete(id)
+        else next.add(id)
+        collapsed.value = next
     }
-    return source.map(task => ({ ...task, level: level(task) }))
+    return { collapsed, rows, toggleTask }
 }
 
 export function useGanttPresentation(context) {
@@ -112,7 +104,8 @@ export function useGanttPresentation(context) {
     }
 
     // ---------- 含日期的任务 ----------
-    const datedTasks = computed(() => datedTaskRows(tasks.value, parse))
+    const { collapsed, rows, toggleTask } = useTaskRows(tasks, parse)
+    const datedTasks = computed(() => rows.value.filter(task => parse(task.start_time)))
 
     const barStyle = task => taskBarStyle(task, context)
 
@@ -120,11 +113,12 @@ export function useGanttPresentation(context) {
     const dependencyPaths = computed(() =>
         dependencies.value
             .map(edge => {
-                const a = datedTasks.value.findIndex(t => t.id === edge.predecessor_task_id)
-                const b = datedTasks.value.findIndex(t => t.id === edge.successor_task_id)
+                const a = rows.value.findIndex(t => t.id === edge.predecessor_task_id)
+                const b = rows.value.findIndex(t => t.id === edge.successor_task_id)
                 if (a < 0 || b < 0) return null
-                const pred = datedTasks.value[a]
-                const succ = datedTasks.value[b]
+                const pred = rows.value[a]
+                const succ = rows.value[b]
+                if (!parse(pred.end_time) || !parse(succ.start_time)) return null
                 const x1 = (offset(parse(pred.end_time)) + 1) * dayWidth.value - 5
                 const x2 = offset(parse(succ.start_time)) * dayWidth.value + 5
                 const y1 = headerHeight + a * rowHeight + 24
@@ -139,7 +133,11 @@ export function useGanttPresentation(context) {
     // ---------- 关键路径 (CPM) ----------
     // 计算最早/最晚开始与完成时间、时差，并标注关键路径（时差为 0 的链路）。
     const criticalData = computed(() =>
-        calculateCriticalPath(datedTasks.value, dependencies.value, activeProject.value)
+        calculateCriticalPath(
+            ganttTaskRows(tasks.value, parse).filter(task => parse(task.start_time)),
+            dependencies.value,
+            activeProject.value
+        )
     )
 
     function criticalTip(task) {
@@ -164,6 +162,9 @@ export function useGanttPresentation(context) {
         })}`
     }
     return {
+        rows,
+        collapsed,
+        toggleTask,
         datedTasks,
         unscheduledTasks: computed(() => tasks.value.filter(task => !parse(task.start_time))),
         fmtShortRange,

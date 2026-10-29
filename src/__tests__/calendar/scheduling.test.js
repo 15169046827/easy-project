@@ -26,6 +26,18 @@ const dependency = (from, to, lag = 0) => ({
 })
 
 describe('dependency scheduling', () => {
+    it('does not call an unscheduled fixed-date task a date conflict', () => {
+        const result = calculateDependencySchedule(
+            [
+                task('A', '2026-07-20', '2026-07-21'),
+                task('B', '', '', { schedule_mode: 'fixed_dates' })
+            ],
+            [dependency('A', 'B')],
+            project
+        )
+        expect(result.conflicts).toEqual([])
+        expect(result.updates).toEqual([])
+    })
     it('cascades fixed-effort successors across weekends', () => {
         const result = calculateDependencySchedule(
             [

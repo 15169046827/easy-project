@@ -83,6 +83,21 @@ function resolveStatusQuery(query, statistics) {
     return query
 }
 
+function taskPageQuery(page, projectId, keyword, status, statusScope, priority, sortBy) {
+    return {
+        pageIndex: page.pageIndex,
+        pageSize: page.pageSize,
+        hierarchy: true,
+        projectId,
+        keyword,
+        status,
+        statusScope,
+        priority,
+        sortBy,
+        sortDirection: sortBy === 'update_time' ? 'desc' : 'asc'
+    }
+}
+
 export function useTaskListQuery(initialProjectId = '') {
     const tasks = ref([])
     const dependencies = ref([])
@@ -96,6 +111,7 @@ export function useTaskListQuery(initialProjectId = '') {
     const keywordInput = ref('')
     const appliedKeyword = ref('')
     const statusFilter = ref('')
+    const statusScope = ref('top_level')
     const priorityFilter = ref('')
     const sortBy = ref('sort_order')
     const pageOption = createPageOption()
@@ -107,17 +123,15 @@ export function useTaskListQuery(initialProjectId = '') {
         loading.value = true
         errorMessage.value = ''
         try {
-            const query = {
-                pageIndex: pageOption.pageIndex,
-                pageSize: pageOption.pageSize,
-                hierarchy: true,
+            const query = taskPageQuery(
+                pageOption,
                 projectId,
-                keyword: appliedKeyword.value,
-                status: statusFilter.value,
-                priority: priorityFilter.value,
-                sortBy: sortBy.value,
-                sortDirection: sortBy.value === 'update_time' ? 'desc' : 'asc'
-            }
+                appliedKeyword.value,
+                statusFilter.value,
+                statusScope.value,
+                priorityFilter.value,
+                sortBy.value
+            )
             const result = await loadTaskPage(resolveStatusQuery(query, statistics.value))
             if (request !== requestSequence || projectId !== selectedProjectId.value) return false
             dependencies.value = result.dependencies
@@ -175,6 +189,7 @@ export function useTaskListQuery(initialProjectId = '') {
         keywordInput,
         appliedKeyword,
         statusFilter,
+        statusScope,
         priorityFilter,
         sortBy,
         pageOption,

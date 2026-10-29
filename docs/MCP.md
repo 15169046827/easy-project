@@ -1,5 +1,7 @@
 # EasyProject 本地 MCP
 
+2026-10-29甘特/筛选候选：statusScope仅IPC/HTTP hierarchy查询输入，MCP task_list公开Schema和23工具/权限均不变；旧调用省略scope维持全层状态匹配。UI新增同级排序使用已有swap_order服务，不借此开放新MCP动作，也不改父子关系/状态字典/日期持久化。接口与候选部署见GANTT_HIERARCHY_CHECKPOINT。
+
 2026-10-28任务展示v2说明：新增statusIds集合查询仅属于IPC/HTTP task/get_all，MCP task_list输入不扩展，23工具及权限保持、独立70E不替换。UI柔和彩点是展示映射，状态CRUD仍返回/保存原color，编辑名称不得隐式改色；全局卡片仅合计显示，不合并各项目字典ID或按文字猜完成属性。候选验证/交付见TASK_PRESENTATION_V2_CHECKPOINT，Apifox66/32/19主JSON已同步，DOC-SYNC-001仍开。
 
 ## 当前能力（2026-10-27复核）

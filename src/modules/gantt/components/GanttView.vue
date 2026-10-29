@@ -71,6 +71,8 @@
         </header>
 
         <p v-if="message" class="gantt-banner" :class="messageType">{{ message }}</p>
+        <p v-if="conflictMessage" class="gantt-banner warning">{{ conflictMessage }}</p>
+        <p v-if="orderError" class="gantt-banner error">{{ orderError }}</p>
 
         <div v-if="showBaseline && baseline.length" class="baseline-summary">
             <span
@@ -89,7 +91,11 @@
             </Button>
         </div>
 
-        <div v-if="projectId && datedTasks.length" class="scroller-wrap">
+        <div
+            v-if="projectId && rows.length"
+            class="scroller-wrap"
+            :style="{ '--name-width': `${nameWidth}px` }"
+        >
             <Button
                 text
                 severity="secondary"
@@ -114,7 +120,7 @@
                     :style="{
                         '--dw': `${dayWidth}px`,
                         width: `${nameWidth + days.length * dayWidth}px`,
-                        height: `${headerHeight + datedTasks.length * rowHeight}px`
+                        height: `${headerHeight + rows.length * rowHeight}px`
                     }"
                 >
                     <!-- 左上角 -->
@@ -154,30 +160,68 @@
 
                     <!-- 任务行 -->
                     <div
-                        v-for="(task, index) in datedTasks"
+                        v-for="(task, index) in rows"
                         :key="task.id"
                         class="gantt-row"
+                        :data-row-task-id="task.id"
+                        :class="{
+                            'schedule-conflict': conflictIds.has(task.id),
+                            'order-target': dragOverId === task.id
+                        }"
                         :style="{ top: `${headerHeight + index * rowHeight}px` }"
                     >
                         <div
                             class="task-label"
+                            @dragover.prevent="onDragOver($event, task)"
+                            @dragleave="onDragLeave(task)"
+                            @drop.prevent="onDrop(task)"
                             :style="{
                                 width: `${nameWidth}px`,
                                 paddingLeft: `${12 + task.level * 16}px`
                             }"
                         >
-                            <span
+                            <Button
+                                text
+                                icon="pi pi-bars"
+                                class="reorder-handle"
+                                draggable="true"
+                                :aria-label="$t('tasks.sortManual')"
+                                @dragstart="onDragStart($event, task)"
+                                @dragend="onDragEnd"
+                                @keydown.up.prevent="moveTask(task, -1)"
+                                @keydown.down.prevent="moveTask(task, 1)"
+                            />
+                            <Button
+                                v-if="task.hasChildren"
+                                text
+                                :icon="
+                                    collapsed.has(task.id)
+                                        ? 'pi pi-chevron-right'
+                                        : 'pi pi-chevron-down'
+                                "
+                                :aria-label="
+                                    collapsed.has(task.id)
+                                        ? $t('tasks.expandTask')
+                                        : $t('tasks.collapseTask')
+                                "
+                                :aria-expanded="!collapsed.has(task.id)"
+                                @click="toggleTask(task.id)"
+                            />
+                            <Button
+                                text
                                 class="task-label-text"
                                 :title="task.name"
                                 v-tooltip.top="{ value: task.name, class: 'task-content-tooltip' }"
+                                @click="openEditor(task)"
                             >
                                 {{ task.type === 'Milestone' ? '◆ ' : '' }}{{ task.name }}
-                            </span>
+                            </Button>
                             <span class="date-actions">
                                 <Button
                                     text
                                     severity="secondary"
                                     :title="$t('gantt.moveEarlier')"
+                                    :disabled="task.hasChildren || !parse(task.start_time)"
                                     @click="shift(task, -1)"
                                 >
                                     ‹
@@ -186,6 +230,7 @@
                                     text
                                     severity="secondary"
                                     :title="$t('gantt.moveLater')"
+                                    :disabled="task.hasChildren || !parse(task.start_time)"
                                     @click="shift(task, 1)"
                                 >
                                     ›
@@ -205,6 +250,7 @@
                             ></span>
                         </div>
                         <div
+                            v-if="parse(task.start_time)"
                             class="task-bar"
                             :data-task-id="task.id"
                             :class="{
@@ -275,7 +321,7 @@
                         :style="{
                             left: `${nameWidth}px`,
                             width: `${days.length * dayWidth}px`,
-                            height: `${headerHeight + datedTasks.length * rowHeight}px`
+                            height: `${headerHeight + rows.length * rowHeight}px`
                         }"
                     >
                         <path
@@ -296,7 +342,7 @@
                         :style="{
                             left: `${nameWidth}px`,
                             width: `${days.length * dayWidth}px`,
-                            height: `${headerHeight + datedTasks.length * rowHeight}px`
+                            height: `${headerHeight + rows.length * rowHeight}px`
                         }"
                     >
                         <line
@@ -318,17 +364,6 @@
             }}</span>
         </div>
 
-        <section v-if="unscheduledTasks.length" class="unscheduled-tasks">
-            <h3>{{ $t('taskHierarchy.unscheduled') }}</h3>
-            <Button
-                v-for="task in unscheduledTasks"
-                :key="task.id"
-                :label="task.name"
-                text
-                :title="task.name"
-                @click="openEditor(task)"
-            />
-        </section>
         <GanttTaskDialog
             v-model="createForm"
             :projectId="projectId"
@@ -356,7 +391,8 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onBeforeUnmount, nextTick, ref, watch } from 'vue'
+import { useTaskReordering } from '../../task/composables/useTaskReordering.js'
 import Button from 'primevue/button'
 import Select from 'primevue/select'
 import GanttTaskDialog from './GanttTaskDialog.vue'
@@ -405,6 +441,27 @@ const { projects, tasks, dependencies, projectMemberIds, loading, load, loadChec
 const embedded = computed(() => props.embedded)
 const activeProject = computed(() => projects.value.find(item => item.id === projectId.value) || {})
 const scroller = ref(null)
+const conflicts = computed(
+    () =>
+        calculateDependencySchedule(tasks.value, dependencies.value, activeProject.value).conflicts
+)
+const conflictIds = computed(() => new Set(conflicts.value.map(item => item.taskId)))
+const conflictMessage = computed(() =>
+    conflicts.value.length
+        ? `${t('tasks.scheduleConflicts', { count: conflicts.value.length })}: ${conflicts.value.map(item => tasks.value.find(task => task.id === item.taskId)?.name || item.taskId).join(' / ')}`
+        : ''
+)
+const orderError = ref('')
+const orderSuccess = ref('')
+const { dragOverId, onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd, moveTask } =
+    useTaskReordering({
+        tasks,
+        reload: loadChecked,
+        loading,
+        errorMessage: orderError,
+        successMessage: orderSuccess,
+        t
+    })
 const {
     creatingTask,
     savingTask,
@@ -490,7 +547,9 @@ const { dragState, dragCursorX, onBarMouseDown } = useGanttTaskDragging({
 })
 const {
     datedTasks,
-    unscheduledTasks,
+    rows,
+    collapsed,
+    toggleTask,
     fmtShortRange,
     barStyle,
     dependencyPaths,
@@ -514,6 +573,27 @@ const {
     members,
     t
 })
+
+let calendarObserver
+async function fillCalendar() {
+    await nextTick()
+    if (!scroller.value) return
+    const needed = Math.ceil((scroller.value.clientWidth - nameWidth) / dayWidth.value)
+    if (needed > days.value.length) {
+        const end = new Date(viewport.viewRange.value.start)
+        end.setDate(end.getDate() + needed - 1)
+        viewport.viewRange.value = { ...viewport.viewRange.value, end }
+    }
+}
+watch([scroller, dayWidth, days], fillCalendar)
+watch(scroller, element => {
+    calendarObserver?.disconnect()
+    if (element) {
+        calendarObserver = new ResizeObserver(fillCalendar)
+        calendarObserver.observe(element)
+    }
+})
+onBeforeUnmount(() => calendarObserver?.disconnect())
 
 // ---------- 计划基线 ----------
 const { baseline, showBaseline, savingBaseline, loadBaseline, saveBaseline, clearBaseline } =
@@ -547,7 +627,7 @@ async function applyAutoSchedule() {
     if (result.updates.length) await loadChecked()
     if (result.conflicts.length) {
         messageType.value = 'warning'
-        message.value = t('tasks.scheduleConflicts', { count: result.conflicts.length })
+        message.value = '' // The reactive conflict banner includes the current task names.
     }
     return result
 }
@@ -580,13 +660,13 @@ const { createDrag, createPreviewStyle, onGridMouseDown } = useGanttCreationDrag
     dayWidth,
     nameWidth,
     headerHeight,
-    datedTasks,
+    datedTasks: rows,
     rowHeight,
     openCreateEditor
 })
 
 const { linking, linkLine, startLink } = useGanttDependencyDragging({
-    datedTasks,
+    datedTasks: rows,
     dependencies,
     parse,
     offset,
@@ -653,6 +733,23 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.schedule-conflict .task-label {
+    box-shadow: inset 4px 0 var(--color-warning-text);
+    background: var(--color-warning-bg);
+}
+.schedule-conflict .task-bar {
+    outline: 3px solid var(--color-warning-text);
+    outline-offset: 2px;
+}
+.order-target .task-label {
+    outline: 2px dashed var(--color-primary);
+}
+.task-label > .p-button:not(.task-label-text) {
+    flex: 0 0 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+}
 .gantt-page {
     display: flex;
     flex-direction: column;
@@ -769,7 +866,7 @@ onMounted(async () => {
     box-shadow: 0 4px 14px rgb(37 99 235 / 20%);
 }
 .timeline-nav-left {
-    left: 8px;
+    left: calc(var(--name-width) + 8px);
 }
 .timeline-nav-right {
     right: 8px;
@@ -789,7 +886,7 @@ onMounted(async () => {
     z-index: 5;
     height: 62px; /* headerHeight */
     background: var(--color-subtle);
-    border-right: 1px solid #dbe3ee;
+    border-right: 1px solid var(--color-border);
     display: flex;
     flex-direction: column;
 }
@@ -833,8 +930,7 @@ onMounted(async () => {
     overflow: hidden;
 }
 .month-cell.today {
-    color: #1d4ed8;
-    background: #dbeafe;
+    color: var(--color-primary-text);
 }
 
 /* ---------- 日期行 ---------- */
@@ -851,7 +947,7 @@ onMounted(async () => {
     padding: 6px 0;
     border-right: 1px solid var(--color-border);
     background: var(--color-subtle);
-    box-shadow: inset 0 -1px #dbe3ee;
+    box-shadow: inset 0 -1px var(--color-border);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -874,11 +970,18 @@ onMounted(async () => {
     color: var(--color-text-secondary);
 }
 .date-cell.non-working {
-    color: #9f1239;
-    background: repeating-linear-gradient(-45deg, #fff1f2, #fff1f2 5px, #ffe4e6 5px, #ffe4e6 10px);
+    color: var(--color-error-text);
+    background: repeating-linear-gradient(
+        -45deg,
+        var(--color-error-bg),
+        var(--color-error-bg) 5px,
+        color-mix(in srgb, var(--color-error-bg) 60%, var(--color-surface)) 5px,
+        color-mix(in srgb, var(--color-error-bg) 60%, var(--color-surface)) 10px
+    );
 }
 .today {
-    background: #dbeafe !important;
+    background: color-mix(in srgb, var(--color-primary) 16%, var(--color-surface)) !important;
+    color: var(--color-primary-text);
 }
 
 /* ---------- 任务行 ---------- */
@@ -887,7 +990,7 @@ onMounted(async () => {
     left: 0;
     right: 0;
     height: 48px;
-    border-top: 1px solid #eef2f7;
+    border-top: 1px solid var(--color-border);
 }
 .task-label {
     position: sticky;
@@ -898,11 +1001,17 @@ onMounted(async () => {
     justify-content: space-between;
     height: 48px;
     background: var(--color-surface);
-    border-right: 1px solid #dbe3ee;
+    border-right: 1px solid var(--color-border);
     overflow: hidden;
     box-shadow: 5px 0 12px rgb(15 23 42 / 4%);
 }
 .task-label-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: block;
+    text-align: left;
+    color: var(--color-text);
+    padding: 0 0.25rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -937,7 +1046,7 @@ onMounted(async () => {
 .row-grid span {
     width: var(--dw);
     flex: 0 0 var(--dw);
-    border-right: 1px solid #f1f5f9;
+    border-right: 1px solid var(--color-border-light);
 }
 .row-grid span.non-working {
     background: rgb(244 63 94 / 6%);

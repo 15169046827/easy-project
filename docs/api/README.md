@@ -1,5 +1,7 @@
 # EasyProject API维护入口（Apifox）
 
+2026-10-29候选新增hierarchy task/get_all statusScope（top_level/all_tasks，省略兼容旧all_tasks），使统计卡和入选根口径一致。仅IPC/HTTP查询、无MCP Schema/权限/工具数变化。当前本地契约更新中，Apifox尚未同步，不把前轮66/32/19通过冒充本轮已同步；精确状态见GANTT_HIERARCHY_CHECKPOINT。
+
 2026-10-28任务展示v2查询候选已同步：task/get_all增加statusIds数组OR过滤（完整ID/≤1000/空与省略区别/其它条件AND/服务端根分页及账号隔离），IPC和HTTP工作区说明及Apifox已更新读回。66原生/32参考及19主JSON契约门禁通过，代码源18f8024，部署待；MCP23工具Schema不变、独立70E不替换。柔和展示色不改原存储色，编辑保色。DOC-SYNC-001没有关闭；准确状态见TASK_PRESENTATION_V2_CHECKPOINT。
 
 ## 当前同步结论（2026-10-27复核）

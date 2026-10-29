@@ -117,6 +117,7 @@ async fn status_id_union_queries_preserve_pagination_and_account_isolation() {
     let alice = ready_token(server.clone(), "overview_alice").await;
     let bob = ready_token(server.clone(), "overview_bob").await;
     let mut ids = Vec::new();
+    let mut scope_records = Vec::new();
     for name in ["First project", "Second project"] {
         let (_, current, _) = call(
             server.clone(),
@@ -151,6 +152,20 @@ async fn status_id_union_queries_preserve_pagination_and_account_isolation() {
         ids.push(state.to_owned());
         let (code, task, _) = call(server.clone(), Method::POST, "/api/workspace/action", json!({"model":"task","action":"add","data":{"project_id":project,"name":name,"parent":"","dependence":"","start_time":"","end_time":"","type":"Task","priority":"Normal","status_id":state,"comment":"","assignee":""}}), Some(&alice), created["revision"].as_i64()).await;
         assert_eq!(code, StatusCode::OK, "{task}");
+        let done = dictionary["data"]["list"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|state| state["builtin_key"] == "Done")
+            .unwrap()["id"]
+            .as_str()
+            .unwrap()
+            .to_owned();
+        scope_records.push((
+            project.to_owned(),
+            task["data"]["id"].as_str().unwrap().to_owned(),
+            done,
+        ));
     }
     let read = |ids: Value, page| json!({"model":"task","action":"get_all","data":{"statusIds":ids,"hierarchy":true,"pageSize":1,"pageIndex":page}});
     let mut first_id = String::new();
@@ -190,6 +205,59 @@ async fn status_id_union_queries_preserve_pagination_and_account_isolation() {
             Method::POST,
             "/api/workspace/action",
             read(bad, 1),
+            Some(&alice),
+            None,
+        )
+        .await;
+        assert_eq!(code, StatusCode::BAD_REQUEST);
+    }
+    for (model, action, data) in [
+        (
+            "task",
+            "add",
+            json!({"project_id":scope_records[0].0,"name":"Nested completed match","parent":scope_records[0].1,"dependence":"","start_time":"","end_time":"","type":"Task","priority":"Normal","status_id":scope_records[0].2,"progress":100,"comment":"","assignee":""}),
+        ),
+        (
+            "task",
+            "update",
+            json!({"id":scope_records[1].1,"project_id":scope_records[1].0,"name":"Second project","parent":"","dependence":"","start_time":"","end_time":"","type":"Task","priority":"Normal","status_id":scope_records[1].2,"progress":100,"comment":"","assignee":""}),
+        ),
+    ] {
+        let (_, current, _) = call(
+            server.clone(),
+            Method::GET,
+            "/api/workspace/revision",
+            json!({}),
+            Some(&alice),
+            None,
+        )
+        .await;
+        let (code, result, _) = call(
+            server.clone(),
+            Method::POST,
+            "/api/workspace/action",
+            json!({"model":model,"action":action,"data":data}),
+            Some(&alice),
+            current["revision"].as_i64(),
+        )
+        .await;
+        assert_eq!(code, StatusCode::OK, "{action}: {result}");
+    }
+    for (scope, count) in [("top_level", 1), ("all_tasks", 2)] {
+        let (code, result, _) = call(server.clone(), Method::POST, "/api/workspace/action",
+            json!({"model":"task","action":"get_all","data":{"hierarchy":true,"statusIds":[scope_records[0].2,scope_records[1].2],"statusScope":scope,"pageSize":1}}), Some(&alice), None).await;
+        assert_eq!(code, StatusCode::OK, "{result}");
+        assert_eq!(result["data"]["total"], count);
+        if scope == "top_level" {
+            assert_eq!(result["data"]["list"][0]["id"], scope_records[1].1);
+        }
+    }
+    for bad in [json!(true), json!("roots"), json!(null)] {
+        let (code, _, _) = call(
+            server.clone(),
+            Method::POST,
+            "/api/workspace/action",
+            json!({"model":"task","action":"get_all","data":{"hierarchy":true,"statusScope":bad}}),
             Some(&alice),
             None,
         )

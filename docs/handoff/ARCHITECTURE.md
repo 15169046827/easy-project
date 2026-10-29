@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-29候选：useTaskListQuery与统计共用statusScope；task_service在hierarchy边界验证，task_tree_service先构建root映射，top_level按根状态入选而其它过滤仍跨层，all_tasks保留旧祖先上下文。MCP Schema不变。gantt/utils/taskRows生成排序DFS/可折叠全树并派生日期，presentation/viewport共用；GanttView以rows计算高度/依赖行坐标，未排期无bar，名称拖动调用原有原子swap_order。ResizeObserver补足日期宽度，左导航锚定nameWidth边界；依赖固定日期冲突用真实任务名和样式标识。只读派生不写回父日期，不改变层级/数据库schema。实际交付以GANTT_HIERARCHY_CHECKPOINT为准。
+
 优先级共享浅色变量已以abc1e9e交付桌面和网页；只更改App全局展示变量与List/Board彩点，不是状态字典或数据迁移。后端/IPC/API/MCP未变，规则1.20复核保持。候选验证及交付来源/保全证据见PRIORITY_PALETTE_CHECKPOINT最终段。
 
 2026-10-28优先级视觉候选：App统一--priority-p1至p5展示变量，TaskList和TaskBoard的彩点均引用，文字保留当前主题正常文本色，不以浅色画小字。此为非持久化显示映射，不影响priorityRank、允许值、排序或MCP；不混用项目状态颜色字典。交付状态见PRIORITY_PALETTE_CHECKPOINT。

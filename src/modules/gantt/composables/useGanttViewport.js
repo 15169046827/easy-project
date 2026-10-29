@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { taskViewRange, viewportDays, viewportMonths } from '../utils/viewportCalendar.js'
+import { ganttTaskRows } from '../utils/taskRows.js'
 
 export function useGanttViewport({ tasks, activeProject, parse, dayStart, t }) {
     const { locale } = useI18n()
@@ -19,7 +20,7 @@ export function useGanttViewport({ tasks, activeProject, parse, dayStart, t }) {
     const offset = date =>
         Math.round((dayStart(date).getTime() - viewRange.value.start.getTime()) / 86400000)
     function initViewRange() {
-        viewRange.value = taskViewRange(tasks.value, parse, dayStart)
+        viewRange.value = taskViewRange(ganttTaskRows(tasks.value, parse), parse, dayStart)
     }
     return { dayWidth, viewRange, days, months, zoomLevel, offset, initViewRange }
 }

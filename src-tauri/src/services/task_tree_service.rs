@@ -44,7 +44,16 @@ fn matches(task: &Task, query: &TaskQuery<'_>) -> bool {
     }
 }
 
+#[cfg(test)]
 pub fn query(db: &DbState, query: &TaskQuery<'_>) -> Result<Value, String> {
+    query_with_scope(db, query, false)
+}
+
+pub fn query_with_scope(
+    db: &DbState,
+    query: &TaskQuery<'_>,
+    root_status_only: bool,
+) -> Result<Value, String> {
     let scope = TaskQuery {
         page_index: 1,
         page_size: i64::MAX as u64,
@@ -60,11 +69,6 @@ pub fn query(db: &DbState, query: &TaskQuery<'_>) -> Result<Value, String> {
         .iter()
         .map(|task| (task.id.as_str(), task))
         .collect::<HashMap<_, _>>();
-    let matched = tasks
-        .iter()
-        .filter(|task| matches(task, query))
-        .map(|task| task.id.as_str())
-        .collect::<HashSet<_>>();
     let mut included = HashSet::new();
     let mut root_of = HashMap::new();
     for task in &tasks {
@@ -87,6 +91,31 @@ pub fn query(db: &DbState, query: &TaskQuery<'_>) -> Result<Value, String> {
             root_of.insert(id, root);
         }
     }
+    let non_status = TaskQuery {
+        status: None,
+        status_ids: None,
+        ..*query
+    };
+    let status_only = TaskQuery {
+        keyword: None,
+        priority: None,
+        assignee: None,
+        ..*query
+    };
+    let scoped_status = root_status_only
+        && (query.status.is_some_and(|s| !s.is_empty()) || query.status_ids.is_some());
+    let matched = tasks
+        .iter()
+        .filter(|task| {
+            if scoped_status {
+                matches(by_id[root_of[task.id.as_str()]], &status_only)
+                    && matches(task, &non_status)
+            } else {
+                matches(task, query)
+            }
+        })
+        .map(|task| task.id.as_str())
+        .collect::<HashSet<_>>();
     for id in &matched {
         let mut cursor = by_id[id];
         loop {
@@ -240,6 +269,30 @@ mod tests {
         assert_eq!(super::query(&db, &query).unwrap()["total"], 1);
         assert_eq!(task_db::query_tasks(&db, &query).unwrap().1, 3);
         let union = vec![ids[0].clone(), other_status];
+        query.status_ids = Some(&union[1..]);
+        {
+            let conn = db.lock_connection().unwrap();
+            conn.execute(
+                "UPDATE task SET status_id=?1 WHERE id='grandchild'",
+                [&union[1]],
+            )
+            .unwrap();
+        }
+        let top_only = super::query_with_scope(&db, &query, true).unwrap();
+        assert_eq!(top_only["total"], 1);
+        assert_eq!(top_only["list"][0]["id"], "other");
+        assert_eq!(
+            super::query_with_scope(&db, &query, false).unwrap()["total"],
+            2
+        );
+        {
+            let conn = db.lock_connection().unwrap();
+            conn.execute(
+                "UPDATE task SET status_id=?1 WHERE id='grandchild'",
+                [&ids[0]],
+            )
+            .unwrap();
+        }
         query.status_ids = Some(&union);
         assert_eq!(super::query(&db, &query).unwrap()["total"], 2);
         assert_eq!(task_db::query_tasks(&db, &query).unwrap().1, 4);

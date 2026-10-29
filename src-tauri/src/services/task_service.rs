@@ -223,7 +223,17 @@ pub fn handle_action(
             };
 
             if data["hierarchy"].as_bool() == Some(true) {
-                return ApiResponse::ok(Some(super::task_tree_service::query(db, &query)?));
+                let root_status_only = match data.get("statusScope") {
+                    None => false,
+                    Some(Value::String(scope)) if scope == "all_tasks" => false,
+                    Some(Value::String(scope)) if scope == "top_level" => true,
+                    _ => return ApiResponse::err("statusScope must be top_level or all_tasks"),
+                };
+                return ApiResponse::ok(Some(super::task_tree_service::query_with_scope(
+                    db,
+                    &query,
+                    root_status_only,
+                )?));
             }
             match task_db::query_tasks(db, &query) {
                 Ok((list, total)) => {

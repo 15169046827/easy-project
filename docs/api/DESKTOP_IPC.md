@@ -1,5 +1,7 @@
 # EasyProject桌面内部IPC契约
 
+2026-10-29查询候选：仅hierarchy:true的task/get_all增加可选statusScope:"top_level"|"all_tasks"，省略为兼容旧调用的all_tasks；null/非字符串/未知值拒绝。top_level在status或statusIds存在时，只以根自身状态决定是否入选，子项仍按其余条件展示；all_tasks按各层状态匹配并保留祖先context_only。keyword/priority等其它条件仍可命中后代。统计卡与当前模式共用此口径，概览仍移除状态过滤，保留其它条件。无状态条件时两值不改变根入选。Web共享同一服务及账号隔离；MCP task_list Schema不新增此输入、独立程序不替换。实际部署见GANTT_HIERARCHY_CHECKPOINT。
+
 2026-10-28查询候选：`task/get_all`增加可选`statusIds:string[]`，最多1000个完整TASK_STATUS ID，去重后以OR匹配；省略不限制，空数组明确无结果，非法类型/ID拒绝。与projectId/keyword/status/priority/assignee等其它条件为AND，平铺与hierarchy都在服务端筛选后分页，层级模式保留匹配子项祖先上下文。跨项目统计卡仅按内置key或trim/忽略大小写的自定义名称合计，点击传各项目独立ID集合，不合并字典或猜完成属性。Web复用同一账号工作区边界。此字段仅新增IPC/HTTP内部查询能力，既有MCP task_list Schema不新增输入/权限，独立MCP不用替换；候选实际部署见TASK_PRESENTATION_V2_CHECKPOINT。
 
 2026-10-25父子候选增补：task/get_all可传hierarchy:true，按根分页并附匹配后代/祖先context_only及statistics.top_level/all_tasks；普通平铺模式不变。task读结果新增effort_state与summary，父进度/工作量/日期派生只读；零权重summary.progress=null。task/add/update显式估算与清空规则、完成祖先/后代保护及schema8/JSON8见docs/MCP.md、DATABASE_DESIGN.md。Web共用同一服务，已认证账号可收到限定的层级冲突ID/名称说明，不返回SQL或路径，不写审计值。候选未部署；下方旧schema7候选文案为历史，真实安装状态看父子检查点。
@@ -22,7 +24,7 @@
 | project         | update               | id及待修改项目字段；负责人必须存在且自动加入团队                                                                                       |
 | project         | delete               | `{ids:string[]}`非空；软删除，有活跃任务拒绝                                                                                           |
 | task            | add                  | TaskCreateRequest；有效项目/团队负责人及项目状态引用；parent可空，完成祖先下新增须先重开；effort_state只可unestimated/estimated，省略工作量为未估算、显式0为无工作量；聚合超范围拒绝并回滚 |
-| task            | get_all              | 默认平铺1/20，pageSize1–1000；projectId/keyword/status/priority/assignee/sortBy/sortDirection；statusIds?:完整TASK_STATUS ID数组≤1000，OR去重、省略不限/空数组无结果/非法拒绝，与其它条件AND；hierarchy:true按根分页、返回匹配子项及context_only祖先、statistics.top_level/all_tasks；读含effort_state/summary，派生日期排序/逾期在分页前计算 |
+| task            | get_all              | 默认平铺1/20，pageSize1–1000；projectId/keyword/status/priority/assignee/sortBy/sortDirection；statusIds?:完整TASK_STATUS ID数组≤1000，OR去重、省略不限/空数组无结果/非法拒绝，与其它条件AND；hierarchy:true按根分页、返回匹配子项及context_only祖先、statistics.top_level/all_tasks；仅hierarchy可选statusScope=top_level或all_tasks，省略all_tasks，非法拒绝：top_level按根自身状态入选、子项仍按其它条件；all_tasks跨层状态匹配；读含effort_state/summary，派生日期排序/逾期在分页前计算 |
 | task            | swap_order           | `{source_id,target_id}`，限定同项目同层级，两次排序写入事务原子交换                                                                    |
 | task            | update               | id及修改字段；父progress/effort_days/effort_state/start_time/end_time只读派生，零权重summary.progress=null；状态不自动随100%完成；完成父需全部后代完成，重开子项需先重开所有完成祖先；估算来源不能写legacy_unknown；越界汇总和失败整体回滚 |
 | task            | delete               | `{ids:string[]}`非空，软删除，活跃子任务等关联会阻止                                                                                   |

@@ -61,7 +61,7 @@ export function calculateDependencySchedule(tasks = [], dependencies = [], proje
 
         const requiredStartText = scheduleDate(requiredStart)
         if ((task.schedule_mode || 'fixed_dates') === 'fixed_dates') {
-            if (dateKey(task.start_time) < dateKey(requiredStart)) {
+            if (dateKey(task.start_time) && dateKey(task.start_time) < dateKey(requiredStart)) {
                 conflicts.push({ taskId, requiredStart: requiredStartText })
             }
             return

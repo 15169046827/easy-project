@@ -114,11 +114,30 @@ test('real hierarchy keeps roots, weighted estimates, drawer edits and filter co
         status_id: done,
         progress: 100
     })
+    await action('task', 'add', {
+        ...data,
+        parent,
+        name: 'Completed nested scope match',
+        status_id: done,
+        effort_days: 0,
+        progress: 100
+    })
     await login(page)
     await page.goto(origin + '/index.html#/project/' + project)
     const overviewCards = page.locator('.statistics-cards .status-stat')
     await expect(overviewCards).toHaveCount(2)
     const overviewText = await overviewCards.allTextContents()
+    const completedCard = overviewCards.filter({ hasText: '已完成' })
+    await completedCard.click()
+    await expect(page.locator('.task-name-text')).not.toContainText(['Delivery goal'])
+    await expect(page.locator('.child-drawer')).toHaveCount(0)
+    await page.locator('.statistics-controls button').click()
+    await expect(page.locator('.task-name-text').filter({ hasText: 'Delivery goal' })).toBeVisible()
+    await expect(page.locator('.child-drawer')).toContainText('Completed nested scope match')
+    await page.locator('.statistics-controls button').click()
+    await expect(page.locator('.task-name-text')).not.toContainText(['Delivery goal'])
+    await expect(overviewCards).toHaveText(overviewText)
+    await completedCard.click()
     await overviewCards.filter({ hasText: '待办' }).click()
     await expect(page.locator('.task-name-text')).not.toContainText(['Completed overview sibling'])
     await expect(overviewCards).toHaveText(overviewText)

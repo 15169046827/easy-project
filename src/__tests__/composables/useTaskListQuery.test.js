@@ -194,6 +194,7 @@ describe('task query state ownership', () => {
             pageSize: 1,
             hierarchy: true,
             projectId: 'p1',
+            statusScope: 'top_level',
             keyword: 'needle',
             priority: 'High',
             status: '',

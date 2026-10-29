@@ -135,7 +135,7 @@
       "method": "post",
       "folderId": 97929351,
       "name": "执行账号工作区业务动作",
-      "sha256": "d1f06b1896ce1bba04e895125a1ef086ec6bc940aefdc649d1d9be6e22b3ef8e"
+      "sha256": "8ce0c8dae4e3887b3de5aa395b44f37674e759ff36a028fd16d7116abdaf1195"
     },
     "post__api_auth_logout": {
       "id": 526827474,

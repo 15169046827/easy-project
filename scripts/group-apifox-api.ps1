@@ -1,9 +1,10 @@
-param([switch]$Apply)
+param([switch]$Apply, [string]$ResumeFrom)
 $applyGrouping = $Apply
 . (Join-Path $PSScriptRoot 'sync-apifox-api.ps1') -Library
 $layout = Get-Content (Join-Path $repository 'docs/api/apifox-layout.json') -Raw | ConvertFrom-Json -Depth 100
 if (-not $manifest.folders) { $manifest.folders = @{} }
 if (-not $manifest.interfaces) { $manifest.interfaces = @{} }
+if ($ResumeFrom -and $ResumeFrom -notin $layout.interfaces.key) { throw 'Unknown resume interface.' }
 function Dynamic-Call($Id, $Path, $Body, [bool]$Write) {
     $requestArguments = @{ id = $Id; pathParams = $Path; queryParams = @{}; headers = @{ 'X-Project-Id' = '8948094' } }
     if ($null -ne $Body) { $requestArguments.body = $Body }
@@ -33,10 +34,18 @@ foreach ($folder in $layout.folders) {
     Write-Output "CREATED folder $($folder.key) id=$($result.data.id)"
 }
 $existing = (Dynamic-Call 'aa85350f4c6df684' @{ projectId = '8948094' } $null $false).data
+$resumeReached = [string]::IsNullOrEmpty($ResumeFrom)
 foreach ($item in $layout.interfaces) {
     $state = $manifest.interfaces[$item.key]
     $folderId = $manifest.folders[$item.group].id
     $hash = Content-Hash $item.content
+    if ($item.key -eq $ResumeFrom) { $resumeReached = $true }
+    if (-not $resumeReached) {
+        if (-not $state.id -or $state.sha256 -ne $hash -or $state.folderId -ne $folderId) {
+            throw "Cannot skip an unverified interface: $($item.key)"
+        }
+        continue
+    }
     $actual = $null
     if ($state) {
         $actual = (Dynamic-Call 'd2430159b28e4551' @{ projectId = '8948094'; id = [string]$state.id } $null $false).data

@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-29原生修复：useGanttRowReordering接专用PrimeVue手柄pointerdown，8px阈值/原始内部来源/同指针/同图目标，兼容原生合并move事件，blur/cancel/unmount清理；最终仍调用useTaskReordering原同级swap_order和键盘方法，不改API/层级。甘特导航纵向上界按表头+可见行范围计算，取消top位置动画，避免短图折叠后按钮越界。候选/验证见GANTT_HIERARCHY_CHECKPOINT，旧HTML DnD候选仅历史。
+
 2026-10-29候选：useTaskListQuery与统计共用statusScope；task_service在hierarchy边界验证，task_tree_service先构建root映射，top_level按根状态入选而其它过滤仍跨层，all_tasks保留旧祖先上下文。MCP Schema不变。gantt/utils/taskRows生成排序DFS/可折叠全树并派生日期，presentation/viewport共用；GanttView以rows计算高度/依赖行坐标，未排期无bar，名称拖动调用原有原子swap_order。ResizeObserver补足日期宽度，左导航锚定nameWidth边界；依赖固定日期冲突用真实任务名和样式标识。只读派生不写回父日期，不改变层级/数据库schema。实际交付以GANTT_HIERARCHY_CHECKPOINT为准。
 
 优先级共享浅色变量已以abc1e9e交付桌面和网页；只更改App全局展示变量与List/Board彩点，不是状态字典或数据迁移。后端/IPC/API/MCP未变，规则1.20复核保持。候选验证及交付来源/保全证据见PRIORITY_PALETTE_CHECKPOINT最终段。

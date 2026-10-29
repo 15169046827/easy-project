@@ -94,7 +94,10 @@
         <div
             v-if="projectId && rows.length"
             class="scroller-wrap"
-            :style="{ '--name-width': `${nameWidth}px` }"
+            :style="{
+                '--name-width': `${nameWidth}px`,
+                '--nav-midpoint': `${headerHeight + (rows.length * rowHeight) / 2}px`
+            }"
         >
             <Button
                 text
@@ -172,9 +175,6 @@
                     >
                         <div
                             class="task-label"
-                            @dragover.prevent="onDragOver($event, task)"
-                            @dragleave="onDragLeave(task)"
-                            @drop.prevent="onDrop(task)"
                             :style="{
                                 width: `${nameWidth}px`,
                                 paddingLeft: `${12 + task.level * 16}px`
@@ -184,10 +184,8 @@
                                 text
                                 icon="pi pi-bars"
                                 class="reorder-handle"
-                                draggable="true"
                                 :aria-label="$t('tasks.sortManual')"
-                                @dragstart="onDragStart($event, task)"
-                                @dragend="onDragEnd"
+                                @pointerdown="startRowDrag($event, task)"
                                 @keydown.up.prevent="moveTask(task, -1)"
                                 @keydown.down.prevent="moveTask(task, 1)"
                             />
@@ -393,6 +391,7 @@
 <script setup>
 import { computed, onMounted, onBeforeUnmount, nextTick, ref, watch } from 'vue'
 import { useTaskReordering } from '../../task/composables/useTaskReordering.js'
+import { useGanttRowReordering } from '../composables/useGanttRowReordering.js'
 import Button from 'primevue/button'
 import Select from 'primevue/select'
 import GanttTaskDialog from './GanttTaskDialog.vue'
@@ -453,15 +452,21 @@ const conflictMessage = computed(() =>
 )
 const orderError = ref('')
 const orderSuccess = ref('')
-const { dragOverId, onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd, moveTask } =
-    useTaskReordering({
-        tasks,
-        reload: loadChecked,
-        loading,
-        errorMessage: orderError,
-        successMessage: orderSuccess,
-        t
-    })
+const { dragOverId, onDragStart, onDragOver, onDrop, onDragEnd, moveTask } = useTaskReordering({
+    tasks,
+    reload: loadChecked,
+    loading,
+    errorMessage: orderError,
+    successMessage: orderSuccess,
+    t
+})
+const { startRowDrag } = useGanttRowReordering({
+    tasks,
+    onDragStart,
+    onDragOver,
+    onDrop,
+    onDragEnd
+})
 const {
     creatingTask,
     savingTask,
@@ -844,7 +849,7 @@ onMounted(async () => {
 /* ---------- 时间轴导航按钮 ---------- */
 .timeline-nav {
     position: absolute;
-    top: 50%;
+    top: min(50%, var(--nav-midpoint));
     z-index: 10;
     width: 36px;
     height: 36px;
@@ -857,7 +862,10 @@ onMounted(async () => {
     display: grid;
     place-items: center;
     box-shadow: 0 2px 8px rgb(15 23 42 / 12%);
-    transition: all 0.2s ease;
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
     transform: translateY(-50%);
 }
 .timeline-nav:hover {

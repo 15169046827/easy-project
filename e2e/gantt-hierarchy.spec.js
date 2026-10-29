@@ -137,6 +137,14 @@ for (const width of [1920, 1280, 960])
             await expect(root.locator('.bar-dates')).toHaveText('10/28 – 10/30')
             await root.getByRole('button', { name: '折叠任务', exact: true }).click()
             await expect(page.locator('.gantt-row')).toHaveCount(2)
+            const foldedChart = await page.locator('.gantt-scroller').boundingBox()
+            for (const button of await page.locator('.timeline-nav').all()) {
+                const position = await button.boundingBox()
+                expect(position.y).toBeGreaterThanOrEqual(foldedChart.y)
+                expect(position.y + position.height).toBeLessThanOrEqual(
+                    foldedChart.y + foldedChart.height
+                )
+            }
             await root.getByRole('button', { name: '展开任务', exact: true }).click()
             await expect(page.locator('.gantt-row')).toHaveCount(4)
             await root

@@ -1011,9 +1011,11 @@ test('creates a complete task from the Gantt timeline form', async ({ page }) =>
     const grid = page.locator('.row-grid')
     const box = await grid.boundingBox()
     expect(box).not.toBeNull()
-    await page.mouse.move(box.x + 20, box.y + 20)
+    // The timeline navigation occupies the calendar's left edge. Exercise
+    // creation in unobstructed cells rather than pressing that navigation button.
+    await page.mouse.move(box.x + 80, box.y + 20)
     await page.mouse.down()
-    await page.mouse.move(box.x + 90, box.y + 20)
+    await page.mouse.move(box.x + 150, box.y + 20)
     await page.mouse.up()
 
     await expect(page.locator('.create-panel')).toBeVisible()

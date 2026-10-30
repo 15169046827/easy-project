@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- 2026-10-30 delivered to desktop and static web: Visible Gantt scrolling with fixed month/date headers; inline localized required-field feedback in shared task-list and Gantt create/edit dialogs, plus safer effort-field focus handling.369 unit/124 UI/13 HTTP/20 repeated interaction checks and native light/dark verification passed. Fresh protected backups preserved all data; backend/API/MCP unchanged. No new public Release. See SCROLL_FORM_VALIDATION_CHECKPOINT for exact evidence and remaining limitations.
+
 - Follow-up candidate: Keep month/date headers visible while scrolling vertically; extend the same inline validation to Gantt task dialogs and disable InputNumber automatic focus highlighting after an intermittent null-ref focus failure. Normal numeric editing/validation remains enabled. Final candidate verification and deployment are tracked separately.
 
 - 2026-10-30 candidate: Restore visible vertical Gantt scrolling and last-row reachability with overflow-aware mouse/trackpad navigation. Task create/edit dialogs now mark required fields and show localized Chinese/English/Spanish errors under the affected PrimeVue controls, focus the first invalid field and clear errors as corrected. Dates, effort and relationships remain optional; backend/API/MCP are unchanged. See SCROLL_FORM_VALIDATION_CHECKPOINT for validation and delivery status.

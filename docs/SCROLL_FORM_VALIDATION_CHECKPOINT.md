@@ -1,6 +1,20 @@
 # 甘特滚动与表单逐字段校验（2026-10-30）
 
-## 最新可续接状态
+## 已交付：2026-10-30
+
+目标完成：甘特大量任务可纵向滚动、末行可达且年月/日期固定；任务列表及甘特新增/编辑必填红星、提交逐字段校验、字段下中英西错误、首错焦点与修正清错。日期、工作量、父/前置任务仍可不填，人员表单未改。本轮未变更Rust、API、数据库或MCP契约，无迁移、无公开Release。
+
+基线03b662d、分支codex/audit-release-20261006-api；功能最终588a062、构建源完整`8d80db7e6799236b8de95af26dd6ae8a8c1d93c9`。WACAS未定义，实际遵循UPARS1.1.0及交接1.22/PrimeVue/nonce规则。交付前f9d3c69已本地保存原生里程碑，当前仅本文与交接/CHANGELOG交付回执待提交，无代码未提交。五小时余24%/周58%，无关机/重置/定时唤醒授权。
+
+验证：lint/type/build/release一致性及369单元/69文件、124生产UI、13隔离HTTP通过；严格nonce CSP浅深1920/1280/960甘特6组含44行末行/固定年月日期/逐字段提示，任务列表三语浅深960另6组通过；最终两个曾有竞态场景各10次共20通过。原生最终1280浅深、46合成库末行与固定头、甘特新增和编辑红星/空名称拦截/即时纠错已过，草稿全部取消。列表原生所验源码保持。未重跑Rust，因本轮无Rust改动继承已交付证据；原生960未验，不与浏览器960混淆。一次PrimeVue空引用生命周期根因是代码路径推断，关闭自动焦点全选后完整/压力/原生未再现，不声称确定穷尽该库所有竞态。
+
+桌面安全副本：`src-tauri/target/audit-tools/dictionary-overwrite-scroll-form-8d80db7-20261030`，受限ACL；983文件完整备份、980原非程序文件逐摘要保持，全库覆盖前/后及启动后逐行逻辑一致，integrity OK/FK0。初次脚本在检查到正式程序运行时停止，未创建副本或覆盖；随后只读确认正式仪表盘无草稿，用Alt+F4安全退出，再成功执行新副本/覆盖。安装SHA256 `14F8624CE9F623E61260D5A1A00AA78DA6D639A7A0F6496CEBA49B54619E1604`，与封存4224450E主程序等长18770432字节，仅14723792—14723794三字节标准UNK→NSS标记不同，已程序核实其余字节完全相同；NSIS E545摘要保持。独立/伴随MCP70E不变，正式程序PID35180已启动，不操作登录或真实数据。
+
+服务器仅静态安全交付：`/opt/easyproject/releases/scroll-form-8d80db7-20261030`，新`/var/backups/easyproject/scroll-form-8d80db7-20261030` root:700副本，receipt为其verification.json。72文件manifest全部匹配，669原assets保持，账号/业务两库完整内容及schema/对象保持、integrity OK/FK0；后端仍24216926/PID1308未重启，User easyproject、配置/Funnel和两timer保持。正常TLS外部复验：两HTML动态nonce CSP/no-store、71静态逐SHA、health200、四匿名401全部通过；反馈邮箱和西语资源存在，无认证/真实写入。证据`src-tauri/target/audit-tools/scroll-form-https-result.json`。未开放调试端口、未改地址或权限。
+
+设备和续接：候选已关闭/控制reset；SSH与SCP均退出，服务器在线且3个unit active，宿主已解锁，正式程序留给用户使用。已无本任务开发或部署待办，仅同步交付回执（下述Git/Wolai/handoff完成后清洁）。Wolai主新状态块gS9pEWJsQ1eiqGEzLnNUwF及交接oLvsZ6M65HtTfFsJmg8ptD需从候选更新为本交付；旧大块不再追加。API/ApiFox无契约变化无需重写；DOC-SYNC-001备用导出差异和正式发布未通过结论继续保留，不扩大成正式生产验收通过。
+
+## 历史检查点（以下候选/锁屏/未部署描述均为当时状态）
 
 ### 最终包封存、锁屏续接
 

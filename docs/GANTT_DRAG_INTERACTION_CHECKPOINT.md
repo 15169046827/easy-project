@@ -2,6 +2,8 @@
 
 ## 已交付：2026-10-30
 
+完成附记：Git功能及真实交付回执已推至7390219fe3a16580f0ba7af6d70e7b1d7306328e；Wolai主/交接两块均更新并读回“已交付7390219”，handoff及CHANGELOG与实际桌面/网页一致。本附记仅保存同步复核，无代码/程序/数据改动；提交推送后工作区应清洁，本轮无待办，不重复覆盖或验收。
+
 功能源`5f5bc78d7d11d4cf0016f6a58bb2cc5eed1cd56c`已更新桌面与网页：创建选区/平移/左右缩放在日历边缘持续平移及补日，短拖/零天不误编辑，任务条双击/Enter或名称单击显式编辑，父汇总日期仍只读。WACAS未定义，按UPARS1.1.0/交接1.23及PrimeVue/nonce执行；基线9b2a540、分支codex/audit-release-20261006-api。已无本轮代码/部署待办，无公开Release、迁移、权限或MCP变化。
 
 验证：lint/type/build/release、376单元/70文件、130生产UI、13隔离真实HTTP通过；新增6严格CSP浅深1920/1280/960覆盖双向边缘持续平移、原范围以外选区、真实移动和双侧缩放各一次写入、日期跨度保全、Esc停止/无写入、显式编辑/防尾随双击、PrimeVue可读提示及固定区域层级。另有RAF取消/卸载/失焦/缩放/异步补日清理及DST日序单元；视觉检查已完成。原生1280浅深实际IPC平移、双端缩放无误弹、单击/双击/Tab+Enter、名称/父只读及合成库结果核对通过；所有编辑草稿取消。原生长按静止边缘、960未自动复验，工具仅提供完整drag，持续场景由浏览器矩阵验证，不伪称全原生覆盖。Rust/API未变，不重跑Rust而继承既有证据；初次测试/类型失败与整改历史保留。
@@ -10,7 +12,7 @@
 
 服务器：仅静态更新至`/opt/easyproject/releases/gantt-edge-5f5bc78-20261030`；新root:700副本`/var/backups/easyproject/gantt-edge-5f5bc78-20261030`，其verification.json为受限回执。72manifest文件匹配，704旧assets保留，账号/业务2库全部内容/schema/对象一致、integrity OK/FK0；后端24216926及PID1308未重启，配置/Funnel/3个unit active保持。正常TLS公网复验两HTML动态nonce CSP/no-store、71静态逐SHA、health200/四匿名401通过，反馈邮箱/西语资源保留，无认证或真实CRUD。公网证据`src-tauri/target/audit-tools/gantt-edge-https-result.json`。SSH/SCP均退出；系统登录既有“需重启”提示未处理，不擅自重启主机/服务或升级系统。
 
-三方与风险：本地handoff/CHANGELOG已同步交付；Git功能5f及既有授权/锁屏回执已推，本交付回执提交后同步Git/Wolai并读回，结果补录完成附记。主状态gS9pEWJsQ1eiqGEzLnNUwF与交接oLvsZ6M65HtTfFsJmg8ptD只更新当前摘要，保留历史。API/ApiFox契约未变只复核，不机械重写；DOC-SYNC-001、未签名及正式生产发布未通过边界继续保留。本轮桌面控制已reset/候选关闭，无SSH，正式程序留给用户；没有关机/额度重置/定时唤醒授权。当前未提交仅本文/交接三入口/CHANGELOG交付回执，即将提交；五小时余80%/周48%为本里程碑实查，不作实时额度监控保证。旧候选、锁屏和待部署段为历史，不重复构建/覆盖/造数据。
+三方与风险：本地handoff/CHANGELOG已同步交付，Git与Wolai回执均已完成复核（见完成附记）。主状态gS9pEWJsQ1eiqGEzLnNUwF与交接oLvsZ6M65HtTfFsJmg8ptD只更新当前摘要，保留历史。API/ApiFox契约未变只复核，不机械重写；DOC-SYNC-001、未签名及正式生产发布未通过边界继续保留。本轮桌面控制已reset/候选关闭，无SSH，正式程序留给用户；没有关机/额度重置/定时唤醒授权。五小时余80%/周48%为交付里程碑实查，不作实时额度监控保证。旧候选、锁屏和待部署段为历史，不重复构建/覆盖/造数据。
 
 ## 原生复验完成，进入已批准安全交付
 

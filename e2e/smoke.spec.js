@@ -666,9 +666,14 @@ test('retries dependency save without creating the task twice', async ({ page })
     await dialog.locator('#task-edit-name').fill('Retry task')
     // This retry scenario needs a valid draft; the form now enforces the same
     // required dictionaries as the server before attempting persistence.
-    for (const field of ['type', 'priority']) {
-        await dialog.locator(`#task-edit-${field}`).click()
-        await page.getByRole('option').first().click()
+    for (const [field, option] of [
+        ['type', /^(任务|Task)$/],
+        ['priority', /^P1 - /]
+    ]) {
+        const select = dialog.locator(`#task-edit-${field}`)
+        await select.click()
+        await page.getByRole('option', { name: option }).click()
+        await expect(select).toContainText(option)
     }
     await dialog.getByRole('combobox', { name: /前置任务|Predecessors/ }).press('Space')
     await page.getByRole('option', { name: 'Design milestone', exact: true }).click()

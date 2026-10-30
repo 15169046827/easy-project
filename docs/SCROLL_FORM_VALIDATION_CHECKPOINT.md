@@ -2,6 +2,8 @@
 
 ## 已交付：2026-10-30
 
+最终同步回执：Wolai主新块gS9pEWJsQ1eiqGEzLnNUwF及交接oLvsZ6M65HtTfFsJmg8ptD均已更新“2026-10-30已交付de96bb2”并读回；本地Git交付de96bb2已提交。其推送首次TLS连接重置，限定重试一次仍重置，未放宽TLS/改代理；远端确认截至20067ef（包含完整8d80db7功能源及封存回执），f9d3c69/de96bb2及本文最终同步说明仅本地保存，待网络恢复补推。代码与实际交付已完成，不重建/重装/重复造数据；唯一后续是文档回执Git补推。当前未提交仅本文及两处交接同步缺口说明，提交后应清洁；最终结论不声称Git文档全部已上传。
+
 目标完成：甘特大量任务可纵向滚动、末行可达且年月/日期固定；任务列表及甘特新增/编辑必填红星、提交逐字段校验、字段下中英西错误、首错焦点与修正清错。日期、工作量、父/前置任务仍可不填，人员表单未改。本轮未变更Rust、API、数据库或MCP契约，无迁移、无公开Release。
 
 基线03b662d、分支codex/audit-release-20261006-api；功能最终588a062、构建源完整`8d80db7e6799236b8de95af26dd6ae8a8c1d93c9`。WACAS未定义，实际遵循UPARS1.1.0及交接1.22/PrimeVue/nonce规则。交付前f9d3c69已本地保存原生里程碑，当前仅本文与交接/CHANGELOG交付回执待提交，无代码未提交。五小时余24%/周58%，无关机/重置/定时唤醒授权。
@@ -12,7 +14,7 @@
 
 服务器仅静态安全交付：`/opt/easyproject/releases/scroll-form-8d80db7-20261030`，新`/var/backups/easyproject/scroll-form-8d80db7-20261030` root:700副本，receipt为其verification.json。72文件manifest全部匹配，669原assets保持，账号/业务两库完整内容及schema/对象保持、integrity OK/FK0；后端仍24216926/PID1308未重启，User easyproject、配置/Funnel和两timer保持。正常TLS外部复验：两HTML动态nonce CSP/no-store、71静态逐SHA、health200、四匿名401全部通过；反馈邮箱和西语资源存在，无认证/真实写入。证据`src-tauri/target/audit-tools/scroll-form-https-result.json`。未开放调试端口、未改地址或权限。
 
-设备和续接：候选已关闭/控制reset；SSH与SCP均退出，服务器在线且3个unit active，宿主已解锁，正式程序留给用户使用。已无本任务开发或部署待办，仅同步交付回执（下述Git/Wolai/handoff完成后清洁）。Wolai主新状态块gS9pEWJsQ1eiqGEzLnNUwF及交接oLvsZ6M65HtTfFsJmg8ptD需从候选更新为本交付；旧大块不再追加。API/ApiFox无契约变化无需重写；DOC-SYNC-001备用导出差异和正式发布未通过结论继续保留，不扩大成正式生产验收通过。
+设备和续接：候选已关闭/控制reset；SSH与SCP均退出，服务器在线且3个unit active，宿主已解锁，正式程序留给用户使用。已无本任务开发或部署待办，Wolai和本地交接已完成，只有上述Git文档回执补推缺口；旧大块不再追加。API/ApiFox无契约变化无需重写；DOC-SYNC-001备用导出差异和正式发布未通过结论继续保留，不扩大成正式生产验收通过。
 
 ## 历史检查点（以下候选/锁屏/未部署描述均为当时状态）
 

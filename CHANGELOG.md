@@ -4,6 +4,10 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- Align top-level status filtering with its statistics; retain cross-level matching in all-task mode.
+- Show scheduled and unscheduled tasks in a collapsible Gantt hierarchy, derive parent date envelopes, support sibling pointer/keyboard ordering, name and highlight dependency conflicts, and keep timeline navigation within the calendar.
+- Safely delivered the internal desktop/Web update on 2026-10-30; no database migration or MCP permission change. Verification and remaining boundaries: `docs/GANTT_HIERARCHY_CHECKPOINT.md`.
+
 - 2026-10-28 delivered: Replace similar dark priority accents with a shared pastel palette (P2 peach/P3 sky blue), used consistently by task lists and boards while preserving neutral readable text.357 unit/112 production UI/8 responsive matrices and native theme checks passed; fresh protected desktop/static-web updates preserved all original data, backend and MCP. No new public Release.
 
 - 2026-10-28 delivered to desktop/web/backend: Shared neutral status/progress components with muted single-dot accents and full-value tooltips; child status/progress align with corresponding outer columns and remeasure actual table scrollbar changes. Statistics/search collapse independently from the shared header. Global cards aggregate project dictionaries without merging IDs, using validated bounded IPC/HTTP statusIds queries; MCP schemas and stored colors remain unchanged.357 unit/112 production UI/13 HTTP/8 responsive cases and native theme/narrow-window checks passed; fresh protected copies,855 original desktop files, all database rows and normal-TLS resources verified. No new public Release; see TASK_PRESENTATION_V2_CHECKPOINT.

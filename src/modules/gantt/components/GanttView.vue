@@ -126,38 +126,40 @@
                         height: `${headerHeight + rows.length * rowHeight}px`
                     }"
                 >
-                    <!-- 左上角 -->
-                    <div class="corner" :style="{ width: `${nameWidth}px` }">
-                        <div class="corner-month">{{ $t('gantt.cornerPeriod') }}</div>
-                        <div class="corner-day">{{ $t('gantt.cornerTask') }}</div>
-                    </div>
-
-                    <!-- 年月行 -->
-                    <div class="months-row" :style="{ left: `${nameWidth}px` }">
-                        <div
-                            v-for="m in months"
-                            :key="m.key"
-                            class="month-cell"
-                            :title="m.label"
-                            v-tooltip.top="m.label"
-                            :class="{ today: m.containsToday }"
-                            :style="{ width: `${m.count * dayWidth}px` }"
-                        >
-                            {{ m.label }}
+                    <div class="gantt-header">
+                        <!-- 左上角 -->
+                        <div class="corner" :style="{ width: `${nameWidth}px` }">
+                            <div class="corner-month">{{ $t('gantt.cornerPeriod') }}</div>
+                            <div class="corner-day">{{ $t('gantt.cornerTask') }}</div>
                         </div>
-                    </div>
 
-                    <!-- 日期行 -->
-                    <div class="dates" :style="{ left: `${nameWidth}px` }">
-                        <div
-                            v-for="day in days"
-                            :key="day.key"
-                            class="date-cell"
-                            :class="{ today: day.today, 'non-working': !day.working }"
-                            :title="day.name"
-                        >
-                            <strong>{{ day.day }}</strong>
-                            <small>{{ day.weekday }}</small>
+                        <!-- 年月行 -->
+                        <div class="months-row" :style="{ left: `${nameWidth}px` }">
+                            <div
+                                v-for="m in months"
+                                :key="m.key"
+                                class="month-cell"
+                                :title="m.label"
+                                v-tooltip.top="m.label"
+                                :class="{ today: m.containsToday }"
+                                :style="{ width: `${m.count * dayWidth}px` }"
+                            >
+                                {{ m.label }}
+                            </div>
+                        </div>
+
+                        <!-- 日期行 -->
+                        <div class="dates" :style="{ left: `${nameWidth}px` }">
+                            <div
+                                v-for="day in days"
+                                :key="day.key"
+                                class="date-cell"
+                                :class="{ today: day.today, 'non-working': !day.working }"
+                                :title="day.name"
+                            >
+                                <strong>{{ day.day }}</strong>
+                                <small>{{ day.weekday }}</small>
+                            </div>
                         </div>
                     </div>
 
@@ -895,6 +897,12 @@ onMounted(async () => {
 }
 
 /* ---------- 左上角 ---------- */
+.gantt-header {
+    position: sticky;
+    top: 0;
+    z-index: 6;
+    height: 62px;
+}
 .corner {
     position: sticky;
     top: 0;

@@ -194,5 +194,12 @@ for (const width of [1920, 1280, 960])
             await expect(
                 page.getByRole('button', { name: 'Overflow task 39', exact: true })
             ).toBeInViewport()
+            const viewport = await scroller.boundingBox()
+            expect(
+                Math.abs((await page.locator('.months-row').boundingBox()).y - viewport.y)
+            ).toBeLessThan(2)
+            expect(
+                Math.abs((await page.locator('.dates').boundingBox()).y - viewport.y - 24)
+            ).toBeLessThan(2)
         })
     }

@@ -117,6 +117,24 @@ for (const width of [1920, 1280, 960])
             await page.getByRole('button', { name: /甘特图$/ }).click()
             const chart = page.locator('.gantt')
             await expect(page.locator('.gantt-row')).toHaveCount(4)
+            const creationGrid = await page.locator('.row-grid').last().boundingBox()
+            await page.mouse.move(creationGrid.x + 100, creationGrid.y + 20)
+            await page.mouse.down()
+            await page.mouse.move(creationGrid.x + 170, creationGrid.y + 20)
+            await page.mouse.up()
+            const creation = page.getByRole('dialog')
+            await expect(creation.locator('.required-marker')).toHaveCount(5)
+            await creation.locator('.btn-save').click()
+            await expect(creation.locator('#gantt-create-error-name')).toContainText('请填写')
+            await expect(creation.locator('#gantt-create-name')).toBeFocused()
+            expect(
+                await page.evaluate(() =>
+                    window.__EASY_PROJECT_CALLS__.some(c => c.args?.action === 'add')
+                )
+            ).toBe(false)
+            await creation.locator('.create-name').fill('Corrected synthetic draft')
+            await expect(creation.locator('#gantt-create-error-name')).toHaveCount(0)
+            await creation.locator('.btn-cancel').click()
             const size = await page.locator('.gantt-scroller').evaluate(el => ({
                 client: el.clientWidth,
                 chart: el.querySelector('.gantt').getBoundingClientRect().width

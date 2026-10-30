@@ -12,17 +12,32 @@
         <form
             :id="prefix + '-form'"
             :class="['edit-panel', { 'create-panel': creating }]"
-            @submit.prevent="$emit('save')"
+            @submit.prevent="submit"
         >
             <Message v-if="error" severity="error" :closable="false">{{ error }}</Message>
             <div class="edit-field full">
-                <label :for="prefix + '-name'">{{ $t('gantt.labelName') }}</label>
+                <label :for="prefix + '-name'"
+                    >{{ $t('gantt.labelName') }}
+                    <span class="required-marker" aria-hidden="true">*</span></label
+                >
                 <InputText
                     :id="prefix + '-name'"
                     v-model="form.name"
+                    aria-required="true"
+                    :invalid="Boolean(errors.name)"
+                    :aria-describedby="errors.name ? prefix + '-error-name' : undefined"
                     class="create-name"
                     autofocus
                 />
+                <Message
+                    v-if="errors.name"
+                    :id="prefix + '-error-name'"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                    :closable="false"
+                    >{{ errors.name }}</Message
+                >
             </div>
             <div class="edit-field">
                 <label :for="prefix + '-start'">{{ $t('gantt.labelStart') }}</label
@@ -53,48 +68,104 @@
                 />
             </div>
             <div class="edit-field">
-                <label :for="prefix + '-mode'">{{ $t('tasks.columnScheduleMode') }}</label
+                <label :for="prefix + '-mode'"
+                    >{{ $t('tasks.columnScheduleMode') }}
+                    <span class="required-marker" aria-hidden="true">*</span></label
                 ><Select
                     :inputId="prefix + '-mode'"
                     v-model="form.schedule_mode"
+                    aria-required="true"
+                    :invalid="Boolean(errors.schedule_mode)"
+                    :aria-describedby="errors.schedule_mode ? prefix + '-error-mode' : undefined"
                     :options="scheduleModes"
                     optionLabel="label"
                     optionValue="value"
                     fluid
                     @update:modelValue="$emit('recalculate-end')"
                 />
+                <Message
+                    v-if="errors.schedule_mode"
+                    :id="prefix + '-error-mode'"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                    :closable="false"
+                    >{{ errors.schedule_mode }}</Message
+                >
             </div>
             <div class="edit-field">
-                <label :for="prefix + '-type'">{{ $t('gantt.labelType') }}</label
+                <label :for="prefix + '-type'"
+                    >{{ $t('gantt.labelType') }}
+                    <span class="required-marker" aria-hidden="true">*</span></label
                 ><Select
                     :inputId="prefix + '-type'"
                     v-model="form.type"
+                    aria-required="true"
+                    :invalid="Boolean(errors.type)"
+                    :aria-describedby="errors.type ? prefix + '-error-type' : undefined"
                     :options="types"
                     optionLabel="label"
                     optionValue="value"
                     fluid
                 />
+                <Message
+                    v-if="errors.type"
+                    :id="prefix + '-error-type'"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                    :closable="false"
+                    >{{ errors.type }}</Message
+                >
             </div>
             <div class="edit-field">
-                <label :for="prefix + '-status'">{{ $t('gantt.labelStatus') }}</label
+                <label :for="prefix + '-status'"
+                    >{{ $t('gantt.labelStatus') }}
+                    <span class="required-marker" aria-hidden="true">*</span></label
                 ><TaskStatusSelect
                     v-if="visible"
                     :inputId="prefix + '-status'"
                     v-model="form.status_id"
+                    aria-required="true"
+                    :invalid="Boolean(errors.status_id)"
+                    :aria-describedby="errors.status_id ? prefix + '-error-status' : undefined"
                     :projectId="projectId"
                     @loaded="setDefaultStatus"
                 />
+                <Message
+                    v-if="errors.status_id"
+                    :id="prefix + '-error-status'"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                    :closable="false"
+                    >{{ errors.status_id }}</Message
+                >
             </div>
             <div v-if="creating" class="edit-field">
-                <label :for="prefix + '-priority'">{{ $t('tasks.columnPriority') }}</label
+                <label :for="prefix + '-priority'"
+                    >{{ $t('tasks.columnPriority') }}
+                    <span class="required-marker" aria-hidden="true">*</span></label
                 ><Select
                     :inputId="prefix + '-priority'"
                     v-model="form.priority"
+                    aria-required="true"
+                    :invalid="Boolean(errors.priority)"
+                    :aria-describedby="errors.priority ? prefix + '-error-priority' : undefined"
                     :options="priorities"
                     optionLabel="label"
                     optionValue="value"
                     fluid
                 />
+                <Message
+                    v-if="errors.priority"
+                    :id="prefix + '-error-priority'"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                    :closable="false"
+                    >{{ errors.priority }}</Message
+                >
             </div>
             <div class="edit-field">
                 <label :for="prefix + '-assignee'">{{ $t('tasks.columnAssignee') }}</label
@@ -137,7 +208,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
@@ -149,6 +220,7 @@ import DatePickerDateString from '../../../components/DatePickerDateString.vue'
 import ProgressEditor from '../../../components/ProgressEditor.vue'
 import MemberSelect from '../../member/components/MemberSelect.vue'
 import TaskStatusSelect from '../../../components/TaskStatusSelect.vue'
+import { validateTaskForm } from '../../task/utils/taskFormValidation.js'
 
 const props = defineProps({
     visible: Boolean,
@@ -159,9 +231,40 @@ const props = defineProps({
     memberIds: { type: Array, default: null }
 })
 const form = defineModel({ type: Object, required: true })
-defineEmits(['close', 'save', 'recalculate-end', 'recalculate-effort'])
+const emit = defineEmits(['close', 'save', 'recalculate-end', 'recalculate-effort'])
 const { t } = useI18n()
 const prefix = computed(() => (props.creating ? 'gantt-create' : 'gantt-edit'))
+const submitted = ref(false)
+watch(
+    () => props.visible,
+    () => {
+        submitted.value = false
+    }
+)
+const errors = computed(() =>
+    submitted.value
+        ? validateTaskForm(
+              {
+                  ...form.value,
+                  project_id: props.projectId,
+                  // The edit dialog does not expose or change priority.
+                  priority: props.creating ? form.value.priority : '3'
+              },
+              t
+          )
+        : {}
+)
+function submit() {
+    if (props.saving) return
+    submitted.value = true
+    const first = Object.keys(errors.value)[0]
+    if (first) {
+        const field = { status_id: 'status', schedule_mode: 'mode' }[first] || first
+        document.getElementById(`${prefix.value}-${field}`)?.focus()
+        return
+    }
+    emit('save')
+}
 const scheduleModes = computed(() => [
     { label: t('tasks.fixedEffort'), value: 'fixed_effort' },
     { label: t('tasks.fixedDates'), value: 'fixed_dates' }
@@ -189,6 +292,9 @@ const priorities = computed(() =>
 </script>
 
 <style scoped>
+.required-marker {
+    color: var(--color-error-text);
+}
 .edit-panel {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

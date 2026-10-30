@@ -8,6 +8,7 @@
             :step="0.5"
             :maxFractionDigits="2"
             :useGrouping="false"
+            :highlightOnFocus="false"
             :disabled="disabled"
             :placeholder="$t('taskHierarchy.unestimated')"
             fluid

@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-30滚动/校验候选：GanttView以flex受限scroller-wrap约束内部gantt-scroller，主题纵横滚动条可见，统一sticky gantt-header保留年月/日期；useGanttNavigation在纵向溢出时普通wheel上下、deltaX水平、Ctrl缩放。task/utils/taskFormValidation共用于TaskList和GanttTaskDialog；首次submit后计算字段错误，真实PrimeVue invalid/Message及ARIA、首错焦点，修正立即清错。项目在甘特固定、编辑不新增隐藏优先级要求；网络/关联保存错误仍独立。TaskEffortInput保留InputNumber但关自动焦点全选，避免其ref就绪竞态路径；该问题曾一次出现，完整证据/推断及复验见SCROLL_FORM_VALIDATION_CHECKPOINT。无Rust、持久化、API或MCP改动。
+
 2026-10-29原生修复：useGanttRowReordering接专用PrimeVue手柄pointerdown，8px阈值/原始内部来源/同指针/同图目标，兼容原生合并move事件，blur/cancel/unmount清理；最终仍调用useTaskReordering原同级swap_order和键盘方法，不改API/层级。甘特导航纵向上界按表头+可见行范围计算，取消top位置动画，避免短图折叠后按钮越界。候选/验证见GANTT_HIERARCHY_CHECKPOINT，旧HTML DnD候选仅历史。
 
 2026-10-29候选：useTaskListQuery与统计共用statusScope；task_service在hierarchy边界验证，task_tree_service先构建root映射，top_level按根状态入选而其它过滤仍跨层，all_tasks保留旧祖先上下文。MCP Schema不变。gantt/utils/taskRows生成排序DFS/可折叠全树并派生日期，presentation/viewport共用；GanttView以rows计算高度/依赖行坐标，未排期无bar，名称拖动调用原有原子swap_order。ResizeObserver补足日期宽度，左导航锚定nameWidth边界；依赖固定日期冲突用真实任务名和样式标识。只读派生不写回父日期，不改变层级/数据库schema。实际交付以GANTT_HIERARCHY_CHECKPOINT为准。

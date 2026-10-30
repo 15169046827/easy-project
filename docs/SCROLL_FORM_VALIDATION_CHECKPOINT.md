@@ -2,6 +2,8 @@
 
 ## 最新可续接状态
 
+同步补充：源码及首版交接6bb85ab已成功推送；后续封存回执459abe0推送先遇TLS连接重置，限定重试一次后GitHub443超时，未改网络/TLS。恢复只需补推本回执及后续文档提交，不重推功能修改或重建候选。Wolai候选摘要已读回，不伪称最新封存回执也已上传。
+
 产品源码6bb85ab已提交并成功推送（同时补推旧a08942f/03b662d回执）。Windows release/NSIS构建已通过：隔离及target/release主程序SHA256 `F3CFD480E21CE86C997F593048D54B8B7EC2522AD6E635444AFEDE5E86DF74E7`，安装包`AEDFE887B888C55E1EECD6AD81CEC1CCFCF83C4FBDF7915DF6B64FAA3692F861`。独立及伴随MCP均保持`70E303F85852C21838D879FC4823FB51810E1A0178AE851194BC2E80074DC9C1`，本次顺带构建的未使用MCP已隔离封存，不替换连接。
 
 隔离候选`src-tauri/target/audit-tools/scroll-form-native-6bb85ab`：仅从既有已确认2项目/6任务合成库做SQLite副本，再新造40条未排期任务，共46条；未复制账号/密码/WebView，源合成库摘要不变，integrity/FK通过。首次桌面启动工具未产生候选窗口，改用E盘TEMP工作目录正常启动，PID37736/窗口135116；目前在登录页，已请用户点击“不登录，本地使用”，尚无确认，不能声称原生复验完成。正式程序PID21408未停止。控制会话已reset释放，无SSH。

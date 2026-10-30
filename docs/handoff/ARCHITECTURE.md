@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-30边缘拖动候选：useGanttEdgeScrolling统一RAF边缘平移/21日扩展/左侧scroll补偿、代际令牌及生命周期清理；dragCoordinates以本地日历日序转换稳定像素，避免DST日长影响。创建选区保存绝对日序而非易变数组下标，移动/缩放保存稳定日历坐标并在mouseup补采位置。useGanttTaskDragging只对越过8px且至少一日的变动提交原有服务，不再由零位移触发编辑；onBarEdit守护尾随双击和手柄，Enter/名称保留可达入口。父汇总无缩放手柄，提示走真实PrimeVue三语/nonce。无API/MCP/Rust变化，验证/交付分开见专项。
+
 2026-10-30滚动/校验候选：GanttView以flex受限scroller-wrap约束内部gantt-scroller，主题纵横滚动条可见，统一sticky gantt-header保留年月/日期；useGanttNavigation在纵向溢出时普通wheel上下、deltaX水平、Ctrl缩放。task/utils/taskFormValidation共用于TaskList和GanttTaskDialog；首次submit后计算字段错误，真实PrimeVue invalid/Message及ARIA、首错焦点，修正立即清错。项目在甘特固定、编辑不新增隐藏优先级要求；网络/关联保存错误仍独立。TaskEffortInput保留InputNumber但关自动焦点全选，避免其ref就绪竞态路径；该问题曾一次出现，完整证据/推断及复验见SCROLL_FORM_VALIDATION_CHECKPOINT。无Rust、持久化、API或MCP改动。
 
 2026-10-29原生修复：useGanttRowReordering接专用PrimeVue手柄pointerdown，8px阈值/原始内部来源/同指针/同图目标，兼容原生合并move事件，blur/cancel/unmount清理；最终仍调用useTaskReordering原同级swap_order和键盘方法，不改API/层级。甘特导航纵向上界按表头+可见行范围计算，取消top位置动画，避免短图折叠后按钮越界。候选/验证见GANTT_HIERARCHY_CHECKPOINT，旧HTML DnD候选仅历史。

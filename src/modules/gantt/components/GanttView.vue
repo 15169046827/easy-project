@@ -256,22 +256,45 @@
                             :class="{
                                 milestone: task.type === 'Milestone',
                                 done: isTaskCompleted(task),
-                                dragging: dragState && dragState.task.id === task.id,
+                                dragging: dragState?.active && dragState.task.id === task.id,
                                 resizing:
-                                    dragState &&
+                                    dragState?.active &&
                                     dragState.task.id === task.id &&
                                     dragState.mode !== 'move',
                                 critical: showCritical && criticalData.critical.has(task.id),
                                 'availability-conflict': availabilityInfo(task).conflict
                             }"
                             :style="barStyle(task)"
-                            :title="taskTip(task)"
+                            v-tooltip.top="{
+                                value:
+                                    taskTip(task) +
+                                    '\n' +
+                                    $t(
+                                        task.summary?.has_children
+                                            ? 'gantt.barReadOnlyHint'
+                                            : 'gantt.barInteractionHint'
+                                    ),
+                                disabled: Boolean(dragState?.active || createDrag),
+                                class: 'task-content-tooltip'
+                            }"
+                            :aria-label="
+                                taskTip(task) +
+                                '. ' +
+                                $t(
+                                    task.summary?.has_children
+                                        ? 'gantt.barReadOnlyHint'
+                                        : 'gantt.barInteractionHint'
+                                )
+                            "
+                            tabindex="0"
+                            @dblclick.stop="onBarEdit(task, $event)"
+                            @keydown.enter.prevent="onBarEdit(task, $event)"
                             @mousedown.left="onBarMouseDown(task, $event, 'move')"
                         >
                             <Button
                                 text
                                 severity="secondary"
-                                v-if="task.type !== 'Milestone'"
+                                v-if="task.type !== 'Milestone' && !task.summary?.has_children"
                                 type="button"
                                 class="resize-handle resize-left"
                                 :title="$t('gantt.labelStart')"
@@ -289,7 +312,7 @@
                             <Button
                                 text
                                 severity="secondary"
-                                v-if="task.type !== 'Milestone'"
+                                v-if="task.type !== 'Milestone' && !task.summary?.has_children"
                                 type="button"
                                 class="resize-handle resize-right"
                                 :title="$t('gantt.labelEnd')"
@@ -540,7 +563,11 @@ const { scrollToday, scrollDays, onWheel } = useGanttNavigation({
     clearMessage,
     dayStart
 })
-const { dragState, dragCursorX, onBarMouseDown } = useGanttTaskDragging({
+const { dragState, dragCursorX, onBarMouseDown, onBarEdit } = useGanttTaskDragging({
+    scroller,
+    viewRange: viewport.viewRange,
+    nameWidth,
+    headerHeight,
     dayWidth,
     openEditor,
     activeProject,
@@ -663,6 +690,8 @@ async function shift(task, delta) {
 }
 
 const { createDrag, createPreviewStyle, onGridMouseDown } = useGanttCreationDragging({
+    scroller,
+    viewRange: viewport.viewRange,
     days,
     dayWidth,
     nameWidth,
@@ -900,7 +929,7 @@ onMounted(async () => {
 .gantt-header {
     position: sticky;
     top: 0;
-    z-index: 6;
+    z-index: 8;
     height: 62px;
 }
 .corner {
@@ -1018,7 +1047,7 @@ onMounted(async () => {
 }
 .task-label {
     position: sticky;
-    z-index: 3;
+    z-index: 7;
     left: 0;
     display: flex;
     align-items: center;
@@ -1148,6 +1177,10 @@ onMounted(async () => {
     opacity: 0.82;
     box-shadow: 0 6px 18px rgb(37 99 235 / 36%);
     z-index: 6;
+}
+.task-bar:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 .task-bar.dragging .resize-handle {
     display: block;

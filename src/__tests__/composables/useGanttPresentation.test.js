@@ -67,6 +67,7 @@ describe('Gantt presentation boundary', () => {
     it('updates the task preview during a move without mutating task data', () => {
         const { context, view } = setup()
         context.dragState.value = {
+            active: true,
             task: first,
             startX: 100,
             mode: 'move',

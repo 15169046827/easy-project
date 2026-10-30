@@ -592,6 +592,10 @@ export default {
         }
     },
     gantt: {
+        barReadOnlyHint:
+            '父任务日期由子任务汇总；双击任务条或按 Enter 编辑其他信息，也可点击名称。',
+        barInteractionHint:
+            '拖动任务条或两端调整日期；双击任务条或按 Enter 编辑，也可点击任务名称。',
         availabilityConflict: '{name} 有 {count} 个不可用工作日与任务重叠：{dates}',
         eyebrow: 'PROJECT SCHEDULE',
         title: '甘特图',

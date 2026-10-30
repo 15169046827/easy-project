@@ -10,6 +10,10 @@ afterEach(() => wrappers.splice(0).forEach(wrapper => wrapper.unmount()))
 const task = { id: 't1', name: 'Task', start_time: '2026-11-02', end_time: '2026-11-03' }
 function setup() {
     const context = {
+        scroller: ref(null),
+        viewRange: ref({ start: new Date(2026, 10, 1), end: new Date(2026, 10, 30) }),
+        nameWidth: 0,
+        headerHeight: 0,
         dayWidth: ref(42),
         activeProject: ref({ calendar_country: 'US', weekend_days: '[0,6]' }),
         parse: value => {
@@ -42,20 +46,25 @@ describe('Gantt task bar dragging', () => {
     beforeEach(() => {
         crudAction.mockReset().mockResolvedValue({})
     })
-    it('treats a zero-distance move as an edit click without mutation', async () => {
+    it('does not treat a click or a short zero-day drag as editing', async () => {
         const state = setup()
         state.drag.onBarMouseDown(task, new MouseEvent('mousedown', { clientX: 100 }))
-        document.dispatchEvent(new MouseEvent('mouseup'))
+        document.dispatchEvent(new MouseEvent('mouseup', { clientX: 100 }))
         await flushPromises()
-        expect(state.openEditor).toHaveBeenCalledWith(task)
+        expect(state.openEditor).not.toHaveBeenCalled()
         expect(crudAction).not.toHaveBeenCalled()
         expect(state.drag.dragState.value).toBeNull()
+        state.drag.onBarMouseDown(task, new MouseEvent('mousedown', { clientX: 100 }))
+        document.dispatchEvent(new MouseEvent('mouseup', { clientX: 110 }))
+        await flushPromises()
+        expect(state.openEditor).not.toHaveBeenCalled()
+        expect(crudAction).not.toHaveBeenCalled()
     })
     it('persists a two-day move before refreshing and scheduling', async () => {
         const state = setup()
         state.drag.onBarMouseDown(task, new MouseEvent('mousedown', { clientX: 100 }))
         document.dispatchEvent(new MouseEvent('mousemove', { clientX: 184 }))
-        document.dispatchEvent(new MouseEvent('mouseup'))
+        document.dispatchEvent(new MouseEvent('mouseup', { clientX: 184 }))
         await flushPromises()
         expect(crudAction).toHaveBeenCalledExactlyOnceWith('task', 'update', {
             id: 't1',
@@ -73,7 +82,7 @@ describe('Gantt task bar dragging', () => {
             'resize-right'
         )
         document.dispatchEvent(new MouseEvent('mousemove', { clientX: 142 }))
-        document.dispatchEvent(new MouseEvent('mouseup'))
+        document.dispatchEvent(new MouseEvent('mouseup', { clientX: 142 }))
         await flushPromises()
         expect(crudAction.mock.calls[0][2]).toMatchObject({
             end_time: '2026-11-04 00:00:00',
@@ -92,17 +101,43 @@ describe('Gantt task bar dragging', () => {
         first.drag.onBarMouseDown(task, new MouseEvent('mousedown', { clientX: 100 }))
         first.wrapper.unmount()
         document.dispatchEvent(new MouseEvent('mousemove', { clientX: 142 }))
-        document.dispatchEvent(new MouseEvent('mouseup'))
+        document.dispatchEvent(new MouseEvent('mouseup', { clientX: 142 }))
         await flushPromises()
         expect(crudAction).not.toHaveBeenCalled()
         const second = setup()
         crudAction.mockRejectedValueOnce(new Error('drag failed'))
         second.drag.onBarMouseDown(task, new MouseEvent('mousedown', { clientX: 100 }))
         document.dispatchEvent(new MouseEvent('mousemove', { clientX: 142 }))
-        document.dispatchEvent(new MouseEvent('mouseup'))
+        document.dispatchEvent(new MouseEvent('mouseup', { clientX: 142 }))
         await flushPromises()
         expect(second.message.value).toBe('drag failed')
         expect(second.messageType.value).toBe('error')
         expect(second.drag.dragState.value).toBeNull()
+    })
+    it('uses a coalesced release position and suppresses a following double click', async () => {
+        const state = setup()
+        state.drag.onBarMouseDown(task, new MouseEvent('mousedown', { clientX: 100 }))
+        document.dispatchEvent(new MouseEvent('mouseup', { clientX: 184 }))
+        await flushPromises()
+        expect(crudAction).toHaveBeenCalledOnce()
+        state.drag.onBarEdit(task, new MouseEvent('dblclick'))
+        expect(state.openEditor).not.toHaveBeenCalled()
+        state.drag.onBarEdit(task, new KeyboardEvent('keydown', { key: 'Enter' }))
+        expect(state.openEditor).toHaveBeenCalledWith(task)
+    })
+    it('keeps parent bars read-only until explicit editing and cancels on blur', async () => {
+        const state = setup()
+        const parent = { ...task, summary: { has_children: true } }
+        state.drag.onBarMouseDown(parent, new MouseEvent('mousedown', { clientX: 100 }))
+        expect(state.openEditor).not.toHaveBeenCalled()
+        state.drag.onBarEdit(parent, new MouseEvent('dblclick'))
+        expect(state.openEditor).toHaveBeenCalledWith(parent)
+        state.drag.onBarMouseDown(task, new MouseEvent('mousedown', { clientX: 100 }))
+        document.dispatchEvent(new MouseEvent('mousemove', { clientX: 184 }))
+        window.dispatchEvent(new Event('blur'))
+        document.dispatchEvent(new MouseEvent('mouseup', { clientX: 184 }))
+        await flushPromises()
+        expect(state.drag.dragState.value).toBeNull()
+        expect(crudAction).not.toHaveBeenCalled()
     })
 })

@@ -30,10 +30,9 @@ describe('Gantt drag calculations', () => {
         expect(dayOfMonth(update.end)).toBe(15)
     })
 
-    it('treats a zero-distance move as an edit click', () => {
-        expect(calculateDragUpdate(localDate(10), localDate(13), 0, 'move')).toEqual({
-            kind: 'edit'
-        })
+    it('never turns a zero-day move or resize into an edit or mutation', () => {
+        for (const mode of ['move', 'resize-left', 'resize-right'])
+            expect(calculateDragUpdate(localDate(10), localDate(13), 0, mode)).toBeNull()
     })
 
     it('moves zero-duration milestones without expanding them', () => {

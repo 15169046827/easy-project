@@ -18,7 +18,7 @@ export function calculateDragUpdate(origStart, origEnd, deltaDays, mode = 'move'
     const start = validDate(origStart)
     const end = validDate(origEnd)
     if (!start || !end || !Number.isFinite(deltaDays)) return null
-    if (mode === 'move' && deltaDays === 0) return { kind: 'edit' }
+    if (deltaDays === 0) return null
 
     let nextStart = start
     let nextEnd = end

@@ -10,7 +10,22 @@ afterEach(() => {
 })
 function setup() {
     const openCreateEditor = vi.fn()
+    const scroller = document.createElement('div')
+    Object.defineProperty(scroller, 'clientWidth', { value: 364 })
+    scroller.getBoundingClientRect = () => ({
+        left: 0,
+        top: 0,
+        right: 364,
+        bottom: 200,
+        width: 364,
+        height: 200,
+        x: 0,
+        y: 0,
+        toJSON() {}
+    })
     const context = {
+        scroller: ref(scroller),
+        viewRange: ref({ start: new Date(2026, 6, 1), end: new Date(2026, 6, 2) }),
         days: ref([{ key: '2026-07-01' }, { key: '2026-07-02' }]),
         dayWidth: ref(42),
         nameWidth: 280,
@@ -35,9 +50,16 @@ function setup() {
     gantt.className = 'gantt'
     const grid = document.createElement('div')
     gantt.append(grid)
-    document.body.append(gantt)
-    fixtures.push(gantt)
-    const event = x => ({ button: 0, currentTarget: grid, clientX: x, preventDefault: vi.fn() })
+    scroller.append(gantt)
+    document.body.append(scroller)
+    fixtures.push(scroller)
+    const event = x => ({
+        button: 0,
+        currentTarget: grid,
+        clientX: x,
+        clientY: 80,
+        preventDefault: vi.fn()
+    })
     return { drag: state.drag, event, grid, wrapper, openCreateEditor }
 }
 describe('Gantt creation drag boundary', () => {
@@ -46,10 +68,10 @@ describe('Gantt creation drag boundary', () => {
         state.drag.onGridMouseDown(state.event(290))
         expect(state.drag.createPreviewStyle.value).toMatchObject({ left: '286px', height: '48px' })
         state.grid.dispatchEvent(new MouseEvent('mousemove', { clientX: 330, bubbles: true }))
-        document.dispatchEvent(new MouseEvent('mouseup'))
+        document.dispatchEvent(new MouseEvent('mouseup', { clientX: 330, clientY: 80 }))
         expect(state.openCreateEditor).toHaveBeenCalledWith(
-            new Date('2026-07-01'),
-            new Date('2026-07-02')
+            new Date(2026, 6, 1),
+            new Date(2026, 6, 2)
         )
         expect(state.drag.createDrag.value).toBeNull()
     })

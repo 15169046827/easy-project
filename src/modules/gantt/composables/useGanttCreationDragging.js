@@ -1,19 +1,49 @@
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import { useDocumentDragListeners } from './useDocumentDragListeners.js'
+import { useGanttEdgeScrolling } from './useGanttEdgeScrolling.js'
+import { calendarDate, calendarDayNumber, isDragGesture } from '../utils/dragCoordinates.js'
 
 export function useGanttCreationDragging(context) {
-    const { days, dayWidth, nameWidth, headerHeight, datedTasks, rowHeight, openCreateEditor } =
-        context
+    const {
+        viewRange,
+        dayWidth,
+        nameWidth,
+        headerHeight,
+        datedTasks,
+        rowHeight,
+        openCreateEditor,
+        scroller
+    } = context
     const createDrag = ref(null)
     const { addDocumentListener, removeDocumentListener } = useDocumentDragListeners()
+    const edge = useGanttEdgeScrolling({
+        scroller,
+        viewRange,
+        dayWidth,
+        nameWidth,
+        headerHeight,
+        onScroll: x => updateEnd(x),
+        onCancel: cancelDrag
+    })
+    function updateEnd(x) {
+        if (createDrag.value)
+            createDrag.value.endDay = Math.floor(edge.position(x) / dayWidth.value)
+    }
+    function cancelDrag() {
+        removeDocumentListener('mousemove', onGridMouseMove)
+        removeDocumentListener('mouseup', onGridMouseUp)
+        createDrag.value = null
+        edge.stop()
+    }
     // ---------- 新建任务预览样式 ----------
     const createPreviewStyle = computed(() => {
         if (!createDrag.value) return { display: 'none' }
-        const s = Math.min(createDrag.value.startIdx, createDrag.value.endIdx)
-        const e = Math.max(createDrag.value.startIdx, createDrag.value.endIdx)
+        const s = Math.min(createDrag.value.startDay, createDrag.value.endDay)
+        const e = Math.max(createDrag.value.startDay, createDrag.value.endDay)
+        const origin = calendarDayNumber(viewRange.value.start)
         return {
-            left: `${nameWidth + s * dayWidth.value + 6}px`,
-            width: `${(e - s + 1) * dayWidth.value - 12}px`,
+            left: `${nameWidth + (s - origin) * dayWidth.value + 6}px`,
+            width: `${Math.max(2, (e - s + 1) * dayWidth.value - 12)}px`,
             top: `${headerHeight}px`,
             height: `${datedTasks.value.length * rowHeight}px`
         }
@@ -23,38 +53,42 @@ export function useGanttCreationDragging(context) {
     function onGridMouseDown(e) {
         if (e.button !== 0) return
         const ganttEl = e.currentTarget.closest('.gantt')
-        if (!ganttEl) return
-        const rect = ganttEl.getBoundingClientRect()
-        const x = e.clientX - rect.left - nameWidth
-        if (x < 0) return
-        const idx = Math.floor(x / dayWidth.value)
-        if (idx < 0 || idx >= days.value.length) return
+        const element = scroller.value
+        if (!ganttEl || !element?.contains(ganttEl)) return
+        const rect = element.getBoundingClientRect()
+        if (e.clientX < rect.left + nameWidth || e.clientX >= rect.left + element.clientWidth)
+            return
         e.preventDefault()
-        createDrag.value = { startX: e.clientX, startIdx: idx, endIdx: idx }
+        cancelDrag()
+        const day = Math.floor(edge.position(e.clientX) / dayWidth.value)
+        createDrag.value = {
+            startClientX: e.clientX,
+            startClientY: e.clientY,
+            startDay: day,
+            endDay: day,
+            active: false
+        }
+        edge.start(e)
         addDocumentListener('mousemove', onGridMouseMove)
         addDocumentListener('mouseup', onGridMouseUp)
     }
     function onGridMouseMove(e) {
         if (!createDrag.value) return
-        const ganttEl = e.target?.closest?.('.gantt')
-        if (!ganttEl) return
-        const rect = ganttEl.getBoundingClientRect()
-        const x = e.clientX - rect.left - nameWidth
-        const idx = Math.max(0, Math.min(days.value.length - 1, Math.floor(x / dayWidth.value)))
-        createDrag.value.endIdx = idx
+        createDrag.value.active ||= isDragGesture(createDrag.value, e)
+        updateEnd(e.clientX)
+        edge.update(e, createDrag.value.active)
     }
-    function onGridMouseUp(_e) {
-        removeDocumentListener('mousemove', onGridMouseMove)
-        removeDocumentListener('mouseup', onGridMouseUp)
+    function onGridMouseUp(event) {
+        if (event.button !== 0) return
+        onGridMouseMove(event)
         const cd = createDrag.value
-        createDrag.value = null
+        cancelDrag()
         if (!cd) return
-        const s = Math.min(cd.startIdx, cd.endIdx)
-        const e = Math.max(cd.startIdx, cd.endIdx)
-        if (!days.value[s] || !days.value[e]) return
-        const startDate = new Date(days.value[s].key)
-        const endDate = new Date(days.value[e].key)
-        openCreateEditor(startDate, endDate)
+        openCreateEditor(
+            calendarDate(Math.min(cd.startDay, cd.endDay)),
+            calendarDate(Math.max(cd.startDay, cd.endDay))
+        )
     }
+    onBeforeUnmount(cancelDrag)
     return { createDrag, createPreviewStyle, onGridMouseDown }
 }

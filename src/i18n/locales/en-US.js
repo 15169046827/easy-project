@@ -613,6 +613,10 @@ export default {
         }
     },
     gantt: {
+        barReadOnlyHint:
+            'Parent dates are derived from subtasks. Double-click or press Enter to edit other details, or click the name.',
+        barInteractionHint:
+            'Drag the bar or either edge to adjust dates. Double-click the bar or press Enter to edit, or click its name.',
         availabilityConflict: '{name} is unavailable on {count} task workday(s): {dates}',
         eyebrow: 'PROJECT SCHEDULE',
         title: 'Gantt',

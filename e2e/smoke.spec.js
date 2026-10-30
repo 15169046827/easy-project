@@ -746,7 +746,7 @@ test('changes a task assignee from the Gantt editor', async ({ page }) => {
     await page.goto('/#/project/project-1')
     await page.locator('.view-switch button').nth(1).click()
 
-    await page.locator('.task-bar').click()
+    await page.locator('.task-bar').dblclick()
     await expect(page.locator('.edit-panel')).toBeVisible()
 
     await page.locator('#gantt-edit-assignee').click()
@@ -767,7 +767,9 @@ test('marks a Gantt task when its assignee is unavailable', async ({ page }) => 
 
     const taskBar = page.locator('.task-bar')
     await expect(taskBar).toHaveClass(/availability-conflict/)
-    await expect(taskBar).toHaveAttribute('title', /Alice/)
+    await expect(taskBar).toHaveAttribute('aria-label', /Alice/)
+    await taskBar.hover()
+    await expect(page.getByRole('tooltip')).toContainText(/Alice/)
 })
 
 test('moves a task across the project board and supports undo', async ({ page }) => {

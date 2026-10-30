@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- Candidate: Continuously pan the Gantt calendar at either edge during range creation, movement and resizing, extending dates without shifting logical anchors. Separate dragging from explicit double-click/Enter/name editing; cancel loops on release, Escape or lifecycle changes. Parent dates remain derived and read-only. Strict-CSP responsive checks passed; final gates, native verification and approved delivery remain pending.
+
 - 2026-10-30 delivered to desktop and static web: Visible Gantt scrolling with fixed month/date headers; inline localized required-field feedback in shared task-list and Gantt create/edit dialogs, plus safer effort-field focus handling.369 unit/124 UI/13 HTTP/20 repeated interaction checks and native light/dark verification passed. Fresh protected backups preserved all data; backend/API/MCP unchanged. No new public Release. See SCROLL_FORM_VALIDATION_CHECKPOINT for exact evidence and remaining limitations.
 
 - Follow-up candidate: Keep month/date headers visible while scrolling vertically; extend the same inline validation to Gantt task dialogs and disable InputNumber automatic focus highlighting after an intermittent null-ref focus failure. Normal numeric editing/validation remains enabled. Final candidate verification and deployment are tracked separately.

@@ -615,6 +615,10 @@ export default {
         }
     },
     gantt: {
+        barReadOnlyHint:
+            'Las fechas de la tarea principal se calculan de sus subtareas. Haz doble clic o pulsa Intro para editar otros datos, o haz clic en el nombre.',
+        barInteractionHint:
+            'Arrastra la barra o sus extremos para ajustar las fechas. Haz doble clic o pulsa Intro para editar, o haz clic en su nombre.',
         availabilityConflict:
             '{name} no está disponible en {count} días laborables de la tarea: {dates}',
         eyebrow: 'PLANIFICACIÓN DEL PROYECTO',

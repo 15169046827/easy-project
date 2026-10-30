@@ -8,7 +8,7 @@ import { summaryHint } from '../../../utils/taskEffort.js'
 function taskBarStyle(task, context) {
     const { dragState, dragCursorX, dayWidth, parse, dayStart, nameWidth, offset } = context
     const ds = dragState.value
-    const isDragging = ds && ds.task.id === task.id
+    const isDragging = ds?.active && ds.task.id === task.id
 
     let start = parse(task.start_time)
     let end = parse(task.end_time)
@@ -87,7 +87,7 @@ export function useGanttPresentation(context) {
         let start = parse(task.start_time)
         let end = parse(task.end_time)
         const ds = dragState.value
-        if (ds && ds.task.id === task.id) {
+        if (ds?.active && ds.task.id === task.id) {
             const delta = calculateDragDelta(ds.startX, dragCursorX.value, dayWidth.value)
             const update = calculateDragUpdate(ds.origStart, ds.origEnd, delta, ds.mode)
             if (update?.kind === 'update') {

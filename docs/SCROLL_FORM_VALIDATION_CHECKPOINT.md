@@ -1,5 +1,15 @@
 # 甘特滚动与表单逐字段校验（2026-10-30）
 
+## 最新可续接状态
+
+产品源码6bb85ab已提交并成功推送（同时补推旧a08942f/03b662d回执）。Windows release/NSIS构建已通过：隔离及target/release主程序SHA256 `F3CFD480E21CE86C997F593048D54B8B7EC2522AD6E635444AFEDE5E86DF74E7`，安装包`AEDFE887B888C55E1EECD6AD81CEC1CCFCF83C4FBDF7915DF6B64FAA3692F861`。独立及伴随MCP均保持`70E303F85852C21838D879FC4823FB51810E1A0178AE851194BC2E80074DC9C1`，本次顺带构建的未使用MCP已隔离封存，不替换连接。
+
+隔离候选`src-tauri/target/audit-tools/scroll-form-native-6bb85ab`：仅从既有已确认2项目/6任务合成库做SQLite副本，再新造40条未排期任务，共46条；未复制账号/密码/WebView，源合成库摘要不变，integrity/FK通过。首次桌面启动工具未产生候选窗口，改用E盘TEMP工作目录正常启动，PID37736/窗口135116；目前在登录页，已请用户点击“不登录，本地使用”，尚无确认，不能声称原生复验完成。正式程序PID21408未停止。控制会话已reset释放，无SSH。
+
+本轮桌面/仅网页静态更新许可已询问但尚无回复，不部署。原生下一步：等用户进入候选本地→重新枚举窗口→项目甘特检查可见纵向轨道/普通滚轮/末行→任务创建与修改红星/字段下错误和主题→关闭候选并释放控制。不要碰正式账号或真实项目；例行窗口操作自行完成，工具阻断才交接。新安装/服务器覆盖仅在本轮确认后执行新安全副本，后端/数据库/MCP/API不变。
+
+本阶段Wolai主状态及交接副本“2026-10-30候选6bb85ab”均写入读回一致；主块长摘要第一次失败，读回确认未生效后以短摘要成功，不重复追加。Git/handoff/CHANGELOG候选一致，API无变化只复核不机械重写，DOC-SYNC-001不消失。额度五小时余61%/周64%，无关机/重置/唤醒授权。当前未提交仅本专项续接回执与交接入口对应补充（提交后清洁）；下方文件清单是6bb85ab已包含的修改历史，不再是未提交文件。
+
 范围：甘特纵向滚动及任务新增/修改必填提示。用户已确认指“任务表单”，不改人员表单。全局/项目内共用TaskList，必填红星、提交逐字段校验与中英西错误；日期、工作量、父任务和前置任务不新增必填。
 
 基线03b662d43926ba5e50f65198af13ecb96df04dc8，分支codex/audit-release-20261006-api，开始干净。WACAS未定义，适用UPARS1.1.0/交接1.21/PrimeVue与nonce规范。额度5h余86%/周68%，无关机/重置/唤醒授权。本轮尚未接管桌面或连接服务器，不沿用旧占用进程停止许可。
@@ -8,7 +18,7 @@
 
 候选：任务名/项目/类型/优先级/状态/排期方式标红星，PrimeVue invalid与字段下Message，首次提交后动态纠错、首个错误获焦；TaskStatusSelect转发真实Select的ARIA/invalid。仅字段必填错误下移，网络及关联保存错误仍保留上方提示。新增共用纯校验器及三语测试。
 
-当前全部未提交：本文；src/modules/gantt/components/GanttView.vue；src/modules/gantt/composables/useGanttNavigation.js；src/__tests__/composables/useGanttNavigation.test.js；e2e/gantt-hierarchy.spec.js；e2e/test-globals.d.ts；src/modules/task/components/TaskList/TaskList.vue；src/components/TaskStatusSelect.vue；src/modules/task/utils/taskFormValidation.js；src/__tests__/taskFormValidation.test.js；src/i18n/locales/{zh-CN,en-US,es-ES}.js；e2e/ui-consistency.spec.js；e2e/smoke.spec.js。
+6bb85ab已提交修改：本文；src/modules/gantt/components/GanttView.vue；src/modules/gantt/composables/useGanttNavigation.js；src/__tests__/composables/useGanttNavigation.test.js；e2e/gantt-hierarchy.spec.js；e2e/test-globals.d.ts；src/modules/task/components/TaskList/TaskList.vue；src/components/TaskStatusSelect.vue；src/modules/task/utils/taskFormValidation.js；src/__tests__/taskFormValidation.test.js；src/i18n/locales/{zh-CN,en-US,es-ES}.js；e2e/ui-consistency.spec.js；e2e/smoke.spec.js；CHANGELOG及handoff五文档。
 
 验证：lint/type/build、369单测/69文件通过；44行甘特浅深1920/1280/960共6矩阵通过；逐字段三语×浅深960共6矩阵通过。首次完整界面117通过/13跳过/1失败：旧依赖重试用例草稿未填写类型与优先级，新必填校验正确阻止保存；已在此场景显式选择合法必填项，保留重试且不重复创建断言，完整137项重新执行中。未称全回归/原生通过。
 

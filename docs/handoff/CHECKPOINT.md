@@ -1,5 +1,7 @@
 # EasyProject 交接任务检查点
 
+2026-10-30候选封存：6bb85ab已推Git，369/124/13及最终6严格CSP通过，Windows F3CFD/NSIS AEDFE已封存，MCP70E不变。隔离scroll-form-native-6bb85ab含46合成任务，PID37736已在登录页，等待用户进入候选本地；未原生复验或真实覆盖，正式21408未停，本轮部署许可也待回复。控制已reset、无SSH，Wolai主/交接候选摘要均读回。下一步及全SHA见SCROLL_FORM_VALIDATION_CHECKPOINT顶部，不重建、不复制真实库或重复造数据，无关机授权。
+
 2026-10-30当前续接SCROLL_FORM_VALIDATION_CHECKPOINT：任务表单范围已确认，甘特44行/三语逐字段候选已过静态、369单元及124UI（最终ARIA细化另6严格CSP组）。真实HTTP、隔离原生与本轮新许可后的安全安装/静态网页交付仍待。未接管桌面/连接服务器，真实库/独立MCP未动，无新进程停止或关机许可。不可按旧甘特已交付状态跳过本轮复验。
 
 2026-10-30交付完成：182桌面/Web/必要后端已安全更新，945/942原文件、桌面启动后全库、服务器2库/73文件/630旧assets及配置Funnel权限保全；公网正常TLS/71静态摘要/4匿名401通过，无迁移或MCP替换，SSH退出/无控制。准确SHA/副本/边界见GANTT_HIERARCHY_CHECKPOINT顶部，不依旧暂停记录重做。原生960和DOC-SYNC-001保留，规则1.21，正式发布结论不变。

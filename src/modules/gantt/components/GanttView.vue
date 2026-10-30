@@ -826,8 +826,11 @@ onMounted(async () => {
 /* ---------- 滚动容器 ---------- */
 .scroller-wrap {
     position: relative;
+    display: flex;
+    flex-direction: column;
     flex: 1 1 auto;
     min-height: 0;
+    overflow: hidden;
 }
 .gantt-scroller {
     width: 100%;
@@ -839,11 +842,16 @@ onMounted(async () => {
     border-radius: var(--radius-lg);
     background: var(--color-surface);
     box-shadow: 0 2px 8px var(--color-card-shadow);
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) var(--color-surface);
 }
 .gantt-scroller::-webkit-scrollbar {
-    display: none;
+    width: 10px;
+    height: 10px;
+}
+.gantt-scroller::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 6px;
 }
 
 /* ---------- 时间轴导航按钮 ---------- */

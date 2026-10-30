@@ -298,6 +298,7 @@ export default {
         createFirst: 'Create your first project to get started.'
     },
     tasks: {
+        requiredField: '{field} is required.',
         eyebrow: 'TASK MANAGEMENT',
         title: 'Tasks',
         viewCount: '{count} tasks in the current view',

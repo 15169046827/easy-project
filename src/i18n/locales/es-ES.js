@@ -300,6 +300,7 @@ export default {
         createFirst: 'Crea tu primer proyecto para empezar.'
     },
     tasks: {
+        requiredField: 'El campo {field} es obligatorio.',
         eyebrow: 'GESTIÓN DE TAREAS',
         title: 'Tareas',
         viewCount: '{count} tareas en esta vista',

@@ -70,6 +70,7 @@ for (const width of [1920, 1280, 960])
                         schedule_mode: 'fixed_dates',
                         ...t
                     }))
+                    window.__GANTT_TASKS__ = tasks
                     window.__TAURI_INTERNALS__ = {
                         invoke: async (command, args) => {
                             window.__EASY_PROJECT_CALLS__.push({ command, args })
@@ -163,5 +164,35 @@ for (const width of [1920, 1280, 960])
             )
             await page.mouse.move(0, 0)
             await page.screenshot({ path: `test-results/gantt-hierarchy-${width}-${dark}.png` })
+            await page.evaluate(() => {
+                const tasks = window.__GANTT_TASKS__
+                for (let index = 0; index < 40; index++) {
+                    tasks.push({
+                        ...tasks[0],
+                        id: `overflow-${index}`,
+                        name: `Overflow task ${index}`,
+                        parent: '',
+                        start_time: '',
+                        end_time: '',
+                        sort_order: 100 + index
+                    })
+                }
+            })
+            await page.locator('.gantt-toolbar button:has(.pi-refresh)').click()
+            await expect(page.locator('.gantt-row')).toHaveCount(44)
+            const scroller = page.locator('.gantt-scroller')
+            expect(await scroller.evaluate(el => el.scrollHeight > el.clientHeight)).toBe(true)
+            expect(await scroller.evaluate(el => getComputedStyle(el).scrollbarWidth)).not.toBe(
+                'none'
+            )
+            await scroller.hover()
+            await page.mouse.wheel(0, 500)
+            await expect.poll(() => scroller.evaluate(el => el.scrollTop)).toBeGreaterThan(0)
+            await scroller.evaluate(el => {
+                el.scrollTop = el.scrollHeight
+            })
+            await expect(
+                page.getByRole('button', { name: 'Overflow task 39', exact: true })
+            ).toBeInViewport()
         })
     }

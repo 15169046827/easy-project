@@ -526,14 +526,38 @@
                 @submit.prevent="saveTaskEditor"
             >
                 <div class="task-edit-field">
-                    <label for="task-edit-name">{{ $t('tasks.columnName') }}</label
-                    ><InputText id="task-edit-name" v-model="editDraft.name" />
+                    <label for="task-edit-name"
+                        >{{ $t('tasks.columnName') }}
+                        <span class="required-marker" aria-hidden="true">*</span></label
+                    ><InputText
+                        id="task-edit-name"
+                        v-model="editDraft.name"
+                        aria-required="true"
+                        :invalid="Boolean(fieldErrors.name)"
+                        :aria-describedby="fieldErrors.name ? 'task-error-name' : undefined"
+                    />
+                    <Message
+                        v-if="fieldErrors.name"
+                        id="task-error-name"
+                        severity="error"
+                        size="small"
+                        variant="simple"
+                        :closable="false"
+                        >{{ fieldErrors.name }}</Message
+                    >
                 </div>
                 <div class="task-edit-field">
-                    <label for="task-edit-project_id">{{ $t('tasks.columnProject') }}</label
+                    <label for="task-edit-project_id"
+                        >{{ $t('tasks.columnProject') }}
+                        <span class="required-marker" aria-hidden="true">*</span></label
                     ><Select
                         inputId="task-edit-project_id"
                         v-model="editDraft.project_id"
+                        aria-required="true"
+                        :invalid="Boolean(fieldErrors.project_id)"
+                        :aria-describedby="
+                            fieldErrors.project_id ? 'task-error-project' : undefined
+                        "
                         @update:modelValue="
                             projectId =>
                                 loadTeamMemberIds(projectId).catch(cause => {
@@ -546,6 +570,15 @@
                         :placeholder="$t('tasks.selectProject')"
                         fluid
                     />
+                    <Message
+                        v-if="fieldErrors.project_id"
+                        id="task-error-project"
+                        severity="error"
+                        size="small"
+                        variant="simple"
+                        :closable="false"
+                        >{{ fieldErrors.project_id }}</Message
+                    >
                 </div>
                 <div class="task-edit-field">
                     <label for="task-edit-parent">{{ $t('tasks.columnParent') }}</label
@@ -600,16 +633,32 @@
                     />
                 </div>
                 <div class="task-edit-field">
-                    <label for="task-edit-schedule_mode">{{ $t('tasks.columnScheduleMode') }}</label
+                    <label for="task-edit-schedule_mode"
+                        >{{ $t('tasks.columnScheduleMode') }}
+                        <span class="required-marker" aria-hidden="true">*</span></label
                     ><Select
                         inputId="task-edit-schedule_mode"
                         v-model="editDraft.schedule_mode"
+                        aria-required="true"
+                        :invalid="Boolean(fieldErrors.schedule_mode)"
+                        :aria-describedby="
+                            fieldErrors.schedule_mode ? 'task-error-schedule' : undefined
+                        "
                         :options="scheduleModes"
                         optionLabel="label"
                         optionValue="value"
                         fluid
                         @change="recalculateEnd(editDraft)"
                     />
+                    <Message
+                        v-if="fieldErrors.schedule_mode"
+                        id="task-error-schedule"
+                        severity="error"
+                        size="small"
+                        variant="simple"
+                        :closable="false"
+                        >{{ fieldErrors.schedule_mode }}</Message
+                    >
                 </div>
                 <div class="task-edit-field">
                     <label for="task-edit-end_time">{{ $t('tasks.columnEnd') }}</label
@@ -622,10 +671,15 @@
                     />
                 </div>
                 <div class="task-edit-field">
-                    <label for="task-edit-type">{{ $t('tasks.columnType') }}</label
+                    <label for="task-edit-type"
+                        >{{ $t('tasks.columnType') }}
+                        <span class="required-marker" aria-hidden="true">*</span></label
                     ><Select
                         inputId="task-edit-type"
                         v-model="editDraft.type"
+                        aria-required="true"
+                        :invalid="Boolean(fieldErrors.type)"
+                        :aria-describedby="fieldErrors.type ? 'task-error-type' : undefined"
                         :options="taskTypes"
                         optionLabel="label"
                         optionValue="value"
@@ -633,12 +687,26 @@
                         showClear
                         fluid
                     />
+                    <Message
+                        v-if="fieldErrors.type"
+                        id="task-error-type"
+                        severity="error"
+                        size="small"
+                        variant="simple"
+                        :closable="false"
+                        >{{ fieldErrors.type }}</Message
+                    >
                 </div>
                 <div class="task-edit-field">
-                    <label for="task-edit-priority">{{ $t('tasks.columnPriority') }}</label
+                    <label for="task-edit-priority"
+                        >{{ $t('tasks.columnPriority') }}
+                        <span class="required-marker" aria-hidden="true">*</span></label
                     ><Select
                         inputId="task-edit-priority"
                         v-model="editDraft.priority"
+                        aria-required="true"
+                        :invalid="Boolean(fieldErrors.priority)"
+                        :aria-describedby="fieldErrors.priority ? 'task-error-priority' : undefined"
                         :options="taskPriority"
                         optionLabel="label"
                         optionValue="value"
@@ -646,15 +714,38 @@
                         showClear
                         fluid
                     />
+                    <Message
+                        v-if="fieldErrors.priority"
+                        id="task-error-priority"
+                        severity="error"
+                        size="small"
+                        variant="simple"
+                        :closable="false"
+                        >{{ fieldErrors.priority }}</Message
+                    >
                 </div>
                 <div class="task-edit-field">
-                    <label for="task-edit-status">{{ $t('tasks.columnStatus') }}</label
+                    <label for="task-edit-status"
+                        >{{ $t('tasks.columnStatus') }}
+                        <span class="required-marker" aria-hidden="true">*</span></label
                     ><TaskStatusSelect
                         inputId="task-edit-status"
                         v-model="editDraft.status_id"
+                        aria-required="true"
+                        :invalid="Boolean(fieldErrors.status_id)"
+                        :aria-describedby="fieldErrors.status_id ? 'task-error-status' : undefined"
                         :project-id="editDraft.project_id"
                         @loaded="onTaskStatusesLoaded"
                     />
+                    <Message
+                        v-if="fieldErrors.status_id"
+                        id="task-error-status"
+                        severity="error"
+                        size="small"
+                        variant="simple"
+                        :closable="false"
+                        >{{ fieldErrors.status_id }}</Message
+                    >
                 </div>
                 <div class="task-edit-field">
                     <label for="task-edit-progress">{{ $t('tasks.columnProgress') }}</label
@@ -749,6 +840,7 @@ import { statusColorStyle } from '../../../../utils/statusColors.js'
 import TaskStatusBadge from '../../../../components/TaskStatusBadge.vue'
 import TaskProgressCell from '../../../../components/TaskProgressCell.vue'
 import { groupStatusStatistics } from '../../utils/statusGroups.js'
+import { validateTaskForm } from '../../utils/taskFormValidation.js'
 import DateTimePickerString from './components/DateTimePickerString.vue'
 import MemberSelect from '../../../member/components/MemberSelect.vue'
 import { useMembers } from '../../../../composables/useMembers'
@@ -1223,6 +1315,10 @@ function dependencyNames(ids = []) {
 }
 
 const editDialogVisible = ref(false)
+const editSubmitted = ref(false)
+const fieldErrors = computed(() =>
+    editSubmitted.value ? validateTaskForm(editDraft.value, t) : {}
+)
 const editDraft = ref(null)
 const editSaving = ref(false)
 const editorOriginalProject = ref('')
@@ -1246,6 +1342,7 @@ function onTaskStatusesLoaded(states) {
 async function openTaskEditor(task) {
     if (editSaving.value) return
     errorMessage.value = ''
+    editSubmitted.value = false
     const copy = JSON.parse(JSON.stringify(task))
     await onRowEditInit({ data: copy })
     if (activeEditingId.value !== copy.id) return
@@ -1263,8 +1360,11 @@ function cancelTaskEditor() {
 }
 async function saveTaskEditor() {
     if (editSaving.value || !editDraft.value) return
-    if (!editDraft.value.status_id) {
-        errorMessage.value = t('taskStatuses.select')
+    editSubmitted.value = true
+    if (Object.keys(fieldErrors.value).length) {
+        errorMessage.value = ''
+        const first = Object.keys(fieldErrors.value)[0]
+        document.getElementById(`task-edit-${first === 'status_id' ? 'status' : first}`)?.focus()
         return
     }
     editSaving.value = true
@@ -1375,6 +1475,9 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.required-marker {
+    color: var(--color-error-text);
+}
 .task-edit-form {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

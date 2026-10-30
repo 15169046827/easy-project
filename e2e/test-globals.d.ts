@@ -1,4 +1,14 @@
 interface Window {
+    __GANTT_TASKS__: Array<{
+        id: string
+        name: string
+        parent: string
+        project_id: string
+        start_time?: string
+        end_time?: string
+        sort_order?: number
+        [field: string]: unknown
+    }>
     __testSavedCredentials: (args: {
         action: string
         credentials?: { username: string; password: string } | null

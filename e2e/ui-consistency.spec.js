@@ -1,5 +1,80 @@
 import { expect, test } from '@playwright/test'
 
+for (const locale of ['zh-CN', 'en-US', 'es-ES'])
+    for (const dark of [false, true]) {
+        test(`task field errors stay inline in ${locale} dark=${dark}`, async ({ page }) => {
+            await page.setViewportSize({ width: 960, height: 640 })
+            await page.route('http://127.0.0.1:4173/', async route => {
+                const response = await route.fetch()
+                await route.fulfill({
+                    response,
+                    body: (await response.text()).replace(
+                        /<style>/g,
+                        '<style nonce="task-form-response">'
+                    ),
+                    headers: {
+                        ...response.headers(),
+                        'content-security-policy':
+                            "default-src 'self'; script-src 'self'; style-src 'self' 'nonce-task-form-response'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'"
+                    }
+                })
+            })
+            await page.addInitScript(
+                ({ locale, dark }) => {
+                    localStorage.setItem('easyproject-lang', locale)
+                    localStorage.setItem('easyproject-theme', dark ? 'dark' : 'light')
+                },
+                { locale, dark }
+            )
+            await page.goto(dark ? '/#/project/p1' : '/#/tasks')
+            await page
+                .locator('.workspace-table')
+                .getByRole('button', { name: /^(编辑|Edit|Editar)$/ })
+                .first()
+                .click()
+            const dialog = page.getByRole('dialog')
+            await expect(dialog.locator('.required-marker')).toHaveCount(6)
+            await dialog.locator('#task-edit-name').fill('  ')
+            const priority = dialog
+                .locator('.task-edit-field')
+                .filter({ has: page.locator('#task-edit-priority') })
+            await priority.locator('.p-select-clear-icon').click()
+            await dialog.locator('button[type="submit"]').click()
+            await expect(dialog.locator('#task-error-name')).toBeVisible()
+            await expect(priority.locator('#task-error-priority')).toBeVisible()
+            await expect(dialog.locator('#task-edit-name')).toHaveClass(/p-invalid/)
+            await expect(dialog.locator('#task-edit-name')).toBeFocused()
+            await expect(dialog.locator('#task-edit-name')).toHaveAttribute(
+                'aria-describedby',
+                'task-error-name'
+            )
+            expect(
+                await page
+                    .locator('style[data-primevue-style-id]')
+                    .evaluateAll(
+                        nodes =>
+                            nodes.length > 0 &&
+                            nodes.every(node => node.nonce === 'task-form-response')
+                    )
+            ).toBe(true)
+            await expect(dialog.locator('#task-error-name')).toContainText(
+                locale === 'zh-CN' ? '请填写' : locale === 'en-US' ? 'required' : 'obligatorio'
+            )
+            expect(
+                await page.evaluate(
+                    () =>
+                        window.__EASY_PROJECT_CALLS__.filter(c =>
+                            ['add', 'update'].includes(c.args.action)
+                        ).length
+                )
+            ).toBe(0)
+            await dialog.locator('#task-edit-name').fill('Corrected draft')
+            await expect(dialog.locator('#task-error-name')).toHaveCount(0)
+            await expect(dialog.locator('#task-edit-name')).not.toHaveAttribute('aria-describedby')
+            await expect(priority.locator('#task-error-priority')).toBeVisible()
+        })
+    }
+
 for (const width of [1280, 960]) {
     for (const dark of [false, true]) {
         test(`manual version check keeps credentials and nonce styles isolated at ${width}px dark=${dark}`, async ({

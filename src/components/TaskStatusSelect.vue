@@ -1,5 +1,6 @@
 <template>
     <Select
+        v-bind="$attrs"
         ref="selectControl"
         :modelValue="modelValue"
         :options="options"
@@ -78,6 +79,7 @@ import { crudAction } from '../api'
 import StatusColorSelect from './StatusColorSelect.vue'
 import { suggestStatusColor } from '../utils/statusColors'
 import { findStatusNameConflict } from '../utils/taskStatus'
+defineOptions({ inheritAttrs: false })
 const props = defineProps({
     projectId: { type: String, default: '' },
     modelValue: { type: String, default: '' },

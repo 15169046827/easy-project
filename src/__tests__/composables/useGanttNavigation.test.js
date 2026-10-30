@@ -42,6 +42,17 @@ function setup() {
     return { ...context, element, navigation: state.navigation, wrapper }
 }
 describe('Gantt viewport navigation', () => {
+    it('uses ordinary wheel scrolling vertically when tasks overflow', () => {
+        const state = setup()
+        Object.defineProperties(state.element, {
+            scrollHeight: { value: 2000 },
+            clientHeight: { value: 200 }
+        })
+        state.navigation.onWheel(new WheelEvent('wheel', { deltaY: 120 }))
+        expect(state.element.scrollBy).toHaveBeenCalledWith({ top: 120, behavior: 'auto' })
+        state.navigation.onWheel(new WheelEvent('wheel', { deltaX: 40 }))
+        expect(state.element.scrollBy).toHaveBeenLastCalledWith({ left: 40, behavior: 'auto' })
+    })
     it('scrolls to today and preserves the centered coordinate calculation', async () => {
         const state = setup()
         await state.navigation.scrollToday()

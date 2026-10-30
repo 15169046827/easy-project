@@ -58,9 +58,14 @@ export function useGanttNavigation({
         if (event.ctrlKey) {
             event.preventDefault()
             dayWidth.value = Math.max(6, Math.min(60, dayWidth.value + (event.deltaY > 0 ? -4 : 4)))
-        } else if (event.shiftKey) {
+        } else if (
+            event.shiftKey ||
+            (!event.deltaX && scroller.value?.scrollHeight > scroller.value?.clientHeight)
+        ) {
             event.preventDefault()
             scroller.value?.scrollBy({ top: event.deltaY, behavior: 'auto' })
+        } else if (event.deltaX) {
+            scroller.value?.scrollBy({ left: event.deltaX, behavior: 'auto' })
         } else {
             const direction = event.deltaY > 0 ? 1 : -1
             const steps = Math.max(1, Math.round(Math.abs(event.deltaY) / 80))

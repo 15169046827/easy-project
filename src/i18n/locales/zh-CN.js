@@ -283,6 +283,7 @@ export default {
         createFirst: '创建你的第一个项目以开始。'
     },
     tasks: {
+        requiredField: '请填写{field}。',
         eyebrow: 'TASK MANAGEMENT',
         title: '任务',
         viewCount: '当前视图共 {count} 个任务',

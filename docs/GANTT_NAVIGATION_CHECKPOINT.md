@@ -1,5 +1,12 @@
 # 甘特导航与滚轮整改检查点
 
+## 2026-10-31 最终01cfb13原生收尾，进入已批准静态安全交付
+
+- 最终产品`01cfb1383e776509cc6e5b0ce6b16105c9e2ac61`已推；相对396d249仅三项date-actions主题CSS。整改后lint/typecheck/build、NSIS及绑定新SHA的6严格CSP矩阵通过；此前同逻辑384单元/130生产UI/13HTTP继续适用，不伪称CSS改后重跑全量业务。原b144954共享后端/Rust/API未变。
+- 最终封存：`gantt-navigation-01cfb13-20261031-delivery` raw SHA `9D04470B02C4A5118D08F936C25E1E444D20820543AE99C9B7A5CCF2A789A30A`、NSIS `AB0552AED827E8EAE7A927010A7B32C2D1B18E5BF55CD62C29CCEDE93C01EA2F`；72文件静态包`gantt-navigation-01cfb13-20261031.tar.gz` SHA `C126C37A1A09827942385F59271F32B98AC086F1DD6008EAF89EB631234EE9D1`。旧396d249/DA95/FC9B/58A5不交付。
+- 最终合成候选`gantt-navigation-native-01cfb13`新窗口527762已观察处于本地仪表盘/引导，无需再次请求或操作认证页；只退出引导、导航合成项目。1280浅深主题下SVG/控件外观复核，最终左两周后10/14，Tab可见右按钮焦点圈，Return后稳定10/28。仅CSS变化所以已过连续点击/纵滚/跨边手势不重复。native Shift修饰键滚轮无法组合注入，横向滚轮已实测，Shift由浏览器真实输入覆盖；窄窗corner drag仍未缩窗、选中表头文字，明确原生960未验不改变系统工具、不反复请求用户。已正常关闭两候选，Get-CimInstance无EasyProject进程，控制reset。没有改任何合成任务或真实数据。
+- 用户明确批准本轮新副本后覆盖桌面/网页静态，不改后端/库/独立MCP/权限/公开Release。下一步重新绑定新NSIS、HEAD及正式E盘路径做受限副本/原文件与启动后全库核验；服务器先新鲜只读确认current=row-scheduling-b144954/后端DC9853，再新root700副本静态更新，PID不重启、配置/Funnel/两库/旧assets保持，正常TLS/摘要/匿名边界验收。尚未安装/连接服务器，正式仍旧b144954。WACAS未定义，UPARS1.1.0/规则1.25；本次未提交仅专项及handoff四文档，额度余60%/周26%，无关机/重置/唤醒授权。
+
 ## 2026-10-31 原生发现深色行内箭头沿用固定深蓝，最终候选需重封存
 
 - 三项CSS主题变量整改后lint/typecheck/build及六严格CSP矩阵全部通过，旧候选PID35140已确认退出、控制reset，无SSH。新代码仅GanttView三项颜色值，导航逻辑/测试/数据/后端/API均无再变。下一步新SHA打包并沿用同一合成数据复验深色和最终导航；本轮安全覆盖许可已收到，不再等待审批。

@@ -1165,10 +1165,10 @@ onMounted(async () => {
 .date-actions button {
     width: 1.55rem;
     height: 1.55rem;
-    border: 1px solid #dbeafe;
+    border: 1px solid var(--color-border);
     border-radius: 0.35rem;
     background: var(--color-surface);
-    color: #1d4ed8;
+    color: var(--color-primary);
     cursor: pointer;
     font-size: 1rem;
     display: flex;
@@ -1178,7 +1178,7 @@ onMounted(async () => {
     line-height: 1;
 }
 .date-actions button:hover {
-    background: #dbeafe;
+    background: var(--color-subtle);
 }
 .row-grid {
     position: absolute;

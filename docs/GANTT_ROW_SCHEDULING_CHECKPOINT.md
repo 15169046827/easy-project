@@ -1,5 +1,21 @@
 # 甘特逐行排期与层级拖动检查点
 
+## 2026-10-31 已安全交付：b144954 桌面／网页／共享后端
+
+- 本轮用户批准范围已执行完成；未创建公开Release，未迁移或清理数据库，未改地址、权限或独立MCP。规则1.24/架构复核不变。WACAS未定义/待确认，实际UPARS1.1.0。基线f537fd8，分支`codex/audit-release-20261006-api`；本段及CHANGELOG、RELEASING、handoff README/CURRENT_STATE/CHECKPOINT为本次未提交回执文件，源码无变化。
+- 桌面：封存产品b144954，NSIS `A4CE8B491C7279DFD7EBF6227E574476E742F577C150AF0FE8CF50C034BC33AA`；安装退出0，实际exe `625DC0455D69CF939DBA09BF47DCFFFE45A6D3C5E91007A631BB4C652A11DED9`，与raw0C8107仅标准UNK→NSS三字节差异，逐字节核验通过。E盘全新受限副本`src-tauri/target/audit-tools/dictionary-overwrite-row-scheduling-b144954-20261031`保存1053文件；1050原非程序文件SHA保持，原库全表行摘要在覆盖前/后及正式启动后均相同，integrity ok/FK0。已正常启动PID23400（本次观测），未操作账号/真实任务；独立MCP `70E303F85852C21838D879FC4823FB51810E1A0178AE851194BC2E80074DC9C1`保持。
+- 服务器：新鲜确认home-host旧current=5f/旧后端2421后，73文件包SHA `75487CAFB6579B3FCFE6FB3C449238CB4B9268AB3A675E6059F96B72EAC3A0FE`，部署脚本SHA `AE420C2CEB486F710EE86A4EE769C5D744A12C2DDF7478A7B91781F6C87FEE26`上传摘要一致。current已原子切换到`/opt/easyproject/releases/row-scheduling-b144954-20261031`，Linux来自CI41164270914/本产品SHA，运行后端`DC985353C444DDD65B5CE5F263610DDBD759CD27F3B4710297AB30E610D0830D`、PID1771、easyproject身份active/enabled。新root700副本`/var/backups/easyproject/row-scheduling-b144954-20261031`保留旧release/配置/全部数据；两库schema3/8、全部原字段ID/关联/表结构保持、integrity/FK通过。仅运行revision epoch按现有启动逻辑允许变化，不将其忽略伪装成全字节相同；未调用迁移。738旧assets逐摘要保留，配置/Funnel/健康及备份timer不变，容量预检1工作区通过。
+- 公网最终正常TLS验证通过：2 HTML入口nonce CSP/no-store、71个静态文件SHA、健康200、4个匿名401边界、联系人邮箱与西语资源。没有登录或写入真实业务数据。服务器内部同样验证73文件、两库保全与服务身份；SSH已正常退出，无桌面控制会话。
+- 本轮原生合成复验及新增后47条只读核验完成，已过手势见前段；原生960自主缩窗工具未成功、完整键盘排序未验、静止边缘长按工具边界仍明确保留，浏览器严格CSP矩阵不能冒充原生全部通过。其余378单元/130生产UI/13真实HTTP、Windows76+stdio1/server64+20、最终12+一天6矩阵/静态/构建/CI已在同产品SHA完成且本次无源码差异，不重复跑已有效门禁。
+- API：66原生/32参考/19 HTTP主JSON已在b144954候选同步读回；本次部署无新契约，无需重复上传。MCP23工具Schema/权限/独立程序保持；内部order_placement已记IPC/HTTP。DOC-SYNC-001备用text/plain/空security导出差异仍开，签名/其他平台等正式发布条件仍未通过。
+- 同步收尾：本地交接/发布记录按真实部署更新，Git常规push及HTTP/1.1正常TLS均遇10054，正在用既有校验传输补推，不宣称远端已成功；Wolai交付回执随后精确读回。准确下一步仅完成三方回执同步，不重建、不重装、不重造数据或重复测试，不延伸任何关机/重置/唤醒授权。
+
+## 2026-10-31 额度恢复：桌面已安全更新，服务器阶段准备中
+
+- 恢复核五小时余100%/周余32%，Git基线f537fd8且clean；补推仍TLS10054失败待补。47条合成任务只读复核通过：新增11/5—11/8、一天11/2、跨父/整树排序与循环拒绝后的关系保持，integrity ok/FK0。没有重建/重造数据或重复手势。
+- 封存raw0C8107/NSIS A4CE8/Linux DC9853全摘要匹配；产品源码与b144954无差异。正式程序当时未运行、安装注册位置/存储配置正确，已执行本轮获批安全覆盖：新E盘`dictionary-overwrite-row-scheduling-b144954-20261031`受限副本1053文件，1050原非程序文件逐SHA保持、原库全表逻辑一致、独立MCP70E不变。安装退出0，安装exe SHA `625DC0455D69CF939DBA09BF47DCFFFE45A6D3C5E91007A631BB4C652A11DED9`，与raw逐字节仅框架UNK→NSS三字节差异，已正常启动；启动后核验结果待本阶段收尾回执。
+- home-host本轮新鲜SSH已核hostname/账号/current：`gantt-edge-5f5bc78-20261030`，服务active、User=easyproject、PID673、旧后端242169摘要匹配；两库schema3/8、integrity ok，备份及健康timer active，磁盘余88GB。未改服务器；接下来制作绑定b144954/DC9853的新包和守护脚本，先受限副本再短暂重启，保留原数据/配置/Funnel/旧assets。无MCP替换/迁移/权限变化/公开Release。
+
 ## 2026-10-31 最新：原生收尾后额度门禁暂停，未部署
 
 - 收尾同步回执：本地检查点提交`4159667`完成、diff检查通过；GitHub push因TLS连接重置10054失败，**待恢复后补推，不声称远端已同步**。Wolai主状态与交接已追加4159667暂停摘要并逐字读回。此条为本地最小缺口补记，恢复先保留并纳入后续回执提交；不在4%额度下反复重试网络。

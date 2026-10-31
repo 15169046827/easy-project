@@ -2,6 +2,8 @@
 
 ## 2026-10-31 已交付01cfb13：桌面及网页静态安全更新完成
 
+- 最终同步：交付回执`4c28378ff5969c97022c08df4f3cd32d59488960`已正常TLS同树同SHA非强制上传，工作区clean；Wolai主状态与交接“导航已交付4c28378”两块均精确读回。本地规则/架构/当前状态/入口/发布记录与实际交付一致。此附记仅记录三方闭环，不改产品/数据，不重复部署；本轮无剩余开发、安装或同步待办，后续按用户新指令。明确未验和正式发布风险仍保留。
+
 - 本轮范围完成：统一矢量箭头/主题色及几何居中、两周实际跟随短动画、普通纵滚/Shift横滚与双向日期延展。最终源`01cfb1383e776509cc6e5b0ce6b16105c9e2ac61`，规则1.25；WACAS未定义/待确认、实际UPARS1.1.0。分支codex/audit-release-20261006-api，部署基线8a9377d，本次仅交付回执文档，不改产品源码。
 - 桌面：全新E盘受限副本`src-tauri/target/audit-tools/dictionary-overwrite-gantt-navigation-01cfb13-20261031`保存1090原文件，1087原非程序文件SHA保持；覆盖退出0，启动前后全库逐表行摘要相同、integrity ok/FK0。NSIS AB0552完整摘要见下方封存段；实际安装exe `5E22889F1055E07904E68750FF5011EA819ED6AF034EC05BE411D83CE398C77E`与raw9D0447仅标准UNK→NSS三字节差异，逐字节核验过。正式程序已正常启动PID34236（本次观测），未操作登录/真实任务；安装侧伴随校验通过，独立MCP `70E303F85852C21838D879FC4823FB51810E1A0178AE851194BC2E80074DC9C1`不变。
 - 服务器新鲜确认旧current=row-scheduling-b144954/后端DC9853/PID1771后，静态包C126C37A及脚本SHA `3326E1CA54ADB95DD707F9D579420109FE559B2E0C33ECCD2B13F8CDE06818B0`上传摘要一致；current原子切到`/opt/easyproject/releases/gantt-navigation-01cfb13-20261031`。新root700副本`/var/backups/easyproject/gantt-navigation-01cfb13-20261031`保留旧release/配置/Funnel及两库SQLite在线安全副本；72文件清单/772旧assets逐SHA保持，两库全部原字段ID/结构/运行revision及完整性/外键保持。后端`DC985353C444DDD65B5CE5F263610DDBD759CD27F3B4710297AB30E610D0830D`与PID1771均不变、未重启；受限easyproject身份、配置/Funnel/备份及健康timer保持。无迁移、真实CRUD、独立MCP更新或权限变化、无新公开Release。

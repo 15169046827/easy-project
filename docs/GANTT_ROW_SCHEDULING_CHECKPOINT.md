@@ -2,6 +2,8 @@
 
 ## 2026-10-31 已安全交付：b144954 桌面／网页／共享后端
 
+- 最终三方同步回执：4159667、f537fd8与交付记录`74ecb5791b06895d1223ff8fc7b90eb57412d8d4`已通过既有正常TLS校验传输逐笔上传，父提交/完整树/提交SHA均一致、force=false；此前10054缺口已关闭。首个手填非完整SHA被脚本格式守卫拒绝，未发生远端写入；随后仅使用git实际rev-list逐笔执行。Wolai主状态与交接“2026-10-31已交付74ecb57”两处已精确读回，本地交接/CHANGELOG/发布记录一致。此条仅同步回执，不改变产品或重复交付；本任务无剩余开发/部署待办，后续按用户新需求，保留上述未验与正式发布风险。
+
 - 本轮用户批准范围已执行完成；未创建公开Release，未迁移或清理数据库，未改地址、权限或独立MCP。规则1.24/架构复核不变。WACAS未定义/待确认，实际UPARS1.1.0。基线f537fd8，分支`codex/audit-release-20261006-api`；本段及CHANGELOG、RELEASING、handoff README/CURRENT_STATE/CHECKPOINT为本次未提交回执文件，源码无变化。
 - 桌面：封存产品b144954，NSIS `A4CE8B491C7279DFD7EBF6227E574476E742F577C150AF0FE8CF50C034BC33AA`；安装退出0，实际exe `625DC0455D69CF939DBA09BF47DCFFFE45A6D3C5E91007A631BB4C652A11DED9`，与raw0C8107仅标准UNK→NSS三字节差异，逐字节核验通过。E盘全新受限副本`src-tauri/target/audit-tools/dictionary-overwrite-row-scheduling-b144954-20261031`保存1053文件；1050原非程序文件SHA保持，原库全表行摘要在覆盖前/后及正式启动后均相同，integrity ok/FK0。已正常启动PID23400（本次观测），未操作账号/真实任务；独立MCP `70E303F85852C21838D879FC4823FB51810E1A0178AE851194BC2E80074DC9C1`保持。
 - 服务器：新鲜确认home-host旧current=5f/旧后端2421后，73文件包SHA `75487CAFB6579B3FCFE6FB3C449238CB4B9268AB3A675E6059F96B72EAC3A0FE`，部署脚本SHA `AE420C2CEB486F710EE86A4EE769C5D744A12C2DDF7478A7B91781F6C87FEE26`上传摘要一致。current已原子切换到`/opt/easyproject/releases/row-scheduling-b144954-20261031`，Linux来自CI41164270914/本产品SHA，运行后端`DC985353C444DDD65B5CE5F263610DDBD759CD27F3B4710297AB30E610D0830D`、PID1771、easyproject身份active/enabled。新root700副本`/var/backups/easyproject/row-scheduling-b144954-20261031`保留旧release/配置/全部数据；两库schema3/8、全部原字段ID/关联/表结构保持、integrity/FK通过。仅运行revision epoch按现有启动逻辑允许变化，不将其忽略伪装成全字节相同；未调用迁移。738旧assets逐摘要保留，配置/Funnel/健康及备份timer不变，容量预检1工作区通过。

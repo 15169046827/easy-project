@@ -1,6 +1,22 @@
 # 甘特逐行排期与层级拖动检查点
 
-## 2026-10-31 开发中（不是已部署）
+## 2026-10-31 候选已封存，等待解锁完成原生复验（未部署）
+
+### 当前准确续接（优先于下方历史开发流水）
+
+- 保存前额度复核：五小时剩余51%、周剩余40%；当前等待原因是锁屏/原生人工入口，不是额度不足，不自动建立唤醒任务。
+
+- 产品提交 `b144954a7173efeeff78a5cf779f7888165e2c67` 已推送既有分支；此前cf41e90文档推送缺口随本次安全非强制push补齐。后续仅契约生成/同步回执及一天预览测试增强，产品源码没有再改。
+- 最终门禁：378单元/70文件，完整生产UI130通过（13专用HTTP另跑），独立真实HTTP界面13通过；最终包的12严格nonce CSP矩阵通过，再补一天缩放预览及Escape恢复6矩阵通过。Windows76单元+真实stdio1、fmt/Clippy、server64单元+20 HTTP集成全部通过；GitHub服务器CI `41164270914` 对本产品SHA的server/security两job成功。lint/typecheck/build/release元数据及diff通过。未弱化超时/规则/测试；首轮Apifox子进程超时、悬停坐标错误及初载top动画根因与整改在下方保留。仅原生实际点击/拖动尚未通过，不能把浏览器当原生。
+- Windows原程序：`src-tauri/target/release/easy-project.exe`，18,763,264字节，SHA256 `0C8107D872E6CAA72F285E812B9F8CE47DC75608637624209668BCEDE328488E`；安装包 `src-tauri/target/release/bundle/nsis/EasyProject_0.1.2_x64-setup.exe`，6,897,996字节，SHA256 `A4CE8B491C7279DFD7EBF6227E574476E742F577C150AF0FE8CF50C034BC33AA`。首次makensis系统DLL重定位623失败；仅以受审查普通环境安全重试成功，没有系统安全设置/依赖变化，不拿旧包替代。构建时仅生成契约文档未提交，产品源码与b144954一致，不能称那时工作区完全clean。
+- 隔离候选：`src-tauri/target/audit-tools/row-scheduling-native-b144954`，PID43376（仅本次观测），返回窗口4196646；2合成项目/46任务，来源旧合成库`scroll-form-native-6bb85ab`经SQLite backup，源SHA保持、完整性ok/外键0，未复制账号/凭据。候选exe与上方raw SHA一致。helper `prepare-row-scheduling-native.cjs` 已执行，不能对同目录重跑；若窗口消失，先核进程，重启同候选，不重造库。
+- 原生只读观测显示本地入口，但截图明确Windows锁屏，立即停止并reset桌面会话，无任何点击/键盘/拖动。用户已外出，另发一次解锁并进入候选本地的请求；用户虽授权工具操作登录页，仍不能覆盖工具的认证UI禁止规则。不得透过LockApp输入、改系统工具/安全设置或注入登录状态。候选保留，控制已释放，无SSH留跑。
+- 官方Linux候选：run `41164270914`、artifact `13028179144`，唯一`easyproject-server-linux-x64`，GitHub ZIP大小4,483,048，官方digest及本地SHA同为`404497e0a04aee9741115352fd832d5a8963d6be2b127e2d83188fcb704fff4e`。E盘`src-tauri/target/audit-tools/row-scheduling-b144954-server.zip`已下载，先验证唯一安全条目再解压；`row-scheduling-b144954-server/easyproject-server`为ELF、10,972,160字节，SHA256 `DC985353C444DDD65B5CE5F263610DDBD759CD27F3B4710297AB30E610D0830D`。未执行/上传/部署，不能把CI成功说成服务器运行验收。
+- Apifox：按b144954重绑文档源，保留旧独立MCP70E的23工具Schema并校验其摘要未变；66原生协议内容/名称/路径/分组及32参考已写后读回，HTTP仅更新`post__api_workspace_action`（526827488），全19主JSON/分组/权限说明复核通过。备用text/plain和空security导出差异DOC-SYNC-001仍保留，不称全媒体等价。仅内部IPC/HTTP新增order_placement；MCP公开参数/权限不变，无独立程序替换/停止许可。
+- Wolai主状态`gS9pEWJsQ1eiqGEzLnNUwF`、交接`oLvsZ6M65HtTfFsJmg8ptD`已追加“2026-10-31候选b144954”并两处精确读回；规则1.24及本地架构/状态/入口/CHANGELOG已对应。正式桌面/服务器仍旧5f5bc78交付，本轮实际安装、后端重启、数据库、MCP和真实业务数据都未改变；home-host尚未本轮连接，不能沿用旧在线确认。
+- 本里程碑提交前未提交项为6个API生成/manifest文件（MODELS.md、apifox-documents.json、apifox-layout.json、apifox-manifest.json、catalog.json、web-apifox-manifest.json）及e2e/gantt-edge-drag.spec.js；另本次检查点/交接/API入口收尾纳入同一回执提交。恢复必须以git status复核，勿丢弃新用户改动。WACAS仍未定义/待确认，实际UPARS1.1.0；额度最后五小时余66%、周余42%，无重置/关机/定时唤醒授权。
+
+准确下一步：用户解锁并完成同一候选本地入口后，先核Git/额度/进程与包SHA，然后原生合成任务验证逐行＋确认/取消、已排期行无效、末行新增、一天保存、名称整列前后/子任务拖动及环拒绝、子树随动、键盘、深浅和窄窗。结束正常关闭候选并立即释放控制。通过后才执行本轮已批准的全新E盘和服务器受限安全副本交付：安装脚本须重读并重新绑定新包/正式路径/全部原文件与逻辑库，后台只更新本轮共享后端及静态，不迁移、不清理、不扩MCP权限，不公开Release。服务器须先新鲜只读核home-host身份/current/旧后端SHA及配置/两库，再准备绑定新DC9853和b144954的守护部署脚本，不能盲跑旧182/edge helper；保留旧assets及配置Funnel、原数据核验、正常TLS/匿名边界，最后Git/Wolai/交接实际交付回执。不要重建/重下载已封存有效产物，除非原生发现产品问题必须改源。
 
 ### 验证里程碑（本节优先于下方早期流水）
 

@@ -136,6 +136,20 @@ for (const width of [1920, 1280, 960])
             await expect(page.locator('.edit-panel')).toBeVisible()
             await page.getByRole('dialog').locator('.btn-cancel').click()
             await expect(page.getByRole('dialog')).toHaveCount(0)
+            // A one-calendar-day range is valid, not a forced two-day minimum.
+            const oneDayHandle = await bar.locator('.resize-right').boundingBox()
+            await page.mouse.move(oneDayHandle.x + oneDayHandle.width / 2, oneDayHandle.y + 13)
+            await page.mouse.down()
+            await page.mouse.move(
+                oneDayHandle.x + oneDayHandle.width / 2 - 84,
+                oneDayHandle.y + 13,
+                { steps: 5 }
+            )
+            await expect(bar.locator('.bar-dates')).toHaveText('10/28 – 10/28')
+            expect((await bar.boundingBox()).width).toBeLessThan(42)
+            await page.keyboard.press('Escape')
+            await page.mouse.up()
+            await expect(bar.locator('.bar-dates')).toHaveText('10/28 – 10/30')
             await bar.focus()
             await bar.press('Enter')
             await expect(page.locator('.edit-panel')).toBeVisible()

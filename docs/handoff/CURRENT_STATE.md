@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-10-31封存续接优先：产品b144954已推，378/130/13、Windows76+stdio1/server64+20及最终12+一天6矩阵/NSIS/CI41164270914双job通过。66原生/32参考/19HTTP主JSON与Wolai主/交接候选读回完成。隔离row-scheduling-native-b144954/PID43376仅2项目46任务，截图锁屏后立即reset，无输入/SSH；等用户解锁并进入本地后只续原生，再按已批新副本交付。Windows/NSIS/Linux均已封存且SHA见GANTT_ROW_SCHEDULING_CHECKPOINT顶部，不重建/重下载/重造库、不沿用旧部署helper。正式环境仍5f5bc78，无本轮覆盖或迁移；规则1.24，DOC-SYNC-001及正式发布结论不变，无关机授权。
+
 2026-10-31正在开发逐行甘特排期/末行新增/一天/层级拖动，见GANTT_ROW_SCHEDULING_CHECKPOINT。首轮377前端、定向42及新增服务端5层级测试通过，lint/type/build过；六边缘UI过，层级UI发现新增行top位置动画导致初载点击错行，已取消top动画并待复验。正式环境仍5f5bc78，未部署/未接管桌面。API/Apifox/Wolai及完整门禁仍待同步；规则1.24。
 
 2026-10-30边缘交付闭环：Git7390219交付回执已推，Wolai主/交接“已交付7390219”均读回；本地handoff/CHANGELOG与5f5bc78桌面/网页一致，本轮无开发/部署/文档同步待办。本附记仅同步复核，不重复覆盖。工具未验原生长按/960及既有DOC-SYNC-001/正式发布边界继续保留。

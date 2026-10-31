@@ -1,5 +1,15 @@
 # 甘特导航与滚轮整改检查点
 
+## 2026-10-31 最终候选396d249封存，等待本地入口与本轮交付许可
+
+- 产品`396d249edda9bbe785e482d670295cb6e01cf9a4`已同树同SHA非强制同步GitHub；分支codex/audit-release-20261006-api。标准WACAS未定义/待确认、UPARS1.1.0、交接规则1.25。保存前Git clean；本次仅专项及handoff README/CURRENT_STATE/CHECKPOINT四文档追加收尾，其余源码无变化。
+- 最终验证：384单元/70文件、130完整生产UI通过；该命令13真实HTTP按设计另跑，独立真实HTTP13/13通过。绑定396d249的最终静态资源再跑6组1920/1280/960深浅严格CSP，导航实际14日位移/Shift跨边延展/两组SVG中心/旧层级和框选全部过。lint/typecheck/build/release元数据/diff与NSIS构建通过。历史两轮E2E坐标及mock类型失败如前段保留，不放宽规则；既有大chunk构建警告保留。Rust/server/契约无变化，复用原b144954安全门禁证据，不称本轮重跑Rust。
+- 已封存到E盘`src-tauri/target/audit-tools/gantt-navigation-396d249-20261031-delivery`：raw SHA `DA95DE776658DE21FF005424346E76B969B09885D25494C4147E206157692C03`，NSIS SHA `FC9B6C3A67E318111BC2175F5EF781DBCC8850A79F1929ECC5DE6E3A5E6EA807`。72文件静态包`gantt-navigation-396d249-20261031.tar.gz` SHA `58A547D2619BE9BC4AE483B2C416363AE992A8A248855B9B779AE07CE2406DAA`，对应payload/manifest.json绑定396d249。不得重建或用旧b144安装包替代。
+- 新隔离候选`src-tauri/target/audit-tools/gantt-navigation-native-396d249`：PID35140/window10947718为本次观测，2合成项目/46条任务，旧scroll-form合成库经SQLite backup克隆，源保持、integrity ok/FK0，无账号/密码复制。候选raw摘要同上；已启动置前。第一次截图显示被外窗遮挡，未发送输入，激活后准确观察登录/本地入口，没有锁屏。工具禁止自动操作认证页，已请求用户点“不登录，本地使用”；之后立即reset释放控制。不要再重启/重造库导致入口重复。
+- 原生外观/真实按钮/滚轮/键盘与窄窗尚未验，不能把浏览器6矩阵当原生通过。当前等待原因是人工本地入口及本轮静态覆盖许可，不是额度；最新五小时余79%/周29%，无重置/关机/唤醒授权。本轮尚未连接home-host或改正式安装/服务器/真实库/MCP；正式仍b144954，服务器DC9853。
+- 同步：规则1.25/AGENTS/架构/三语帮助/CHANGELOG/交接已随产品候选同步；Wolai主与交接“导航候选396d249”两处精确读回。API/MCP无变化无需机械重传Apifox，DOC-SYNC-001及正式生产发布未通过风险保留。本次封存/等待回执再提交并同步，准确Git状态以恢复时检查为准。
+- 准确下一步：用户完成同一候选本地入口后先核Git/额度/候选当前窗口，不重做有效测试或构建；原生只在合成数据验证SVG居中、两周双向实际移动/短动画、普通纵滚/横向滚轮跨边、深浅/键盘/尽力窄窗，立即正常关闭候选并释放控制。只有收到本轮新许可且验证通过，才新E盘/服务器受限副本后更新桌面和网页静态；守护安装脚本重新绑定本封存NSIS/正式路径/新HEAD，服务器先新鲜只读确认current=已交付row-scheduling-b144954及DC9853，static-only不重启后端，保留两库/配置/Funnel/旧assets/独立MCP。无迁移/清理/扩权/公开Release，无独立MCP停止授权。若未获部署许可，完成候选并等待，不借旧许可执行。
+
 ## 2026-10-31 候选开发／复验中，尚未部署
 
 - 最新里程碑：完整前端384单元/70文件通过；lint/typecheck/release元数据过，最终三语build过（既有大chunk警告保留）。补完整MediaQueryList测试替身修正类型错误，减少动画及blur取消测试通过。六严格CSP生产矩阵1920/1280/960深浅全部通过，包含两周双向实际位移、Shift双向跨边延展、两组SVG几何居中及既有创建/层级/纵滚。两轮旧E2E分别在普通未排期及末行框选使用补日前grid.x导致操作落到屏外，均改为可视calendarX后整套6通过；不改产品框选规则/超时/测试数量。

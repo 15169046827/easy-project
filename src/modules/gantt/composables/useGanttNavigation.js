@@ -1,4 +1,5 @@
 import { nextTick, onBeforeUnmount } from 'vue'
+import { useGanttHorizontalNavigation } from './useGanttHorizontalNavigation.js'
 
 export function useGanttNavigation({
     scroller,
@@ -11,12 +12,14 @@ export function useGanttNavigation({
     dayStart
 }) {
     const { days, dayWidth, viewRange } = viewport
+    const horizontal = useGanttHorizontalNavigation({ scroller, viewRange, dayWidth, dayStart })
     let messageTimer = null
     onBeforeUnmount(() => {
         if (messageTimer !== null) clearTimeout(messageTimer)
     })
 
     async function scrollToday() {
+        horizontal.cancel()
         await nextTick()
         const index = days.value.findIndex(day => day.today)
         if (!scroller.value) return
@@ -33,43 +36,34 @@ export function useGanttNavigation({
         })
     }
 
-    async function scrollDays(delta) {
-        if (!scroller.value) return
-        const element = scroller.value
-        const extension = 21
-        if (delta < 0 && element.scrollLeft < 60) {
-            const start = new Date(viewRange.value.start)
-            start.setDate(start.getDate() - extension)
-            viewRange.value = { start: dayStart(start), end: viewRange.value.end }
-            await nextTick()
-            element.scrollLeft = extension * dayWidth.value
-            return
-        }
-        if (delta > 0 && element.scrollLeft > element.scrollWidth - element.clientWidth - 80) {
-            const end = new Date(viewRange.value.end)
-            end.setDate(end.getDate() + extension)
-            viewRange.value = { start: viewRange.value.start, end: dayStart(end) }
-            return
-        }
-        element.scrollBy({ left: delta * dayWidth.value, behavior: 'smooth' })
+    function scrollDays(delta) {
+        return horizontal.pan(delta * dayWidth.value, true)
     }
 
     function onWheel(event) {
         if (event.ctrlKey) {
+            horizontal.cancel()
             event.preventDefault()
             dayWidth.value = Math.max(6, Math.min(60, dayWidth.value + (event.deltaY > 0 ? -4 : 4)))
-        } else if (
-            event.shiftKey ||
-            (!event.deltaX && scroller.value?.scrollHeight > scroller.value?.clientHeight)
-        ) {
+        } else if (event.shiftKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
             event.preventDefault()
-            scroller.value?.scrollBy({ top: event.deltaY, behavior: 'auto' })
-        } else if (event.deltaX) {
-            scroller.value?.scrollBy({ left: event.deltaX, behavior: 'auto' })
+            const delta = event.shiftKey ? event.deltaX || event.deltaY : event.deltaX
+            const scale =
+                event.deltaMode === 1
+                    ? 16
+                    : event.deltaMode === 2
+                      ? scroller.value?.clientWidth || 1
+                      : 1
+            return horizontal.pan(delta * scale)
         } else {
-            const direction = event.deltaY > 0 ? 1 : -1
-            const steps = Math.max(1, Math.round(Math.abs(event.deltaY) / 80))
-            return scrollDays(direction * steps)
+            horizontal.cancel()
+            const scale =
+                event.deltaMode === 1
+                    ? 16
+                    : event.deltaMode === 2
+                      ? scroller.value?.clientHeight || 1
+                      : 1
+            scroller.value?.scrollBy({ top: event.deltaY * scale, behavior: 'auto' })
         }
     }
     return { scrollToday, scrollDays, onWheel }

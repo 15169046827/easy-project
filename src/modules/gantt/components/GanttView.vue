@@ -96,7 +96,8 @@
             class="scroller-wrap"
             :style="{
                 '--name-width': `${nameWidth}px`,
-                '--nav-midpoint': `${headerHeight + (rows.length * rowHeight) / 2}px`
+                '--nav-midpoint': `${headerHeight + ((rows.length + 1) * rowHeight) / 2}px`,
+                '--header-height': `${headerHeight}px`
             }"
         >
             <Button
@@ -104,18 +105,20 @@
                 severity="secondary"
                 class="timeline-nav timeline-nav-left"
                 :title="$t('gantt.scrollLeft')"
+                :aria-label="$t('gantt.scrollLeft')"
                 @click="scrollDays(-14)"
             >
-                ◀
+                <template #icon><GanttArrowIcon direction="left" /></template>
             </Button>
             <Button
                 text
                 severity="secondary"
                 class="timeline-nav timeline-nav-right"
                 :title="$t('gantt.scrollRight')"
+                :aria-label="$t('gantt.scrollRight')"
                 @click="scrollDays(14)"
             >
-                ▶
+                <template #icon><GanttArrowIcon direction="right" /></template>
             </Button>
             <div ref="scroller" class="gantt-scroller" @wheel.prevent="onWheel">
                 <div
@@ -220,18 +223,20 @@
                                     text
                                     severity="secondary"
                                     :title="$t('gantt.moveEarlier')"
-                                    icon="pi pi-angle-left"
+                                    :aria-label="$t('gantt.moveEarlier')"
                                     :disabled="task.hasChildren || !parse(task.start_time)"
                                     @click="shift(task, -1)"
-                                />
+                                    ><template #icon><GanttArrowIcon direction="left" /></template
+                                ></Button>
                                 <Button
                                     text
                                     severity="secondary"
                                     :title="$t('gantt.moveLater')"
-                                    icon="pi pi-angle-right"
+                                    :aria-label="$t('gantt.moveLater')"
                                     :disabled="task.hasChildren || !parse(task.start_time)"
                                     @click="shift(task, 1)"
-                                />
+                                    ><template #icon><GanttArrowIcon direction="right" /></template
+                                ></Button>
                             </span>
                         </div>
                         <div
@@ -466,6 +471,7 @@ import { useGanttRowReordering } from '../composables/useGanttRowReordering.js'
 import Button from 'primevue/button'
 import Select from 'primevue/select'
 import GanttTaskDialog from './GanttTaskDialog.vue'
+import GanttArrowIcon from './GanttArrowIcon.vue'
 import { isTaskCompleted } from '../../../utils/taskStatus.js'
 import { useI18n } from 'vue-i18n'
 import { crudAction } from '../../../api'
@@ -965,7 +971,7 @@ onMounted(async () => {
 /* ---------- 时间轴导航按钮 ---------- */
 .timeline-nav {
     position: absolute;
-    top: min(50%, var(--nav-midpoint));
+    top: min(calc(50% + var(--header-height) / 2), var(--nav-midpoint));
     z-index: 10;
     width: 36px;
     height: 36px;
@@ -975,8 +981,11 @@ onMounted(async () => {
     color: var(--color-text-secondary);
     font-size: 0.85rem;
     cursor: pointer;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
     box-shadow: 0 2px 8px rgb(15 23 42 / 12%);
     transition:
         color 0.2s ease,
@@ -1149,6 +1158,7 @@ onMounted(async () => {
 }
 .date-actions {
     display: flex;
+    align-items: center;
     padding-right: 6px;
     flex-shrink: 0;
 }
@@ -1161,8 +1171,9 @@ onMounted(async () => {
     color: #1d4ed8;
     cursor: pointer;
     font-size: 1rem;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 0;
     line-height: 1;
 }

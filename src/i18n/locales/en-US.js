@@ -638,7 +638,7 @@ export default {
         showBaselineTitleOn: 'Click to hide baseline comparison',
         showBaselineTitleOff: 'Overlay plan baseline vs actual deviation',
         exportTitle: 'Export image',
-        zoomTitle: 'Ctrl+scroll to zoom',
+        zoomTitle: 'Wheel: vertical · Shift+wheel: horizontal · Ctrl+wheel: zoom',
         baselineSaved: 'Baseline saved on {date}',
         baselineDelayed: '{count} tasks delayed vs baseline',
         baselineOnTrack: 'All on plan baseline',

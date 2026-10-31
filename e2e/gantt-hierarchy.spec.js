@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { verifyGanttNavigation } from './helpers/ganttNavigation.js'
 
 for (const width of [1920, 1280, 960])
     for (const dark of [false, true]) {
@@ -129,21 +130,25 @@ for (const width of [1920, 1280, 960])
             const chart = page.locator('.gantt')
             await expect(page.locator('.gantt-row:not(.add-task-row)')).toHaveCount(4)
             await expect(page.locator('.add-task-row')).toHaveCount(1)
+            await verifyGanttNavigation(page)
+            const calendarX =
+                (await page.locator('.gantt-scroller').boundingBox()).x +
+                (await page.locator('.task-label').first().boundingBox()).width
             // Blank dates on an already scheduled task are inert.
             const scheduledGrid = await page
                 .locator('[data-row-task-id="child"] .row-grid')
                 .boundingBox()
-            await page.mouse.move(scheduledGrid.x + 90, scheduledGrid.y + 20)
+            await page.mouse.move(calendarX + 90, scheduledGrid.y + 20)
             await page.mouse.down()
-            await page.mouse.move(scheduledGrid.x + 160, scheduledGrid.y + 20)
+            await page.mouse.move(calendarX + 160, scheduledGrid.y + 20)
             await page.mouse.up()
             await expect(page.locator('.pending-schedule')).toHaveCount(0)
             const emptyGrid = await page
                 .locator('[data-row-task-id="empty"] .row-grid')
                 .boundingBox()
-            await page.mouse.move(emptyGrid.x + 90, emptyGrid.y + 20)
+            await page.mouse.move(calendarX + 90, emptyGrid.y + 20)
             await page.mouse.down()
-            await page.mouse.move(emptyGrid.x + 160, emptyGrid.y + 20)
+            await page.mouse.move(calendarX + 160, emptyGrid.y + 20)
             const preview = await page.locator('.create-preview').boundingBox()
             expect(preview.height).toBe(48)
             expect(Math.abs(preview.y - emptyGrid.y)).toBeLessThan(2)
@@ -157,9 +162,9 @@ for (const width of [1920, 1280, 960])
             await expect(page.getByRole('dialog')).toHaveCount(0)
             await expect(page.locator('[data-row-task-id="empty"] .task-bar')).toHaveCount(0)
             const creationGrid = await page.locator('.row-grid').last().boundingBox()
-            await page.mouse.move(creationGrid.x + 100, creationGrid.y + 20)
+            await page.mouse.move(calendarX + 100, creationGrid.y + 20)
             await page.mouse.down()
-            await page.mouse.move(creationGrid.x + 170, creationGrid.y + 20)
+            await page.mouse.move(calendarX + 170, creationGrid.y + 20)
             await page.mouse.up()
             await page.locator('.pending-schedule').click()
             const creation = page.getByRole('dialog')

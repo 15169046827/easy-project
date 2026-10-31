@@ -617,7 +617,7 @@ export default {
         showBaselineTitleOn: '点击隐藏基线对比',
         showBaselineTitleOff: '叠加显示计划基线与实际偏差',
         exportTitle: '导出图片',
-        zoomTitle: 'Ctrl+滚轮缩放',
+        zoomTitle: '滚轮上下 · Shift+滚轮左右 · Ctrl+滚轮缩放',
         baselineSaved: '基线已保存于 {date}',
         baselineDelayed: '{count} 个任务较基线延期',
         baselineOnTrack: '全部按计划基线推进',

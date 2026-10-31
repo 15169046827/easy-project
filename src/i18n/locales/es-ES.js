@@ -641,7 +641,7 @@ export default {
         showBaselineTitleOn: 'Ocultar comparación con la línea base',
         showBaselineTitleOff: 'Superponer línea base y desviación real',
         exportTitle: 'Exportar imagen',
-        zoomTitle: 'Ctrl + rueda para ampliar',
+        zoomTitle: 'Rueda: vertical · Mayús+rueda: horizontal · Ctrl+rueda: zoom',
         baselineSaved: 'Línea base guardada el {date}',
         baselineDelayed: '{count} tareas retrasadas respecto a la línea base',
         baselineOnTrack: 'Todo sigue la línea base',

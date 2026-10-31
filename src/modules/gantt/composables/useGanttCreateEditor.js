@@ -29,14 +29,14 @@ export function useGanttCreateEditor({ projectId, activeProject, message, messag
     })
     const createForm = ref(defaults())
 
-    /** @param {Date} startDate @param {Date} endDate */
+    /** @param {Date} [startDate] @param {Date} [endDate] */
     function openCreateEditor(startDate, endDate) {
         if (savingTask.value) return
         createError.value = ''
         createForm.value = {
             ...defaults(),
-            start_time: dateKey(startDate),
-            end_time: dateKey(endDate),
+            start_time: startDate ? dateKey(startDate) : '',
+            end_time: endDate ? dateKey(endDate) : '',
             effort_days: null
         }
         creatingTask.value = true

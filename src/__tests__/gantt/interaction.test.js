@@ -50,8 +50,14 @@ describe('Gantt drag calculations', () => {
         expect(dayOfMonth(left.end)).toBe(13)
         expect(dayOfMonth(right.start)).toBe(10)
         expect(dayOfMonth(right.end)).toBe(15)
-        expect(calculateDragUpdate(localDate(10), localDate(13), 3, 'resize-left')).toBeNull()
-        expect(calculateDragUpdate(localDate(10), localDate(13), -3, 'resize-right')).toBeNull()
+        expect(calculateDragUpdate(localDate(10), localDate(13), 3, 'resize-left').start).toEqual(
+            localDate(13)
+        )
+        expect(calculateDragUpdate(localDate(10), localDate(13), -3, 'resize-right').end).toEqual(
+            localDate(10)
+        )
+        expect(calculateDragUpdate(localDate(10), localDate(13), 4, 'resize-left')).toBeNull()
+        expect(calculateDragUpdate(localDate(10), localDate(13), -4, 'resize-right')).toBeNull()
     })
 })
 

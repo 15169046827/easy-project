@@ -1,5 +1,7 @@
 # EasyProject桌面内部IPC契约
 
+2026-10-31逐行排期/层级拖动候选：task/update可选`order_placement:{target_id:string,position:"before"|"after"|"inside"}`，必须同时显式传`parent`。before/after的parent须等于目标父ID，inside须等于目标ID；目标与来源必须活跃、不同且同项目。共享entity写事务包含普通任务/父子/完成约束和目标校验、同级整型顺序规范化，失败整体回滚；移动父任务保留子树关联，拒绝循环及完成祖先下挂载。此对象不持久化、不新增动作或数据库schema；仅IPC/HTTP内部参数，MCP task_update Schema不新增该对象（既有parent修改继续支持）。候选未部署，独立MCP暂不替换。一天日期范围start=end合法，不代表自动改为Milestone或零工作量。
+
 2026-10-29查询候选：仅hierarchy:true的task/get_all增加可选statusScope:"top_level"|"all_tasks"，省略为兼容旧调用的all_tasks；null/非字符串/未知值拒绝。top_level在status或statusIds存在时，只以根自身状态决定是否入选，子项仍按其余条件展示；all_tasks按各层状态匹配并保留祖先context_only。keyword/priority等其它条件仍可命中后代。统计卡与当前模式共用此口径，概览仍移除状态过滤，保留其它条件。无状态条件时两值不改变根入选。Web共享同一服务及账号隔离；MCP task_list Schema不新增此输入、独立程序不替换。实际部署见GANTT_HIERARCHY_CHECKPOINT。
 
 2026-10-28查询候选：`task/get_all`增加可选`statusIds:string[]`，最多1000个完整TASK_STATUS ID，去重后以OR匹配；省略不限制，空数组明确无结果，非法类型/ID拒绝。与projectId/keyword/status/priority/assignee等其它条件为AND，平铺与hierarchy都在服务端筛选后分页，层级模式保留匹配子项祖先上下文。跨项目统计卡仅按内置key或trim/忽略大小写的自定义名称合计，点击传各项目独立ID集合，不合并字典或猜完成属性。Web复用同一账号工作区边界。此字段仅新增IPC/HTTP内部查询能力，既有MCP task_list Schema不新增输入/权限，独立MCP不用替换；候选实际部署见TASK_PRESENTATION_V2_CHECKPOINT。

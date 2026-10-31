@@ -118,7 +118,11 @@ for (const [model, actions] of Object.entries(catalog.actions)) {
             return cells[1] === model && cells[2] === action
         })
         if (!row) throw new Error(`Missing documented action: ${model}.${action}`)
-        const details = row.split('|').slice(3, -1).join('|').trim()
+        const details =
+            row.split('|').slice(3, -1).join('|').trim() +
+            (model === 'task' && action === 'update'
+                ? '\n\n可选order_placement:{target_id:string,position:"before"|"after"|"inside"}，必须同时显式parent；before/after父ID等于目标父ID，inside父ID等于目标ID。来源/目标须不同、活跃、同项目；共享entity事务内应用层级/完成校验和整型同级顺序规范化，失败整体回滚。父移动保留子树，拒绝循环/完成祖先旁路；不存储此对象、不迁移schema，不扩展MCP task_update Schema。一天start=end合法，不自动变更任务类型/工作量。'
+                : '')
         interfaces.push({
             key: `ipc_${model}_${action}`,
             name: `${models[model]}·${operations[action]}`,

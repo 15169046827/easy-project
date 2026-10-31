@@ -92,7 +92,7 @@
         </div>
 
         <div
-            v-if="projectId && rows.length"
+            v-if="projectId"
             class="scroller-wrap"
             :style="{
                 '--name-width': `${nameWidth}px`,
@@ -123,7 +123,7 @@
                     :style="{
                         '--dw': `${dayWidth}px`,
                         width: `${nameWidth + days.length * dayWidth}px`,
-                        height: `${headerHeight + rows.length * rowHeight}px`
+                        height: `${headerHeight + (rows.length + 1) * rowHeight}px`
                     }"
                 >
                     <div class="gantt-header">
@@ -171,28 +171,27 @@
                         :data-row-task-id="task.id"
                         :class="{
                             'schedule-conflict': conflictIds.has(task.id),
-                            'order-target': dragOverId === task.id
+                            'order-target': dragOverId === task.id,
+                            'tree-child': task.level > 0,
+                            'row-drag-source': rowGesture?.id === task.id,
+                            [`drop-${rowTarget?.position}`]: rowTarget?.id === task.id
                         }"
                         :style="{ top: `${headerHeight + index * rowHeight}px` }"
                     >
                         <div
                             class="task-label"
+                            @pointerdown="startRowDrag($event, task)"
+                            @keydown.alt.up.prevent="moveTask(task, -1)"
+                            @keydown.alt.down.prevent="moveTask(task, 1)"
                             :style="{
                                 width: `${nameWidth}px`,
                                 paddingLeft: `${12 + task.level * 16}px`
                             }"
                         >
-                            <Button
-                                text
-                                icon="pi pi-bars"
-                                class="reorder-handle"
-                                :aria-label="$t('tasks.sortManual')"
-                                @pointerdown="startRowDrag($event, task)"
-                                @keydown.up.prevent="moveTask(task, -1)"
-                                @keydown.down.prevent="moveTask(task, 1)"
-                            />
+                            <span v-if="task.level" class="tree-branch" aria-hidden="true">└</span>
                             <Button
                                 v-if="task.hasChildren"
+                                class="tree-toggle"
                                 text
                                 :icon="
                                     collapsed.has(task.id)
@@ -212,7 +211,7 @@
                                 class="task-label-text"
                                 :title="task.name"
                                 v-tooltip.top="{ value: task.name, class: 'task-content-tooltip' }"
-                                @click="openEditor(task)"
+                                @click="!ignoreRowClick() && openEditor(task)"
                             >
                                 {{ task.type === 'Milestone' ? '◆ ' : '' }}{{ task.name }}
                             </Button>
@@ -221,26 +220,24 @@
                                     text
                                     severity="secondary"
                                     :title="$t('gantt.moveEarlier')"
+                                    icon="pi pi-angle-left"
                                     :disabled="task.hasChildren || !parse(task.start_time)"
                                     @click="shift(task, -1)"
-                                >
-                                    ‹
-                                </Button>
+                                />
                                 <Button
                                     text
                                     severity="secondary"
                                     :title="$t('gantt.moveLater')"
+                                    icon="pi pi-angle-right"
                                     :disabled="task.hasChildren || !parse(task.start_time)"
                                     @click="shift(task, 1)"
-                                >
-                                    ›
-                                </Button>
+                                />
                             </span>
                         </div>
                         <div
                             class="row-grid"
                             :style="{ left: `${nameWidth}px` }"
-                            @mousedown="onGridMouseDown"
+                            @mousedown="onGridMouseDown($event, task, index)"
                         >
                             <span
                                 v-for="day in days"
@@ -338,7 +335,56 @@
                         ></div>
                     </div>
 
+                    <div
+                        class="gantt-row add-task-row"
+                        :style="{ top: `${headerHeight + rows.length * rowHeight}px` }"
+                    >
+                        <div class="task-label" :style="{ width: `${nameWidth}px` }">
+                            <Button
+                                text
+                                icon="pi pi-plus"
+                                :aria-label="$t('tasks.newTask')"
+                                @click="openCreateEditor()"
+                            />
+                        </div>
+                        <div
+                            class="row-grid"
+                            :style="{ left: `${nameWidth}px` }"
+                            @mousedown="onGridMouseDown($event, null, rows.length)"
+                        >
+                            <span
+                                v-for="day in days"
+                                :key="day.key"
+                                :class="{ today: day.today, 'non-working': !day.working }"
+                            ></span>
+                        </div>
+                    </div>
+                    <Button
+                        v-if="pendingSelection"
+                        class="pending-schedule"
+                        icon="pi pi-plus"
+                        :style="pendingStyle"
+                        :aria-label="$t('gantt.confirmSchedule')"
+                        v-tooltip.top="$t('gantt.confirmSchedule')"
+                        @click="confirmPending"
+                    />
+
                     <!-- 依赖连线 -->
+                    <div
+                        v-if="rowGesture"
+                        class="row-drag-ghost"
+                        :style="{ left: `${rowGesture.x + 12}px`, top: `${rowGesture.y + 12}px` }"
+                    >
+                        {{ rowGesture.name }}
+                        <small v-if="rowTarget">
+                            ·
+                            {{
+                                $t(
+                                    `gantt.drop${rowTarget.position[0].toUpperCase()}${rowTarget.position.slice(1)}`
+                                )
+                            }}</small
+                        >
+                    </div>
                     <svg
                         class="dependency-layer"
                         :style="{
@@ -485,12 +531,30 @@ const { dragOverId, onDragStart, onDragOver, onDrop, onDragEnd, moveTask } = use
     successMessage: orderSuccess,
     t
 })
-const { startRowDrag } = useGanttRowReordering({
+const { startRowDrag, rowGesture, rowTarget, ignoreRowClick } = useGanttRowReordering({
     tasks,
     onDragStart,
     onDragOver,
     onDrop,
-    onDragEnd
+    onDragEnd,
+    async onPlace(source, target, placement) {
+        if (loading.value) return
+        loading.value = true
+        orderError.value = ''
+        try {
+            await crudAction('task', 'update', {
+                id: source.id,
+                parent: placement.parent,
+                order_placement: { target_id: target.id, position: placement.position }
+            })
+            await loadChecked()
+            collapsed.value = new Set([...collapsed.value].filter(id => id !== placement.parent))
+        } catch (error) {
+            orderError.value = error instanceof Error ? error.message : String(error)
+        } finally {
+            loading.value = false
+        }
+    }
 })
 const {
     creatingTask,
@@ -689,16 +753,29 @@ async function shift(task, delta) {
     }
 }
 
-const { createDrag, createPreviewStyle, onGridMouseDown } = useGanttCreationDragging({
+const {
+    createDrag,
+    createPreviewStyle,
+    pendingSelection,
+    pendingStyle,
+    confirmPending,
+    onGridMouseDown
+} = useGanttCreationDragging({
     scroller,
     viewRange: viewport.viewRange,
     days,
     dayWidth,
     nameWidth,
     headerHeight,
-    datedTasks: rows,
+    rows,
     rowHeight,
-    openCreateEditor
+    confirmSelection(task, start, end) {
+        if (!task) return openCreateEditor(start, end)
+        openEditor(task)
+        editForm.value.start_time = dateKey(start)
+        editForm.value.end_time = dateKey(end)
+        editForm.value.schedule_mode = 'fixed_dates'
+    }
 })
 
 const { linking, linkLine, startLink } = useGanttDependencyDragging({
@@ -1086,6 +1163,8 @@ onMounted(async () => {
     font-size: 1rem;
     display: grid;
     place-items: center;
+    padding: 0;
+    line-height: 1;
 }
 .date-actions button:hover {
     background: #dbeafe;
@@ -1110,7 +1189,7 @@ onMounted(async () => {
     position: absolute;
     z-index: 2;
     height: 26px;
-    min-width: 4rem;
+    min-width: 2px;
     overflow: hidden;
     border: 0;
     border-radius: 5px;
@@ -1374,6 +1453,67 @@ onMounted(async () => {
     background: rgb(37 99 235 / 18%);
     border: 2px dashed #2563eb;
     pointer-events: none;
+}
+.pending-schedule {
+    position: absolute;
+    z-index: 3;
+    padding: 0;
+    min-width: 2px;
+    border-radius: 5px;
+    background: #3b82f6;
+    color: #fff;
+}
+.add-task-row .task-label {
+    justify-content: center;
+}
+.task-label {
+    cursor: grab;
+    user-select: none;
+}
+.tree-child .task-label {
+    background: var(--color-subtle);
+}
+.tree-branch {
+    color: var(--color-text-secondary);
+    margin-right: 4px;
+}
+.gantt-row {
+    transition: transform 0.15s ease;
+}
+.row-drag-source .task-label {
+    opacity: 0.45;
+}
+.drop-before .task-label {
+    box-shadow: inset 0 3px var(--color-primary);
+    transform: translateY(3px);
+}
+.drop-after .task-label {
+    box-shadow: inset 0 -3px var(--color-primary);
+    transform: translateY(-3px);
+}
+.drop-inside .task-label {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -3px;
+}
+.row-drag-ghost {
+    position: fixed;
+    z-index: 100;
+    pointer-events: none;
+    max-width: 260px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-primary);
+    border-radius: 6px;
+    color: var(--color-text);
+    background: var(--color-surface);
+    box-shadow: 0 6px 18px rgb(15 23 42 / 20%);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+@media (prefers-reduced-motion: reduce) {
+    .gantt-row {
+        transition: none;
+    }
 }
 
 /* ---------- 依赖连线 ---------- */

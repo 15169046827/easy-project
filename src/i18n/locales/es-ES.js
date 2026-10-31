@@ -615,6 +615,10 @@ export default {
         }
     },
     gantt: {
+        confirmSchedule: 'Confirma estas fechas en el formulario; cancela para descartarlas',
+        dropBefore: 'Colocar antes del destino',
+        dropAfter: 'Colocar después del destino',
+        dropInside: 'Convertir en subtarea del destino',
         barReadOnlyHint:
             'Las fechas de la tarea principal se calculan de sus subtareas. Haz doble clic o pulsa Intro para editar otros datos, o haz clic en el nombre.',
         barInteractionHint:

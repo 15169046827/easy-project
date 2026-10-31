@@ -24,14 +24,14 @@ function taskBarStyle(task, context) {
         } else if (ds.mode === 'resize-left') {
             start = new Date(ds.origStart)
             start.setDate(start.getDate() + delta)
-            if (dayStart(start).getTime() >= dayStart(ds.origEnd).getTime())
-                start = new Date(ds.origEnd.getTime() - 86400000)
+            if (dayStart(start).getTime() > dayStart(ds.origEnd).getTime())
+                start = new Date(ds.origEnd)
             end = ds.origEnd
         } else if (ds.mode === 'resize-right') {
             end = new Date(ds.origEnd)
             end.setDate(end.getDate() + delta)
-            if (dayStart(end).getTime() <= dayStart(ds.origStart).getTime())
-                end = new Date(ds.origStart.getTime() + 86400000)
+            if (dayStart(end).getTime() < dayStart(ds.origStart).getTime())
+                end = new Date(ds.origStart)
             start = ds.origStart
         }
     }

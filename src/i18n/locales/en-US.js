@@ -613,6 +613,10 @@ export default {
         }
     },
     gantt: {
+        confirmSchedule: 'Confirm this schedule in the task form; cancel to discard',
+        dropBefore: 'Place before target',
+        dropAfter: 'Place after target',
+        dropInside: 'Make a child of target',
         barReadOnlyHint:
             'Parent dates are derived from subtasks. Double-click or press Enter to edit other details, or click the name.',
         barInteractionHint:

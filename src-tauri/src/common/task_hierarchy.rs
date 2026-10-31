@@ -416,4 +416,57 @@ mod tests {
         .unwrap();
         validate_completion(&conn, None).unwrap();
     }
+
+    #[test]
+    fn placement_moves_subtrees_and_rolls_back_invalid_targets() {
+        let f = Fixture::new();
+        let first = f.task("First", "", false);
+        let second = f.task("Second", "", false);
+        let child = f.task("Child", &first, false);
+        let move_task = |id: &str, parent: &str, target: &str, position: &str| {
+            entity_api::dispatch(
+                f.db(),
+                "task",
+                "update",
+                json!({
+                    "id":id, "parent":parent,
+                    "order_placement":{"target_id":target,"position":position}
+                }),
+            )
+        };
+        move_task(&first, &second, &second, "inside").unwrap();
+        assert_eq!(
+            entity_api::get(f.db(), "task", &first).unwrap()["parent"],
+            second
+        );
+        assert_eq!(
+            entity_api::get(f.db(), "task", &child).unwrap()["parent"],
+            first
+        );
+        assert!(move_task(&second, &child, &child, "inside").is_err());
+        assert_eq!(
+            entity_api::get(f.db(), "task", &second).unwrap()["parent"],
+            ""
+        );
+        assert!(move_task(&first, "", "TASK:missing", "before").is_err());
+        assert_eq!(
+            entity_api::get(f.db(), "task", &first).unwrap()["parent"],
+            second
+        );
+        move_task(&first, "", &second, "before").unwrap();
+        assert!(
+            entity_api::get(f.db(), "task", &first).unwrap()["sort_order"]
+                .as_i64()
+                .unwrap()
+                < entity_api::get(f.db(), "task", &second).unwrap()["sort_order"]
+                    .as_i64()
+                    .unwrap()
+        );
+        let done = f.task("Completed destination", "", true);
+        assert!(move_task(&first, &done, &done, "inside").is_err());
+        assert_eq!(
+            entity_api::get(f.db(), "task", &first).unwrap()["parent"],
+            ""
+        );
+    }
 }

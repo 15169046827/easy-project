@@ -96,7 +96,7 @@ for (const width of [1920, 1280, 960])
             )
             const left = bounds.x + nameWidth + 2
             const viewportWidth = right - left
-            const grid = await page.locator('.row-grid').boundingBox()
+            const grid = await page.locator('.add-task-row .row-grid').boundingBox()
             const y = grid.y + 20
             const columns = await page.locator('.date-cell').count()
 
@@ -115,6 +115,8 @@ for (const width of [1920, 1280, 960])
                 .toBeGreaterThan(firstPan + 80)
             await page.screenshot({ path: `test-results/gantt-edge-preview-${width}-${dark}.png` })
             await page.mouse.up()
+            await expect(page.locator('.create-panel')).toHaveCount(0)
+            await page.locator('.pending-schedule').click()
             await expect(page.locator('.create-panel')).toBeVisible()
             const start = await page.locator('#gantt-create-start').inputValue()
             const end = await page.locator('#gantt-create-end').inputValue()
@@ -290,8 +292,9 @@ for (const width of [1920, 1280, 960])
             ).toBe(true)
             await page.mouse.move(0, 0)
             await expect(page.getByRole('tooltip')).toHaveCount(0)
-            box = await bar.boundingBox()
-            await page.mouse.move(box.x + 25, box.y + box.height / 2)
+            // Use an actionable, visible bar location after the asynchronous
+            // save/reload and edge pan; a raw bounding-box origin may be covered.
+            await bar.hover()
             const tooltip = page.getByRole('tooltip')
             await expect(tooltip).toBeVisible()
             expect(

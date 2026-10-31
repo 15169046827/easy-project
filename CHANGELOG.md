@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- Candidate (2026-10-31): Row-scoped scheduling for undated leaf tasks with a blue confirmation block; a permanent bottom add row; one-day resize support; centered date-shift icons; whole-name-column tree placement with before/after/child targets and atomic integer ordering/rollback. Preserve derived parent dates, task dictionaries, local/offline use and all real data. Candidate verification and delivery remain separate in GANTT_ROW_SCHEDULING_CHECKPOINT.
+
 - 2026-10-30 delivered: Continuous two-way Gantt edge panning during range creation, task movement and resizing; stable calendar anchors across extensions; explicit double-click/Enter/name editing without drag-triggered dialogs.376 unit/130 UI/13 HTTP and native1280 light/dark checks passed; fresh protected desktop/static-web updates preserved all data and backend/MCP. Native stationary-edge hold/960 remain tool-limited, with browser strict-CSP coverage recorded. No public Release.
 
 - Candidate: Continuously pan the Gantt calendar at either edge during range creation, movement and resizing, extending dates without shifting logical anchors. Separate dragging from explicit double-click/Enter/name editing; cancel loops on release, Escape or lifecycle changes. Parent dates remain derived and read-only. Strict-CSP responsive checks passed; final gates, native verification and approved delivery remain pending.

@@ -265,6 +265,11 @@ pub fn handle_action(
         }
         "update" => {
             info!("Updating task");
+            if data.get("order_placement").is_some()
+                && data.get("parent").and_then(Value::as_str).is_none()
+            {
+                return ApiResponse::err("order_placement requires an explicit parent string");
+            }
 
             // 提取 id
             let id = match data.get("id") {
@@ -366,6 +371,7 @@ pub fn handle_action(
                 "comment",
                 "assignee",
                 "sort_order",
+                "order_placement",
             ];
             let current = crate::services::entity_api::get(db, "task", id)?;
             let derived = current["summary"]["has_children"]
@@ -415,6 +421,9 @@ pub fn handle_action(
             };
             let completing_task = selected_status.is_completed;
             for (key, value) in data.as_object().unwrap() {
+                if key == "order_placement" {
+                    continue;
+                }
                 if key == "id" {
                     continue;
                 }
@@ -477,6 +486,9 @@ pub fn handle_action(
 
             if let Err(e) = task_db::update_task(db, &param_set, &value_set) {
                 return ApiResponse::err(&format!("DB error: {}", e));
+            }
+            if let Some(placement) = data.get("order_placement") {
+                task_db::place_task(db, id, placement)?;
             }
             ApiResponse::ok(None)
         }

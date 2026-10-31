@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-10-31候选：CreationDragging保留绝对日序/边缘平移，按起始rows索引限定行，仅未排期叶子接受，pendingSelection蓝＋按钮确认再交Create/Edit草稿；底部独立add-task-row永不排序。interaction及Presentation允许一天范围，task-bar不再4rem撑宽。RowReordering从名称整列接pointer，8px阈值/尾随click守护、before/after/inside几何落点及客户端后代环拒绝，PrimeVue按钮保留键盘入口。task/update的order_placement在已有entity事务内经task_service再调用task_db::place_task，绑定查询验证目标项目/父ID、规范化整型同级顺序，失败回滚父变更；仍通过task_hierarchy完成/循环约束，不走直接SQL旁路。MCP Schema不新增此内部对象，IPC/HTTP契约需同步；候选与实际交付分开见GANTT_ROW_SCHEDULING_CHECKPOINT。
+
 2026-10-30边缘拖动候选：useGanttEdgeScrolling统一RAF边缘平移/21日扩展/左侧scroll补偿、代际令牌及生命周期清理；dragCoordinates以本地日历日序转换稳定像素，避免DST日长影响。创建选区保存绝对日序而非易变数组下标，移动/缩放保存稳定日历坐标并在mouseup补采位置。useGanttTaskDragging只对越过8px且至少一日的变动提交原有服务，不再由零位移触发编辑；onBarEdit守护尾随双击和手柄，Enter/名称保留可达入口。父汇总无缩放手柄，提示走真实PrimeVue三语/nonce。无API/MCP/Rust变化，验证/交付分开见专项。
 
 2026-10-30滚动/校验候选：GanttView以flex受限scroller-wrap约束内部gantt-scroller，主题纵横滚动条可见，统一sticky gantt-header保留年月/日期；useGanttNavigation在纵向溢出时普通wheel上下、deltaX水平、Ctrl缩放。task/utils/taskFormValidation共用于TaskList和GanttTaskDialog；首次submit后计算字段错误，真实PrimeVue invalid/Message及ARIA、首错焦点，修正立即清错。项目在甘特固定、编辑不新增隐藏优先级要求；网络/关联保存错误仍独立。TaskEffortInput保留InputNumber但关自动焦点全选，避免其ref就绪竞态路径；该问题曾一次出现，完整证据/推断及复验见SCROLL_FORM_VALIDATION_CHECKPOINT。无Rust、持久化、API或MCP改动。

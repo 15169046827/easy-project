@@ -30,9 +30,9 @@ function setup() {
         dayWidth: ref(42),
         nameWidth: 280,
         headerHeight: 62,
-        datedTasks: ref([{}]),
+        rows: ref([{}]),
         rowHeight: 48,
-        openCreateEditor
+        confirmSelection: openCreateEditor
     }
     /** @type {{drag?: ReturnType<typeof useGanttCreationDragging>}} */
     const state = {}
@@ -65,15 +65,42 @@ function setup() {
 describe('Gantt creation drag boundary', () => {
     it('hands the selected range to the editor and clears preview state', () => {
         const state = setup()
-        state.drag.onGridMouseDown(state.event(290))
+        state.drag.onGridMouseDown(state.event(290), null, 0)
         expect(state.drag.createPreviewStyle.value).toMatchObject({ left: '286px', height: '48px' })
         state.grid.dispatchEvent(new MouseEvent('mousemove', { clientX: 330, bubbles: true }))
         document.dispatchEvent(new MouseEvent('mouseup', { clientX: 330, clientY: 80 }))
+        expect(state.openCreateEditor).not.toHaveBeenCalled()
+        state.drag.confirmPending()
         expect(state.openCreateEditor).toHaveBeenCalledWith(
+            null,
             new Date(2026, 6, 1),
             new Date(2026, 6, 2)
         )
         expect(state.drag.createDrag.value).toBeNull()
+    })
+    it('does not replace existing dates or parent summaries', () => {
+        const state = setup()
+        for (const task of [
+            { start_time: '2026-07-01' },
+            { end_time: '2026-07-01' },
+            { hasChildren: true }
+        ]) {
+            state.drag.onGridMouseDown(state.event(290), task, 0)
+            expect(state.drag.createDrag.value).toBeNull()
+        }
+    })
+    it('anchors the preview to its source row and supports same-day selection and Escape', () => {
+        const state = setup()
+        const task = { id: 'unplanned', start_time: '', end_time: '' }
+        state.drag.onGridMouseDown(state.event(290), task, 3)
+        expect(state.drag.createPreviewStyle.value.top).toBe('206px')
+        document.dispatchEvent(new MouseEvent('mouseup', { clientX: 305, clientY: 80 }))
+        expect(state.openCreateEditor).not.toHaveBeenCalled()
+        expect(state.drag.pendingStyle.value.height).toBe('26px')
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+        expect(state.drag.pendingSelection.value).toBeNull()
+        state.drag.confirmPending()
+        expect(state.openCreateEditor).not.toHaveBeenCalled()
     })
     it('rejects clicks before the timeline or after the final date', () => {
         const state = setup()

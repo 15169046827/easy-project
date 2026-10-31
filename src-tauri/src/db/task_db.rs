@@ -22,6 +22,73 @@ pub fn swap_task_order(db: &DbState, source_id: &str, target_id: &str) -> Result
     swap_task_order_connection(&mut conn, source_id, target_id)
 }
 
+// Called inside the shared entity update transaction, after hierarchy validation.
+// Normalize integer sibling positions atomically, never use fractional ranks.
+pub fn place_task(db: &DbState, source: &str, placement: &serde_json::Value) -> Result<(), String> {
+    let object = placement
+        .as_object()
+        .ok_or("order_placement must be an object")?;
+    if object.len() != 2 {
+        return Err("order_placement requires target_id and position".into());
+    }
+    let target = placement["target_id"]
+        .as_str()
+        .ok_or("Missing placement target_id")?;
+    let position = placement["position"]
+        .as_str()
+        .ok_or("Missing placement position")?;
+    if source == target || !matches!(position, "before" | "after" | "inside") {
+        return Err("Invalid task placement".into());
+    }
+    let conn = db.lock_connection().map_err(|e| e.to_string())?;
+    let relation = |id: &str| {
+        conn.query_row(
+            "SELECT project_id, COALESCE(parent, '') FROM task WHERE id=?1 AND stateflag='0'",
+            [id],
+            |row| Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?)),
+        )
+        .map_err(|e| e.to_string())
+    };
+    let (project, parent) = relation(source)?;
+    let (target_project, target_parent) = relation(target)?;
+    if project != target_project
+        || parent
+            != if position == "inside" {
+                target
+            } else {
+                &target_parent
+            }
+    {
+        return Err("Placement target does not match the destination parent/project".into());
+    }
+    let mut statement = conn.prepare("SELECT id FROM task WHERE project_id=?1 AND COALESCE(parent,'')=?2 AND stateflag='0' AND id<>?3 ORDER BY sort_order, id").map_err(|e| e.to_string())?;
+    let mut siblings = statement
+        .query_map(params![project, parent, source], |row| {
+            row.get::<_, String>(0)
+        })
+        .map_err(|e| e.to_string())?
+        .collect::<rusqlite::Result<Vec<_>>>()
+        .map_err(|e| e.to_string())?;
+    let index = if position == "inside" {
+        siblings.len()
+    } else {
+        siblings
+            .iter()
+            .position(|id| id == target)
+            .ok_or("Placement target unavailable")?
+            + usize::from(position == "after")
+    };
+    siblings.insert(index, source.to_string());
+    for (index, id) in siblings.iter().enumerate() {
+        conn.execute(
+            "UPDATE task SET sort_order=?1, update_time=datetime('now','localtime') WHERE id=?2",
+            params![index as i64, id],
+        )
+        .map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
 fn swap_task_order_connection(
     conn: &mut rusqlite::Connection,
     source_id: &str,

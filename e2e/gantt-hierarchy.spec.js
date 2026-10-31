@@ -82,6 +82,17 @@ for (const width of [1920, 1280, 960])
                                 ;[a.sort_order, b.sort_order] = [b.sort_order, a.sort_order]
                                 return { success: true, data: {} }
                             }
+                            if (args.model === 'task' && args.action === 'update') {
+                                const source = tasks.find(task => task.id === args.data.id)
+                                const target = tasks.find(
+                                    task => task.id === args.data.order_placement.target_id
+                                )
+                                source.parent = args.data.parent
+                                source.sort_order =
+                                    target.sort_order +
+                                    (args.data.order_placement.position === 'before' ? -1 : 1)
+                                return { success: true, data: {} }
+                            }
                             if (args.action !== 'get_all' && args.action !== 'get_by_project')
                                 throw Error('Unexpected write')
                             const list =
@@ -116,12 +127,41 @@ for (const width of [1920, 1280, 960])
             await page.goto('/#/project/p')
             await page.getByRole('button', { name: /甘特图$/ }).click()
             const chart = page.locator('.gantt')
-            await expect(page.locator('.gantt-row')).toHaveCount(4)
+            await expect(page.locator('.gantt-row:not(.add-task-row)')).toHaveCount(4)
+            await expect(page.locator('.add-task-row')).toHaveCount(1)
+            // Blank dates on an already scheduled task are inert.
+            const scheduledGrid = await page
+                .locator('[data-row-task-id="child"] .row-grid')
+                .boundingBox()
+            await page.mouse.move(scheduledGrid.x + 90, scheduledGrid.y + 20)
+            await page.mouse.down()
+            await page.mouse.move(scheduledGrid.x + 160, scheduledGrid.y + 20)
+            await page.mouse.up()
+            await expect(page.locator('.pending-schedule')).toHaveCount(0)
+            const emptyGrid = await page
+                .locator('[data-row-task-id="empty"] .row-grid')
+                .boundingBox()
+            await page.mouse.move(emptyGrid.x + 90, emptyGrid.y + 20)
+            await page.mouse.down()
+            await page.mouse.move(emptyGrid.x + 160, emptyGrid.y + 20)
+            const preview = await page.locator('.create-preview').boundingBox()
+            expect(preview.height).toBe(48)
+            expect(Math.abs(preview.y - emptyGrid.y)).toBeLessThan(2)
+            await page.mouse.up()
+            await expect(page.getByRole('dialog')).toHaveCount(0)
+            await page.locator('.pending-schedule').click()
+            await expect(page.locator('#gantt-edit-name')).toHaveValue('Unscheduled child')
+            await expect(page.locator('#gantt-edit-start')).not.toHaveValue('')
+            await expect(page.locator('#gantt-edit-end')).not.toHaveValue('')
+            await page.getByRole('dialog').locator('.btn-cancel').click()
+            await expect(page.getByRole('dialog')).toHaveCount(0)
+            await expect(page.locator('[data-row-task-id="empty"] .task-bar')).toHaveCount(0)
             const creationGrid = await page.locator('.row-grid').last().boundingBox()
             await page.mouse.move(creationGrid.x + 100, creationGrid.y + 20)
             await page.mouse.down()
             await page.mouse.move(creationGrid.x + 170, creationGrid.y + 20)
             await page.mouse.up()
+            await page.locator('.pending-schedule').click()
             const creation = page.getByRole('dialog')
             await expect(creation.locator('.required-marker')).toHaveCount(5)
             await creation.locator('.btn-save').click()
@@ -155,7 +195,7 @@ for (const width of [1920, 1280, 960])
             const root = page.locator('[data-row-task-id="root"]')
             await expect(root.locator('.bar-dates')).toHaveText('10/28 – 10/30')
             await root.getByRole('button', { name: '折叠任务', exact: true }).click()
-            await expect(page.locator('.gantt-row')).toHaveCount(2)
+            await expect(page.locator('.gantt-row:not(.add-task-row)')).toHaveCount(2)
             const foldedChart = await page.locator('.gantt-scroller').boundingBox()
             for (const button of await page.locator('.timeline-nav').all()) {
                 const position = await button.boundingBox()
@@ -165,14 +205,17 @@ for (const width of [1920, 1280, 960])
                 )
             }
             await root.getByRole('button', { name: '展开任务', exact: true }).click()
-            await expect(page.locator('.gantt-row')).toHaveCount(4)
-            await root
-                .locator('.reorder-handle')
-                .dragTo(page.locator('[data-row-task-id="other"] .task-label'))
+            await expect(page.locator('.gantt-row:not(.add-task-row)')).toHaveCount(4)
+            const from = await root.locator('.task-label').boundingBox()
+            const to = await page.locator('[data-row-task-id="other"] .task-label').boundingBox()
+            await page.mouse.move(from.x + 100, from.y + 24)
+            await page.mouse.down()
+            await page.mouse.move(to.x + 100, to.y + to.height - 4, { steps: 8 })
+            await page.mouse.up()
             await expect
                 .poll(() =>
                     page.evaluate(() =>
-                        window.__EASY_PROJECT_CALLS__.some(c => c.args?.action === 'swap_order')
+                        window.__EASY_PROJECT_CALLS__.some(c => c.args?.data?.order_placement)
                     )
                 )
                 .toBe(true)
@@ -180,6 +223,26 @@ for (const width of [1920, 1280, 960])
                 'data-row-task-id',
                 'other'
             )
+            // Middle-zone drop explicitly reparents without changing descendant IDs.
+            const childFrom = await page
+                .locator('[data-row-task-id="empty"] .task-label')
+                .boundingBox()
+            const parentTo = await page
+                .locator('[data-row-task-id="other"] .task-label')
+                .boundingBox()
+            await page.mouse.move(childFrom.x + 100, childFrom.y + 24)
+            await page.mouse.down()
+            await page.mouse.move(parentTo.x + 100, parentTo.y + 24, { steps: 8 })
+            await expect(page.locator('[data-row-task-id="other"]')).toHaveClass(/drop-inside/)
+            await page.mouse.up()
+            await expect
+                .poll(() =>
+                    page.evaluate(
+                        () => window.__GANTT_TASKS__.find(task => task.id === 'empty').parent
+                    )
+                )
+                .toBe('other')
+            await expect(page.getByRole('dialog')).toHaveCount(0)
             await page.mouse.move(0, 0)
             await page.screenshot({ path: `test-results/gantt-hierarchy-${width}-${dark}.png` })
             await page.evaluate(() => {
@@ -197,7 +260,8 @@ for (const width of [1920, 1280, 960])
                 }
             })
             await page.locator('.gantt-toolbar button:has(.pi-refresh)').click()
-            await expect(page.locator('.gantt-row')).toHaveCount(44)
+            await expect(page.locator('.gantt-row:not(.add-task-row)')).toHaveCount(44)
+            await expect(page.locator('.add-task-row')).toHaveCount(1)
             const scroller = page.locator('.gantt-scroller')
             expect(await scroller.evaluate(el => el.scrollHeight > el.clientHeight)).toBe(true)
             expect(await scroller.evaluate(el => getComputedStyle(el).scrollbarWidth)).not.toBe(

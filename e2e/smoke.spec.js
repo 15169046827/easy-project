@@ -1021,7 +1021,7 @@ test('creates a complete task from the Gantt timeline form', async ({ page }) =>
     await page.goto('/#/project/project-1')
     await page.locator('.view-switch button').nth(1).click()
 
-    const grid = page.locator('.row-grid')
+    const grid = page.locator('.add-task-row .row-grid')
     const box = await grid.boundingBox()
     expect(box).not.toBeNull()
     // The timeline navigation occupies the calendar's left edge. Exercise
@@ -1031,6 +1031,7 @@ test('creates a complete task from the Gantt timeline form', async ({ page }) =>
     await page.mouse.move(box.x + 150, box.y + 20)
     await page.mouse.up()
 
+    await page.locator('.pending-schedule').click()
     await expect(page.locator('.create-panel')).toBeVisible()
     await page.locator('.create-name').fill('Plan launch')
     await page.locator('#gantt-create-start').fill('2026-07-17')

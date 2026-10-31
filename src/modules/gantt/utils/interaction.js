@@ -34,8 +34,7 @@ export function calculateDragUpdate(origStart, origEnd, deltaDays, mode = 'move'
     }
 
     const startsAfterEnd = nextStart.getTime() > nextEnd.getTime()
-    const collapsedByResize = mode !== 'move' && nextStart.getTime() === nextEnd.getTime()
-    if (startsAfterEnd || collapsedByResize) return null
+    if (startsAfterEnd) return null
     return { kind: 'update', start: nextStart, end: nextEnd }
 }
 

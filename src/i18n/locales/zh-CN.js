@@ -592,6 +592,10 @@ export default {
         }
     },
     gantt: {
+        confirmSchedule: '点击确认此排期，打开任务表单；取消不会保存',
+        dropBefore: '放在目标之前',
+        dropAfter: '放在目标之后',
+        dropInside: '作为目标的子任务',
         barReadOnlyHint:
             '父任务日期由子任务汇总；双击任务条或按 Enter 编辑其他信息，也可点击名称。',
         barInteractionHint:

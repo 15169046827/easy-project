@@ -2654,7 +2654,22 @@
                                     "data": {
                                         "type": "object",
                                         "description": "按model/action使用原生参数。task/get_all可选statusIds字符串数组（最多1000个完整TASK_STATUS:32位小写UUID ID），去重后OR匹配；省略不限，空数组无结果，非法类型/ID拒绝，与projectId/status/keyword/priority等AND。平铺及hierarchy均筛选后分页。仅hierarchy:true可选statusScope=top_level|all_tasks（省略兼容all_tasks；null/非字符串/未知值拒绝）：top_level仅根自身状态决定入选、子项按其余条件展示；all_tasks各层状态匹配、祖先context_only。搜索及其它条件仍可命中后代，无状态条件时scope不改变根入选。只访问当前账号工作区，不合并项目状态字典。MCP task_list不因此增加参数。",
-                                        "default": {}
+                                        "default": {},
+                                        "properties": {
+                                            "order_placement": {
+                                                "type": "object",
+                                                "description": "仅task/update内部可选。必须同时传parent；before/after的parent等于目标父ID，inside等于目标ID。来源和目标不同、活跃、同项目。共享事务执行父子/完成/循环校验及整数同级重排，失败整体回滚；父移动保留子树。不扩展MCP Schema，不迁移数据库。",
+                                                "required": ["target_id", "position"],
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "target_id": { "type": "string" },
+                                                    "position": {
+                                                        "type": "string",
+                                                        "enum": ["before", "after", "inside"]
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }

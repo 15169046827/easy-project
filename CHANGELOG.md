@@ -4,7 +4,7 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
-- Candidate (2026-10-31): Consistent centered SVG Gantt arrows, animated two-week viewport navigation even across extended boundaries, vertical wheel and horizontal Shift+wheel/trackpad navigation with continuous calendar extension and reduced-motion/lifecycle handling. No API, backend, MCP or data changes; delivery tracked in GANTT_NAVIGATION_CHECKPOINT.
+- Delivered internally (2026-10-31): Centered theme-aware SVG Gantt arrows, animated two-week viewport navigation across extended boundaries, vertical wheel and horizontal Shift+wheel/trackpad navigation with continuous calendar extension and reduced-motion/lifecycle handling. Desktop and static Web safely updated with fresh protected backups and unchanged data/backend/MCP. Verification scope and native-tool limitations: GANTT_NAVIGATION_CHECKPOINT; no new public Release.
 
 - Delivered internally (2026-10-31), desktop/Web/shared backend: Row-scoped scheduling for undated leaf tasks with a blue confirmation block; a permanent bottom add row; one-day resize support; centered date-shift icons; whole-name-column tree placement with before/after/child targets and atomic ordering/rollback. Protected fresh copies and full data-preservation checks passed; independent MCP and permissions unchanged, no migration or new public Release. Native narrow-window/complete keyboard coverage limitations remain explicit in GANTT_ROW_SCHEDULING_CHECKPOINT.
 

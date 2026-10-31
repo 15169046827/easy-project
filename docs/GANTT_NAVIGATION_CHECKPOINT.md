@@ -1,5 +1,14 @@
 # 甘特导航与滚轮整改检查点
 
+## 2026-10-31 已交付01cfb13：桌面及网页静态安全更新完成
+
+- 本轮范围完成：统一矢量箭头/主题色及几何居中、两周实际跟随短动画、普通纵滚/Shift横滚与双向日期延展。最终源`01cfb1383e776509cc6e5b0ce6b16105c9e2ac61`，规则1.25；WACAS未定义/待确认、实际UPARS1.1.0。分支codex/audit-release-20261006-api，部署基线8a9377d，本次仅交付回执文档，不改产品源码。
+- 桌面：全新E盘受限副本`src-tauri/target/audit-tools/dictionary-overwrite-gantt-navigation-01cfb13-20261031`保存1090原文件，1087原非程序文件SHA保持；覆盖退出0，启动前后全库逐表行摘要相同、integrity ok/FK0。NSIS AB0552完整摘要见下方封存段；实际安装exe `5E22889F1055E07904E68750FF5011EA819ED6AF034EC05BE411D83CE398C77E`与raw9D0447仅标准UNK→NSS三字节差异，逐字节核验过。正式程序已正常启动PID34236（本次观测），未操作登录/真实任务；安装侧伴随校验通过，独立MCP `70E303F85852C21838D879FC4823FB51810E1A0178AE851194BC2E80074DC9C1`不变。
+- 服务器新鲜确认旧current=row-scheduling-b144954/后端DC9853/PID1771后，静态包C126C37A及脚本SHA `3326E1CA54ADB95DD707F9D579420109FE559B2E0C33ECCD2B13F8CDE06818B0`上传摘要一致；current原子切到`/opt/easyproject/releases/gantt-navigation-01cfb13-20261031`。新root700副本`/var/backups/easyproject/gantt-navigation-01cfb13-20261031`保留旧release/配置/Funnel及两库SQLite在线安全副本；72文件清单/772旧assets逐SHA保持，两库全部原字段ID/结构/运行revision及完整性/外键保持。后端`DC985353C444DDD65B5CE5F263610DDBD759CD27F3B4710297AB30E610D0830D`与PID1771均不变、未重启；受限easyproject身份、配置/Funnel/备份及健康timer保持。无迁移、真实CRUD、独立MCP更新或权限变化、无新公开Release。
+- 公网最终正常TLS验收：2 HTML入口nonce CSP/no-store，71静态文件摘要，health200及4匿名401边界，邮箱与西语资源均通过；不登录或写入真实业务。服务器内部也通过同清单/数据保全及服务active/enabled，root700权限已复核。SSH已退出、所有候选已关闭且控制reset；正式程序留给用户使用。
+- 验证边界如实保留：384单元/130完整生产UI/13独立真实HTTP为396d249同功能逻辑完整结果；最终01cfb13仅三项CSS主题值，lint/typecheck/build/NSIS及新SHA6严格CSP和原生浅深/键盘复验通过，不伪称全量业务在01再跑。真实普通滚轮/横向跨边/两周与连续按钮在396原生通过，最终主题版重复关键导航/Tab+Return和深浅视觉。原生Shift+滚轮工具无法持续修饰键组合、原生960自主缩窗未成功（浏览器Shift及960矩阵通过），保留未验，不改系统工具、不拿浏览器冒充原生。既有大chunk警告、DOC-SYNC-001及签名/多平台正式发布未通过保持。
+- 文档同步收尾：规则/AGENTS/架构/三语帮助已候选提交，当前更新CHANGELOG/RELEASING与handoff入口/状态/检查点为真实交付；API/后端/MCP契约无变化，复核后无需机械重传Apifox。Git/Wolai最终回执随后保存，准确结果以收尾同步附记为准。无需再重建、重装或造合成数据；无关机/重置/唤醒授权。
+
 ## 2026-10-31 最终01cfb13原生收尾，进入已批准静态安全交付
 
 - 最终产品`01cfb1383e776509cc6e5b0ce6b16105c9e2ac61`已推；相对396d249仅三项date-actions主题CSS。整改后lint/typecheck/build、NSIS及绑定新SHA的6严格CSP矩阵通过；此前同逻辑384单元/130生产UI/13HTTP继续适用，不伪称CSS改后重跑全量业务。原b144954共享后端/Rust/API未变。

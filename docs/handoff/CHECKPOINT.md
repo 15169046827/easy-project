@@ -1,5 +1,9 @@
 # EasyProject 交接任务检查点
 
+2026-11-01恢复最新：见DEPENDENCY_PATCH_CHECKPOINT_2026-11-01顶部。新Apifox连接66原生/32参考内容一致、19HTTP结构已读回，19全字段待；旧脚本HTTP0为独立通道故障。独立i18n11.4.16严格ci/lint/type/384/build过，UI首次启动超时，进程80110重试待收；npm audit因依赖元数据外发审批拒绝，需授权，未绕过。五小时余83%周97%（最近查询），无重置、桌面/SSH/部署；根源码和依赖未动。
+
+2026-11-01续接DEPENDENCY_PATCH_CHECKPOINT_2026-11-01：隔离dependency-patch-candidate-20261101源26813a6，补丁Vite6.4.5/undici7.30.1，384/build/安全正负例/130UI通过，audit27→25。原package/lock未变。独立dependency-i18n-candidate-20261101已锁解析和白名单核验，安装92917无输出已中断exit1，lint/type/单测未开始。最新账户token读取后仍403不重试写。最新五小时余10%周9%，不再启动长阶段；无桌面/SSH/部署/关机授权。恢复先核Git/检查点/候选安装残态，再严格ci及完整回归。
+
 2026-11-01依赖排查方案完成，见DEPENDENCY_REMEDIATION_PROPOSAL_2026-11-01。未改依赖/源码/部署；建议先隔离Vite6.4.5和undici7补丁，再单独i18n11.4.16迁移，旧glob/minimatch/deepmerge逐分支核查，禁止force/降级清零。Apifox用户恢复确认后仍403、Process/User值一致，需服务授权复核，66/32/19仍未验。下一步仅待批准实施方案与恢复外部权限；功能门禁有效不重跑，无桌面/SSH/关机授权。
 
 2026-11-01续接HANDOFF_ACCEPTANCE_2026-11-01：基线b597dfc/规则1.25/UPARS1.1.0/WACAS未定义。功能及Rust/构建门禁通过；npm27告警5高危未做可达性，不自动升级；Apifox首个只读403即停，需恢复权限后再验66/32/19。MCP两端实际23、安装及公网摘要匹配。仅本报告/API入口/四交接文档改动，无源码依赖/部署/真实库变化，无桌面控制/SSH。下一步待用户选择安全排查方案及Apifox恢复，保留未验/正式发布失败，不重复有效功能验证，无关机授权。

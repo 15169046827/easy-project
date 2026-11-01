@@ -1,5 +1,7 @@
 # EasyProject API维护入口（Apifox）
 
+2026-11-01交接复核：b144954共享后端及其order_placement已于10月31日实际交付，最新桌面/网页01cfb13仅导航UI变化；下方“候选未部署”为历史。当前客户端本地/远端各实际发现23工具。今日Apifox官方桥接只读请求HTTP403，66原生/32参考/19HTTP未能重新读回，不能称本轮全同步；保留既有受管ID/分组和DOC-SYNC-001。恢复权限后只读核对，有真实差异再更新。完整验收/新安全门禁缺口见docs/HANDOFF_ACCEPTANCE_2026-11-01.md。
+
 2026-10-31候选b144954：task/update内部可选order_placement+显式parent实现原子前插/后插/作为子任务及整型同级重排，失败连父变更一起回滚；一天start=end合法。仅IPC/HTTP输入扩充，MCP23工具Schema/权限不改。66原生/32参考已按候选源同步读回，HTTP仅工作区动作更新且全19主JSON复核通过；既有分组/ID保持、DOC-SYNC-001保留。候选包已封存但锁屏阻断原生，未部署，见GANTT_ROW_SCHEDULING_CHECKPOINT，不把新契约当线上已启用。
 
 2026-10-29候选bcc6366新增hierarchy task/get_all statusScope（top_level/all_tasks，省略兼容旧all_tasks），使统计卡和入选根口径一致。仅IPC/HTTP查询、无MCP Schema/权限/工具数变化。Apifox66原生/32参考已分段更新读回，HTTP19主JSON门禁通过；中断的两条先读回匹配再补回执，未盲重写。DOC-SYNC-001备用text/plain/空security导出差异仍开，不声称全字段等价。原生/实际部署见GANTT_HIERARCHY_CHECKPOINT。

@@ -1,5 +1,7 @@
 # EasyProject 交接任务检查点
 
+2026-11-02基线fba2e03：剩余链可达性完成，见DEPENDENCY_REACHABILITY_2026-11-02.md。517模块图/15组171合并断言过，minimatch9算法实际存在需保留开发风险，deepmerge生产仍在。待批准限定例外及候选合入方向；无根代码/锁/安装/真实库改变，无桌面/SSH。五小时余50%周89%；全部未提交为新报告及检查点/三个交接文件，准确以Git核。WACAS未定义，UPARS1.1.0；不得按旧“告警全不可达”推断安全通过。
+
 2026-11-02续接：48eddcc基线，详DEPENDENCY_PATCH_CHECKPOINT_2026-11-01顶部。授权npm候选扫描21（0高危/18中/3低），i18n合成转义/srcdoc负例过。19HTTP全字段读回不等价，除备用text/plain/空security外，requestBody.required及请求头enum导出丢失等需查原始实体；未远端写。66/32已一致，不重复。根源码/依赖/安装/真实数据不变，无桌面/SSH，WACAS未定义/UPARS1.1.0；下一步原始HTTP实体核查及剩余中低危定向分析，不直接部署。
 
 2026-11-01恢复最新：见DEPENDENCY_PATCH_CHECKPOINT_2026-11-01顶部。新Apifox连接66原生/32参考内容一致、19HTTP结构已读回，19全字段待；旧脚本HTTP0为独立通道故障。独立i18n11.4.16严格ci/lint/type/384/build过，UI首次启动超时，进程80110重试待收；npm audit因依赖元数据外发审批拒绝，需授权，未绕过。五小时余83%周97%（最近查询），无重置、桌面/SSH/部署；根源码和依赖未动。

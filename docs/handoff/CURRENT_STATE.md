@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-11-02剩余依赖按三公告复核，详DEPENDENCY_REACHABILITY_2026-11-02.md；517模块排除Node glob链，deepmerge存在但15组合/171次合并未见用户marker进入。minimatch9/glob开发算法不可当误报。拟限定例外仅待批准，尚未accepted；原产品未改。
+
 2026-11-02候选扫描已授权执行：21告警（0高/18中/3低），i18n转义及srcdoc合成负例过。19HTTP全字段核对仍有DOC-SYNC-001，新增明确requestBody.required/请求头enum等导出差异，需核原始实体。66原生/32参考一致，原项目未升级或部署；最终安全/发布未通过。见DEPENDENCY_PATCH_CHECKPOINT_2026-11-01最新段。
 
 2026-11-01恢复：66原生/32参考本轮新连接全部内容一致，19HTTP仅结构清单已过，DOC-SYNC-001继续；i18n隔离候选严格ci/lint/type/384/build通过，UI启动超时后重试进程80110待收，npm扫描审批未获准。详DEPENDENCY_PATCH_CHECKPOINT_2026-11-01顶部，原产品/依赖/真实数据不变，不以旧403段否定已恢复连接。

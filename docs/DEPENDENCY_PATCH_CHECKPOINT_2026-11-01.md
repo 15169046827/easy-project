@@ -2,6 +2,8 @@
 
 ## 2026-11-02最新检查点
 
+三方收件：整改源码572b014260902a44b4e53eb2708f4fe27719716d已Git同树同SHA非强制同步，Wolai主/交接两处完整新段精确读回；工作区提交后clean。GitHub按该head_sha查询无workflow run，未触发远端CI/部署，不能称跨平台CI通过。本轮整改源验收完成，不重做候选或自动部署；后续真实交付需明确许可、干净源重建及原生验收。当前仅此收件文档后续提交，余量充足，无控制/SSH/关机授权。
+
 最终源码整改见DEPENDENCY_REMEDIATION_RESULT_2026-11-02.md。已根合入依赖/防护脚本/测试/CI Node24.15/窄Vitest生成目录排除与生产边界门禁；严格ci、lint/type、396单元/71文件、build7.16、130UI/独立13HTTP、现有high扫描门禁、release:check/UPARS验证过。复扫11（0高8中3低），deepmerge本地修补仍留3低版本告警；8中只NodeExcel链且被构建门禁禁止入产物。原始失败（引擎/类型/候选重复发现）均记录不隐瞒。当前待收Git/Wolai/交接最终回执；无安装/服务器/MCP更新，设备无控制/SSH。基线78de3ba、WACAS未定义/UPARS1.1.0，额度85%/周87%；所有未提交以git status为准，含package/lock、两workflow、vitest、2脚本/2测试及文档。不要重跑隔离候选或重新提出已被用户选择整改替代的例外。
 
 整改里程碑：dependency-risk-candidate-20261102现ESLint10.14.0/plugin-vue10.12.0/plugin-prettier5.5.7/@vue-test-utils2.5.1，仅现代父包定向glob14.0.2/minimatch11.0.1，旧ExcelJS 3/5 API保留。官方Node24.15便携运行时已在E盘SHA256核对成功，无系统安装/PATH持久修改。deepmerge4.3.1三个入口以原始摘要防漂移脚本修补destination属性写入，保留原版号/告警；predev/prelint/pretest/prebuild执行，未关闭扫描。新增攻击前后/兼容测试，387/71单测、lint/type通过（初次新测试类型错误已修复复验）；复扫11（0高/8中/3低），三低仍显示不隐瞒。准确下一步严格engine/peer干净ci及修补重施、生产构建/130UI/日历基线等价和摘要漂移负例，之后只将验证通过的最小源改动合入根项目，不部署。余92%/周88%，无桌面/SSH。当前根仅检查点改动，候选新源码尚在ignored目录，需完成后正式纳入Git，不能声称已交付。

@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-11-02最终三方同步完成：整改源572b014精确Git/Wolai双页读回，代码阶段已完成。现有安装/服务器/独立MCP未更新，下一步只有另获授权后的干净构建与交付验收；GitHub无该head workflow记录，跨平台CI不计已验。
+
 2026-11-02最新：依赖整改已根源码合入，详DEPENDENCY_REMEDIATION_RESULT_2026-11-02.md。396单元/130UI/13HTTP/build及原high门禁过，扫描11（8中为未入产物Node链/3低为deepmerge防护后原版号告警），未接受临时例外或屏蔽。Node24.15、SHA防漂移自动防护与生产模块门禁长期保留。实际安装/网页/后端/MCP仍旧，无部署；仅三方回执收尾。正式发布及DOC-SYNC-001未关闭。
 
 2026-11-02剩余依赖按三公告复核，详DEPENDENCY_REACHABILITY_2026-11-02.md；517模块排除Node glob链，deepmerge存在但15组合/171次合并未见用户marker进入。minimatch9/glob开发算法不可当误报。拟限定例外仅待批准，尚未accepted；原产品未改。

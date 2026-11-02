@@ -1,5 +1,16 @@
 # 兼容依赖补丁隔离验证检查点
 
+## 2026-11-02最新检查点
+
+目标仍为依赖隔离验证及交接契约核对，UPARS1.1.0/规则1.25/WACAS未定义。基线48eddccfba40f7bee595a92d9de205bfdbed8019，分支codex/audit-release-20261006-api，开始Git clean。用户明确允许向npm发送依赖名称/版本，未调用额度重置；开始五小时余99%周97%。
+
+- 获授权候选扫描成功：21节点告警（high0/critical0/moderate18/low3），原27→兼容25→i18n21；日志dependency-i18n-audit-approved.json。vue-i18n/intlify/Vite/undici不再列入告警；剩余ExcelJS/glob/minimatch、date-holidays/deepmerge及ESLint开发链未关闭，不能只因高危清零就安全签收。
+- 合成security-probe.cjs通过普通插值正例、恶意named/list插值无原始img、大小写srcdoc中和负例。仅字符串检查，不声称穷尽浏览器XSS；命令行首次引用转义被shell拒绝，改独立脚本后exit0，未修改产品。
+- Apifox19HTTP逐项readEntityDetails读取完成，并对所有operation字段递归比较（忽略x-apifox扩展）。未全字段等价：tags/x-easyproject-group缺失、响应备用text/plain丢失、空security省略、requestBody.required省略、参数描述/示例差异；登录X-EasyProject-Request的enum:[1字符串]在OAS导出缺失。保留DOC-SYNC-001并扩展精确缺口，未远端写入；没有用JSON主schema匹配冒充全契约通过。66原生/32参考上轮已一致，不重复读取。
+- 原项目package/lock、安装、服务器、真实数据及MCP权限未动；无桌面控制/SSH。当前仅本检查点与交接/验收文档待提交（最终以git status为准）。
+
+准确下一步：核对Apifox原始HTTP实体是否保留必填/请求头枚举，区分导出损失与实际契约丢失，再最小修复并读回；补剩余中低危逐分支可达性/定向方案。候选依赖尚未合入原项目，不直接安装/部署，最终安全/正式发布均未通过。Git/Wolai/交接本里程碑需同期同步。
+
 ## 恢复里程碑（2026-11-01）
 
 最终收件：重试80110正常结束exit0，130生产UI通过1.6分钟，13HTTP按配置跳过（非本候选HTTP验证）；日志dependency-i18n-ui-retry.log。待办缩小为i18n专用安全负例、候选npm扫描授权、19HTTP全字段及DOC-SYNC-001。没有原生桌面候选、部署或真实数据变化。

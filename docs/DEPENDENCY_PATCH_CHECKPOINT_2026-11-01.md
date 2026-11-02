@@ -2,6 +2,8 @@
 
 ## 2026-11-02最新检查点
 
+19原始HTTP实体已全部复核分组/testing、JSON请求schema/必填及已声明请求头必填/枚举，一致；两处首次严格比较差异是可选项undefined与false，人工逐字段确认语义相同，未放宽真正必填项。OAS导出仍丢备用媒体/security/required/enum等字段，DOC-SYNC-001未关闭；不是实际原始接口约束缺失，未盲写。候选阶段384/130/build/安全负例与21告警均已收，下一阶段仍为剩余中低危分支分析、候选合入/交付范围确认及导出表现约束记录；不得把候选高危0当正式已整改。无运行测试服务、桌面控制或SSH。
+
 后续原始实体核查：登录接口getHttpEndpoint实际保留requestBody.required=true和X-EasyProject-Request schema.enum=["1"]；readEntityDetails OAS视图丢失这两项，已确认至少该接口属于导出损失，不能指控实际契约缺失或实施盲写修复。其余18原始实体仍待核，备用响应/空security差异不因此关闭。Git6052d1b已精确非强制同步；本补充及Wolai收件后续同步。
 
 目标仍为依赖隔离验证及交接契约核对，UPARS1.1.0/规则1.25/WACAS未定义。基线48eddccfba40f7bee595a92d9de205bfdbed8019，分支codex/audit-release-20261006-api，开始Git clean。用户明确允许向npm发送依赖名称/版本，未调用额度重置；开始五小时余99%周97%。

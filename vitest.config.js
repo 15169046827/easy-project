@@ -7,7 +7,8 @@ export default defineConfig({
     test: {
         environment: 'jsdom',
         globals: true,
-        exclude: [...configDefaults.exclude, 'e2e/**']
+        // Rust build output can contain archived verification checkouts, not project tests.
+        exclude: [...configDefaults.exclude, 'e2e/**', 'src-tauri/target/**']
     },
     resolve: {
         alias: {

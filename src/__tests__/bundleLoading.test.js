@@ -6,6 +6,30 @@ function chunk(fileName, modules = {}, imports = [], dynamicImports = [], isEntr
 }
 
 describe('production loading boundary', () => {
+    it.each([
+        'archiver',
+        'archiver-utils',
+        'glob',
+        'minimatch',
+        'readdir-glob',
+        'zip-stream',
+        'rimraf'
+    ])('rejects Node-only %s even inside a lazy chunk', name => {
+        const output = [
+            chunk('app.js', {}, [], ['lazy.js'], true),
+            chunk('lazy.js', { [`/repo/node_modules/${name}/index.js`]: {} })
+        ]
+        expect(() => checkBundleLoading(output)).toThrow('entered production')
+    })
+
+    it('rejects the Node ExcelJS entry on Windows', () => {
+        expect(() =>
+            checkBundleLoading([
+                chunk('app.js', {}, [], ['lazy.js'], true),
+                chunk('lazy.js', { 'E:\\repo\\node_modules\\exceljs\\lib\\exceljs.nodejs.js': {} })
+            ])
+        ).toThrow('ExcelJS Node entry')
+    })
     it('allows large features behind dynamic imports without discarding their data', () => {
         const output = [
             chunk('app.js', {}, ['vue.js'], ['calendar.js', 'xlsx.js'], true),

@@ -2,6 +2,12 @@
 
 ## 2026-11-02最新检查点
 
+最终源码整改见DEPENDENCY_REMEDIATION_RESULT_2026-11-02.md。已根合入依赖/防护脚本/测试/CI Node24.15/窄Vitest生成目录排除与生产边界门禁；严格ci、lint/type、396单元/71文件、build7.16、130UI/独立13HTTP、现有high扫描门禁、release:check/UPARS验证过。复扫11（0高8中3低），deepmerge本地修补仍留3低版本告警；8中只NodeExcel链且被构建门禁禁止入产物。原始失败（引擎/类型/候选重复发现）均记录不隐瞒。当前待收Git/Wolai/交接最终回执；无安装/服务器/MCP更新，设备无控制/SSH。基线78de3ba、WACAS未定义/UPARS1.1.0，额度85%/周87%；所有未提交以git status为准，含package/lock、两workflow、vitest、2脚本/2测试及文档。不要重跑隔离候选或重新提出已被用户选择整改替代的例外。
+
+整改里程碑：dependency-risk-candidate-20261102现ESLint10.14.0/plugin-vue10.12.0/plugin-prettier5.5.7/@vue-test-utils2.5.1，仅现代父包定向glob14.0.2/minimatch11.0.1，旧ExcelJS 3/5 API保留。官方Node24.15便携运行时已在E盘SHA256核对成功，无系统安装/PATH持久修改。deepmerge4.3.1三个入口以原始摘要防漂移脚本修补destination属性写入，保留原版号/告警；predev/prelint/pretest/prebuild执行，未关闭扫描。新增攻击前后/兼容测试，387/71单测、lint/type通过（初次新测试类型错误已修复复验）；复扫11（0高/8中/3低），三低仍显示不隐瞒。准确下一步严格engine/peer干净ci及修补重施、生产构建/130UI/日历基线等价和摘要漂移负例，之后只将验证通过的最小源改动合入根项目，不部署。余92%/周88%，无桌面/SSH。当前根仅检查点改动，候选新源码尚在ignored目录，需完成后正式纳入Git，不能声称已交付。
+
+用户已明确要求继续整改而非接受例外。新隔离dependency-risk-candidate-20261102由78de3ba快照及i18n候选manifest创建，原根依赖不改。ESLint9.39.5/@vue/test-utils2.5.1安装完成424包，但js-beautify2.0.3→nopt10/abbrev5要求Node24.15或22.22.2，本机24.0不满足；记录EBADENGINE，不作为通过。下一步准备E盘隔离官方Node24.15运行时、核验摘要，定向验证现代glob/minimatch分支，保留legacy API不强行全局覆盖；deepmerge仍需有可重现PoC的最小修补及日历等价回归。尚无新根代码/锁/部署/真实数据变化，无桌面/SSH；基线78de3ba，UPARS1.1.0/WACAS未定义。额度最近五小时余99%周89%，未重置；本进度/Git/Wolai收件待同期同步。
+
 最新剩余风险复核见DEPENDENCY_REACHABILITY_2026-11-02.md：517模块图不含Node glob/minimatch/archiver链，deepmerge仍在生产，15组合/171次合并边界断言过。minimatch9实际有相关算法且glob设optimizationLevel2，纠正历史未知，未宣称全链误报。根无修改、无部署，五小时余50%/周89%；限定例外尚待用户批准，状态open。下一步确认风险控制/候选合入范围；此阶段只新增报告/检查点/交接文档，WACAS未定义/UPARS1.1.0，无桌面/SSH。
 
 19原始HTTP实体已全部复核分组/testing、JSON请求schema/必填及已声明请求头必填/枚举，一致；两处首次严格比较差异是可选项undefined与false，人工逐字段确认语义相同，未放宽真正必填项。OAS导出仍丢备用媒体/security/required/enum等字段，DOC-SYNC-001未关闭；不是实际原始接口约束缺失，未盲写。候选阶段384/130/build/安全负例与21告警均已收，下一阶段仍为剩余中低危分支分析、候选合入/交付范围确认及导出表现约束记录；不得把候选高危0当正式已整改。无运行测试服务、桌面控制或SSH。

@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-11-02最新：依赖整改已根源码合入，详DEPENDENCY_REMEDIATION_RESULT_2026-11-02.md。396单元/130UI/13HTTP/build及原high门禁过，扫描11（8中为未入产物Node链/3低为deepmerge防护后原版号告警），未接受临时例外或屏蔽。Node24.15、SHA防漂移自动防护与生产模块门禁长期保留。实际安装/网页/后端/MCP仍旧，无部署；仅三方回执收尾。正式发布及DOC-SYNC-001未关闭。
+
 2026-11-02剩余依赖按三公告复核，详DEPENDENCY_REACHABILITY_2026-11-02.md；517模块排除Node glob链，deepmerge存在但15组合/171次合并未见用户marker进入。minimatch9/glob开发算法不可当误报。拟限定例外仅待批准，尚未accepted；原产品未改。
 
 2026-11-02候选扫描已授权执行：21告警（0高/18中/3低），i18n转义及srcdoc合成负例过。19HTTP全字段核对仍有DOC-SYNC-001，新增明确requestBody.required/请求头enum等导出差异，需核原始实体。66原生/32参考一致，原项目未升级或部署；最终安全/发布未通过。见DEPENDENCY_PATCH_CHECKPOINT_2026-11-01最新段。

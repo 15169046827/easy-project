@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- Security (source only, 2026-11-02): targeted i18n/Vite/undici and compatible lint/test-tool upgrades; checksum-guarded deepmerge own-property mitigation; production bundle gate rejects the unused Node ExcelJS/glob chain. npm findings27→11, high5→0; 8 medium and 3 locally mitigated low warnings remain visible.396 unit/130 UI/13 HTTP passed. No installer/server delivery; see DEPENDENCY_REMEDIATION_RESULT_2026-11-02.
+
 - Delivered internally (2026-10-31): Centered theme-aware SVG Gantt arrows, animated two-week viewport navigation across extended boundaries, vertical wheel and horizontal Shift+wheel/trackpad navigation with continuous calendar extension and reduced-motion/lifecycle handling. Desktop and static Web safely updated with fresh protected backups and unchanged data/backend/MCP. Verification scope and native-tool limitations: GANTT_NAVIGATION_CHECKPOINT; no new public Release.
 
 - Delivered internally (2026-10-31), desktop/Web/shared backend: Row-scoped scheduling for undated leaf tasks with a blue confirmation block; a permanent bottom add row; one-day resize support; centered date-shift icons; whole-name-column tree placement with before/after/child targets and atomic ordering/rollback. Protected fresh copies and full data-preservation checks passed; independent MCP and permissions unchanged, no migration or new public Release. Native narrow-window/complete keyboard coverage limitations remain explicit in GANTT_ROW_SCHEDULING_CHECKPOINT.

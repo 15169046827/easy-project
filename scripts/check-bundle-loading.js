@@ -6,6 +6,31 @@ const DEFERRED_PACKAGES = [
     'html2canvas'
 ]
 
+const NODE_ONLY_PACKAGES = [
+    'archiver',
+    'archiver-utils',
+    'glob',
+    'minimatch',
+    'readdir-glob',
+    'zip-stream',
+    'rimraf'
+]
+
+function checkProductionModules(chunks) {
+    for (const chunk of chunks.values()) {
+        for (const id of Object.keys(chunk.modules)) {
+            const normalized = id.replaceAll('\\', '/')
+            const dependency = NODE_ONLY_PACKAGES.find(item =>
+                normalized.includes(`/node_modules/${item}/`)
+            )
+            if (dependency) throw new Error(`Node-only dependency ${dependency} entered production`)
+            if (normalized.includes('/node_modules/exceljs/lib/')) {
+                throw new Error('ExcelJS Node entry entered production; use the browser bundle')
+            }
+        }
+    }
+}
+
 // Check the complete static import closure, not only the entry chunk's name.
 export function checkBundleLoading(output) {
     const chunks = new Map(
@@ -14,6 +39,7 @@ export function checkBundleLoading(output) {
             .map(item => [item.fileName, item])
     )
     const entries = [...chunks.values()].filter(item => item.isEntry)
+    checkProductionModules(chunks)
     if (!entries.length) throw new Error('Bundle loading check requires an entry chunk')
     const visited = new Set()
     const pending = entries.map(item => item.fileName)

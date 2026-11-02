@@ -2,6 +2,8 @@
 
 ## 2026-11-02最新检查点
 
+后续原始实体核查：登录接口getHttpEndpoint实际保留requestBody.required=true和X-EasyProject-Request schema.enum=["1"]；readEntityDetails OAS视图丢失这两项，已确认至少该接口属于导出损失，不能指控实际契约缺失或实施盲写修复。其余18原始实体仍待核，备用响应/空security差异不因此关闭。Git6052d1b已精确非强制同步；本补充及Wolai收件后续同步。
+
 目标仍为依赖隔离验证及交接契约核对，UPARS1.1.0/规则1.25/WACAS未定义。基线48eddccfba40f7bee595a92d9de205bfdbed8019，分支codex/audit-release-20261006-api，开始Git clean。用户明确允许向npm发送依赖名称/版本，未调用额度重置；开始五小时余99%周97%。
 
 - 获授权候选扫描成功：21节点告警（high0/critical0/moderate18/low3），原27→兼容25→i18n21；日志dependency-i18n-audit-approved.json。vue-i18n/intlify/Vite/undici不再列入告警；剩余ExcelJS/glob/minimatch、date-holidays/deepmerge及ESLint开发链未关闭，不能只因高危清零就安全签收。

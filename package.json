@@ -4,7 +4,7 @@
     "version": "0.1.2",
     "type": "module",
     "scripts": {
-        "security:patch": "node scripts/apply-dependency-security-patch.cjs",
+        "security:patch": "node scripts/apply-dependency-security-patch.cjs && node scripts/apply-excel-stream-compat.cjs",
         "prelint": "npm run security:patch",
         "pretest": "npm run security:patch",
         "prebuild": "npm run security:patch",
@@ -60,7 +60,17 @@
     },
     "overrides": {
         "exceljs@^4.4.0": {
+            "archiver": {
+                ".": "7.0.1",
+                "readdir-glob": {
+                    ".": "3.0.0",
+                    "minimatch": "11.0.4"
+                }
+            },
             "unzipper": "0.12.5"
+        },
+        "archiver-utils@5.0.2": {
+            "glob": "14.0.2"
         },
         "eslint@10.14.0": {
             "minimatch": "11.0.1"

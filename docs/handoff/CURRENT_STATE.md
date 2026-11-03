@@ -1,5 +1,7 @@
 # EasyProject 交接时当前状态与待办
 
+2026-11-03后续状态：用户批准局部兼容适配后，ExcelJS私有Node pipe返回值定向修正并SHA防漂移，archiver7/readdir3链root复验通过。实际scan3低/0中高，402单元/130UI/独立13HTTP/build/原high门禁过，36日历等价、浏览器包不变。详STREAM_COMPAT_RESULT_2026-11-03，旧10/7中和不合archiver为未适配阶段。源任务已完待三方回执，无安装/服务器/MCP交付或真实数据变化。
+
 2026-11-03继续整改完成：unzipper0.12.5移除fstream/rimraf链，ExcelJS及浏览器包未变；root399/130/13/规范/类型/build/high门禁过，扫描10（7中3低/0高）。archiver6/7因流式兼容失败拒绝合入，不为清零加fork。精确日志及剩余风险见DEPENDENCY_FOLLOWUP_RESULT_2026-11-03。仅Git/Wolai收尾，正式安装/服务器/MCP未动，跨平台CI/发布未冒称通过。
 
 2026-11-02最终三方同步完成：整改源572b014精确Git/Wolai双页读回，代码阶段已完成。现有安装/服务器/独立MCP未更新，下一步只有另获授权后的干净构建与交付验收；GitHub无该head workflow记录，跨平台CI不计已验。

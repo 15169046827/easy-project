@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-11-03供应链实现更新：package security:patch串联scripts/apply-dependency-security-patch.cjs（deepmerge三个入口own属性写入防护）与scripts/apply-excel-stream-compat.cjs（ExcelJS4.4.0私有Node StreamBuf.pipe返回destination）；两者校验原版本/SHA，漂移拒绝、幂等重施。正常dev/lint/test/build/release:check前置执行，ignore-scripts ci后同样由hook恢复。ExcelJS嵌套override升级archiver7/readdir3/minimatch11，现代utils/glob14；生产模块门禁仍拒绝Node专用链。新增Node兼容测试覆盖读写/目录/错误/取消/漂移，402/130/13与scan3低见STREAM_COMPAT_RESULT_2026-11-03。API/数据库/权限架构未改，未部署。
+
 2026-11-01交接复核：架构与规则1.25无新增变化；实际API内部order_placement及导航均已交付，不再是未部署候选。今日回归与新的依赖安全/Apifox权限缺口见HANDOFF_ACCEPTANCE_2026-11-01。不要因为23工具已发现就声称真实CRUD或今日Apifox全读回通过；没有权限/组件拓展。
 
 2026-10-31导航候选：GanttArrowIcon为PrimeVue Button图标插槽提供固定16px/1.75描边SVG；useGanttHorizontalNavigation串行计算延展、前补日scrollLeft补偿及160ms受控RAF平移，连续按钮累加目标，减少动画模式直接定位，缩放/失焦/隐藏/卸载清理。useGanttNavigation分离普通垂直滚轮与Shift/横向触控，并换算deltaMode、不重复OS映射增量；原有拖动边缘平移仍独立，不改数据/API/后端/MCP。准确验证/交付见GANTT_NAVIGATION_CHECKPOINT。
@@ -96,7 +98,7 @@
 
 - Vue3 + Vite6 + PrimeVue4/Aura，Vue Router hash路由、vue-i18n中英文；主要业务代码仍为JS/Vue，`vue-tsc`含JS检查，不是已全量TypeScript化。
 - Tauri2 / Rust2021 edition，Cargo声明最低Rust1.90，CI采用stable；SQLite由rusqlite bundled提供。依赖准确解析以package-lock.json/Cargo.lock为准，不因文档版本表而升级。
-- CI使用Node22；本机工具版本可能不同，先查再选，不把环境差异误报产品问题。已有Tauri前置环境及WebView2，不应在交接时重装。
+- CI固定Node24.15.0；package engines允许^22.22.2或>=24.15.0。本机E盘便携运行时仅任务进程PATH，不改系统设置；先查版本再选，不把环境差异误报产品问题。已有Tauri前置环境及WebView2，不应在交接时重装。
 - 前端入口 [src/main.js](../../src/main.js)；根据浮窗初始化标记选择主App或独立FloatingTaskWindow。主入口 [src/App.vue](../../src/App.vue)负责导航、主题/历史操作及全局设计变量；[路由](../../src/router/index.js)懒加载页面。
 - Rust [main.rs](../../src-tauri/src/main.rs)只调用库入口，release声明Windows GUI子系统；[lib.rs](../../src-tauri/src/lib.rs)通过[storage.rs](../../src-tauri/src/storage.rs)解析安装侧配置、准备/迁移数据、初始化数据库和启动备份，再手动创建主窗口并指定Windows WebView目录。启动失败只进入DesktopRoot/StorageSettings设置界面，不装载业务App或创建空替代库。目录命令仅主窗口可用，备份打开改为Rust受控路径，前端不再获得任意AppData opener权限。
 

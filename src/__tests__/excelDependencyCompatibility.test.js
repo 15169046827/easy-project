@@ -4,6 +4,9 @@ import { PassThrough, Readable } from 'node:stream'
 import { mkdtemp, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import os from 'node:os'
+import fs from 'node:fs'
+import vm from 'node:vm'
+import { setImmediate as nextTurn } from 'node:timers/promises'
 import { describe, expect, it } from 'vitest'
 
 const require = createRequire(import.meta.url)
@@ -13,6 +16,61 @@ const archiver = excelRequire('archiver')
 const unzipper = excelRequire('unzipper')
 
 describe('ExcelJS maintained transitive dependency compatibility', () => {
+    it('preserves private pipe return, payload and end behavior', async () => {
+        const StreamBuf = excelRequire('exceljs/lib/utils/stream-buf')
+        const source = new StreamBuf()
+        const destination = new PassThrough()
+        const chunks = []
+        const finished = new Promise((resolve, reject) => {
+            destination.on('data', chunk => chunks.push(chunk))
+            destination.on('error', reject)
+            destination.on('end', resolve)
+        })
+        expect(source.pipe(destination)).toBe(destination)
+        await source.end(Buffer.from('Synthetic stream payload'))
+        await finished
+        expect(Buffer.concat(chunks).toString()).toBe('Synthetic stream payload')
+    })
+
+    it('rejects malformed archives and supports explicit archive cancellation', async () => {
+        await expect(unzipper.Open.buffer(Buffer.from('not a zip'))).rejects.toThrow()
+        const archive = archiver('zip')
+        const errors = []
+        archive.on('error', error => errors.push(error))
+        const source = new PassThrough()
+        const output = new PassThrough()
+        archive.pipe(output)
+        archive.append(source, { name: 'cancelled.txt' })
+        source.write('Synthetic partial entry')
+        await nextTurn()
+        expect(archive.abort()).toBe(archive)
+        source.destroy()
+        output.destroy()
+        await expect(archive.finalize()).rejects.toMatchObject({ code: 'ABORTED' })
+        expect(errors).toHaveLength(1)
+    })
+
+    it('rejects ExcelJS source drift without writing a patch', () => {
+        const script = path.resolve('scripts/apply-excel-stream-compat.cjs')
+        let writes = 0
+        const mockFs = {
+            readFileSync(file, encoding) {
+                const value = fs.readFileSync(file, encoding)
+                return String(file).endsWith('stream-buf.js') ? value + '\nsource drift' : value
+            },
+            writeFileSync() {
+                writes++
+            }
+        }
+        expect(() =>
+            vm.runInNewContext(fs.readFileSync(script, 'utf8'), {
+                require: name => (name === 'node:fs' ? mockFs : require(name)),
+                __dirname: path.dirname(script),
+                console
+            })
+        ).toThrow('Unexpected ExcelJS StreamBuf source')
+        expect(writes).toBe(0)
+    })
     it('round-trips document values, styles, dates, formulas and multiple sheets', async () => {
         const workbook = new Excel.Workbook()
         const sheet = workbook.addWorksheet('任务')

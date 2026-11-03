@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- Security compatibility (source only, 2026-11-03): checksum-guarded private ExcelJS Node StreamBuf.pipe return adaptation enables maintained archiver7/readdir-glob3/glob14/minimatch11 branches. Findings10→3 (0 high/0 moderate); remaining deepmerge original-version low warnings remain visible with existing mitigation.402 unit/130 UI/13 HTTP passed; browser Excel bundle unchanged. No deployment; STREAM_COMPAT_RESULT_2026-11-03.
+
 - Security follow-up (source only, 2026-11-03): compatible unzipper0.12.5 override removes the obsolete fstream/rimraf branch without changing ExcelJS4.4.0 or its browser bundle. Findings11→10 (0 high/7 moderate/3 locally mitigated low).399 unit/130 UI/13 HTTP passed; incompatible archiver6/7 candidates rejected, not forced. No deployment. See DEPENDENCY_FOLLOWUP_RESULT_2026-11-03.
 
 - Security (source only, 2026-11-02): targeted i18n/Vite/undici and compatible lint/test-tool upgrades; checksum-guarded deepmerge own-property mitigation; production bundle gate rejects the unused Node ExcelJS/glob chain. npm findings27→11, high5→0; 8 medium and 3 locally mitigated low warnings remain visible.396 unit/130 UI/13 HTTP passed. No installer/server delivery; see DEPENDENCY_REMEDIATION_RESULT_2026-11-02.

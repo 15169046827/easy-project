@@ -59,6 +59,9 @@
         "esbuild@0.25.10": true
     },
     "overrides": {
+        "exceljs@^4.4.0": {
+            "unzipper": "0.12.5"
+        },
         "eslint@10.14.0": {
             "minimatch": "11.0.1"
         },

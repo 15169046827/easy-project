@@ -1,5 +1,7 @@
 # EasyProject 交接任务检查点
 
+2026-11-03私有流适配三方完成：源bd8ef71已精确Git/Wolai双页读回，根clean；STREAM_COMPAT_RESULT_2026-11-03记录root402/130/13与scan3低/0中高。本轮完成，不重跑候选或自动部署；新交付另需许可，无控制/SSH/有效关机授权。
+
 2026-11-03最新：STREAM_COMPAT_RESULT/CHECKPOINT_2026-11-03.md。基线5cc6d4f/UPARS1.1.0/WACAS未定义，用户授权私有Node流适配；根402/130/13/build等全部过，scan3低/0中高，余61%/80%。下一步只核差异、提交推送及Wolai双页精确读回，不重复候选或自动安装。两类SHA防漂移修补长期保留，旧archiver失败因无适配已被本阶段闭环；无控制/SSH/部署/关机授权。
 
 2026-11-03三方收尾完成：源c1b10b2已精确Git/Wolai双页读回、工作区clean；399/130/13与scan10证据见DEPENDENCY_FOLLOWUP_RESULT_2026-11-03。不要重做候选/重复申请例外/部署；下一步只按新需求或新真实交付授权。无控制/SSH，所有一次性关机授权已失效。

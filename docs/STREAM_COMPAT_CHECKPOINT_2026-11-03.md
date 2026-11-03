@@ -1,5 +1,7 @@
 # 压缩依赖局部兼容整改检查点
 
+三方闭环：源bd8ef71已精确推Git，Wolai主/交接双页精确读回，根提交后clean；本轮源整改完成。根402/130/13及scan3证据见结果报告，勿按旧“待收件/不兼容/10告警”重做。真实程序未交付，后续按新指令；无控制/SSH，所有一次性关机授权无效。
+
 最终root402单元72文件/130UI4.1分钟/独立13HTTP1.3分钟、lint/type/build/high门禁/release:check/UPARS/diff全部通过，实际scan3（0高0中3低）。兼容源阶段完成，待Git/Wolai/交接收件；不重复候选。余61%/周80%（最近读数），无控制/SSH，实际安装/服务器/MCP未动。未提交根manifest/锁、流适配脚本、兼容测试及本轮文档，以git status为准。准确结果见STREAM_COMPAT_RESULT_2026-11-03.md；下方旧“正在测试/不可兼容”仅阶段历史，后续用户已授权并完成局部适配。
 
 根里程碑：最小合入已完成但未提交，含package/lock、新apply-excel-stream-compat.cjs、扩展Excel兼容测试及本检查点，git status最终为准。root严格ci/lint/type/402单元72文件/build7.15秒、36日历等价、浏览器Excel包SHA原值均过；实际root scan3（0严重/0高/0中/3低），原生产high门禁exit0。进程84527仍在130UI/随后独立13HTTP，恢复先收，不重新启动。所有失败旧图与前阶段10告警为历史，不能混淆；未部署或操作真实库，无控制/SSH。后续只收完整门禁、报告与Git/Wolai/交接，剩余3为已有deepmerge防护后原版号告警，不改版本号掩盖。

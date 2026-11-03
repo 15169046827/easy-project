@@ -1,5 +1,7 @@
 # 交接Ready收尾检查点
 
+最终收件：源251ed21785aa253dcedc8e39d7ea82dd669346de已精确Git同步，Wolai主/交接两处核验段精确读回；10源摘要/核心链接/79唯一规则/15平台图通过，前端有效402/130/13、新Rust76+1与server64+20及当前官方安全复扫通过。Handoff Ready只指源码/资料可接手，已标HANDOFF_READY.md；实际部署/正式发布未通过，伙伴未实际确认接收。当前仅Ready纯文档标记/回执待最后推送和Wolai Ready段读回，不重跑候选或部署。无控制/SSH/有效关机授权。
+
 资料核验：Ready短入口/新AI启动指令/可携带脱敏证据已生成；README、CURRENT_STATE和CHECKPOINT旧流水折叠保留。10个源/锁/契约LF摘要核验、核心链接和79规则ID唯一性通过；Windows/mac默认feature图15项信息告警包查询均未启用。现在只需提交源码锁修复及资料、Wolai主/交接写入当前Ready摘要并精确读回，再最终标Ready。源与实际部署严格分开，正式发布仍不通过；余68%/周74%，无控制/SSH。
 
 最新：桌面Tokio已安全更新1.51.6，fmt/Clippy/76+1新复验过；服务器原为安全1.54.1，已撤回不必要生成锁变动，最终与基线逐字一致，原本轮64+20/fmt/Clippy有效。两锁当前官方快照scan普通漏洞0/撤包检查通过，桌面仍5信息告警但Windows/mac三目标15个默认feature图均未启用。便携脱敏证据已写docs/handoff/evidence/VALIDATION_2026-11-03.json，不只依赖ignored日志。下一步只整理入口/当前态、校验链接/摘要、提交推送和Wolai双页精确读回，再标交接Ready；无真实交付或新功能。未提交为src-tauri锁+本检查点/Ready页/证据/验收及接下来对应文档，以git status为准；额度最近78%/周75%，无控制/SSH。

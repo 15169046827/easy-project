@@ -1,6 +1,6 @@
 # EasyProject 交接任务检查点
 
-当前收尾见[交接单](HANDOFF_READY.md)及[本次检查点](../HANDOFF_READY_CHECKPOINT_2026-11-03.md)。已完成的源修复不重做；当前仅三方同步/Ready收件，无部署或关机授权。
+当前HANDOFF READY，收件见[交接单](HANDOFF_READY.md)及[本次检查点](../HANDOFF_READY_CHECKPOINT_2026-11-03.md)。源251ed21精确Git/Wolai核验段同步，源修复不重做；没有新任务时等待，无自动部署、真实CRUD或关机授权。
 
 <details>
 <summary>历史维护流水（仅追溯，不代表当前状态）</summary>

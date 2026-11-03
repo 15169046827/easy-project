@@ -1,6 +1,6 @@
 # EasyProject 交接时当前状态与待办
 
-当前状态以[交接单](HANDOFF_READY.md)和[2026-11-03新鲜验收](../HANDOFF_READY_VALIDATION_2026-11-03.md)为准。源码门禁已通过、最终同步收件中，实际安装/服务器未交付；不要按下方历史待办重做。
+当前状态：HANDOFF READY，源码与资料可接手，以[交接单](HANDOFF_READY.md)和[2026-11-03新鲜验收](../HANDOFF_READY_VALIDATION_2026-11-03.md)为准。源251ed21已精确Git/Wolai核验段同步；实际安装/服务器未交付、正式发布未通过，伙伴尚未确认接收；不要按下方历史待办重做。
 
 <details>
 <summary>历史维护流水（仅追溯，不代表当前状态）</summary>

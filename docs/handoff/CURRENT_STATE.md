@@ -1,5 +1,11 @@
 # EasyProject 交接时当前状态与待办
 
+当前状态以[交接单](HANDOFF_READY.md)和[2026-11-03新鲜验收](../HANDOFF_READY_VALIDATION_2026-11-03.md)为准。源码门禁已通过、最终同步收件中，实际安装/服务器未交付；不要按下方历史待办重做。
+
+<details>
+<summary>历史维护流水（仅追溯，不代表当前状态）</summary>
+
+
 2026-11-03后续状态：用户批准局部兼容适配后，ExcelJS私有Node pipe返回值定向修正并SHA防漂移，archiver7/readdir3链root复验通过。实际scan3低/0中高，402单元/130UI/独立13HTTP/build/原high门禁过，36日历等价、浏览器包不变。详STREAM_COMPAT_RESULT_2026-11-03，旧10/7中和不合archiver为未适配阶段。源任务已完待三方回执，无安装/服务器/MCP交付或真实数据变化。
 
 2026-11-03继续整改完成：unzipper0.12.5移除fstream/rimraf链，ExcelJS及浏览器包未变；root399/130/13/规范/类型/build/high门禁过，扫描10（7中3低/0高）。archiver6/7因流式兼容失败拒绝合入，不为清零加fork。精确日志及剩余风险见DEPENDENCY_FOLLOWUP_RESULT_2026-11-03。仅Git/Wolai收尾，正式安装/服务器/MCP未动，跨平台CI/发布未冒称通过。
@@ -398,3 +404,5 @@ C盘政策源码整改复验完成：258单测（两worker）、Rust53+stdio1、
 - 审计：[标准](../audit/UNIVERSAL_PROJECT_AUDIT_STANDARD.md)、[模板](../audit/AUDIT_REPORT_TEMPLATE.md)、[机器规则](../../config/audit/audit-standard.json)、[完整历史报告](../audit/EASYPROJECT_AUDIT_REPORT_2026-09-13.md)、[最新限定复审](../audit/EXCEPTION_REVIEW_2026-10-18.md)。
 - Wolai：[项目页](https://www.wolai.com/h4VsMhyWaL9UHrYLEkfnLx)，当前状态块 `28dPKMDkPpLCFu557s8exF`（追加式历史，读最新日期），统一样式子页 `jKsAeLwg89FM9GyCmifaxC`。外部文档不可用时记录未同步，不伪造成功。
 - 接手时不必全文读取数百行历史审计检查点；先读本页及当前任务检查点，再按问题追溯原证据。旧维护技能8月快照、旧“固定internal.1”的阶段说明、规划里尚未存在的理想目录，都不能覆盖最新实现事实。
+
+</details>

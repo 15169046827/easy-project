@@ -1,0 +1,276 @@
+{
+    "date": "2026-11-03",
+    "baseline": "6135c2fa00df685187a53a07655e0eb77c6c56be",
+    "frontend_verified_source": "bd8ef71b34e9c3c8c4e4ba6352f32a3a5dada461",
+    "normalization": "source SHA256 uses UTF8 LF; logs use original bytes; summaries are not a claim of rerun",
+    "results": {
+        "frontend": {
+            "unit": 402,
+            "files": 72,
+            "ui": 130,
+            "http": 13,
+            "npm": {
+                "critical": 0,
+                "high": 0,
+                "moderate": 0,
+                "low": 3
+            }
+        },
+        "windows_rust": {
+            "unit": 76,
+            "stdio_isolated": 1
+        },
+        "server": {
+            "unit": 64,
+            "integration": 20
+        },
+        "rustsec": {
+            "commit": "6c5fedf8ff03c485ed674d8f941e0180f3f72d70",
+            "date": "2026-11-03T09:44:19Z",
+            "snapshot_sha256": "b02b52ea4920ccebfbf5ed61169e9f87cebe55cd48f5749e7f6a3993a0a9e791",
+            "desktop": {
+                "found": false,
+                "count": 0,
+                "list": []
+            },
+            "server": {
+                "found": false,
+                "count": 0,
+                "list": []
+            }
+        }
+    },
+    "files": [
+        {
+            "file": "package.json",
+            "sha256_lf": "c36c883121a8daf56bebf4bff69d6b7db9afe94592eb383e143f406075e6fdae"
+        },
+        {
+            "file": "package-lock.json",
+            "sha256_lf": "f58a34ff821cea4ec3c1d3b02b95da67d22a5996c95a44273af78451c450bb8f"
+        },
+        {
+            "file": "src-tauri/Cargo.lock",
+            "sha256_lf": "800031955b1bcd821231c4e8861b41902d22ce1a48e6d014a77e99f3aea6d50e"
+        },
+        {
+            "file": "server/Cargo.lock",
+            "sha256_lf": "e4055604389a7df45b9dea4449d13adc8f557d3e0e0941fc5fa2565a17b1b773"
+        },
+        {
+            "file": "scripts/apply-dependency-security-patch.cjs",
+            "sha256_lf": "34e023001b10e37c5c5eba36447bcd3bd520a56fa2426e3cd8e538b5b58ad8eb"
+        },
+        {
+            "file": "scripts/apply-excel-stream-compat.cjs",
+            "sha256_lf": "83e64b1c84be380a5aecb2ba9d4c39e862ba7c2c448af1e56af47e8a561c0505"
+        },
+        {
+            "file": "docs/api/catalog.json",
+            "sha256_lf": "0a42962f5da06b3e74a6b476318b15038b45e03777f3caa6f3820d22e154ec84"
+        },
+        {
+            "file": "docs/api/web-openapi.json",
+            "sha256_lf": "33cf82d27694e00512dfc84580fb0e389336ca1af15fcfd4313ef04543ef9ec9"
+        },
+        {
+            "file": "docs/api/apifox-layout.json",
+            "sha256_lf": "b378f3b35949d0e418d212cb80da918e1e118cc1923f3a35defa9d81e1adca7d"
+        },
+        {
+            "file": "docs/api/apifox-documents.json",
+            "sha256_lf": "252d9538b17aeb8937de166548a2626b5cbd8eacc60f875f1efe58aea6796944"
+        }
+    ],
+    "logs": [
+        {
+            "name": "stream-root-unit.log",
+            "sha256": "16c4ceb7fa3150f0c5e8853cb3dbaac2d35c75c08be768159cd9f723bbbd017e",
+            "summary": [
+                " Test Files  72 passed (72)",
+                "      Tests  402 passed (402)"
+            ]
+        },
+        {
+            "name": "stream-root-ui.log",
+            "sha256": "c8a74131781c27d05f5cebc5e18bb075c4b3bb170b19ba9fbb7031c545441acb",
+            "summary": [
+                "  130 passed (4.1m)"
+            ]
+        },
+        {
+            "name": "stream-root-http.log",
+            "sha256": "475fc7de544ebba443248c81c5d36ba936c71e177845cc06761734be750dd27c",
+            "summary": [
+                "  13 passed (1.3m)"
+            ]
+        },
+        {
+            "name": "stream-root-audit.json",
+            "sha256": "feefbda6648cb42945fa7a3d103dddac37dada49b1c9a3a95a87d84a57b5ba33",
+            "summary": []
+        },
+        {
+            "name": "handoff-ready-patched-clippy.log",
+            "sha256": "352c30dc3c74a68afaea651d9567efe55f7d6cd175b5f9770ba4d15830bad434",
+            "summary": [
+                "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 56.71s"
+            ]
+        },
+        {
+            "name": "handoff-ready-patched-test.log",
+            "sha256": "6c2368db8810a1d9a97f9f820810043db3c6343c1df455aedf4ccfebd902a55f",
+            "summary": [
+                "    Finished `test` profile [unoptimized + debuginfo] target(s) in 56.26s",
+                "test result: ok. 76 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.02s",
+                "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+                "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+                "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.72s",
+                "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+            ]
+        },
+        {
+            "name": "handoff-ready-server-clippy.log",
+            "sha256": "59a397430158d65b68501396728c77f9d433eb6e1a1cacf2bec357573935d87b",
+            "summary": [
+                "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 8.21s"
+            ]
+        },
+        {
+            "name": "handoff-ready-server-test.log",
+            "sha256": "b2783a2c1c93b6e4f13a4da12abc9a33a858eabe18dddc1dd40c0287d30e664a",
+            "summary": [
+                "    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.77s",
+                "test result: ok. 64 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.70s",
+                "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+                "test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.61s",
+                "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+            ]
+        },
+        {
+            "name": "ready-desktop-audit.json",
+            "sha256": "e6a63a73f23ae3daf39db3270ec01b18dfa7d0183cd4ddb31c2dd0c9844b3351",
+            "summary": []
+        },
+        {
+            "name": "ready-server-audit.json",
+            "sha256": "b2ea9e17a7bbbb2bd8c5cf3f44284cb5da56f89ab4564f6f881447400485156c",
+            "summary": []
+        }
+    ],
+    "platform_dependency_graph": [
+        {
+            "target": "x86_64-pc-windows-msvc",
+            "dependency": "glib",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "x86_64-pc-windows-msvc",
+            "dependency": "proc-macro-error",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "x86_64-pc-windows-msvc",
+            "dependency": "zbus_names",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "x86_64-pc-windows-msvc",
+            "dependency": "zvariant",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "x86_64-pc-windows-msvc",
+            "dependency": "zvariant_derive",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "aarch64-apple-darwin",
+            "dependency": "glib",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "aarch64-apple-darwin",
+            "dependency": "proc-macro-error",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "aarch64-apple-darwin",
+            "dependency": "zbus_names",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "aarch64-apple-darwin",
+            "dependency": "zvariant",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "aarch64-apple-darwin",
+            "dependency": "zvariant_derive",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "x86_64-apple-darwin",
+            "dependency": "glib",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "x86_64-apple-darwin",
+            "dependency": "proc-macro-error",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "x86_64-apple-darwin",
+            "dependency": "zbus_names",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "x86_64-apple-darwin",
+            "dependency": "zvariant",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        },
+        {
+            "target": "x86_64-apple-darwin",
+            "dependency": "zvariant_derive",
+            "status": 0,
+            "enabled": false,
+            "diagnostic": ""
+        }
+    ],
+    "limitations": [
+        "Not a new all-file manual audit",
+        "No new installed artifact or server deployment",
+        "Five all-platform Rust informational warnings not enabled in default supported target graphs",
+        "No new cross-platform runtime or signing verification",
+        "DOC-SYNC-001 retained",
+        "Full raw logs ignored locally; this sanitized receipt is portable"
+    ]
+}

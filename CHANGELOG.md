@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- Handoff closure (source only, 2026-11-03): fresh RustSec review found the Unix AsyncFd advisory and updated only the desktop/MCP Tokio lock to patched1.51.6; server retains patched1.54.1. New Windows76+stdio1 and server64+20 gates passed. Portable sanitized evidence and a clean agent-start guide now separate source-ready from installed/release readiness; no deployment.
+
 - Security compatibility (source only, 2026-11-03): checksum-guarded private ExcelJS Node StreamBuf.pipe return adaptation enables maintained archiver7/readdir-glob3/glob14/minimatch11 branches. Findings10→3 (0 high/0 moderate); remaining deepmerge original-version low warnings remain visible with existing mitigation.402 unit/130 UI/13 HTTP passed; browser Excel bundle unchanged. No deployment; STREAM_COMPAT_RESULT_2026-11-03.
 
 - Security follow-up (source only, 2026-11-03): compatible unzipper0.12.5 override removes the obsolete fstream/rimraf branch without changing ExcelJS4.4.0 or its browser bundle. Findings11→10 (0 high/7 moderate/3 locally mitigated low).399 unit/130 UI/13 HTTP passed; incompatible archiver6/7 candidates rejected, not forced. No deployment. See DEPENDENCY_FOLLOWUP_RESULT_2026-11-03.

@@ -1,5 +1,11 @@
 # EasyProject 交接任务检查点
 
+当前收尾见[交接单](HANDOFF_READY.md)及[本次检查点](../HANDOFF_READY_CHECKPOINT_2026-11-03.md)。已完成的源修复不重做；当前仅三方同步/Ready收件，无部署或关机授权。
+
+<details>
+<summary>历史维护流水（仅追溯，不代表当前状态）</summary>
+
+
 2026-11-03私有流适配三方完成：源bd8ef71已精确Git/Wolai双页读回，根clean；STREAM_COMPAT_RESULT_2026-11-03记录root402/130/13与scan3低/0中高。本轮完成，不重跑候选或自动部署；新交付另需许可，无控制/SSH/有效关机授权。
 
 2026-11-03最新：STREAM_COMPAT_RESULT/CHECKPOINT_2026-11-03.md。基线5cc6d4f/UPARS1.1.0/WACAS未定义，用户授权私有Node流适配；根402/130/13/build等全部过，scan3低/0中高，余61%/80%。下一步只核差异、提交推送及Wolai双页精确读回，不重复候选或自动安装。两类SHA防漂移修补长期保留，旧archiver失败因无适配已被本阶段闭环；无控制/SSH/部署/关机授权。
@@ -179,3 +185,5 @@ Apifox交付同步闭环：b6c40ac336f02f1c1130e6b454e1e794eb30b056已同树同S
 - 本任务未新增设备连接，仅当前Windows开发环境确认；产品/现有验证证据均未变化，不冒称本轮重跑业务测试。
 
 - 完成确认：规则提交b961541cd853b96bda8163095b2b416af386890e已同树同SHA非强制同步；4交接文档Prettier、78条规则ID唯一性与diff通过。Wolai插入新块返回非JSON服务错误，读回251块确认无DOC-05，未盲重试；改为现有文档规则块pBQTJ2qtpH8DtKG1KtgzF4追加日期化DOC-05及来源，页首说明块oLvsZ6M65HtTfFsJmg8ptD更新到1.1/78条，两块读回version3且DOC-05/源SHA匹配。长期规范已在Git/主规则/交接资料/Wolai对应章节落地，未留同步缺口；仅本确认待收尾保存。无需用户再次提醒，后续每次改动执行三方同步检查，不建立后台自动任务。最近五小时15%、周57%，不新增长阶段、不重置/唤醒。
+
+</details>

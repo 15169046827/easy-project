@@ -1,5 +1,7 @@
 # EasyProject 架构、代码地图与验证工作流
 
+2026-11-03交接核验：默认源/验证/实际部署区别集中在HANDOFF_READY.md；新增桌面Tokio锁1.51.6（服务端原1.54.1不变），API/库schema/权限架构不变。76+1和64+20新验、当日RustSec及平台图证据可携带于evidence/VALIDATION_2026-11-03.json；元数据目标图不代表Mac原生编译运行。旧候选/8月技能快照不得覆盖本页与Ready单最新事实。
+
 2026-11-03供应链实现更新：package security:patch串联scripts/apply-dependency-security-patch.cjs（deepmerge三个入口own属性写入防护）与scripts/apply-excel-stream-compat.cjs（ExcelJS4.4.0私有Node StreamBuf.pipe返回destination）；两者校验原版本/SHA，漂移拒绝、幂等重施。正常dev/lint/test/build/release:check前置执行，ignore-scripts ci后同样由hook恢复。ExcelJS嵌套override升级archiver7/readdir3/minimatch11，现代utils/glob14；生产模块门禁仍拒绝Node专用链。新增Node兼容测试覆盖读写/目录/错误/取消/漂移，402/130/13与scan3低见STREAM_COMPAT_RESULT_2026-11-03。API/数据库/权限架构未改，未部署。
 
 2026-11-01交接复核：架构与规则1.25无新增变化；实际API内部order_placement及导航均已交付，不再是未部署候选。今日回归与新的依赖安全/Apifox权限缺口见HANDOFF_ACCEPTANCE_2026-11-01。不要因为23工具已发现就声称真实CRUD或今日Apifox全读回通过；没有权限/组件拓展。

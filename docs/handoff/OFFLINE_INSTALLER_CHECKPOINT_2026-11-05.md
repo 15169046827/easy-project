@@ -21,3 +21,12 @@
 - 上段整改已以 `bd40f148` Git同SHA同步，Wolai两处已读回；上段“尚未推送/未提交”为过程记录。本阶段用户批准使用GitHub构建机获取官方文件，不公开Release、不运行下载程序。
 - 基线 `bd40f1484fb46e4c2f1d716077de313ebe12a38d` / 原分支；开始工作区干净。额度五小时余40%、周余37%；WACAS/标准不变。新增只读权限的短期Windows工作流，仅官方微软重定向+完整文件下载+微软签名/大小/摘要/来源收件，产物7天保留，不用任何凭据Secret、不执行payload。
 - 当前新增工作流与本检查点未提交；下一步提交到既有分支触发一次构建，取回至E盘并独立核验，再续离线打包。Deck/RDP/home-host本阶段未连接或操作；API/MCP/Apifox无变化。Git/Wolai新阶段待同步。
+
+### 官方运行库已取得
+
+- 工作流源 `eca3d5249b6e5c40097abb04534ba8aaf11593d4` 已Git同SHA同步，自动任务 **41975791242** 成功。人工显式dispatch时未及时发现自动任务已完成，产生第二任务41975835980；发现后尝试取消但它也已完成，不再重复。两者均仅下载/验签，未运行payload或发Release。
+- 首次产物13391787070，ZIP摘要 `0c6fdf6fea26af849d00e55329a7d1d931d024195e2c093bbc90ded0b01c20f5`，7天留存。GitHub产物大文件取回无进展，已终止本任务自己的下载进程；未把不完整下载当作成功。
+- 首次任务解析出的微软官方CDN直链可在宿主机直接访问，已下载完整文件到 `src-tauri/target/audit-tools/MicrosoftEdgeWebView2RuntimeInstallerX64-62863F0F.exe`，215017168字节；SHA256 **62863F0F0611A16CCF124B4F15650C3B66624504EBA74D7CDE1E2AE5D951249B**。本机Microsoft Authenticode Valid，摘要与首次GitHub收件一致，无第三方镜像、无TLS豁免。
+- 官方精确源：`https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/d5cc3c1c-bb59-4158-aedc-db0035e44466/MicrosoftEdgeWebView2RuntimeInstallerX64.exe`；固定来源来自任务日志，不手造URL或以Edge浏览器替代运行库。
+- 仓库 `verify-windows-runtime.ps1` 对实际payload及新离线候选编译出的两exe已正例通过，依旧仅系统/API-set/UCRT导入，无列出的额外运行库。后续尝试读取失败候选NSIS脚本时路径不存在，整条诊断命令退出1；不影响前面明确输出的签名/依赖验证，但不能声称该命令或新包整体成功。
+- 下一步：保持严格校验，解决Tauri打包即使缓存已有仍先HEAD短链的行为（官方util实现已核对）；优先在GitHub正常环境做标准离线候选构建，不采用伪造HEAD/放宽TLS。**当前只有可信运行库和编译结果，尚无新离线NSIS，不进行Deck安装。** 首次运行库下载阻断已解除，标准打包仍待续。

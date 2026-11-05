@@ -35,3 +35,18 @@
 
 - 续接基线 `9b1f4f0` / 原分支，工作区干净；五小时余30%、周余36%。新增同一工作流的标准构建job：固定Node24.15、锁定Cargo、lint/404测试/发布门禁，标准Tauri构建NSIS、实际离线编译定义/微软payload签名/原生DLL核验，只有7天测试artifact，无Release或部署权限。
 - 本阶段未提交仅工作流与本检查点，Git/Wolai收尾待；设备未操作。下一步：提交并等自动任务（不要重复dispatch），下载完整包到E盘核验摘要后才请求Deck运行当场确认。未改API/MCP/数据库。
+
+- 标准构建已同SHA上传 `b30bab61c12be1d57f5f5e7b897da537869865ee`，自动运行 **41977755619**；fetch-runtime成功，build-offline-candidate在进行中。Git原传输10054后用已有非强制API备用收件核验。GitHub提示upload-artifact@v4动作Node20已废弃/强制用Node24，保留为构建基础设施警告；产品工具链已明确Node24.15，不将动作警告误写产品用Node20。
+
+### 云端完整离线包已构建
+
+- 运行41977755619两个job均成功：404测试、lint/release门禁、标准锁定Tauri构建；NSIS实际offlineInstaller定义、微软payload签名、两exe系统/API-set/UCRT导入均通过。内嵌运行库仍为62863F0F…/215017168字节。没有运行任何安装器。
+- 完整包224638346字节，SHA256 **0523063373190B9FE64CB29024A0363E81BED8235C389F610662BD7E9D7F6F8E**，未签名。GitHub测试artifact **13392568422**，ZIP224688523字节/摘要 **f23becd3d6230bb7c0b34830d29d2d3be83d5eb8f27c6a80f9e7fa912046e42c**，7天保留。
+- 取回E盘 `src-tauri/target/audit-tools/offline-artifact-41977755619`：单连接慢已主动终止，改官方SAS精确文件16个Range分段，逐段检查206与长度、合并后必须核验完整ZIP和包摘要才可使用。不输出或持久化SAS/token，不关闭TLS。当前分段下载进行中，已有5段核验；旧partial ZIP不是可用安装包。
+- 最近额度五小时余20%、周余34%；本阶段没有桌面控制/设备操作。下一步等待分段完成和摘要核验，再同步与传到Deck；新安装仍需当场确认，不把云端静态通过当实机安装通过。当前仅本检查点未提交。
+
+### 本机完整包摘要核验完成
+
+- 16段全部206/长度校验通过，合并ZIP摘要匹配GitHub官方artifact，解压成功；本机最终安装包摘要再次等于 **0523063373190B9FE64CB29024A0363E81BED8235C389F610662BD7E9D7F6F8E**。路径 `src-tauri/target/audit-tools/offline-artifact-41977755619/package/EasyProject_0.1.2_x64-setup.exe`，provenance.json同目录，224638346字节。没有修改/重封装此安装包，旧partial与分段保留供追溯但不可运行。
+- 本次云端构建及本机静态产物验收通过；Windows干净设备首次安装仍待。下一步将此精确包经已有RDP复制到Deck并请求当场运行确认，目标 `F:\EasyProject`，缺失WebView2时使用包内微软共享运行库（可能系统盘）。不偷偷恢复小联网包，不关闭安全设置，不中断RDP来伪造断网实测。无需重跑已通过门禁或重新下载payload。
+- 无API/MCP/Apifox变更，无宿主机覆盖、服务器部署或公开Release；本阶段未操作桌面，最后RDP/失败窗口状态仍为历史，不声称今日已重连。代码与工作流已Git同步；本轮结果/交接收件随后提交并同步Wolai。

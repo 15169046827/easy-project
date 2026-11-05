@@ -1,0 +1,55 @@
+name: Fetch verified WebView2 runtime
+
+on:
+    workflow_dispatch:
+    push:
+        branches: [codex/audit-release-20261006-api]
+        paths: [.github/workflows/fetch-webview2.yml]
+
+permissions:
+    contents: read
+
+jobs:
+    fetch-runtime:
+        runs-on: windows-latest
+        timeout-minutes: 12
+        steps:
+            - name: Download official x64 standalone runtime without executing it
+              shell: pwsh
+              run: |
+                  $ErrorActionPreference = 'Stop'
+                  $uri = 'https://go.microsoft.com/fwlink/?linkid=2124701'
+                  $output = Join-Path $env:GITHUB_WORKSPACE 'verified-runtime'
+                  New-Item -ItemType Directory -Path $output | Out-Null
+                  $file = Join-Path $output 'MicrosoftEdgeWebView2RuntimeInstallerX64.exe'
+                  $head = Invoke-WebRequest -Uri $uri -Method Head -TimeoutSec 60
+                  $resolved = $head.BaseResponse.RequestMessage.RequestUri
+                  if ($resolved.Scheme -ne 'https' -or $resolved.Host -ne 'msedge.sf.dl.delivery.mp.microsoft.com' -or $resolved.AbsolutePath -notmatch '^/filestreamingservice/files/[^/]+/MicrosoftEdgeWebView2RuntimeInstallerX64.exe$') {
+                      throw "Unexpected Microsoft download target: $resolved"
+                  }
+                  Invoke-WebRequest -Uri $resolved.AbsoluteUri -OutFile $file -TimeoutSec 300
+                  $signature = Get-AuthenticodeSignature -LiteralPath $file
+                  if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'O=Microsoft Corporation') {
+                      throw 'Invalid Microsoft Authenticode signature'
+                  }
+                  $item = Get-Item -LiteralPath $file
+                  if ($item.Length -lt 50MB) { throw 'Not a full standalone installer' }
+                  [ordered]@{
+                      source = $uri
+                      resolved = $resolved.AbsoluteUri
+                      sha256 = (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash
+                      bytes = $item.Length
+                      version = $item.VersionInfo.ProductVersion
+                      signature = [string]$signature.Status
+                      publisher = $signature.SignerCertificate.Subject
+                      run = $env:GITHUB_RUN_ID
+                      sourceCommit = $env:GITHUB_SHA
+                      fetchedAtUtc = [DateTime]::UtcNow.ToString('o')
+                  } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'provenance.json') -Encoding utf8
+                  Get-Content (Join-Path $output 'provenance.json')
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: verified-webview2-x64
+                  path: verified-runtime/*
+                  if-no-files-found: error
+                  retention-days: 7

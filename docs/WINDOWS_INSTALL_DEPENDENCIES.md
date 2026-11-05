@@ -17,4 +17,6 @@ WebView2 Evergreen 是微软共享运行库，可能写系统盘并独立更新�
 
 Steam Deck 原在线包在缺运行库时连接下载源失败，未能首次安装。离线包应在同机尚未补装运行库时验收。RDP需要网络，不能通过远程断网伪造完整离线测试；先核对安装内容/脚本，再单独安排不切断控制链的离线验证。新候选完成前，不把本页当作实机已通过。
 
+每次 Windows 候选使用 `scripts/verify-windows-runtime.ps1`，显式传入 Microsoft dumpbin 路径、主程序/MCP路径及本次完整 WebView2 安装程序路径，验证微软签名/大小/摘要和新增常见外部 DLL 依赖。它不能证明所有动态加载路径，也不代替干净设备验收或 MSI 引擎/操作系统完整性检查。签名失败必须调查，不关闭证书检查。
+
 参考：[Tauri 安装方式](https://v2.tauri.app/distribute/windows-installer/#webview2-installation-options)、[微软 UCRT](https://learn.microsoft.com/en-us/cpp/windows/universal-crt-deployment)、[微软运行库](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)。

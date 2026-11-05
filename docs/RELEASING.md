@@ -241,7 +241,7 @@ MSI was obtained from the same successful workflow artifact and matched the rele
 - Never publish a draft whose artifact validation or restore smoke test failed.
 
 The prepared v0.1.0 draft is in [`RELEASE_NOTES_0.1.0.md`](RELEASE_NOTES_0.1.0.md). Keep it marked as a draft until signing and every required platform smoke test are complete.
-# Windows offline installation
+
+## Windows offline installation
 
 2026-11-05: default Windows packages now embed the full WebView2 offline installer; this is a source candidate, not a deployed or accepted package. See [runtime dependency inventory](WINDOWS_INSTALL_DEPENDENCIES.md) and [candidate checkpoint](handoff/OFFLINE_INSTALLER_CHECKPOINT_2026-11-05.md). Do not substitute a bootstrapper or skip runtime detection. Shared WebView2 may use the system drive even when the application is installed elsewhere.
-

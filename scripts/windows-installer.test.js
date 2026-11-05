@@ -1,9 +1,10 @@
+// @vitest-environment node
 import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-const root = new URL('../', import.meta.url)
-const config = JSON.parse(readFileSync(new URL('src-tauri/tauri.conf.json', root), 'utf8'))
-const cargo = readFileSync(new URL('src-tauri/Cargo.toml', root), 'utf8')
+const config = JSON.parse(readFileSync(resolve('src-tauri/tauri.conf.json'), 'utf8'))
+const cargo = readFileSync(resolve('src-tauri/Cargo.toml'), 'utf8')
 
 describe('Windows first-install dependencies', () => {
     it('embeds the full runtime, not a bootstrapper that still needs the network', () => {

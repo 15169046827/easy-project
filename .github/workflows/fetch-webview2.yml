@@ -53,3 +53,69 @@ jobs:
                   path: verified-runtime/*
                   if-no-files-found: error
                   retention-days: 7
+
+    build-offline-candidate:
+        needs: fetch-runtime
+        runs-on: windows-latest
+        timeout-minutes: 30
+        env:
+            TEMP: ${{ github.workspace }}/.candidate-temp
+            TMP: ${{ github.workspace }}/.candidate-temp
+        steps:
+            - uses: actions/checkout@v6
+            - name: Prepare isolated temporary directory
+              shell: pwsh
+              run: New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: '24.15.0'
+            - uses: dtolnay/rust-toolchain@stable
+            - uses: Swatinem/rust-cache@v2
+              with:
+                  workspaces: src-tauri
+            - name: Validate source and build unsigned offline candidate
+              shell: pwsh
+              run: |
+                  npm ci
+                  if ($LASTEXITCODE) { exit $LASTEXITCODE }
+                  npm run lint
+                  if ($LASTEXITCODE) { exit $LASTEXITCODE }
+                  npm run release:check
+                  if ($LASTEXITCODE) { exit $LASTEXITCODE }
+                  npm test -- --maxWorkers=2
+                  if ($LASTEXITCODE) { exit $LASTEXITCODE }
+                  npm run tauri -- build --bundles nsis -- --locked
+                  if ($LASTEXITCODE) { exit $LASTEXITCODE }
+            - name: Verify embedded runtime and record package provenance
+              shell: pwsh
+              run: |
+                  $ErrorActionPreference = 'Stop'
+                  $script = 'src-tauri/target/release/nsis/x64/installer.nsi'
+                  $text = Get-Content -LiteralPath $script -Raw
+                  if ($text -notmatch '!define INSTALLWEBVIEW2MODE "offlineInstaller"') { throw 'Not offline mode' }
+                  $runtime = [regex]::Match($text, '!define WEBVIEW2INSTALLERPATH "([^"]+)"').Groups[1].Value
+                  if (-not $runtime) { throw 'No embedded runtime path' }
+                  $vs = & "${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe" -latest -products '*' -property installationPath
+                  $dumpbin = Get-ChildItem "$vs/VC/Tools/MSVC/*/bin/Hostx64/x64/dumpbin.exe" | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+                  $result = & scripts/verify-windows-runtime.ps1 -DumpbinPath $dumpbin -BinaryPath @('src-tauri/target/release/easy-project.exe','src-tauri/target/release/easyproject-mcp.exe') -WebViewInstallerPath $runtime
+                  $bundle = @(Get-ChildItem 'src-tauri/target/release/bundle/nsis/*-setup.exe')
+                  if ($bundle.Count -ne 1 -or $bundle[0].Length -lt 50MB) { throw 'Missing complete offline package' }
+                  $out = 'offline-candidate'
+                  New-Item -ItemType Directory $out | Out-Null
+                  Copy-Item $bundle[0].FullName $out
+                  [ordered]@{
+                      sourceCommit = $env:GITHUB_SHA
+                      run = $env:GITHUB_RUN_ID
+                      packageName = $bundle[0].Name
+                      packageSHA256 = (Get-FileHash $bundle[0].FullName).Hash
+                      packageBytes = $bundle[0].Length
+                      packageSignature = [string](Get-AuthenticodeSignature $bundle[0].FullName).Status
+                      runtimeAndImports = $result
+                  } | ConvertTo-Json -Depth 5 | Set-Content "$out/provenance.json" -Encoding utf8
+                  Get-Content "$out/provenance.json"
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: unsigned-windows-offline-candidate
+                  path: offline-candidate/*
+                  if-no-files-found: error
+                  retention-days: 7

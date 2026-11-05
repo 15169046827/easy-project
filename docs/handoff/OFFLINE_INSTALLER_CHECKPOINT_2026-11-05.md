@@ -30,3 +30,8 @@
 - 官方精确源：`https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/d5cc3c1c-bb59-4158-aedc-db0035e44466/MicrosoftEdgeWebView2RuntimeInstallerX64.exe`；固定来源来自任务日志，不手造URL或以Edge浏览器替代运行库。
 - 仓库 `verify-windows-runtime.ps1` 对实际payload及新离线候选编译出的两exe已正例通过，依旧仅系统/API-set/UCRT导入，无列出的额外运行库。后续尝试读取失败候选NSIS脚本时路径不存在，整条诊断命令退出1；不影响前面明确输出的签名/依赖验证，但不能声称该命令或新包整体成功。
 - 下一步：保持严格校验，解决Tauri打包即使缓存已有仍先HEAD短链的行为（官方util实现已核对）；优先在GitHub正常环境做标准离线候选构建，不采用伪造HEAD/放宽TLS。**当前只有可信运行库和编译结果，尚无新离线NSIS，不进行Deck安装。** 首次运行库下载阻断已解除，标准打包仍待续。
+
+### 标准云端离线候选构建
+
+- 续接基线 `9b1f4f0` / 原分支，工作区干净；五小时余30%、周余36%。新增同一工作流的标准构建job：固定Node24.15、锁定Cargo、lint/404测试/发布门禁，标准Tauri构建NSIS、实际离线编译定义/微软payload签名/原生DLL核验，只有7天测试artifact，无Release或部署权限。
+- 本阶段未提交仅工作流与本检查点，Git/Wolai收尾待；设备未操作。下一步：提交并等自动任务（不要重复dispatch），下载完整包到E盘核验摘要后才请求Deck运行当场确认。未改API/MCP/数据库。

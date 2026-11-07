@@ -4,6 +4,8 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
+- Data-page focus repair (source candidate, 2026-11-07): a real PrimeVue file-picker button opens a hidden native input instead of focusing an absolutely positioned off-screen control that could scroll the Windows title bar away. The old narrow-layout regression reproduced the fault; 404 unit and 134 production UI checks passed (13 real-HTTP cases separately skipped). Native Deck verification and deployment remain pending; see DECK_SCROLL_CHECKPOINT_2026-11-07.
+
 - Handoff closure (source only, 2026-11-03): fresh RustSec review found the Unix AsyncFd advisory and updated only the desktop/MCP Tokio lock to patched1.51.6; server retains patched1.54.1. New Windows76+stdio1 and server64+20 gates passed. Portable sanitized evidence and a clean agent-start guide now separate source-ready from installed/release readiness; no deployment.
 
 - Security compatibility (source only, 2026-11-03): checksum-guarded private ExcelJS Node StreamBuf.pipe return adaptation enables maintained archiver7/readdir-glob3/glob14/minimatch11 branches. Findings10→3 (0 high/0 moderate); remaining deepmerge original-version low warnings remain visible with existing mitigation.402 unit/130 UI/13 HTTP passed; browser Excel bundle unchanged. No deployment; STREAM_COMPAT_RESULT_2026-11-03.

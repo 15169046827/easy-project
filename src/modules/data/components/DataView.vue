@@ -51,7 +51,12 @@
                 <div class="card-icon indigo"><i class="pi pi-upload"></i></div>
                 <h3>{{ $t('data.importTitle') }}</h3>
                 <p>{{ $t('data.importDesc') }}</p>
-                <label class="file-picker" for="project-import-file">
+                <Button
+                    class="file-picker"
+                    type="button"
+                    :aria-label="$t('data.chooseFile')"
+                    @click="fileInput?.click()"
+                >
                     <span class="file-icon"><i class="pi pi-upload"></i></span>
                     <span>
                         <strong
@@ -62,11 +67,11 @@
                         <small>{{ $t('data.clickBrowse') }}</small>
                     </span>
                     <span class="browse-button">{{ $t('common.browse') }}</span>
-                </label>
+                </Button>
                 <input
                     id="project-import-file"
                     ref="fileInput"
-                    class="native-file-input"
+                    hidden
                     type="file"
                     accept=".json,.csv,.xlsx,application/json,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     @change="selectImportFile"
@@ -564,23 +569,18 @@ onMounted(loadBackups)
     display: flex;
     gap: 0.65rem;
 }
-.native-file-input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-}
 .file-picker {
     display: flex;
     align-items: center;
     gap: 0.8rem;
+    width: 100%;
     min-height: 5rem;
     padding: 0.85rem;
     border: 1px dashed var(--color-primary-light);
     border-radius: 0.7rem;
     background: rgba(37, 99, 235, 0.03);
+    text-align: left;
+    font-weight: inherit;
     cursor: pointer;
     transition:
         border-color 0.15s ease,
@@ -589,6 +589,10 @@ onMounted(loadBackups)
 .file-picker:hover {
     border-color: var(--color-primary);
     background: rgba(37, 99, 235, 0.06);
+}
+.file-picker:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 .file-picker > span:nth-child(2) {
     min-width: 0;

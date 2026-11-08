@@ -1,5 +1,9 @@
 # Deck 数据页滚动整改续接
 
+## 2026-11-08 同步收尾
+
+验收证据已推送至 `codex/audit-release-20261006-api` 的 `744c6e1`。Wolai [项目路线图](https://www.wolai.com/h4VsMhyWaL9UHrYLEkfnLx#3dBtZWQKBGTp2VA55kr6QJ)及[新伙伴交接页](https://www.wolai.com/uPQxFUeyxqQsGTMJSbXLN8#nooiGy8rP5oew51ctGtbH6)均已逐块读回，正文及 Git 链接一致。下文额度暂停及同步待办为历史。此阶段未操作 RDP、未接触服务器，不重跑已通过实机项；API、MCP 和 Apifox 无契约变动。仅关闭本次 Deck 修复与资料同步，不改变正式发布未通过或 DOC-SYNC-001 的状态。
+
 ## DECK-UI-001 原生复验通过
 
 Deck 的 581898d 候选已覆盖 `F:\EasyProject` 并进入本地模式。1280×800 下确认原合成项目及 5 条任务仍在；需求梳理保持 25% 和 11/11 结束日期，方案设计仍依赖需求梳理（11/16），开发实现仍依赖方案设计（11/26）。数据库和窗口缓存仍分别位于 `F:\EasyProject\data\project_manager.db` 和 `F:\EasyProject\webview`。预先独立安全副本保留。

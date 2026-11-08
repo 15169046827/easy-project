@@ -1,5 +1,13 @@
 # EasyProject API维护入口（Apifox）
 
+## Web HTTP 契约以仓库为准
+
+[web-openapi.json](web-openapi.json) 是 Web HTTP 接口的权威契约，用于客户端生成、接口测试与发布核验。Apifox 用于团队查阅和调试；其 OpenAPI 导出不能替代仓库文件，也不能反向覆盖它。桌面 IPC 和 MCP 的契约独立维护，不受这项导出差异影响。
+
+`DOC-SYNC-001` 仍开放。已核对 19 个 HTTP 操作的原始定义，但 OpenAPI 导出不保证保留备用媒体类型（如 `text/plain`）、显式空 `security: []` 和部分 `required`／`enum` 约束。导出缺失不代表线上接口行为变更。下次验证时，对 19 个操作逐项比较响应媒体类型、安全声明和字段约束；只有全字段等价、证据留存后才能关闭。不为匹配导出而删改权威契约或放宽接口校验。见[差异核对记录](../DOCUMENTATION_SYNC_REVIEW_2026-10-27.md)。
+
+以下按日期记录历史同步和读回结果；不能把早期候选、访问失败或主 JSON 检查当成当前全字段验证结果。
+
 2026-11-01交接复核：b144954共享后端及其order_placement已于10月31日实际交付，最新桌面/网页01cfb13仅导航UI变化；下方“候选未部署”为历史。当前客户端本地/远端各实际发现23工具。今日Apifox官方桥接只读请求HTTP403，66原生/32参考/19HTTP未能重新读回，不能称本轮全同步；保留既有受管ID/分组和DOC-SYNC-001。恢复权限后只读核对，有真实差异再更新。完整验收/新安全门禁缺口见docs/HANDOFF_ACCEPTANCE_2026-11-01.md。
 
 2026-10-31候选b144954：task/update内部可选order_placement+显式parent实现原子前插/后插/作为子任务及整型同级重排，失败连父变更一起回滚；一天start=end合法。仅IPC/HTTP输入扩充，MCP23工具Schema/权限不改。66原生/32参考已按候选源同步读回，HTTP仅工作区动作更新且全19主JSON复核通过；既有分组/ID保持、DOC-SYNC-001保留。候选包已封存但锁屏阻断原生，未部署，见GANTT_ROW_SCHEDULING_CHECKPOINT，不把新契约当线上已启用。

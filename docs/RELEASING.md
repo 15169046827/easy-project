@@ -1,5 +1,11 @@
 # EasyProject release process
 
+## Current acceptance status (2026-11-08)
+
+The unsigned Windows offline NSIS candidate from source `581898d` passed same-version overwrite on Steam Deck and the native data-page regression. The original project, five tasks, progress, dates and dependencies were retained. Narrow-window light/dark scrolling and keyboard file selection passed. See the [Deck acceptance checkpoint](handoff/DECK_SCROLL_CHECKPOINT_2026-11-07.md) for the exact candidate and evidence.
+
+**Formal release acceptance remains open.** The Deck result does not cover fully disconnected clean installation without an existing WebView2 runtime, cross-version migration and data retention, OS reboot, or uninstall and rollback. Signing and MSI/macOS platform acceptance also remain separate. This candidate was not deployed to the host or server and was not published as a new Release. See the [current handoff](handoff/HANDOFF_READY.md); dated records below are historical evidence.
+
 2026-11-03 handoff closure: desktop/MCP Tokio lock now1.51.6 after fresh RUSTSEC-2026-0386 triage; server original1.54.1 retained. New76+1/64+20 and current official RustSec snapshot results are in HANDOFF_READY_VALIDATION_2026-11-03.md, with portable evidence underhandoff/evidence. Audit exit0 is not permission to ignore informational advisories; current five desktop warnings are absent from supported default target graphs, not renewed exceptions. Source handoff Ready is separate from new native artifacts, real deployment and formal signed release; start at handoff/HANDOFF_READY.md.
 
 2026-11-03 later source update: security:patch now also verifies/reapplies the version+SHA-guarded ExcelJS4.4.0 private Node pipe-return adapter, enabling the tested archiver7/readdir3 branches. Do not bypass source drift or drop the adapter while keeping the overrides. Root402/130/13/build/high gates passed, findings3 low only (existing deepmerge mitigation, original version retained). Browser Excel bundle unchanged; no installer/server/MCP delivery. New current evidence: STREAM_COMPAT_RESULT_2026-11-03.md, superseding the earlier unadapted candidate failure below.

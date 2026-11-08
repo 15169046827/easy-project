@@ -4,7 +4,7 @@ All notable changes to EasyProject are documented here.
 
 ## Unreleased
 
-- Data-page focus repair (source candidate, 2026-11-07): a real PrimeVue file-picker button opens a hidden native input instead of focusing an absolutely positioned off-screen control that could scroll the Windows title bar away. The old narrow-layout regression reproduced the fault; 404 unit and 134 production UI checks passed (13 real-HTTP cases separately skipped). Native Deck verification and deployment remain pending; see DECK_SCROLL_CHECKPOINT_2026-11-07.
+- Data-page focus repair (Deck candidate, 2026-11-07): a real PrimeVue file-picker button opens a hidden native input instead of focusing an absolutely positioned off-screen control that could scroll the Windows title bar away. The old narrow-layout regression reproduced the fault; 404 unit and 134 production UI checks passed (13 real-HTTP cases skipped in that run and passed separately). The Deck same-version overwrite, light/dark narrow-window focus and scrolling checks, and existing test data retention passed. No broader deployment or release; see DECK_SCROLL_CHECKPOINT_2026-11-07.
 
 - Handoff closure (source only, 2026-11-03): fresh RustSec review found the Unix AsyncFd advisory and updated only the desktop/MCP Tokio lock to patched1.51.6; server retains patched1.54.1. New Windows76+stdio1 and server64+20 gates passed. Portable sanitized evidence and a clean agent-start guide now separate source-ready from installed/release readiness; no deployment.
 
